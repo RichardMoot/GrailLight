@@ -1,0 +1,7 @@
+
+Grail Light is a light-weight chart parser for multimodal type-logical grammars.
+The chart parser is heavily based on original code described in the following paper:
+
+ Stuart M. Shieber, Yves Schabes and Fernando C. N. Pereira (1995)
+ `Principles and Implementation of Deductive Parsing', Journal of
+ Logic Programming 24(1-2):3-36

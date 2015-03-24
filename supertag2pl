@@ -1,0 +1,68 @@
+#!/usr/bin/tclsh
+
+proc quote_interpunction {string} {
+
+    if {[string equal "," $string]} {
+	return "','"
+    } elseif {[string equal "." $string]} {
+	return "'.'"
+    } else {
+	regsub -all "'" $string "\\\'" string
+	if {[string is integer $string]} {
+	    return $string
+	} elseif {![string is lower $string]} {
+	    return "'$string'"
+	} else {
+	    return $string
+	}
+    }
+}
+
+if {$argc == 0} {
+
+    set flist [list "m2.txt"]
+
+} else {
+
+    set flist $argv
+
+}
+
+set sent 1
+
+foreach f $flist {
+
+#    puts -nonewline stderr "$f..."
+    set fs [open $f r]
+
+    while {[gets $fs line] >= 0} {
+
+	puts "sent($sent, Result) :-"
+	set string "      prob_parse(\["
+	set use_comma ""
+	set list [split [string trim $line]]
+	foreach i $list {
+	    set item [split $i "|"]
+	    set len [llength $item]
+	    if {$len == 3} {
+		set word [quote_interpunction [lindex $item 0]]
+		set pos [string tolower [lindex $item 1]]
+		set form [lindex $item 2]
+		set string "$string$use_comma ex_si($word, $pos, $word, \[$form-1\])"
+	    } elseif {$len > 4} {
+		set word [quote_interpunction [lindex $item 0]]
+		set pos [string tolower [lindex $item 1]]
+		set formulas "[lindex $item 3]-[lindex $item 4]"
+		for {set i 5} {$i < $len} {incr i +2} {
+		    set formulas "$formulas, [lindex $item $i]-[lindex $item [expr $i+1]]"
+		}
+		set string "$string$use_comma ex_si($word, $pos, $word, \[$formulas\])"
+	    }
+	    set use_comma ","
+	}
+	puts "$string\], Result)."
+	incr sent
+    }
+
+    close $fs
+}
