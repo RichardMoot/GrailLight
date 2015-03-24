@@ -1,7 +1,19 @@
 
 Grail Light is a light-weight chart parser for multimodal type-logical grammars.
+
+=
+
+= Acknowledgments
+
 The chart parser is heavily based on original code described in the following paper:
 
  Stuart M. Shieber, Yves Schabes and Fernando C. N. Pereira (1995)
  `Principles and Implementation of Deductive Parsing', Journal of
  Logic Programming 24(1-2):3-36
+
+The file lefff.pl has been automatically extracted from the Lefff lexicon
+(http://alpage.inria.fr/~sagot/lefff.html) which is described here.
+
+ B. Sagot (2010) `The Lefff, a freely available and large-coverage morphological
+ and syntactic lexicon for French'. In Proceedings of the 7th international
+ conference on Language Resources and Evaluation (LREC 2010), Istanbul, Turkey
