@@ -1,11 +1,19 @@
+# emacs backups
 *~
+# autoconf traces
+autom4te.cache/*
+# automatically generated Prolog files
 aa1.pl
 ml.pl
 lnr.pl
 ml_linearone.pl
 ml_vpmod.pl
 formulas.pl
+proof.tex
+proofs.xml
 proofs.pl
+grail_log
+rule_logs
 previous_semantics.pl
 chart_noadverbs.pl
 semantics.pl
