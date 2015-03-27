@@ -9,11 +9,15 @@ lnr.pl
 ml_linearone.pl
 ml_vpmod.pl
 formulas.pl
+semantics.*
 proof.tex
 proofs.xml
 proofs.pl
 grail_log
 rule_logs
+parse_logs
+texlog
+unparsed
 previous_semantics.pl
 chart_noadverbs.pl
 semantics.pl
