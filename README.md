@@ -2,8 +2,8 @@
 Grail Light is a light-weight chart parser for multimodal type-logical
 grammars, written in SWI Prolog.
 
-It is accompanied by a set of auxiliary tools for lemmatizing,
-corpus extraction, translating supertagger output to Prolog, etc.
+It is accompanied by a set of auxiliary tools for interaction with the
+supertagger, interactive parsing, corpus extraction, etc.
 
 # Quick Start
 
