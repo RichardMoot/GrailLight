@@ -1,5 +1,12 @@
 addf = @SED@ \
 	-e 's,~/checkout/Grail/grammars/big_french_drt.pl,../grammars/big_french_drt,g'
+addgl = @SED@ \
+        -e 's/chart.pl/grail_light.pl/g'
+addglc = @SED@ \
+        -e 's/chart.pl/grail_light_cr.pl/g'
+
+
+all: grail_light.pl grail_light_cr.pl
 
 chart_lp.pl: chart.pl
 	@SED@ -e 's/%LP//g' chart.pl > chart_lp.pl
@@ -7,6 +14,6 @@ chart_cr.pl: chart.pl
 	@SED@ -e 's/%CR//g' chart.pl > chart_cr.pl
 
 grail_light.pl: chart_lp.pl
-	$(addf) chart_lp.pl | tail +2 > grail_light.pl
+	$(addf) chart_lp.pl | $(addgl) | tail +2 > grail_light.pl
 grail_light_cr.pl: chart_cr.pl
-	$(addf) chart_cr.pl | tail +2 > grail_light_cr.pl
+	$(addf) chart_cr.pl | $(addglc) | tail +2 > grail_light_cr.pl

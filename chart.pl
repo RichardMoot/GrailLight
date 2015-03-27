@@ -1,5 +1,5 @@
 % -*- Mode: Prolog -*-
-#!/opt/local/bin//swipl -q -t main -f
+#!/Applications/SWI-Prolog.app/Contents/MacOS//swipl -q -t main -f
 
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
@@ -21,7 +21,7 @@
 :- dynamic translate_form/2, translate_sem/2, state/2.
 :- dynamic active_rule/1, vp_left/1, let_right/1, '$PROOFAXIOMS'/1.
 
-:- compile('~/checkout/Grail/grammars/big_french_drt.pl').
+:- compile('big_french_drt.pl').
 
 :- dynamic '$SOLUTION'/1.
 :- dynamic verbose/0, interactive/0.
@@ -33,8 +33,8 @@ display_unreduced_semantics(no).
 
 default_depth_limit(10000).
 %default_depth_limit(25000).
-output_proofs(nd).
-%output_proofs(chart).
+%output_proofs(nd).
+output_proofs(chart).
 
 % = function combining the weight of items given a rule application.
 
@@ -102,8 +102,9 @@ output_proofs(nd).
 % as file names to be compiled and parsed (using chart_parse_all).
 
 main :-
-	current_prolog_flag(argv, Argv),
-        append(_, [--|Av], Argv),
+	current_prolog_flag(os_argv, Argv),
+        append(_, [A|Av], Argv),
+	file_base_name(A, 'chart.pl'),
 	!,
         main(Av).
 
@@ -476,10 +477,10 @@ list_to_chart([], N, H, As0, As, V, V, S, S) :-
 	add_heap_to_chart(H, As0, As).
 % skip final punctuation if its formula is "boring"
 %LPlist_to_chart([si(_, PUN, _, FP)], N, H, As0, As, V, V, S, S) :-
-%LP	{ is_punct(PUN),
-%LP          boring(FP) ,
+%LP	  is_punct(PUN),
+%LP       boring(FP) ,
 %LP	  retractall(sentence_length(_)),
-%LP	  assert(sentence_length(N)) },
+%LP	  assert(sentence_length(N)),
 %LP        !,
 %LP	add_heap_to_chart(H, As0, As).
 list_to_chart([si(W,Pos,Lemma,FPs)|Ws], N0, H0, As0, As, V0, V, S0, S) :-
@@ -778,10 +779,14 @@ all_active_rule_statistics(List) :-
 	list_to_chart(List, 0, Heap, Axioms, [], 0, _V, _SemInfo, []),
 	all_active_rule_statistics1(Axioms).
 
+% TODO: complete!
+
+all_active_rule_statistics1([]).
 all_active_rule_statistics1([item(F,_,_,_)|As]) :-
 	rules_trigger(F, L, []),
 	sort(L, Set),
-	QQQQ.
+	do_something_with(Set),
+	all_active_rule_statistics1(As).
 
 % = rules_trigger(+Formula, -ListOfInferences)
 %

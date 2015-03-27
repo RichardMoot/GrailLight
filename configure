@@ -592,7 +592,6 @@ SED
 MV
 TCLSH
 SWIPL
-XPCE
 target_alias
 host_alias
 build_alias
@@ -1672,48 +1671,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# Extract the first word of "xpce", so it can be a program name with args.
-set dummy xpce; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_XPCE+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $XPCE in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_XPCE="$XPCE" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in path=$PATH$PATH_SEPARATOR/opt/local/bin
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_XPCE="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_XPCE" && ac_cv_path_XPCE="NULL"
-  ;;
-esac
-fi
-XPCE=$ac_cv_path_XPCE
-if test -n "$XPCE"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XPCE" >&5
-$as_echo "$XPCE" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-
 # Extract the first word of "swipl", so it can be a program name with args.
 set dummy swipl; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -1727,7 +1684,7 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in path=$PATH$PATH_SEPARATOR/opt/local/bin
+for as_dir in path=/Applications/SWI-Prolog.app/Contents/MacOS$PATH_SEPARATOR$PATH$PATH_SEPARATOR/opt/local/bin
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -1941,7 +1898,7 @@ GRAIL_YEAR=`date +%Y`
 
 
 
-ac_config_files="$ac_config_files Makefile"
+ac_config_files="$ac_config_files Makefile chart.pl lefff.pl"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2649,6 +2606,8 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "chart.pl") CONFIG_FILES="$CONFIG_FILES chart.pl" ;;
+    "lefff.pl") CONFIG_FILES="$CONFIG_FILES lefff.pl" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

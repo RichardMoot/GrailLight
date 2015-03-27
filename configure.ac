@@ -1,9 +1,7 @@
 AC_INIT(graillight, 0.9, Richard.Moot@labri.fr)
 
 dnl Check for SWI Prolog/XPCE
-AC_PATH_PROG(XPCE, [xpce], NULL, [path=$PATH$PATH_SEPARATOR/opt/local/bin])
-AC_SUBST(XPCE)
-AC_PATH_PROG(SWIPL, [swipl], NULL, [path=$PATH$PATH_SEPARATOR/opt/local/bin])
+AC_PATH_PROG(SWIPL, [swipl], NULL, [path=/Applications/SWI-Prolog.app/Contents/MacOS$PATH_SEPARATOR$PATH$PATH_SEPARATOR/opt/local/bin])
 AC_SUBST(SWIPL)
 
 dnl Check for Tclsh
@@ -28,5 +26,5 @@ AC_SUBST(prefix)
 AC_SUBST(exec_prefix)
 AC_SUBST(bindir)
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile chart.pl lefff.pl])
 AC_OUTPUT

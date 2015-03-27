@@ -1,7 +1,8 @@
-#!/opt/local/bin//swipl -q -t main -f
+#!/Applications/SWI-Prolog.app/Contents/MacOS//swipl -q -t main -f
 
+:- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
-					    
+
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
@@ -19,7 +20,7 @@
 :- dynamic translate_form/2, translate_sem/2, state/2.
 :- dynamic active_rule/1, vp_left/1, let_right/1, '$PROOFAXIOMS'/1.
 
-:- compile('../grammars/big_french_drt').
+:- compile('big_french_drt.pl').
 
 :- dynamic '$SOLUTION'/1.
 :- dynamic verbose/0, interactive/0.
@@ -100,8 +101,9 @@ compute_weight(_, 0).
 % as file names to be compiled and parsed (using chart_parse_all).
 
 main :-
-	current_prolog_flag(argv, Argv),
-        append(_, [--|Av], Argv),
+	current_prolog_flag(os_argv, Argv),
+        append(_, [A|Av], Argv),
+	file_base_name(A, 'grail_light_cr.pl'),
 	!,
         main(Av).
 
@@ -368,10 +370,9 @@ startsymbol(lit(let), lambda(_,drs([],[]))).
 
 chart_semantics(SemInfo0, Semantics0, Semantics) :-
     (
-        '$PROOFAXIOMS'(PFs),
- 	update_seminfo(SemInfo0, PFs, SemInfo)
+        '$PROOFAXIOMS'(PFs)
     ->
-        true
+	update_seminfo(SemInfo0, PFs, SemInfo)
     ;
         SemInfo0 = SemInfo
     ),
@@ -479,7 +480,7 @@ list_to_chart([], N, H, As0, As, V, V, S, S) :-
 %LP       boring(FP) ,
 %LP	  retractall(sentence_length(_)),
 %LP	  assert(sentence_length(N)),
-%LP       !,
+%LP        !,
 %LP	add_heap_to_chart(H, As0, As).
 list_to_chart([si(W,Pos,Lemma,FPs)|Ws], N0, H0, As0, As, V0, V, S0, S) :-
 	N1 is N0 + 1,
@@ -1673,17 +1674,18 @@ inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, _),
 		    combine_probability(Prob1, Prob2, I, K, c_r_lnr, Prob)]).
 
 % = product rules
+% to test: maybe it is reasonable to require all stacks to be empty.
 
 inference(prod_e, [item(p(0,dr(0,X,Y),dia(0,box(0,Y))), I, J, data(Pros0,Sem0,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,appl(pi1(Sem0),pi2(Sem0)),Prob,H,SetA,SetB,SetC,SetD)),
 	          [Pros=Pros0]).
-inference(prod_i, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,[],[],SetC0,SetD0)),
-		   item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,[],[],SetC1,SetD1)),
+inference(prod_i, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
+		   item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
 		   item(F, I0, J0, _)],
 	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, SetA, SetB, SetC, SetD)),
 	          [Pros=p(0,Pros0,Pros1),
 		   prod_formula(F,p(0,X,Y), I0, J0, I, K),
-		   combine_sets([], [], SetC0, SetD0, [], [], SetC1, SetD1, SetA, SetB, SetC, SetD),
+		   combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob)]).
 inference(prod_i3, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
 		    item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
@@ -1965,8 +1967,9 @@ check_islands(dl(0,lit(np(_,_,_)),lit(s(S))), Data) :-
 	check_islands1(As).
 check_islands(lit(n), Data) :-
 	!,
-	Data = data(_, _, _, _, As, [], _, _),
-	check_islands1(As).
+	Data = data(_, _, _, _, As, Bs, _, _),
+	check_islands1(As),
+	check_islands1(Bs).
 check_islands(lit(np(_,_,_)), Data) :-
 	!,
 	Data = data(_, _, _, _, _, [], _, _).
@@ -2133,19 +2136,19 @@ dit_np(I, K, data(Pros1, Sem1, Prob1, H, SetA0, SetB0, SetC0, SetD0),
 % incidental adverbs have wide scope and more permissive positions; they are pushed onto stack A
 
 wrap(dl(1,V,W), I, J, K, data(Pros1, Sem, Prob1, H0, SetA0, SetB0, SetC0, SetD0),
-                      data(Pros2, Sem2, Prob2, _H1, [], [], SetC1, SetD1),
-                      data(p(1,Pros1,Pros2), Sem, Prob, H0, SetA, SetB, SetC, SetD)) :-
+                      data(Pros2, Sem2, Prob2, _H1, SetA1, SetB1, SetC1, SetD1),
+                      data(p(1,Pros1,Pros2), Sem, Prob, H0, [t(J,K,dl(1,V,W),Sem2)|SetA], SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, wrap, Prob),
-	combine_sets([t(J,K,dl(1,V,W),Sem2)|SetA0], SetB0, SetC0, SetD0, [], [], SetC1, SetD1, SetA, SetB, SetC, SetD).
+	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 % integrated adverbs have local and narrow scope (wrt. the incidental adverbs); they can occur more or less
 % freely among the verb arguments but not elsewhere and are pused onto stack B
 
 wrap_arg(dl(1,V,W), I, J, K, data(Pros1, Sem, Prob1, H0, SetA0, SetB0, SetC0, SetD0),
-                      data(Pros2, Sem2, Prob2, _H1, [], [], SetC1, SetD1),
-                      data(p(1,Pros1,Pros2), Sem, Prob, H0, SetA, SetB, SetC, SetD)) :-
+                      data(Pros2, Sem2, Prob2, _H1, SetA1, SetB1, SetC1, SetD1),
+                      data(p(1,Pros1,Pros2), Sem, Prob, H0, SetA, [t(J,K,dl(1,V,W),Sem2)|SetB], SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, wrap_arg, Prob),
-	combine_sets(SetA0, [t(J,K,dl(1,V,W),Sem2)|SetB0], SetC0, SetD0, [], [], SetC1, SetD1, SetA, SetB, SetC, SetD).
+	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 % only wrap from the incidental adverbs stack when there are no integrated adverbs (with net result that
 % incidental adverbs outscope integrated adverbs, as they should)
@@ -2536,7 +2539,7 @@ shell_warn(Cmd) :-
     ->
         true
     ;
-        format(user_error, '{Warning: Shell command failed "~w"}~n', [Cmd])
+        format(user_err, '{Warning: Shell command failed "~w"}~n', [Cmd])
     ).
 
 
