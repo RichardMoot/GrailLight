@@ -24,3 +24,7 @@ semantics.pl
 annodis_proofs.pl
 unparsed.pl
 prolog_log.txt
+lassy/proof.tex
+lassy/latex_proofs.aux
+lassy/latex_proofs.log
+lassy/latex_proofs.pdf
