@@ -328,6 +328,9 @@ pros_var_name(3,s).
 
 % ===========================================================
 
+latex_formula(T-_, Stream) :-
+	!,
+	latex_formula(T, Stream).
 latex_formula(T, Stream) :-
 	latex_formula(T, 1, Stream),
 	format(Stream,'\\rule[-.2ex]{0pt}{.9em}', []).
@@ -1441,6 +1444,9 @@ write_rule_name(dr, Stream) :-
 write_rule_name(dl, Stream) :-
 	!,
 	write(Stream, '\\bo\\backslash\\textit{E}\\bc').
+write_rule_name(dl1, Stream) :-
+	!,
+	write(Stream, '\\bo\\backslash_1\\textit{E}\\bc').
 write_rule_name(axiom, Stream) :-
 	!,
 	write(Stream, '\\bo\\textit{Lex}\\bc').

@@ -1417,10 +1417,10 @@ compute_proof(Index, _) :-
 	format('~nFAILED to compute proof for index ~w (~w)~n', [CUR,Index]).
 	
 
-compute_chart_proof(Index, rule(Rule,Pros,Formula,Prems)) :-
+compute_chart_proof(Index, rule(Rule,Pros,Formula-Sem,Prems)) :-
 	justification(Index, Just),
 	Just =.. [Rule|Args0],
-	stored(Index, Idf, _L, _R, Formula, data(Pros0,_,_,_,_,_,_,_)),
+	stored(Index, Idf, _L, _R, Formula, data(Pros0,Sem,_,_,_,_,_,_)),
 	sort_args(Args0, Args),
 	reconstruct_pros(Pros0, Args, Pros),
 	compute_chart_proof_list(Args0, List, KeyList),
@@ -1434,7 +1434,7 @@ compute_chart_proof(Index, rule(Rule,Pros,Formula,Prems)) :-
 	unify_rule(Rule, Index, Idf, Args0, Formula, List)
    ).
 
-proof_axioms(rule(axiom,Pros,Formula,[])) -->
+proof_axioms(rule(axiom,Pros,Formula-_,[])) -->
 	!,
 	[Pros-Formula].
 proof_axioms(rule(_,_,_,List)) -->
@@ -1454,8 +1454,9 @@ unify_rule(RuleName, Index, Idf, Just, Formula, List) :-
 	!.
 
 match_antecedent([], [], []).
-match_antecedent([I|Is], [item(Formula,L,R,Data0)|As], [rule(_Rule,_Pros,Formula,_)|Rs]) :-
+match_antecedent([I|Is], [item(Formula,L,R,Data0)|As], [rule(_Rule,_Pros,Formula-Sem,_)|Rs]) :-
 	stored(I, _, L, R, Formula, Data0),
+	Data0 = data(_, Sem, _, _, _, _, _, _),
 	match_antecedent(Is, As, Rs).
 
 
@@ -1476,15 +1477,42 @@ add_keys([I|Is], [K-I|Ks]) :-
 	add_keys(Is, Ks).
 
 transform_proof(P, Q) :-
-	transform_proof(P, 0, _, Q).
+	transform_proof1(P, 0, _N, Q).
 
-transform_proof(rule(e_end, GoalPros, D, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D, [Proof1, rule(drdiaboxi(I), YZ, dr(0,C,dia(I,box(I,B))), [Proof4])])) :-
+
+transform_proof1(P, N0, N, Q) :-
+	transform_proof(P, N0, N1, Q1),
+    (
+	P = Q1
+     ->
+        Q = Q1,
+        N = N1
+    ;
+        transform_proof1(Q1, N1, N, Q)
+    ).
+
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B))), [Proof4])])) :-
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
-	rule_conclusion(Proof1, X, ExtrForm),
+	rule_conclusion(Proof1, X, ExtrForm, _),
 	find_e_start(Proof2, X, ExtrForm, B, N0, Pros, Proof3),
 	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), Proof4),
 	N is N0 + 1,
+	!.
+% lambda(X,appl(SemADV,appl(SemVP,X)))
+transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
+%	wrap_fun(GoalPros, X, Y),
+	Sem = lambda(X,appl(SemADV,appl(_SemVP,X))),
+       % N1 is N0 + 1,	
+	find_w_start(Proof1, LPros, RPros, _AdvF, SemADV, ProofB, Proof2),
+	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
+	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
+	!.
+transform_proof(rule(wpop, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
+	Sem = appl(SemADV, _),
+	find_w_start(Proof1, LPros, RPros, _AdvF, SemADV, ProofB, Proof2),
+	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
+	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
 	!.
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
 	transform_proof_list(Ds0, N0, N, Ds).
@@ -1494,7 +1522,50 @@ transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
 	transform_proof(P, N0, N1, Q),
 	transform_proof_list(Ps, N1, N, Qs).
 
-find_e_start(rule(e_start,Pros,A,[rule(_, X, EF, _), Proof]), X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(axiom,'$VAR'(N),B,[])])) :-
+% wrap_fun(p(1,X,Y), X, Y).
+% wrap_fun(p(_,X,_), Z, Y) :-
+% 	wrap_fun(X, Z, Y).
+% wrap_fun(p(_,_,X), Z, Y) :-
+% 	wrap_fun(X, Z, Y).
+
+merge_proofs(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(P,M), [RuleA, RuleB])) :-
+	RuleA = rule(_, _ProsA, B-M, _),
+	RuleB = rule(_, _ProsB, dl(1,B,A)-P, _),
+	!,
+	Wrap = GoalPros.
+merge_proofs(RuleA, RuleB, Pros0, p(0,Pros,'$VAR'(N0)), GoalPros, N0, N, rule(dri(N0), ProsB, dr(I,A,B)-lambda(X,M), [Rule])) :-
+	RuleA = rule(_, ProsA, dr(I,A,B)-_, _),
+	!,
+	N1 is N0 + 1,
+	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
+	Rule = rule(_, p(_, ProsB, _), _, _), 
+        merge_proofs(rule(dr, p(I,ProsA,'$VAR'(N0)), A-M, [RuleA, Hyp]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
+merge_proofs(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dli(N0), ProsB, dl(I,B,A)-lambda(X,M), [Rule])) :-
+	RuleA = rule(_, ProsA, dl(I,B,A)-_, _),
+	!,
+	N1 is N0 + 1,
+	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
+	Rule = rule(_, p(_, _, ProsB), _, _),
+	merge_proofs(rule(dl, p(I,'$VAR'(N0),ProsA), A-M, [Hyp, RuleA]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
+
+find_w_start(rule(wr,p(1,Left,Pros),_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
+	RProof = rule(_, Pros, AdvF-Sem0, _),
+	Sem0 == Sem,
+	!.
+find_w_start(rule(wr_a,p(1,Left,Pros),_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
+	RProof = rule(_, Pros, AdvF-Sem0, _),
+	Sem0 == Sem,
+	!.
+find_w_start(rule(Nm, P, A, Ds0), Left, Pros, AdvF, Sem, AdvProof, rule(Nm, P, A, Ds)) :-
+	find_w_start_list(Ds0, Left, Pros, AdvF, Sem, AdvProof, Ds),
+	!.
+
+find_w_start_list([P0|Ps], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
+	find_w_start(P0, Left, Pros, AdvF, Sem, AdvProof, P).
+find_w_start_list([P|Ps0], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
+	find_w_start_list(Ps0, Left, Pros, AdvF, Sem, AdvProof, Ps).
+
+find_e_start(rule(e_start,Pros,A,[rule(_, X, EF-_, _), Proof]), X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
 	!.
 find_e_start(rule(Nm, P, A, Ds0), X, EF, B, N, Pros, rule(Nm, P, A, Ds)) :-
 	find_e_start_list(Ds0, X, EF, B, N, Pros, Ds),
@@ -1506,7 +1577,7 @@ find_e_start_list([P0|Ps], X, EF, B, N, Pros, [P|Ps]) :-
 find_e_start_list([P|Ps0], X, EF, B, N, Pros, [P|Ps]) :-
 	find_e_start_list(Ps0, X, EF, B, N, Pros, Ps).
 	
-rule_conclusion(rule(_, A, F, _), A, F).
+rule_conclusion(rule(_, A, F-S, _), A, F, S).
 rule_daughters(rule(_, _, _, Ds), Ds).
 
 global_replace_pros(rule(Nm, P0, F, Ds0), A, B, rule(Nm, P, F, Ds)) :-
