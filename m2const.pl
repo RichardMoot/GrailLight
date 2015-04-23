@@ -368,4 +368,24 @@ compute_lengths1([R|Rs], M0, M) :-
     ;
         M1 = M0
     ),
-        compute_lengths1(Rs, M1, M).
+    compute_lengths1(Rs, M1, M).
+
+
+update_crosses(Sent, X, Y, Plus) :-
+	crosses(Sent, V, W, Cross0),
+   (	
+	/* X < V < Y < W */
+	X < V,
+	V < Y,
+	Y < W
+   ;
+	/* V < X < Y < W */
+	V < W,
+	X < W,
+	W < Y
+   ),
+        Cross is Cross0 + Plus,
+        portray_clause((crosses(Sent, V, W, Cross) :- true)),
+        fail.
+   
+update_crosses(_, _, _, _).
