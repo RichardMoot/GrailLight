@@ -33,8 +33,8 @@ display_unreduced_semantics(no).
 
 default_depth_limit(10000).
 %default_depth_limit(25000).
-%output_proofs(nd).
-output_proofs(chart).
+output_proofs(nd).
+%output_proofs(chart).
 
 % = function combining the weight of items given a rule application.
 
@@ -2025,6 +2025,8 @@ no_island_violation(_, _, _).
 
 island_violation(lit(pp(_)), lit(np(_,_,_))).
 island_violation(dl(1,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
+% il y a
+island_violation(dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),dl(1,lit(s(_)),lit(s(_))))), lit(np(_,_,_))).
 island_violation(dr(0,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
 
 check_extraction(0, K, K).
