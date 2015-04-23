@@ -371,9 +371,17 @@ compute_lengths1([R|Rs], M0, M) :-
     compute_lengths1(Rs, M1, M).
 
 
+
 update_crosses(Sent, X, Y, Plus) :-
-	crosses(Sent, V, W, Cross0),
-   (	
+	findall(crosses(Sent,V,W,Z), crosses(Sent,V,W,Z), List0),
+	update_crosses(List0, X, Y, Plus, List),
+	retractall(crosses(Sent,_,_,_)),
+	assert_list(List),
+	listing(crosses(Sent,_,_,_)).
+
+update_crosses([], _, _, _, []).
+update_crosses([crosses(Sent, V, W, Cross0)|Rest0], X, Y, Plus, [crosses(Sent, V, W, Cross)|Rest]) :-
+   ((	
 	/* X < V < Y < W */
 	X < V,
 	V < Y,
@@ -383,9 +391,15 @@ update_crosses(Sent, X, Y, Plus) :-
 	V < W,
 	X < W,
 	W < Y
+   )
+   ->	
+        Cross is Cross0 + Plus
+   ;
+       Cross = Cross0
    ),
-        Cross is Cross0 + Plus,
-        portray_clause((crosses(Sent, V, W, Cross) :- true)),
-        fail.
-   
-update_crosses(_, _, _, _).
+       update_crosses(Rest0, X, Y, Plus, Rest).
+
+assert_list([]).
+assert_list([C|Cs]) :-
+	assert(C),
+	assert_list(Cs).

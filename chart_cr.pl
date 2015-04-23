@@ -1496,7 +1496,16 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
 	rule_conclusion(Proof1, X, ExtrForm, _),
-	find_e_start(Proof2, X, ExtrForm, B, N0, Pros, Proof3),
+	find_e_start(Proof2, e_start, X, ExtrForm, B, N0, Pros, Proof3),
+	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), Proof4),
+	N is N0 + 1,
+	!.
+transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B))), [Proof4]),Proof2])) :-
+%	spy(find_e_start),
+	GoalPros = p(_,XY,Z),
+	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),
+	rule_conclusion(Proof2, Z, ExtrForm, _),
+	find_e_start(Proof1, e_start_l, Z, ExtrForm, B, N0, Pros, Proof3),
 	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), Proof4),
 	N is N0 + 1,
 	!.
@@ -1529,6 +1538,8 @@ transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
 	transform_proof_list(Ps, N1, N, Qs).
 
 merge_proofs_left(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(P,M), [RuleB, RuleA])) :-
+	/* REMARK: this instance of the \_1 rule is not necessarily a right daughter */
+	/* If it is important to distinguish this case, change the rule name above from "dl1" to something else */
 	RuleA = rule(_, _, dl(1,B,A)-P, _),
 	RuleB = rule(_, _, B-M, _),
 	!,
@@ -1611,18 +1622,21 @@ find_w_start_list([P0|Ps], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 find_w_start_list([P|Ps0], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 	find_w_start_list(Ps0, Left, Pros, AdvF, Sem, AdvProof, Ps).
 
-find_e_start(rule(e_start,Pros,A,[rule(_, Y, EF-_, _), Proof]), X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
+find_e_start(rule(e_start,Pros,A,[rule(_, Y, EF-_, _), Proof]), e_start, X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
 	match_pros_i(X, Y),
 	!.
-find_e_start(rule(Nm, P, A, Ds0), X, EF, B, N, Pros, rule(Nm, P, A, Ds)) :-
-	find_e_start_list(Ds0, X, EF, B, N, Pros, Ds),
+find_e_start(rule(e_start_l,Pros,A,[Proof, rule(_, Y, EF-_, _)]), e_start_l, X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
+	match_pros_i(X, Y),
+	!.
+find_e_start(rule(Nm, P, A, Ds0), StartName, X, EF, B, N, Pros, rule(Nm, P, A, Ds)) :-
+	find_e_start_list(Ds0, StartName, X, EF, B, N, Pros, Ds),
 	!.
 
 
-find_e_start_list([P0|Ps], X, EF, B, N, Pros, [P|Ps]) :-
-	find_e_start(P0, X, EF, B, N, Pros, P).
-find_e_start_list([P|Ps0], X, EF, B, N, Pros, [P|Ps]) :-
-	find_e_start_list(Ps0, X, EF, B, N, Pros, Ps).
+find_e_start_list([P0|Ps], StartName, X, EF, B, N, Pros, [P|Ps]) :-
+	find_e_start(P0, StartName, X, EF, B, N, Pros, P).
+find_e_start_list([P|Ps0], StartName, X, EF, B, N, Pros, [P|Ps]) :-
+	find_e_start_list(Ps0, StartName, X, EF, B, N, Pros, Ps).
 	
 rule_conclusion(rule(_, A, F-S, _), A, F, S).
 rule_daughters(rule(_, _, _, Ds), Ds).

@@ -72,6 +72,8 @@ keep_strange(dri, Rs, Rs) :-
 	!.
 keep_strange(drdiaboxi, Rs, Rs) :-
 	!.
+keep_strange(dldiaboxi, Rs, Rs) :-
+	!.
 keep_strange(F, Rs, [F|Rs]).
 
 collapse_duplicates([], []).
