@@ -23,6 +23,37 @@ check_proof(rule(Nm, _, _, Rs), RNs0, RNs) :-
 	check_proof_list(Rs, RNs1, RNs).
 
 
+strange_proofs :-
+	findall(N, proof(N, _), ProofList),
+	strange_proofs(ProofList, 0, ST, 0, TT, Ss, []),
+	Normal is TT - ST,
+	NPct is Normal/TT,
+	SPct is ST/TT,
+	format('~NNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [Normal,NPct,ST,SPct,TT]),
+	print_list(Ss).
+
+strange_proofs([], ST, ST, T, T) -->
+	[].
+strange_proofs([P|Ps], ST0, ST, T0, T) -->
+	is_strange(P, ST0, ST1),
+	{T1 is T0 + 1},
+	strange_proofs(Ps, ST1, ST, T1, T).
+
+
+is_strange(N, ST0, ST, L0, L) :-
+	proof(N, P),
+	check_proof(P, [], Ss0),
+	sort(Ss0, Ss),
+     (	
+	Ss = []
+     ->
+	L = L0,
+        ST = ST0
+     ;
+	L0 = [N-Ss|L],
+	ST is ST0 + 1
+     ).
+
 keep_strange(axiom, Rs, Rs) :-
 	!.
 keep_strange(let, Rs, Rs) :-

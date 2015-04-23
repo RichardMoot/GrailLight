@@ -1502,12 +1502,17 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	!.
 % lambda(X,appl(SemADV,appl(SemVP,X)))
 transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
-%	wrap_fun(GoalPros, X, Y),
-	Sem = lambda(X,appl(SemADV,appl(_SemVP,X))),
-       % N1 is N0 + 1,	
+	(
+	 Sem = lambda(X,appl(SemADV,appl(_SemVP,X)))
+	;
+	 Sem = lambda(CL,lambda(X,appl(SemADV,appl(appl(_SemVP,CL),X))))
+	),
 	find_w_start(Proof1, LPros, RPros, _AdvF, SemADV, ProofB, Proof2),
 	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
 	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
+	!.
+transform_proof(rule(wpop_vpi, GoalPros, _, [ProofA,ProofB]), N0, N, ProofC) :-
+	merge_proofs_left(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
 	!.
 transform_proof(rule(wpop, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	Sem = appl(SemADV, _),
@@ -1523,12 +1528,27 @@ transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
 	transform_proof(P, N0, N1, Q),
 	transform_proof_list(Ps, N1, N, Qs).
 
-% wrap_fun(p(1,X,Y), X, Y).
-% wrap_fun(p(_,X,_), Z, Y) :-
-% 	wrap_fun(X, Z, Y).
-% wrap_fun(p(_,_,X), Z, Y) :-
-% 	wrap_fun(X, Z, Y).
+merge_proofs_left(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(P,M), [RuleB, RuleA])) :-
+	RuleA = rule(_, _, dl(1,B,A)-P, _),
+	RuleB = rule(_, _, B-M, _),
+	!,
+	Wrap = GoalPros.
+merge_proofs_left(RuleA, RuleB, Pros0, p(0,Pros,'$VAR'(N0)), GoalPros, N0, N, rule(dri(N0), ProsA, dr(I,A,B)-lambda(X,M), [Rule])) :-
+	RuleB = rule(_, ProsB, dr(I,A,B)-_, _),
+	!,
+	N1 is N0 + 1,
+	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
+	Rule = rule(_, p(_, ProsA, _), _, _), 
+        merge_proofs_left(RuleA, rule(dr, p(I,ProsB,'$VAR'(N0)), A-M, [RuleA, Hyp]), Pros0, Pros, GoalPros, N1, N, Rule).
+merge_proofs_left(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dli(N0), ProsA, dl(I,B,A)-lambda(X,M), [Rule])) :-
+	RuleB = rule(_, ProsB, dl(I,B,A)-_, _),
+	!,
+	N1 is N0 + 1,
+	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
+	Rule = rule(_, p(_, _, ProsA), _, _),
+	merge_proofs_left(RuleA, rule(dl, p(I,'$VAR'(N0),ProsB), A-M, [Hyp, RuleB]), Pros0, Pros, GoalPros, N1, N, Rule).
 
+	
 merge_proofs(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(P,M), [RuleA, RuleB])) :-
 	RuleA = rule(_, _ProsA, B-M, _),
 	RuleB = rule(_, _ProsB, dl(1,B,A)-P, _),
@@ -1549,13 +1569,25 @@ merge_proofs(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dl
 	Rule = rule(_, p(_, _, ProsB), _, _),
 	merge_proofs(rule(dl, p(I,'$VAR'(N0),ProsA), A-M, [Hyp, RuleA]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
 
-find_w_start(rule(wr,p(1,Left,Pros),_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
-	RProof = rule(_, Pros, AdvF-Sem0, _),
-	Sem0 == Sem,
+match_pros(X, X) :-
 	!.
-find_w_start(rule(wr_a,p(1,Left,Pros),_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
+match_pros(p(0,X,'$VAR'(_)), Pros) :-
+	!,
+	match_pros(X, Pros).
+match_pros(p(0,'$VAR'(_),X), Pros) :-
+	!,
+	match_pros(X, Pros).
+
+
+find_w_start(rule(wr,RPros,_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
+        match_pros(RPros, p(1,Left,Pros)),
 	RProof = rule(_, Pros, AdvF-Sem0, _),
-	Sem0 == Sem,
+	Sem0 =@= Sem,
+	!.
+find_w_start(rule(wr_a,RPros,_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
+        match_pros(RPros, p(1,Left,Pros)),
+	RProof = rule(_, Pros, AdvF-Sem0, _),
+	Sem0 =@= Sem,
 	!.
 find_w_start(rule(Nm, P, A, Ds0), Left, Pros, AdvF, Sem, AdvProof, rule(Nm, P, A, Ds)) :-
 	find_w_start_list(Ds0, Left, Pros, AdvF, Sem, AdvProof, Ds),
@@ -2025,7 +2057,7 @@ no_island_violation(_, _, _).
 
 island_violation(lit(pp(_)), lit(np(_,_,_))).
 island_violation(dl(1,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
-% il y a
+% "il y a"
 island_violation(dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),dl(1,lit(s(_)),lit(s(_))))), lit(np(_,_,_))).
 island_violation(dr(0,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
 
@@ -2245,7 +2277,7 @@ pop_vp(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(
 pop_vp_strict(I1, J1, I, J, data(Pros, SemVP, Prob, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(SemVP,X))), Prob, H, SetA, [], SetC, SetD)) :-
 	verify_wrap_strict(I1, I0, J0, J1, I, J),
 	!.
-pop_vp_strict(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),Sem0)|SetB], SetC, SetD), data(Pros, lambda(X,appl(Sem0,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
+pop_vp_strict(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	verify_wrap_strict(I1, I0, J0, J1, I, J),
 	!.
 
