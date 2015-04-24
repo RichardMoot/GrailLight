@@ -29,6 +29,8 @@
 
 %xml_files('annodis.er.xml').
 
+% create constituent/4 declarations for the XML files declared by xml_file/1 (above).
+
 start :-
 	findall(F, xml_files(F), Files),
 	start(Files, 0, _).
@@ -371,6 +373,21 @@ compute_lengths1([R|Rs], M0, M) :-
     compute_lengths1(Rs, M1, M).
 
 
+% = update_crosses(+Sentence, +Left, +Right)
+%
+% update the asserted crosses/4 predicate for Sentence, adding a
+% constituent from position Left to Right.
+
+update_crosses(Sent, X, Y) :-
+	update_crosses(Sent, X, Y, 1).
+
+% = update_crosses(+Sentence, +Left, +Right, +Plus)
+%
+% update the asserted crosses/4 predicate for Sentence, adding a
+% constituent from position Left to Right, increasing the value
+% of all constituent crossing this positions by Plus (eg. we
+% can "erase" a pair of brackets with Plus = -1 or make "strong"
+% brackets with Plus >= 2.
 
 update_crosses(Sent, X, Y, Plus) :-
 	findall(crosses(Sent,V,W,Z), crosses(Sent,V,W,Z), List0),

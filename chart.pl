@@ -1599,6 +1599,8 @@ match_pros_i(p(0,I,X), Y) :-
 
 interpunction_pros(',').
 interpunction_pros(':').
+interpunction_pros('(').
+interpunction_pros(')').
 interpunction_pros('-').
 interpunction_pros(';').
 

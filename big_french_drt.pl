@@ -187,6 +187,7 @@ macro(s_top, lit(s(_))).
 
 macro(dia(1,box(1,np)), dia(1,box(1,lit(np(acc,_,3-s))))).
 
+translate_form(dr(0,dr(0,s,s),dr(0,s,s)), dr(0,dr(0,lit(s(X)),lit(s(Y))),dr(0,lit(s(X)),lit(s(Y))))).
 translate_form(dr(0,dl(0,cl_r,s),np),dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(nom,_,_)))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s)),np),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),lit(np(acc,_,_)))).
 translate_form(dl(0,cl_r,dl(0,np,s)),dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main))))).
