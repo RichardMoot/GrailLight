@@ -29,6 +29,8 @@
 
 :- create_options.
 
+quote_mode(1, 1).
+
 display_unreduced_semantics(no).
 
 default_depth_limit(10000).
@@ -1529,6 +1531,49 @@ transform_proof(rule(wpop, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
 	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
 	!.
+% = simplify dit_np/a_dit combinations
+transform_proof(rule(dit_np, p(0,p(0,P,Q),R), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
+ 		     [rule(a_dit, p(0,P,Q), dl(I0,lit(s(ST)),dr(0,lit(s(ST)),lit(np(A,B,C))))-_, [ProofAux,ProofPPart]), ProofNP]),
+ 		N0, N,
+ 		rule(dli1(I,N0), p(0,p(0,P,Q),R), dl(I,lit(s(ST)),lit(s(ST)))-Sem,
+ 		     [rule(dr, p(0,p(0,P,p(I,'$VAR'(N0),Q)),R), lit(s(ST))-Sem1,
+ 			   [rule(dr, p(0,P,p(I,'$VAR'(N0),Q)), dr(0,lit(s(ST)),lit(np(A,B,C)))-Sem2,
+ 				 [ProofAux,
+ 				  rule(dl, p(I,'$VAR'(N0),Q), PPart-appl(Y,Z),
+ 				       [rule(hyp(N0), '$VAR'(N0), lit(s(ST))-Z, []),
+ 					ProofPPart])]),
+ 			    ProofNP])])) :-
+ 	!,
+ 	N is N0 + 1,
+ 	quote_mode(I0, I),
+ 	ProofAux = rule(_, _, dr(0,_,PPart)-_, _),
+ 	Sem2 = appl(lambda(Z,appl(appl(_X,appl(Y,Z)))),_V),
+ 	Sem1 = appl(Sem2,W),
+ 	Sem = lambda(W,Sem1).
+transform_proof(rule(a_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
+ 		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
+ 		     [rule(dr, p(0,ProsL,p(I,'$VAR'(N0),ProsR)), X-appl(Sem1,appl(Sem2,S)),
+ 			   [Left,
+ 			    rule(dl, p(I,'$VAR'(N0),ProsR), PPart-appl(Sem2,S),
+ 				 [rule(hyp(N0), '$VAR'(N0), Y-S, []),
+ 				  Right])])])) :-
+ 	!,
+	N is N0 + 1,
+ 	quote_mode(I0, I),
+ 	Right = rule(_, _, dl(1,Y,PPart)-_, _), 
+ 	Sem = lambda(S, appl(appl(Sem1,appl(Sem2,S)))).
+transform_proof(rule(dit_np, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
+		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
+		     [rule(dr, p(0,p(1,'$VAR'(N0),ProsL), ProsR), X-Sem1,
+			   [rule(dl, p(1,'$VAR'(N0),ProsL), dr(0,X,lit(np(A,B,C)))-appl(PrtSem,S),
+				 [rule(hyp(N0), '$VAR'(N0), Y-S, []), Left]),
+			   Right])])) :-
+	!,
+	N is N0 + 1,
+	quote_mode(I0, I),
+	Right = rule(_, _, lit(np(A,B,C))-_, _),
+	Sem1 = appl(appl(PrtSem, S), _),
+	Sem = lambda(S, Sem1).
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
 	transform_proof_list(Ds0, N0, N, Ds).
 

@@ -1439,12 +1439,14 @@ write_rule_name(drdiaboxi(I), Stream) :-
 write_rule_name(dldiaboxi(I), Stream) :-
 	!,
 	format(Stream, '\\bo\\backslash\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc', [I,I]).
-write_rule_name(drdiaboxi(I,K), Stream) :-
+write_rule_name(drdiaboxi(I,N0), Stream) :-
 	!,
-	format(Stream, '\\bo/\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc_{~w}', [I,I,K]).
-write_rule_name(dldiaboxi(I,K), Stream) :-
+	N is N0 + 1,
+	format(Stream, '\\bo/\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc_{~w}', [I,I,N]).
+write_rule_name(dldiaboxi(I,N0), Stream) :-
 	!,
-	format(Stream, '\\bo\\backslash\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc_{~w}', [I,I,K]).
+	N is N0 + 1,
+	format(Stream, '\\bo\\backslash\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc_{~w}', [I,I,N]).
 write_rule_name(dli(N0), Stream) :-
 	!,
 	N is N0 + 1,
@@ -1458,6 +1460,10 @@ write_rule_name(dl, Stream) :-
 write_rule_name(dl1, Stream) :-
 	!,
 	write(Stream, '\\bo\\backslash_1\\textit{E}\\bc').
+write_rule_name(dli1(I, N0), Stream) :-
+	!,
+	N is N0 + 1,
+	format(Stream, '\\bo\\backslash_~w\\textit{I}\\bc_{~w}', [I, N]).
 write_rule_name(axiom, Stream) :-
 	!,
 	write(Stream, '\\bo\\textit{Lex}\\bc').

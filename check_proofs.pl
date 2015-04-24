@@ -68,6 +68,8 @@ keep_strange(dl1, Rs, Rs) :-
 	!.
 keep_strange(dli, Rs, Rs) :-
 	!.
+keep_strange(dli1, Rs, Rs) :-
+	!.
 keep_strange(dri, Rs, Rs) :-
 	!.
 keep_strange(drdiaboxi, Rs, Rs) :-
