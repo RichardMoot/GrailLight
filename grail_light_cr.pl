@@ -1493,6 +1493,16 @@ transform_proof1(P, N0, N, Q) :-
         transform_proof1(Q1, N1, N, Q)
     ).
 
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dr(0,A,B)))), [Proof4])])) :-
+        /* X = "et", YZ = sentence with extracted verb */
+	GoalPros = p(_,X,YZ),
+	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,dr(0,A,B))))),
+	rule_conclusion(Proof1, X, ExtrForm, _),
+	/* Pros = (prosody of) argument B */ 
+	find_e_start(Proof2, ef_start, X, ExtrForm, dr(0,A,B), N0, Pros, Proof3),
+	global_replace_pros(Proof3, Pros, p(0,'$VAR'(N0), Pros), Proof4),
+	N is N0 + 1,
+	!.
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B))), [Proof4])])) :-
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
@@ -1668,6 +1678,9 @@ find_w_start_list([P0|Ps], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 find_w_start_list([P|Ps0], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 	find_w_start_list(Ps0, Left, Pros, AdvF, Sem, AdvProof, Ps).
 
+find_e_start(rule(ef_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), ef_start, X, EF, dr(0,A,B), N, Pros, rule(dr,Pros,A-Sem,[rule(hyp(N),'$VAR'(N),dr(0,A,B),[]),Proof])) :-
+	match_pros_i(X, Y),
+	!.
 find_e_start(rule(e_start,Pros,A,[rule(_, Y, EF-_, _), Proof]), e_start, X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
 	match_pros_i(X, Y),
 	!.
