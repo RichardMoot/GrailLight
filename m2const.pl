@@ -1,5 +1,19 @@
-:- dynamic constituent/4.
 
+% constituent calculations
+
+% start/0   computes word/4 and constituent/4 declarations from all files declared by xml_files/1
+%
+% compute_penalties/0   computes crosses/4 declarations from constituent/4 declarations for all sentences
+%
+% cp(List)            as compute_penalties for all sentences in List
+%
+% update_crosses(Sent, Left, Right, Diff)    update given crosses/4 information by adding Diff to all
+%                                            constituents crossing Left-Right
+%
+% update_crosses(Sent, Left, Right)          equivalent to update_crosses(Sent, Left, Right, 1).
+%
+% verify_words/0       verify if the words used in sent/2 declarations correspond to the given word/4
+%                      declarations
 
 % xml_files('flmf7aa1ep.cat.xml').
 % xml_files('flmf7aa2ep.cat.xml').
@@ -28,6 +42,8 @@
 % xml_files('flmf7atep.cat.xml').
 
 xml_files('annodis.er.xml').
+
+:- dynamic word/4, constituent/4.
 
 % create word/4 and constituent/4 declarations for the XML files declared by xml_file/1 (above).
 
@@ -62,10 +78,48 @@ delete_element_spaces(E, E).
 
 handle_word_list([], _, N, N).
 handle_word_list([W|Ws], S, N0, N) :-
-	N1 is N0 + 1,
-	format('word(~w, ~k, ~w, ~w).~n', [S, W, N0, N1]),
-	assert(word(S, W, N0, N1)),
+	handle_word(W, S, N0, N1),
 	handle_word_list(Ws, S, N1, N).
+
+
+handle_word('C.L.', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'C.',
+	Word2 = 'L.',
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('l\'isloise', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'l\'',
+	Word2 = isloise,
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+	
+handle_word(W, S, N0, N) :-
+	atom_chars(W, List),
+	append(Prefix, ['°','C'], List),
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	atom_chars(Word1, Prefix),
+	atom_chars(Word2, ['°','C']),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+	
+handle_word(W, S, N0, N) :-
+	N is N0 + 1,
+	format('word(~w, ~k, ~w, ~w).~n', [S, W, N0, N]),
+	assert(word(S, W, N0, N)).
 
 % = xml_to_const(+ElementList, +ParentElement)
 %
@@ -152,6 +206,8 @@ collect_word(element(w,_,Ws)) -->
 collect_word(W) -->
 	[W].
 
+smart_concat_atoms(['arrière-', 'petits-enfants'], 'arrière-petits-enfants') :-
+	!.
 smart_concat_atoms(['aujourd\'',hui], 'aujourd\'hui') :-
 	!.
 smart_concat_atoms(['Aujourd\'',hui], 'Aujourd\'hui') :-
@@ -231,21 +287,15 @@ cp(List) :-
 	compute_penalties(List),
 	retractall(crosses(_,_,_,0)).
 
-
-% = compute_all
+% = compute_penalties
 %
-% compute crossing links for all sentences
-
-compute_all :-
-	retractall(crosses(_,_,_,_)),
-	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
-	add_constituents(Sentences),
-	compute_penalties(Sentences).
+% compute penalties (as crosses/4 declarations) for all sentences
 
 compute_penalties :-
 	retractall(crosses(_,_,_,_)),
 	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
-	compute_penalties(Sentences).
+	compute_penalties(Sentences),
+	retractall(crosses(_,_,_,0)).
 
 add_constituents :-
 	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
@@ -275,6 +325,7 @@ add_constituents2(S, Cat, L, R) :-
         is_interpunction(W)
    ->
         format('constituent(~w, ~w, ~w, ~w).~n', [S,Cat,L0,R]),
+        retractall(constituent(S, Cat, L, R)),
         assert(constituent(S, Cat, L0, R)),
         add_constituents2(S, Cat, L0, R)
    ;
@@ -406,7 +457,7 @@ update_crosses(Sent, X, Y, Plus) :-
 	findall(crosses(Sent,V,W,Z), crosses(Sent,V,W,Z), List0),
 	update_crosses(List0, X, Y, Plus, List),
 	retractall(crosses(Sent,_,_,_)),
-	assert_list(List),
+	assert_crosses(List),
 	listing(crosses(Sent,_,_,_)).
 
 update_crosses([], _, _, _, []).
@@ -428,6 +479,18 @@ update_crosses([crosses(Sent, V, W, Cross0)|Rest0], X, Y, Plus, [crosses(Sent, V
        Cross = Cross0
    ),
        update_crosses(Rest0, X, Y, Plus, Rest).
+
+assert_crosses([]).
+assert_crosses([crosses(A,B,C,D)|Cs]) :-
+   (
+	D =:= 0
+   ->
+	true
+   ;
+	assert(crosses(A,B,C,D))
+   ),
+	assert_crosses(Cs).
+
 
 assert_list([]).
 assert_list([C|Cs]) :-
@@ -458,8 +521,9 @@ verify_sentence(Num) :-
 
 verify_sentence([], _, _).
 verify_sentence([si(Word1,_,_,_)|Rest], N0, Num) :-
-	word(Num, Word2, N0, N),
-	!,
+   (	
+	word(Num, Word2, N0, N)
+     ->
    (
         Word1 = Word2
    ->
@@ -470,5 +534,6 @@ verify_sentence([si(Word1,_,_,_)|Rest], N0, Num) :-
 	true
    ;
 	format('~N~d: Word mismatch ~w-~w~n', [Num,Word1,Word2])
-   ),
+   );	format('~N~d: Unmatched word ~w~n', [Num,Word1]),
+	N is N0 + 1),
         verify_sentence(Rest, N, Num).
