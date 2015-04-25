@@ -40,11 +40,11 @@
 
 dynamic portray_axioms/1.
 
-%portray_axioms(short).
-portray_axioms(normal).
+portray_axioms(short).
+%portray_axioms(normal).
 
-invisible_mode('NOTHING').
-%invisible_mode(0)
+%invisible_mode('NOTHING').
+invisible_mode(0).
 
 % = latex_header.
 %
