@@ -1478,9 +1478,14 @@ add_keys([I|Is], [K-I|Ks]) :-
 	stored(I, _, K, _, _, _),
 	add_keys(Is, Ks).
 
+% ==============================================
+% =           proof transformations            =
+% ==============================================
+
 transform_proof(P, Q) :-
 	transform_proof1(P, 0, _N, Q).
 
+% = iterate transform_proof/4 until the proof stays the same
 
 transform_proof1(P, N0, N, Q) :-
 	transform_proof(P, N0, N1, Q1),
@@ -1493,6 +1498,24 @@ transform_proof1(P, N0, N, Q) :-
         transform_proof1(Q1, N1, N, Q)
     ).
 
+transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
+		rule(dr, GoalPros, D-Sem,
+		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-_,
+			   [rule(dli(N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
+			   Proof1]),
+		     Proof2])) :-
+	N is N0 + 1,
+	rule_conclusion(Proof1, Pros1, ExtrForm, _),
+	rule_conclusion(Proof2, Pros2, Z, _),
+	rule_conclusion(Proof3, _Pros3, _, Sem3),
+	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,Z)))),
+	replace_proof(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
+	/* TODO: globally replace Sem by Var in all of ProofC0 */
+	replace_sem(Sem3, Sem2, Z, Sem1), 
+	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), ProofC1),
+	rule_conclusion(ProofC1, ProsC1, _, _),
+	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
+	!.
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dr(0,A,B)))), [Proof4])])) :-
         /* X = "et", YZ = sentence with extracted verb */
 	GoalPros = p(_,X,YZ),
@@ -1699,6 +1722,26 @@ find_e_start_list([P|Ps0], StartName, X, EF, B, N, Pros, [P|Ps]) :-
 	
 rule_conclusion(rule(_, A, F-S, _), A, F, S).
 rule_daughters(rule(_, _, _, Ds), Ds).
+
+% = global_replace_pros(+InProof, +SubProof1, +SubProof2, -OutProof)
+%
+% true if OutProof is a copy of InProof where all occurrences of SubProof1 have been
+% replace by SubProof2
+
+replace_proof(ProofA, ProofA, ProofB, ProofB) :-
+	!.
+replace_proof(rule(Nm, P, F, Ds0), ProofA, ProofB, rule(Nm, P, F, Ds)) :-
+	replace_proof_list(Ds0, ProofA, ProofB, Ds).
+
+replace_proof_list([], _, _, []).
+replace_proof_list([P0|Ps0], ProofA, ProofB, [P|Ps]) :-
+	replace_proof(P0, ProofA, ProofB, P),
+	replace_proof_list(Ps0, ProofA, ProofB, Ps).
+	
+% = global_replace_pros(+InProof, +Pros1, +Pros2, -OutProof)
+%
+% true if OutProof is a copy of InProof where all occurrences of Pros1 have been
+% replace by Pros2
 
 global_replace_pros(rule(Nm, P0, F, Ds0), A, B, rule(Nm, P, F, Ds)) :-
 	replace_pros(P0, A, B, P),

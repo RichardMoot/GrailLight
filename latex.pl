@@ -244,6 +244,8 @@ latex_label(L, P1, P2, Con, Stream) :-
 
 % =
 
+% Displacement-calculus like tuples of labels
+
 latex_label([], _, _, _) :-
 	!.
 latex_label([A|As], N, _Con, Stream) :-
@@ -251,6 +253,10 @@ latex_label([A|As], N, _Con, Stream) :-
 	latex_label(A, 1, [], Stream),
      (  As == [] -> true ;  write(Stream, ',') ),
 	latex_label(As, N, [], Stream).
+
+latex_label('$TRACE'(_), _N, _Con, Stream) :-
+	!,
+	write(Stream, '\\epsilon ').
 
 latex_label(A, _N, _Con, Stream) :-
 	atomic(A),
