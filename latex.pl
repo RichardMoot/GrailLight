@@ -1483,6 +1483,9 @@ write_rule_name(dli(N0), Stream) :-
 write_rule_name(dr, Stream) :-
 	!,
 	write(Stream, '\\bo/\\textit{E}\\bc').
+write_rule_name(dr, Stream) :-
+	!,
+	write(Stream, '\\bo/\\textit{E}\\bc').
 write_rule_name(dl, Stream) :-
 	!,
 	write(Stream, '\\bo\\backslash\\textit{E}\\bc').

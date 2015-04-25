@@ -1,7 +1,7 @@
 :- dynamic constituent/4.
 
 
- xml_files('flmf7aa1ep.cat.xml').
+% xml_files('flmf7aa1ep.cat.xml').
 % xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
@@ -27,11 +27,13 @@
 % xml_files('flmf7as2ep.af.cat.xml').
 % xml_files('flmf7atep.cat.xml').
 
-%xml_files('annodis.er.xml').
+xml_files('annodis.er.xml').
 
-% create constituent/4 declarations for the XML files declared by xml_file/1 (above).
+% create word/4 and constituent/4 declarations for the XML files declared by xml_file/1 (above).
 
 start :-
+	retractall(word(_,_,_,_)),
+	retractall(constituent(_,_,_,_)),
 	findall(F, xml_files(F), Files),
 	start(Files, 0, _).
 
@@ -62,6 +64,7 @@ handle_word_list([], _, N, N).
 handle_word_list([W|Ws], S, N0, N) :-
 	N1 is N0 + 1,
 	format('word(~w, ~k, ~w, ~w).~n', [S, W, N0, N1]),
+	assert(word(S, W, N0, N1)),
 	handle_word_list(Ws, S, N1, N).
 
 % = xml_to_const(+ElementList, +ParentElement)
@@ -116,7 +119,8 @@ element_to_const(w, _As, Cs, S, S, M0, M) :-
     (
 	M > M0 + 1
     ->
-        format('constituent(~w, w, ~w, ~w).~n', [S, M0, M])
+        format('constituent(~w, w, ~w, ~w).~n', [S, M0, M]),
+        assert(constituent(S, w, M0, M))
     ;
         true
     )
@@ -129,8 +133,9 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
     (
 	N > N0 + 1
     ->
-        format('constituent(~w, ~k, ~w, ~w).~n', [S0, Cat, N0, N])
-    ;
+        format('constituent(~w, ~k, ~w, ~w).~n', [S0, Cat, N0, N]),
+        assert(constituent(S0, Cat, N0, N))
+     ;
         true
     ).
 
@@ -147,6 +152,10 @@ collect_word(element(w,_,Ws)) -->
 collect_word(W) -->
 	[W].
 
+smart_concat_atoms(['aujourd\'',hui], 'aujourd\'hui') :-
+	!.
+smart_concat_atoms(['Aujourd\'',hui], 'Aujourd\'hui') :-
+	!.
 smart_concat_atoms(Cs, Atom) :-
     (
         append(As, [-|Bs], Cs)
@@ -222,6 +231,10 @@ cp(List) :-
 	compute_penalties(List),
 	retractall(crosses(_,_,_,0)).
 
+
+% = compute_all
+%
+% compute crossing links for all sentences
 
 compute_all :-
 	retractall(crosses(_,_,_,_)),
@@ -420,3 +433,42 @@ assert_list([]).
 assert_list([C|Cs]) :-
 	assert(C),
 	assert_list(Cs).
+
+
+delete_position(Sent, Pos) :-
+	findall(crosses(Sent,V,W,Z), crosses(Sent,V,W,Z), List0),
+	delete_position(List0, Pos, List),
+	retractall(crosses(Sent,_,_,_)),
+	assert_list(List),
+	listing(crosses(Sent,_,_,_)).
+
+
+verify_sentences :-
+	findall(Num, clause(sent(Num,_),_), List),
+	verify_sentences(List).
+
+verify_sentences([]).
+verify_sentences([N|Ns]) :-
+	verify_sentence(N),
+	verify_sentences(Ns).
+
+verify_sentence(Num) :-
+	clause(sent(Num,_), prob_parse(List,_)),
+	verify_sentence(List, 0, Num).
+
+verify_sentence([], _, _).
+verify_sentence([si(Word1,_,_,_)|Rest], N0, Num) :-
+	word(Num, Word2, N0, N),
+	!,
+   (
+        Word1 = Word2
+   ->
+        true
+   ;
+        atom_number(Word2, Word1)	 
+   ->
+	true
+   ;
+	format('~N~d: Word mismatch ~w-~w~n', [Num,Word1,Word2])
+   ),
+        verify_sentence(Rest, N, Num).
