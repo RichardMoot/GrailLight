@@ -36,7 +36,7 @@ transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 	replace_proof(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
 	/* TODO: globally replace Sem by Var in all of ProofC0 */
 	replace_sem(Sem3, Sem2, Z, Sem1), 
-	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), ProofC1),
+	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), N0, ProofC1),
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
@@ -47,7 +47,7 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	rule_conclusion(Proof1, X, ExtrForm, _),
 	/* Pros = (prosody of) argument B */ 
 	find_e_start(Proof2, ef_start, X, ExtrForm, dr(0,A,B), N0, Pros, Proof3),
-	global_replace_pros(Proof3, Pros, p(0,'$VAR'(N0), Pros), Proof4),
+	global_replace_pros(Proof3, Pros, p(0,'$VAR'(N0), Pros), N0, Proof4),
 	N is N0 + 1,
 	!.
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B))), [Proof4])])) :-
@@ -55,19 +55,18 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
 	rule_conclusion(Proof1, X, ExtrForm, _),
 	find_e_start(Proof2, e_start, X, ExtrForm, B, N0, Pros, Proof3),
-	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), Proof4),
+	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
 	!.
 transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B))), [Proof4]),Proof2])) :-
-%	spy(find_e_start),
 	GoalPros = p(_,XY,Z),
 	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),
 	rule_conclusion(Proof2, Z, ExtrForm, _),
 	find_e_start(Proof1, e_start_l, Z, ExtrForm, B, N0, Pros, Proof3),
-	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), Proof4),
+	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
 	!.
-% lambda(X,appl(SemADV,appl(SemVP,X)))
+
 transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	(
 	 Sem = lambda(X,appl(SemADV,appl(_SemVP,X)))
@@ -275,6 +274,35 @@ global_replace_pros_list([], _, _, []).
 global_replace_pros_list([P|Ps], A, B, [Q|Qs]) :-
 	global_replace_pros(P, A, B, Q),
 	global_replace_pros_list(Ps, A, B, Qs).
+
+
+% = global_replace_pros(+InProof, +Pros1, +Pros2, +VarNo, -OutProof)
+%
+% true if OutProof is a copy of InProof where all occurrences of Pros1 have been
+% replace by Pros2
+% 
+% Unlike global_replace_pros/4, the replacement takes place only for those labels
+% occurring in proof nodes which are parents of the hypothesis label '$VAR'(VarNo).
+
+global_replace_pros(rule(Nm, P0, F, [rule(Nm1, '$VAR'(N), F1, Ds), Right]), A, B, N,
+			  rule(Nm, P, F,  [rule(Nm1, '$VAR'(N), F1, Ds), Right])) :-
+	/* we have arrived at the end */
+	!,
+	replace_pros(P0, A, B, P).
+global_replace_pros(rule(Nm, P0, F, [Left, rule(Nm1, '$VAR'(N), F1, Ds)]), A, B, N,
+			  rule(Nm, P, F,  [Left, rule(Nm1, '$VAR'(N), F1, Ds)])) :-
+	/* we have arrived at the end */
+	!,
+	replace_pros(P0, A, B, P).
+global_replace_pros(rule(Nm, P0, F, Ds0), A, B, N, rule(Nm, P, F, Ds)) :-
+	replace_pros(P0, A, B, P),
+	global_replace_pros_list(Ds0, A, B, N, Ds).
+
+global_replace_pros_list([], _, _, _, []).
+global_replace_pros_list([P|Ps], A, B, N, [Q|Qs]) :-
+	global_replace_pros(P, A, B, N, Q),
+	global_replace_pros_list(Ps, A, B, N, Qs).
+
 
 replace_pros(A, A, B, B) :-
 	!.

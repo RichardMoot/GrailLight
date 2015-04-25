@@ -38,9 +38,10 @@
 :- use_module(tree234,   [btree_get/3]).
 :- use_module(options,   [get_option/2,option_true/1]).
 
-dynamic short_axioms/0.
+dynamic portray_axioms/1.
 
-short_axioms.
+%portray_axioms(short).
+portray_axioms(normal).
 
 invisible_mode('NOTHING').
 %invisible_mode(0)
@@ -1384,7 +1385,7 @@ latex_proof(Proof, Stream) :-
 	latex_proof(Proof, 0, Stream).
 
 latex_proof(rule(ax, Label, Formula, []), Tab0, Stream) :-
-	short_axioms,
+	portray_axioms(short),
 	!,
 	format(Stream, '\\infer[', []),
 	write_rule_name(ax, Stream),
@@ -1395,7 +1396,29 @@ latex_proof(rule(ax, Label, Formula, []), Tab0, Stream) :-
 	format(Stream, '}{', []),
 	latex_label(Label, Stream),
 	format(Stream, '}', []).
-	
+
+latex_proof(rule(axiom, Label, Formula, []), Tab0, Stream) :-
+	portray_axioms(short),
+	!,
+	format(Stream, '\\infer[', []),
+	write_rule_name(axiom, Stream),
+	format(Stream, ']{', []),
+	latex_formula(Formula, Stream),
+	nl(Stream),
+	tab(Stream, Tab0),
+	format(Stream, '}{', []),
+	latex_label(Label, Stream),
+	format(Stream, '}', []).
+
+latex_proof(rule(hyp(N), Label, Formula, []), _Tab0, Stream) :-
+	portray_axioms(short),
+	!,
+	format(Stream, '[', []),
+	latex_label(Label, Stream),
+	format(Stream, ' \\vdash ', []),
+	latex_formula(Formula, Stream),
+	format(Stream, ']^{}', [N]).
+
 latex_proof(rule(Name, Label, Formula, Premisses), Tab0, Stream) :-
 	tab(Stream, Tab0),
 	Tab is Tab0 + 5,
