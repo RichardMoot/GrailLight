@@ -6,6 +6,7 @@ autom4te.cache/*
 *.xml
 # automatically generated Prolog files
 aa*.pl
+ab*.pl
 ml.pl
 lnr.pl
 ml_linearone.pl

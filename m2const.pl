@@ -15,8 +15,8 @@
 % verify_sentences/0   verify if the words used in sent/2 declarations correspond to the given word/4
 %                      declarations
 
-xml_files('flmf7aa1ep.cat.xml').
-% xml_files('flmf7aa2ep.cat.xml').
+%xml_files('flmf7aa1ep.cat.xml').
+ xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
 % xml_files('flmf7af2ep.cat.xml').
@@ -98,6 +98,26 @@ handle_word('l\'isloise', S, N0, N) :-
 	N is N1 + 1,
 	Word1 = 'l\'',
 	Word2 = isloise,
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('jusqu\'au', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'jusqu\'',
+	Word2 = au,
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('l\'on', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'l\'',
+	Word2 = on,
 	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
 	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
