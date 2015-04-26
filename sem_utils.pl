@@ -12,6 +12,7 @@
 		       freeze/2,
 		       melt/2,
 		       replace_sem/4,
+		       subterm/2,
 		       melt_bound_variables/2,
 		       translate_dynamics/3]).
 
@@ -318,12 +319,17 @@ reduce_list([T|Ts], [U|Ts], Max0, Max) :-
 reduce_list([T|Ts], [T|Us], Max0, Max) :-
 	reduce_list(Ts, Us, Max0, Max).
 
-% subterm(Term, SubTerm)
+% subterm(+Term, +SubTerm)
 %
 % true if Term contains SubTerm as a subterm.
 
-subterm(X, X) :- 
-	!.
+subterm(X, Y) :-
+	var(X),
+	!,
+	X == Y.
+subterm(X, Y) :-
+	var(Y),
+	X == Y.
 subterm(X, Y) :-
 	functor(X, _, N),
 	subterm(N, X, Y).
@@ -331,11 +337,12 @@ subterm(X, Y) :-
 subterm(N0, X, Y) :-
 	N0 > 0,
 	arg(N0, X, A),
-	subterm(A, Y).
+	subterm(A, Y),
+	!.
 
 subterm(N0, X, Y) :-
 	N0 > 0,
-	N is N0-1,
+	N is N0 - 1,
 	subterm(N, X, Y).
 
 % = alpha_conversion(+InTerm, -OutTerm)

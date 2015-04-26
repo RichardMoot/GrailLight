@@ -192,9 +192,16 @@ match_pros(p(0,'$VAR'(_),X), Pros) :-
 match_pros_i(X, X) :-
 	!.
 match_pros_i(p(0,I,X), Y) :-
-	interpunction_pros(I),
+	match_interpunction_pros(I),
 	!,
 	match_pros_i(X, Y).
+
+match_interpunction_pros(I) :-
+	interpunction_pros(I),
+	!.
+match_interpunction_pros(p(0,I0,I1)) :-
+	match_interpunction_pros(I0),
+	match_interpunction_pros(I1).
 
 interpunction_pros(',').
 interpunction_pros('"').
@@ -224,13 +231,16 @@ find_w_start_list([P0|Ps], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 find_w_start_list([P|Ps0], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 	find_w_start_list(Ps0, Left, Pros, AdvF, Sem, AdvProof, Ps).
 
-find_e_start(rule(ef_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), ef_start, X, EF, dr(0,A,B), N, Pros, rule(dr,Pros,A-Sem,[rule(hyp(N),'$VAR'(N),dr(0,A,B),[]),Proof])) :-
+find_e_start(rule(ef_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), ef_start, X, EF, dr(0,A,B), N, Pros, rule(dr,Pros,A-Sem,[rule(hyp(N),'$VAR'(N),dr(0,A,B)-Var0,[]),Proof])) :-
+	Sem = appl(Var0, _),
 	match_pros_i(X, Y),
 	!.
-find_e_start(rule(e_start,Pros,A,[rule(_, Y, EF-_, _), Proof]), e_start, X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
+find_e_start(rule(e_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), e_start, X, EF, B, N, Pros, rule(dr,Pros,A-Sem,[Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
+	Sem = appl(_, Var0),
 	match_pros_i(X, Y),
 	!.
-find_e_start(rule(e_start_l,Pros,A,[Proof, rule(_, Y, EF-_, _)]), e_start_l, X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(hyp(N),'$VAR'(N),B,[])])) :-
+find_e_start(rule(e_start_l,Pros,A-Sem,[Proof, rule(_, Y, EF-_, _)]), e_start_l, X, EF, B, N, Pros, rule(dr,Pros,A-Sem,[Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
+	Sem = appl(_, Var0),
 	match_pros_i(X, Y),
 	!.
 find_e_start(rule(Nm, P, A, Ds0), StartName, X, EF, B, N, Pros, rule(Nm, P, A, Ds)) :-

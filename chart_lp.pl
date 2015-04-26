@@ -8,7 +8,7 @@
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_select/3, ord_delete/3]).
@@ -1037,6 +1037,7 @@ hold([Cond|Conds]) :-
 	call(Cond),
 	hold(Conds).
 
+
 matching_rule(Trigger, Nth, RuleName, Others, Consequent, SideConds) :-
 	active_rule(RuleName),
 	inference(RuleName, Antecedent, Consequent, SideConds),
@@ -1108,6 +1109,7 @@ keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Jus
 	/* delete the lower weight item */
 	retract(stored(IndexofSimilar, _H, I, J, F, Data)),
 	retract(justification(IndexofSimilar, _)),
+	/* comment out retracts above and remove comments below to obtain a "packed chart" */
 %	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
 %	assert(justification(IndexofSimilar, Justif)),
    (
@@ -1455,7 +1457,6 @@ unify_rule(RuleName, Index, Idf, Just, Formula, List) :-
 	inference(RuleName, Antecedent, item(Formula,L,R,Data), _SideConds),
 	stored(Index, Idf, L, R, Formula, Data),
 	match_antecedent(Just, Antecedent, List),
-%	hold(SideConds),
 	!.
 
 match_antecedent([], [], []).
@@ -1463,7 +1464,6 @@ match_antecedent([I|Is], [item(Formula,L,R,Data0)|As], [rule(_Rule,_Pros,Formula
 	stored(I, _, L, R, Formula, Data0),
 	Data0 = data(_, Sem, _, _, _, _, _, _),
 	match_antecedent(Is, As, Rs).
-
 
 compute_chart_proof_list([], [], []).
 compute_chart_proof_list([I|Is], [P|Ps], [K-P|KPs]) :-
@@ -1581,12 +1581,12 @@ inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))),_,K,_),
 inference(e_end, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(Y, J, K, Data1)],
 	          item(X, I, K, Data),
-	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, Data0, Data1, Data)]).
+	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, I, K, Data0, Data1, Data)]).
 
 inference(e_endd, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(dl(1,V,Y), J, K, Data1)],
 	          item(dl(1,V,X), I, K, Data),
-	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, Data0, Data1, Data)]).
+	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, I, K, Data0, Data1, Data)]).
 
 
 inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,_,_),
@@ -1596,7 +1596,7 @@ inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,_,_),
 inference(e_end_l, [item(dl(0,dr(0,Y,dia(0,box(0,Z))),X), J, K, Data0),
 		    item(Y, I, J, Data1)],
 	            item(X, I, K, Data),
-	           [end_extraction_l(Z, J, J, Data0, Data1, Data)]).
+	           [end_extraction_l(Z, J, J, I, K, Data0, Data1, Data)]).
 
 
 % = left-node raising (only for sequences of adjectives, quite rare)
@@ -1680,13 +1680,13 @@ inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1), item(p(0,Y,dia(0,box(0,
 inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),_,K,_),
 		     item(Y, I, J, Data0)],
 		     item(X, I, J, Data),
-		    [K=<I,start_extraction(dr(0,X,Y), J, K, Data0, Data)]).
+		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K, Data0, Data)]).
 % = intransitive verb gap, very rare (1 occurence in treebank)
 % (formulated this way to avoid n\n traces selecting explicit arguments)
 inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))),_,K,_),
 			item(lit(np(A,B,C)), I, J, Data0)],
 		        item(lit(s(S)), I, J, Data),
-		       [K=<I,start_extraction(dl(0,lit(np(A,B,C)),lit(s(S))), J, K, Data0, Data)]).
+		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K, Data0, Data)]).
 % easy case:
 inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X)))), K0, K, Data0),
 		  item(X, I, J, Data1),
@@ -1714,9 +1714,9 @@ combine_gap(I, J, data(_, Term0, _, _, _, _, _, _),
 	          data(Pros1, Term1, Prob1, _, As1, Bs1, Cs1, Ds1),
 	          data(Pros2,Term2,Prob2,H2,As2,Bs2,Cs2,Ds2),
 	          data(p(0,Pros1,Pros2),appl(Term2,lambda(X,Sem)),Prob,H2,As,Bs,Cs,Ds)) :-
-	replace_sem(Term1, Term0, X, Sem0),
-	melt_bound_variables(Sem0, Sem),
-	numbervars(Sem, 0, _),
+	replace_sem(Term1, Term0, X, Sem),
+%	melt_bound_variables(Sem0, Sem),
+%	numbervars(Sem, 0, _),
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob),
 	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).
 
@@ -2192,6 +2192,10 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 start_extraction(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
 	ord_key_insert_i(SetD0, K, t(Y,J,X), SetD).
 
+start_extraction_inv(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(X,Sem), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_i(SetD0, K, t(Y,J,X), SetD).
+
+
 % = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, Data1 Data2)
 %
 % ExtractedFormula: formula extracted
@@ -2204,21 +2208,23 @@ start_extraction(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), dat
 start_extraction_l(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
 	ord_key_insert_var(SetC0, K, t(Y,J,X), SetC).
 
-end_extraction_l(Y, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
+end_extraction_l(Y, J, K, _L, M, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
                           data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
-	                  data(p(0,Pros1,Pros0), appl(Sem1,lambda(X,Sem0)), Prob, H, SetA, SetB, SetC, SetD)) :-
+	                  data(p(0,Pros1,Pros0), appl(Sem0,lambda(X,Sem1)), Prob, H, SetA, SetB, SetC, SetD)) :-
 	select(K-t(Y,J,X), SetC1, SetC2),
+	subterm(Sem1, X),
 	!,
-	combine_probability(Prob0, Prob1, J, K, e_end_l, Prob),
+	combine_probability(Prob0, Prob1, K, M, e_end_l, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC2, SetD1, SetA, SetB, SetC, SetD).
 
 
-end_extraction(Y, J, K, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
+end_extraction(Y, J, K, I0, I, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
                   data(Pros1, Sem1, Prob1, _, SetA1, SetB1, SetC1, SetD1),
 	          data(p(0,Pros0,Pros1), appl(Sem0,lambda(X,Sem1)), Prob, H, SetA, SetB, SetC, SetD)) :-
 	select(K-t(Y,J,X), SetD1, SetD2),
+	subterm(Sem1, X),
 	!,
-	combine_probability(Prob0, Prob1, J, K, e_end, Prob),
+	combine_probability(Prob0, Prob1, I0, I, e_end, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD2, SetA, SetB, SetC, SetD).
 
 print_stacks(data(_,_,_,_,[],[],[],[])) :-

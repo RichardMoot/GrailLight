@@ -447,6 +447,7 @@ compute_lengths1([R|Rs], M0, M) :-
     ),
     compute_lengths1(Rs, M1, M).
 
+% TODO: needs to be updated to handle implicit zeros correctly!
 
 % = update_crosses(+Sentence, +Left, +Right)
 %
@@ -465,6 +466,7 @@ update_crosses(Sent, X, Y) :-
 % brackets with Plus >= 2.
 
 update_crosses(Sent, X, Y, Plus) :-
+%	compute_length(Sent, 0, Length),
 	findall(crosses(Sent,V,W,Z), crosses(Sent,V,W,Z), List0),
 	update_crosses(List0, X, Y, Plus, List),
 	retractall(crosses(Sent,_,_,_)),
