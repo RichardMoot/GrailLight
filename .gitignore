@@ -2,6 +2,8 @@
 *~
 # autoconf traces
 autom4te.cache/*
+# XML files
+*.xml
 # automatically generated Prolog files
 aa1.pl
 ml.pl
@@ -11,7 +13,6 @@ ml_vpmod.pl
 formulas.pl
 semantics.*
 proof.tex
-proofs.xml
 proofs.pl
 grail_log
 rule_logs
@@ -35,5 +36,4 @@ stored.txt
 tmp.pl
 tmp2.pl
 annodis_backup.pl
-annodis.er.xml
 log

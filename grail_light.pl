@@ -1094,21 +1094,21 @@ subsumes_list([t(L,R,F0,_)|As], [t(L,R,F,_)|Bs]) :-
 	subsumes_chk(F0, F),
 	subsumes_list(As, Bs).
 
-% If the old value is *identical* to the new one, but the probability is lower,
+% If the old value is *identical* to the new one, but the weight is lower,
 % then erase the old value and fail the subsumption test. Otherwise, succeed.
 
-keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, Justif) :-
+keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Justif) :-
 	F0 == F,
 	I0 == I,
 	J0 == J,
 	!,
 	Data = data(Pros0,Sem0,Prob0,_,_,_,_,_),
 	BetterData = data(Pros1,Sem1,Prob,_,_,_,_,_),
-	/* delete the previous item */
-	retract(stored(IndexofSimilar, H, I, J, F, Data)),
-	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
+	/* delete the lower weight item */
+	retract(stored(IndexofSimilar, _H, I, J, F, Data)),
 	retract(justification(IndexofSimilar, _)),
-	assert(justification(IndexofSimilar, Justif)),
+%	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
+%	assert(justification(IndexofSimilar, Justif)),
    (
         verbose
    ->
@@ -1116,10 +1116,11 @@ keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, Just
 	reduce_sem(Sem0, RSem0),
 	numbervars(Sem1, 0, _),
 	reduce_sem(Sem1, RSem1),
-	format('REPLACED (~w < ~w): ~w~nDATA:~p ~p~nBETTER DATA:~p ~p~n', [Prob, Prob0, IndexofSimilar,Pros0,RSem0,Pros1,RSem1])
+        format('DELETED (~w < ~w): ~w~nDATA:~p ~p~nBETTER DATA:~p ~p~n', [Prob, Prob0, IndexofSimilar,Pros0,RSem0,Pros1,RSem1])
    ;
         true
-   ).
+   ),
+        fail.
 keep_maximum_item(=, _, _, _, _, _, _, _, _, _, _).
 keep_maximum_item(>, _, _, _, _, _, _, _, _, _, _).
 
