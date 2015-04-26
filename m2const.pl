@@ -12,10 +12,10 @@
 %
 % update_crosses(Sent, Left, Right)          equivalent to update_crosses(Sent, Left, Right, 1).
 %
-% verify_words/0       verify if the words used in sent/2 declarations correspond to the given word/4
+% verify_sentences/0   verify if the words used in sent/2 declarations correspond to the given word/4
 %                      declarations
 
-% xml_files('flmf7aa1ep.cat.xml').
+xml_files('flmf7aa1ep.cat.xml').
 % xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
@@ -41,7 +41,7 @@
 % xml_files('flmf7as2ep.af.cat.xml').
 % xml_files('flmf7atep.cat.xml').
 
-xml_files('annodis.er.xml').
+%xml_files('annodis.er.xml').
 
 :- dynamic word/4, constituent/4.
 
@@ -102,7 +102,18 @@ handle_word('l\'isloise', S, N0, N) :-
 	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
-	
+
+handle_word(W, S, N0, N) :-
+	atomic_list_concat([Word1,ci], '-', W),
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-ci',
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
 handle_word(W, S, N0, N) :-
 	atom_chars(W, List),
 	append(Prefix, ['°','C'], List),

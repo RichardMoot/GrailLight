@@ -1108,6 +1108,7 @@ keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Jus
 	/* delete the lower weight item */
 	retract(stored(IndexofSimilar, _H, I, J, F, Data)),
 	retract(justification(IndexofSimilar, _)),
+	/* comment out retracts above and remove comments below to obtain a "packed chart" */
 %	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
 %	assert(justification(IndexofSimilar, Justif)),
    (

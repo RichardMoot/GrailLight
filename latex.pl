@@ -1417,7 +1417,7 @@ latex_proof(rule(hyp(N), Label, Formula, []), _Tab0, Stream) :-
 	latex_label(Label, Stream),
 	format(Stream, ' \\vdash ', []),
 	latex_formula(Formula, Stream),
-	format(Stream, ']^{}', [N]).
+	format(Stream, ']^{~w}', [N]).
 
 latex_proof(rule(Name, Label, Formula, Premisses), Tab0, Stream) :-
 	tab(Stream, Tab0),

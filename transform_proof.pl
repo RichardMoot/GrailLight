@@ -189,7 +189,6 @@ match_pros(p(0,'$VAR'(_),X), Pros) :-
 	!,
 	match_pros(X, Pros).
 
-
 match_pros_i(X, X) :-
 	!.
 match_pros_i(p(0,I,X), Y) :-
@@ -198,6 +197,7 @@ match_pros_i(p(0,I,X), Y) :-
 	match_pros_i(X, Y).
 
 interpunction_pros(',').
+interpunction_pros('"').
 interpunction_pros(':').
 interpunction_pros('(').
 interpunction_pros(')').
