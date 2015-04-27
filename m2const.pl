@@ -20,8 +20,8 @@ verbose(false).
 % xml_files('flmf7aa1ep.cat.xml').
 % xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
-xml_files('flmf7ae1ep.cat.xml').
-% xml_files('flmf7af2ep.cat.xml').
+% xml_files('flmf7ae1ep.cat.xml').
+xml_files('flmf7af2ep.cat.xml').
 % xml_files('flmf7ag1exp.cat.xml').
 % xml_files('flmf7ag2ep.cat.xml').
 % xml_files('flmf7ah1ep.aa.xml').
@@ -68,6 +68,63 @@ start([F|Fs], N0, N) :-
 	nl(user_error),
 	start(Fs, N1, N).
 
+% = export(FileRoot)
+%
+% Given a file *head.pl and the currently loaded XML file, create a file *.pl (with intermediate
+% files *const.pl, *word.pl and *crosses.pl, this last one will be deleted, because of it size)
+% (* is replaced by FileRoot).
+
+export(FileRoot) :-
+	atom_concat(FileRoot, 'head.pl', HeadFile),
+	check_exists(HeadFile),
+	atom_concat(FileRoot, '.pl', TargetFile),
+	atom_concat(FileRoot, 'const.pl', ConstFile),
+	delete_if_exists(ConstFile),
+	atom_concat(FileRoot, 'word.pl', WordFile),
+	delete_if_exists(WordFile),
+	atom_concat(FileRoot, 'crosses.pl', CrossFile),
+	delete_if_exists(CrossFile),
+	start,
+	tell(WordFile),
+	listing(word(_,_,_,_)),
+	told,
+	tell(ConstFile),
+	listing(constituent(_,_,_,_)),
+	told,
+	compute_penalties,
+	format(user_error, '~nSaving penalties...', []),
+	flush_output(user_error),
+	tell(CrossFile),
+	listing(crosses(_,_,_,_)),
+	told,
+	format(user_error, 'done!~n', []),
+	format(user_error, '~nExporting...', []),
+	flush_output(user_error),
+	atomic_list_concat([cat,HeadFile,WordFile,CrossFile,'>',TargetFile], ' ', Cmd),
+	format('~N~w~n', [Cmd]),
+	process_create(path(sh), ['-c',Cmd], []),
+	delete_file(CrossFile),
+	format(user_error, 'done!~n', []).
+
+check_exists(File) :-
+   (
+	exists_file(File)
+   ->	
+        true
+   ;
+        format(user_error, '~NFile ~w not found, aborting!~n', [File]),
+        fail
+   ).
+   
+delete_if_exists(File) :-
+   (
+	exists_file(File)
+   ->
+        delete_file(File)
+   ;
+	true
+   ).
+   
 delete_all_spaces(Es0, Es) :-
 	filter_list(Es0, Es1),
 	delete_all_spaces1(Es1, Es).
@@ -339,6 +396,8 @@ smart_concat_atoms(['arrière-', 'petits-enfants'], 'arrière-petits-enfants') :
 	!.
 smart_concat_atoms(['aujourd\'',hui], 'aujourd\'hui') :-
 	!.
+smart_concat_atoms(['quelqu\'',un], 'quelqu\'un') :-
+	!.
 smart_concat_atoms(['Aujourd\'',hui], 'Aujourd\'hui') :-
 	!.
 smart_concat_atoms(Cs, Atom) :-
@@ -475,7 +534,7 @@ is_interpunction(']').
 
 compute_penalties([]).
 compute_penalties([S|Ss]) :-
-	format('~n~w', [S]),
+	format(user_error, '~n~w', [S]),
 	compute_penalties1(S),
 	compute_penalties(Ss).
 
@@ -485,7 +544,7 @@ compute_penalties1(S) :-
 
 compute_penalties1(S, Max) :-
 	initialize(0, Max, S),
-	write(':'),
+	write(user_error, ':'),
 	cross_comp(2, Max, S).
 
 initialize(N0, N, S) :-
@@ -520,7 +579,7 @@ cross_comp(D0, Max, S) :-
     ->
         true
     ;
-	write('.'),
+	write(user_error, '.'),
         D is D0 + 1,
         compute_crosses(D, 0, Max, S),
         cross_comp(D, Max, S)
@@ -640,36 +699,45 @@ delete_position(Sent, Pos) :-
 
 
 verify_sentences :-
+	verify_sentences(log).
+verify_sentences(Log) :-
+    ( exists_file(Log) -> delete_file(Log) ; true),
+	tell(log),
 	findall(Num, clause(sent(Num,_),_), List),
-	verify_sentences(List).
+	verify_sentences_list(List),
+	told,
+	format(user_error, '~NDone!~nLog output to file ~w~n', [Log]).
 
-verify_sentences([]).
-verify_sentences([N|Ns]) :-
+verify_sentences_list([]).
+verify_sentences_list([N|Ns]) :-
 	verify_sentence(N),
-	verify_sentences(Ns).
+	verify_sentences_list(Ns).
 
 verify_sentence(Num) :-
 	clause(sent(Num,_), prob_parse(List,_)),
-	verify_sentence(List, 0, Num).
+	verify_sentence(List, 0, Num, '.').
 
-verify_sentence([], _, _).
-verify_sentence([si(Word1,_,_,_)|Rest], N0, Num) :-
+verify_sentence([], _, _, Status) :-
+	write(user_error, Status).
+verify_sentence([si(Word1,_,_,_)|Rest], N0, Num, Status0) :-
    (	
 	word(Num, Word2, N0, N)
      ->
    (
         Word1 = Word2
    ->
-        true
+        Status = Status0
    ;
         atom_number(Word2, Word1)	 
    ->
-	true
+	Status = Status0
    ;
+        Status = '*',
 	format('~N~d: Word mismatch ~w-~w~n', [Num,Word1,Word2])
-   );	format('~N~d: Unmatched word ~w~n', [Num,Word1]),
+   );	Status = '*',
+	format('~N~d: Unmatched word ~w~n', [Num,Word1]),
 	N is N0 + 1),
-        verify_sentence(Rest, N, Num).
+        verify_sentence(Rest, N, Num, Status).
 
 
 format1(X, Y) :-
