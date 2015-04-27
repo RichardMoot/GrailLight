@@ -124,6 +124,7 @@ handle_word('l\'on', S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
+	xml_files('flmf7aa1ep.cat.xml'),
 	atomic_list_concat([Word1,ci], '-', W),
 	!,
 	N1 is N0 + 1,
@@ -195,7 +196,8 @@ element_to_const('SENT', As, Cs, S0, S, _, M) :-
 
 element_to_const(w, _As, Cs, S, S, M0, M) :-
 	!,
-	collect_words(Cs, Ws, []),
+	collect_words(Cs, Ws0, []),
+	simplify_words(Ws0, Ws),
     (   Ws \= []
     ->
 	smart_concat_atoms(Ws, Word),
@@ -223,6 +225,13 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
      ;
         true
     ).
+
+simplify_words([X,Y,'aujourd\'',hui], [X,Y,'aujourd\'hui']) :-
+	!.
+simplify_words([X,Y,'d\'',oeuvre], [X,Y,'d\'oeuvre']) :-
+	!.
+simplify_words(Ws, Ws).
+
 
 collect_words([]) -->
 	[].
