@@ -15,10 +15,12 @@
 % verify_sentences/0   verify if the words used in sent/2 declarations correspond to the given word/4
 %                      declarations
 
-%xml_files('flmf7aa1ep.cat.xml').
- xml_files('flmf7aa2ep.cat.xml').
+verbose(false).
+
+% xml_files('flmf7aa1ep.cat.xml').
+% xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
-% xml_files('flmf7ae1ep.cat.xml').
+xml_files('flmf7ae1ep.cat.xml').
 % xml_files('flmf7af2ep.cat.xml').
 % xml_files('flmf7ag1exp.cat.xml').
 % xml_files('flmf7ag2ep.cat.xml').
@@ -35,19 +37,23 @@
 % xml_files('flmf7an1ep.xml').
 % xml_files('flmf7an2co.af.cat.xml').
 % xml_files('flmf7ao1ep.xml').
-% xml_files('flmf7ao1ep.xml').
+% xml_files('flmf7ao2ep.xml').
 % xml_files('flmf7ap1ep.af.cat.xml').
 % xml_files('flmf7aq2ep.xd.cat.xml').
 % xml_files('flmf7as2ep.af.cat.xml').
 % xml_files('flmf7atep.cat.xml').
-
-%xml_files('annodis.er.xml').
+%
+% xml_files('flmf300_13000ep.cat.xml').
+% xml_files('flmf3_08000_08499ep.xd.cat.xml').
+%
+% xml_files('annodis.er.xml').
 
 :- dynamic word/4, constituent/4.
 
 % create word/4 and constituent/4 declarations for the XML files declared by xml_file/1 (above).
 
 start :-
+	abolish(word/4),
 	retractall(word(_,_,_,_)),
 	retractall(constituent(_,_,_,_)),
 	findall(F, xml_files(F), Files),
@@ -55,9 +61,11 @@ start :-
 
 start([], N, N).
 start([F|Fs], N0, N) :-
+	format(user_error, '~NXML File: ~w~n', [F]),
 	load_structure(F, L0, [dialect(xml), space(default)]),
 	delete_all_spaces(L0, L),
 	xml_to_const(L, N0, N1, 0, _),
+	nl(user_error),
 	start(Fs, N1, N).
 
 delete_all_spaces(Es0, Es) :-
@@ -88,8 +96,8 @@ handle_word('C.L.', S, N0, N) :-
 	N is N1 + 1,
 	Word1 = 'C.',
 	Word2 = 'L.',
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
 handle_word('l\'isloise', S, N0, N) :-
@@ -98,8 +106,8 @@ handle_word('l\'isloise', S, N0, N) :-
 	N is N1 + 1,
 	Word1 = 'l\'',
 	Word2 = isloise,
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
 handle_word('jusqu\'au', S, N0, N) :-
@@ -108,8 +116,8 @@ handle_word('jusqu\'au', S, N0, N) :-
 	N is N1 + 1,
 	Word1 = 'jusqu\'',
 	Word2 = au,
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
 handle_word('l\'on', S, N0, N) :-
@@ -118,10 +126,66 @@ handle_word('l\'on', S, N0, N) :-
 	N is N1 + 1,
 	Word1 = 'l\'',
 	Word2 = on,
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
+handle_word('T.bond', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'T',
+	Word2 = bond,
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('de la', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = de,
+	Word2 = la,
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('jusque-là', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = jusque,
+	Word2 = '-là',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('de l\'', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = de,
+	Word2 = 'l\'',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
+handle_word('R.R.Donnelley', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N2 is N1 + 1,
+	N is N2 + 1,
+	Word1 = 'R.',
+	Word2 = 'R.',
+	Word3 = 'Donnelley',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N2]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word3, N2, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N2)),
+	assert(word(S, Word3, N2, N)).
+
 
 handle_word(W, S, N0, N) :-
 	xml_files('flmf7aa1ep.cat.xml'),
@@ -130,8 +194,8 @@ handle_word(W, S, N0, N) :-
 	N1 is N0 + 1,
 	N is N1 + 1,
 	Word2 = '-ci',
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
 
@@ -143,14 +207,14 @@ handle_word(W, S, N0, N) :-
 	N is N1 + 1,
 	atom_chars(Word1, Prefix),
 	atom_chars(Word2, ['°','C']),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
-	format('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
 	
 handle_word(W, S, N0, N) :-
 	N is N0 + 1,
-	format('word(~w, ~k, ~w, ~w).~n', [S, W, N0, N]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, W, N0, N]),
 	assert(word(S, W, N0, N)).
 
 % = xml_to_const(+ElementList, +ParentElement)
@@ -185,6 +249,7 @@ element_to_const(element(Nm,As,Cs), N0, N, M0, M) :-
 
 element_to_const('SENT', As, Cs, S0, S, _, M) :-
 	!,
+	write(user_error, '.'),
     (
         member(nb=Num,As)
     ->
@@ -206,7 +271,7 @@ element_to_const(w, _As, Cs, S, S, M0, M) :-
     (
 	M > M0 + 1
     ->
-        format('constituent(~w, w, ~w, ~w).~n', [S, M0, M]),
+        format1('constituent(~w, w, ~w, ~w).~n', [S, M0, M]),
         assert(constituent(S, w, M0, M))
     ;
         true
@@ -220,7 +285,7 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
     (
 	N > N0 + 1
     ->
-        format('constituent(~w, ~k, ~w, ~w).~n', [S0, Cat, N0, N]),
+        format1('constituent(~w, ~k, ~w, ~w).~n', [S0, Cat, N0, N]),
         assert(constituent(S0, Cat, N0, N))
      ;
         true
@@ -228,8 +293,32 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
 
 simplify_words([X,Y,'aujourd\'',hui], [X,Y,'aujourd\'hui']) :-
 	!.
+simplify_words([X,'aujourd\'',hui], [X,'aujourd\'hui']) :-
+	!.
 simplify_words([X,Y,'d\'',oeuvre], [X,Y,'d\'oeuvre']) :-
 	!.
+simplify_words([X,-,ci], [Atom]) :-
+	!,
+	atomic_list_concat([X,-,ci], Atom).
+simplify_words([pub,-,info], ['pub-info']) :-
+	!.
+simplify_words([demi,-,X], ['demi-', X]) :-
+	!.
+simplify_words([mi,-,X], ['mi-', X]) :-
+	!.
+simplify_words(['Antenne', 2, -, 'FR', 3], ['Antenne2-FR3']) :-
+	!.
+simplify_words(['Antenne', '2', -, 'FR', '3'], ['Antenne2-FR3']) :-
+	!.
+simplify_words([X], [Y,h,Z]) :-
+	atomic_list_concat([Y0,Z0], h, X),
+	atom_number(Y0, Y),
+	atom_number(Z0, Z),
+	!.
+% simplify_words(['TF', 1], ['TF1']) :-
+% 	!.
+% simplify_words(['TF', '1'], ['TF1']) :-
+% 	!.
 simplify_words(Ws, Ws).
 
 
@@ -323,6 +412,7 @@ cp(N0, N) :-
     ).
 
 cp(List) :-
+	abolish(crosses/4),
 	retractall(crosses(_,_,_,_)),
 	compute_penalties(List),
 	retractall(crosses(_,_,_,0)).
@@ -332,6 +422,7 @@ cp(List) :-
 % compute penalties (as crosses/4 declarations) for all sentences
 
 compute_penalties :-
+	abolish(crosses/4),
 	retractall(crosses(_,_,_,_)),
 	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
 	compute_penalties(Sentences),
@@ -364,7 +455,7 @@ add_constituents2(S, Cat, L, R) :-
 	word(S, W, L0, L),
         is_interpunction(W)
    ->
-        format('constituent(~w, ~w, ~w, ~w).~n', [S,Cat,L0,R]),
+        format1('constituent(~w, ~w, ~w, ~w).~n', [S,Cat,L0,R]),
         retractall(constituent(S, Cat, L, R)),
         assert(constituent(S, Cat, L0, R)),
         add_constituents2(S, Cat, L0, R)
@@ -579,3 +670,10 @@ verify_sentence([si(Word1,_,_,_)|Rest], N0, Num) :-
    );	format('~N~d: Unmatched word ~w~n', [Num,Word1]),
 	N is N0 + 1),
         verify_sentence(Rest, N, Num).
+
+
+format1(X, Y) :-
+	verbose(true),
+	!,
+	format(X, Y).
+format1(_, _).
