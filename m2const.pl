@@ -3,6 +3,8 @@
 
 % start/0   computes word/4 and constituent/4 declarations from all files declared by xml_files/1
 %
+% export(File) all-in-one predicate combining *head.pl and the current XML files into a single *.pl file
+%
 % compute_penalties/0   computes crosses/4 declarations from constituent/4 declarations for all sentences
 %
 % cp(List)            as compute_penalties for all sentences in List
@@ -21,9 +23,9 @@ verbose(false).
 % xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
-xml_files('flmf7af2ep.cat.xml').
+% xml_files('flmf7af2ep.cat.xml').
 % xml_files('flmf7ag1exp.cat.xml').
-% xml_files('flmf7ag2ep.cat.xml').
+xml_files('flmf7ag2ep.cat.xml').
 % xml_files('flmf7ah1ep.aa.xml').
 % xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
@@ -92,13 +94,13 @@ export(FileRoot) :-
 	listing(constituent(_,_,_,_)),
 	told,
 	compute_penalties,
-	format(user_error, '~nSaving penalties...', []),
+	format(user_error, '~2nSaving penalties...', []),
 	flush_output(user_error),
 	tell(CrossFile),
 	listing(crosses(_,_,_,_)),
 	told,
 	format(user_error, 'done!~n', []),
-	format(user_error, '~nExporting...', []),
+	format(user_error, 'Exporting...', []),
 	flush_output(user_error),
 	atomic_list_concat([cat,HeadFile,WordFile,CrossFile,'>',TargetFile], ' ', Cmd),
 	format('~N~w~n', [Cmd]),
@@ -153,6 +155,16 @@ handle_word('C.L.', S, N0, N) :-
 	N is N1 + 1,
 	Word1 = 'C.',
 	Word2 = 'L.',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('B.F.', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'B.',
+	Word2 = 'F.',
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
@@ -255,6 +267,19 @@ handle_word(W, S, N0, N) :-
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
+
+handle_word(W, S, N0, N) :-
+	xml_files('flmf7ag1exp.cat.xml'),
+	atomic_list_concat([Word1,là], '-', W),
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-là',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
 
 handle_word(W, S, N0, N) :-
 	atom_chars(W, List),
