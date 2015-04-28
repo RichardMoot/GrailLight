@@ -16,6 +16,8 @@
 %
 % verify_sentences/0   verify if the words used in sent/2 declarations correspond to the given word/4
 %                      declarations
+%
+% verify_lemmas/0
 
 verbose(false).
 
@@ -25,9 +27,9 @@ verbose(false).
 % xml_files('flmf7ae1ep.cat.xml').
 % xml_files('flmf7af2ep.cat.xml').
 % xml_files('flmf7ag1exp.cat.xml').
-xml_files('flmf7ag2ep.cat.xml').
+% xml_files('flmf7ag2ep.cat.xml').
 % xml_files('flmf7ah1ep.aa.xml').
-% xml_files('flmf7ah2ep.aa.xml').
+xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
 % xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
@@ -50,12 +52,13 @@ xml_files('flmf7ag2ep.cat.xml').
 %
 % xml_files('annodis.er.xml').
 
-:- dynamic word/4, constituent/4.
+:- dynamic word/4, lemma/4, constituent/4.
 
 % create word/4 and constituent/4 declarations for the XML files declared by xml_file/1 (above).
 
 start :-
 	abolish(word/4),
+	retractall(lemma(_,_,_,_)),
 	retractall(word(_,_,_,_)),
 	retractall(constituent(_,_,_,_)),
 	findall(F, xml_files(F), Files),
@@ -280,6 +283,19 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
 
+handle_word(W, S, N0, N) :-
+	atomic_list_concat([Word1,Word3], '&', W),
+	!,
+	N1 is N0 + 1,
+	N2 is N1 + 1,
+	N is N2 + 1,
+	Word2 = '&',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N2]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word3, N2, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N2)),
+	assert(word(S, Word3, N2, N)).
 
 handle_word(W, S, N0, N) :-
 	atom_chars(W, List),
@@ -341,8 +357,9 @@ element_to_const('SENT', As, Cs, S0, S, _, M) :-
     ),
 	xml_to_const(Cs, S1, S, 0, M).
 
-element_to_const(w, _As, Cs, S, S, M0, M) :-
+element_to_const(w, As, Cs, S, S, M0, M) :-
 	!,
+	get_lemma(As, Lemma),
 	collect_words(Cs, Ws0, []),
 	simplify_words(Ws0, Ws),
     (   Ws \= []
@@ -356,7 +373,7 @@ element_to_const(w, _As, Cs, S, S, M0, M) :-
         format1('constituent(~w, w, ~w, ~w).~n', [S, M0, M]),
         assert(constituent(S, w, M0, M))
     ;
-        true
+        assert(lemma(S, Lemma, M0, M))
     )
     ;
 	M is M0
@@ -379,14 +396,34 @@ simplify_words([X,'aujourd\'',hui], [X,'aujourd\'hui']) :-
 	!.
 simplify_words([X,Y,'d\'',oeuvre], [X,Y,'d\'oeuvre']) :-
 	!.
+simplify_words(['Côte',-,'d\'',ivoire], ['Côte-d\'ivoire']) :-
+	!.
+simplify_words(['côte',-,'d\'',ivoire], ['côte-d\'ivoire']) :-
+	!.
+simplify_words(['Monde',-,'l\'','économie'], ['Monde-l\'économie']) :-
+	!.
+simplify_words([X,s], [Y]) :-
+	atom_chars(X, List),
+	last(List, '\''),
+	!,
+	atom_concat(X, s, Y).
+simplify_words([X,'\'s'], [Y]) :-
+	atom_concat(X, '\'s', Y),
+	!.
 simplify_words([X,-,ci], [Atom]) :-
 	!,
 	atomic_list_concat([X,-,ci], Atom).
 simplify_words([pub,-,info], ['pub-info']) :-
 	!.
+% simplify_words([ville,-,campagne], ['ville-campagne']) :-
+% 	!.
 simplify_words([demi,-,X], ['demi-', X]) :-
 	!.
 simplify_words([mi,-,X], ['mi-', X]) :-
+	!.
+simplify_words(['FR', '3'], ['FR3']) :-
+	!.
+simplify_words(['FR', '3', X], ['FR3', X]) :-
 	!.
 simplify_words(['Antenne', 2, -, 'FR', 3], ['Antenne2-FR3']) :-
 	!.
@@ -446,6 +483,11 @@ smart_concat_atoms(Cs, Atom) :-
 	concat_atom(Cs, '_', Atom)
      ).
      
+
+get_lemma(List, Lemma) :-
+	member(lemma=Lemma, List),
+	!.
+get_lemma(_, '???').
 
 all_digits([]).
 all_digits([D|Ds]) :-
@@ -742,8 +784,15 @@ verify_sentence(Num) :-
 	clause(sent(Num,_), prob_parse(List,_)),
 	verify_sentence(List, 0, Num, '.').
 
-verify_sentence([], _, _, Status) :-
-	write(user_error, Status).
+verify_sentence([], N0, Num, Status) :-
+   (	
+	word(Num, Word2, N0, N)
+     ->
+	format('~N!!!~d: Untreated word ~w~n', [Num,Word2]),
+	verify_sentence([], N, Num, '*')
+   ;
+	write(user_error, Status)
+   ).
 verify_sentence([si(Word1,_,_,_)|Rest], N0, Num, Status0) :-
    (	
 	word(Num, Word2, N0, N)
@@ -763,6 +812,67 @@ verify_sentence([si(Word1,_,_,_)|Rest], N0, Num, Status0) :-
 	format('~N~d: Unmatched word ~w~n', [Num,Word1]),
 	N is N0 + 1),
         verify_sentence(Rest, N, Num, Status).
+
+
+verify_lemmas :-
+	verify_lemmas(log).
+verify_lemmas(Log) :-
+    ( exists_file(Log) -> delete_file(Log) ; true),
+	tell(log),
+	findall(Num, clause(sent(Num,_),_), List),
+	verify_lemmas_list(List),
+	told,
+	format(user_error, '~NDone!~nLog output to file ~w~n', [Log]).
+
+verify_lemmas_list([]).
+verify_lemmas_list([N|Ns]) :-
+	verify_lemma(N),
+	verify_lemmas_list(Ns).
+
+verify_lemma(Num) :-
+	clause(sent(Num,_), prob_parse(List,_)),
+	verify_lemma(List, 0, Num, '.').
+
+verify_lemma([], _, _, Status) :-
+	write(user_error, Status).
+verify_lemma([si(_,_,Lemma1,_)|Rest], N0, Num, Status0) :-
+   (	
+	lemma(Num, Lemma2, N0, N)
+     ->
+   (
+        same_lemma(Lemma1, Lemma2)
+   ->
+        Status = Status0
+   ;
+        atom_number(Lemma2, Lemma1)	 
+   ->
+	Status = Status0
+   ;
+        Status = '*',
+	format('~N~d: Lemma mismatch ~w-~w~n', [Num,Lemma1,Lemma2])
+   );	Status = '.',
+	format('~N~d: Unmatched lemma ~w~n', [Num,Lemma1]),
+	N is N0 + 1),
+        verify_lemma(Rest, N, Num, Status).
+
+same_lemma(Lemma, Lemma) :-
+	!.
+same_lemma('l\'', le) :-
+	!.
+same_lemma(la, le) :-
+	!.
+same_lemma(les, le) :-
+	!.
+same_lemma(des, de) :-
+	!.
+same_lemma(du, de) :-
+	!.
+same_lemma(notre, mon) :-
+	!.
+same_lemma(leur, son) :-
+	!.
+same_lemma('France', 'FRANCE') :-
+	!.
 
 
 format1(X, Y) :-
