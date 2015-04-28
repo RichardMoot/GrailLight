@@ -330,6 +330,9 @@ subterm(X, Y) :-
 subterm(X, Y) :-
 	var(Y),
 	X == Y.
+subterm(lambda(_, X), Y) :-
+	!,
+	subterm(X, Y).
 subterm(X, Y) :-
 	functor(X, _, N),
 	subterm(N, X, Y).

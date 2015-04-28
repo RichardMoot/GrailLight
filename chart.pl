@@ -1500,10 +1500,10 @@ inference(dl, [item(Y, I, J, Data1), item(dl(M,Y,X), J, K, Data2)],
 
 inference(let, [item(X, I, J, Data1),item(lit(let), J, K, Data2)],
 	        item(X, I, K, Data),
-	       [X\=lit(let),sentence_length(K),combine_let(I,K,Data1,Data2,Data)]).
+	       [X\=lit(let),sentence_length(K),combine_let_l(I,K,Data1,Data2,Data)]).
 inference(let, [item(lit(let), I, J, Data2),item(X, J, K, Data1)],
 	        item(X, I, K, Data),
-	        [K is J + 1,combine_let(I,K,Data2,Data1,Data)]).  % prevent "attachment ambiguity"
+	        [K is J + 1,combine_let_r(I,K,Data2,Data1,Data)]).  % prevent "attachment ambiguity"
 
 % = wrapping rules
 
@@ -2044,9 +2044,14 @@ check_coherence([t(J,K,_,_)|As], I) :-
 	I =< J,
 	check_coherence(As, K).
 
-combine_let(J, K, data(Pros0, Sem, Prob1, H, SetA0, SetB0, SetC0, SetD0),
-	         data(Pros1   , _  , Prob2, _, SetA1, SetB1, SetC1, SetD1),
-	         data(p(0,Pros0,Pros1), Sem, Prob, H, SetA, SetB, SetC, SetD)) :-
+combine_let_l(J, K, data(Pros0, Sem, Prob1, H, SetA0, SetB0, SetC0, SetD0),
+	            data(Pros1   , _  , Prob2, _, SetA1, SetB1, SetC1, SetD1),
+	            data(p(0,Pros0,Pros1), Sem, Prob, H, SetA, SetB, SetC, SetD)) :-
+	combine_probability(Prob1, Prob2, J, K, let, Prob),
+	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
+combine_let_r(J, K, data(Pros0, _, Prob1, _, SetA0, SetB0, SetC0, SetD0),
+	            data(Pros1   , Sem  , Prob2, H, SetA1, SetB1, SetC1, SetD1),
+	            data(p(0,Pros0,Pros1), Sem, Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, J, K, let, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
