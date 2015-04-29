@@ -29,9 +29,9 @@ verbose(false).
 % xml_files('flmf7ag1exp.cat.xml').
 % xml_files('flmf7ag2ep.cat.xml').
 % xml_files('flmf7ah1ep.aa.xml').
-xml_files('flmf7ah2ep.aa.xml').
+% xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
-% xml_files('flmf7ai2ep.aa.cat.xml').
+xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
 % xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
@@ -272,6 +272,19 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
+	xml_files('flmf7ai2ep.aa.cat.xml'),
+	atomic_list_concat([Word1,là], '-', W),
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-là',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
+
+handle_word(W, S, N0, N) :-
 	xml_files('flmf7ag1exp.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	!,
@@ -285,6 +298,8 @@ handle_word(W, S, N0, N) :-
 
 handle_word(W, S, N0, N) :-
 	atomic_list_concat([Word1,Word3], '&', W),
+	Word1 \= '',
+	Word3 \= '',
 	!,
 	N1 is N0 + 1,
 	N2 is N1 + 1,
@@ -391,6 +406,8 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
     ).
 
 simplify_words(['R','19'], ['R.19']) :-
+	!.
+simplify_words(['presqu\'','île'], ['presqu\'île']) :-
 	!.
 simplify_words([X,Y,'aujourd\'',hui], [X,Y,'aujourd\'hui']) :-
 	!.
