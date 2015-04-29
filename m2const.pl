@@ -390,6 +390,8 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
         true
     ).
 
+simplify_words(['R','19'], ['R.19']) :-
+	!.
 simplify_words([X,Y,'aujourd\'',hui], [X,Y,'aujourd\'hui']) :-
 	!.
 simplify_words([X,'aujourd\'',hui], [X,'aujourd\'hui']) :-
@@ -422,6 +424,8 @@ simplify_words([demi,-,X], ['demi-', X]) :-
 simplify_words([mi,-,X], ['mi-', X]) :-
 	!.
 simplify_words(['FR', '3'], ['FR3']) :-
+	!.
+simplify_words(['Demak\'', up], ['Demak\'up']) :-
 	!.
 simplify_words(['FR', '3', X], ['FR3', X]) :-
 	!.
