@@ -1129,7 +1129,7 @@ sent(31, A) :-
 		     si(',', ponct-pun, ',', [let-1]),
 		     si(en, p-prp, en, [dr(0, dl(1, s, s), np)-1]),
 		     si(neuf, det-num, neuf, [dr(0, np, n)-1]),
-		     si(mois, nc-nom, moi, [n-1]),
+		     si(mois, nc-nom, mois, [n-1]),
 		     si('.', ponct-pun, '.', [dl(0, s, txt)-1])
 		   ],
 		   A).
@@ -5000,7 +5000,7 @@ sent(140, A) :-
 sent(141, A) :-
 	prob_parse(
 		   [ si('Quelques', det-pro:ind, quelque, [dr(0, np, n)-1]),
-		     si(mois, nc-nom, moi, [n-1]),
+		     si(mois, nc-nom, mois, [n-1]),
 		     si(auront,
 			v-ver:futu,
 			avoir,
@@ -5138,7 +5138,7 @@ sent(145, A) :-
 sent(146, A) :-
 	prob_parse(
 		   [ si('Au', p+d-prp:det, au, [dr(0, dr(0, s, s), n)-1]),
-		     si(mois, nc-nom, moi, [n-1]),
+		     si(mois, nc-nom, mois, [n-1]),
 		     si(de, p-prp, de, [dr(0, dl(0, n, n), n)-1]),
 		     si(mars, nc-nom, mar, [n-1]),
 		     si(dernier, adj-adj, dernier, [dl(0, n, n)-1]),
@@ -5654,7 +5654,7 @@ sent(161, A) :-
 			avoir,
 			[dr(0, dl(0, cl_y, dl(0, np, dl(1, s, s))), np)-1]),
 		     si(un, det-det:art, un, [dr(0, np, n)-1]),
-		     si(mois, nc-nom, moi, [n-1]),
+		     si(mois, nc-nom, mois, [n-1]),
 		     si('.', ponct-pun, '.', [dl(0, s, txt)-1])
 		   ],
 		   A).
@@ -8422,7 +8422,7 @@ sent(251, A) :-
 		     si(mercredis, nc-nom, mercredi, [n-1]),
 		     si('après-midi', nc-nom, 'après-midi', [dl(0, n, n)-1]),
 		     si(par, p-prp, par, [dr(0, dl(0, n, n), n)-1]),
-		     si(mois, nc-nom, moi, [n-1]),
+		     si(mois, nc-nom, mois, [n-1]),
 		     si(',', ponct-pun, ',', [let-1]),
 		     si(voit,
 			v-ver:pres,
@@ -15178,7 +15178,7 @@ sent(457, A) :-
 		     si(un, det-det:art, un, [dr(0, np, n)-1]),
 		     si(passage, nc-nom, passage, [n-1]),
 		     si(par, p-prp, par, [dr(0, dl(0, n, n), n)-1]),
-		     si(mois, nc-nom, moi, [n-1]),
+		     si(mois, nc-nom, mois, [n-1]),
 		     si('.', ponct-pun, '.', [dl(0, s, txt)-1])
 		   ],
 		   A).
