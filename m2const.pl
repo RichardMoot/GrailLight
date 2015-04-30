@@ -31,9 +31,9 @@ verbose(false).
 % xml_files('flmf7ah1ep.aa.xml').
 % xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
-xml_files('flmf7ai2ep.aa.cat.xml').
+% xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
-% xml_files('flmf7ak1ep.indent.xml').
+xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
 % xml_files('flmf7al1ep.cat.xml').
 % xml_files('flmf7am1ep.xd.cat.xml').
@@ -162,6 +162,16 @@ handle_word('C.L.', S, N0, N) :-
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
+handle_word('H.D.', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'H.',
+	Word2 = 'D.',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
 handle_word('B.F.', S, N0, N) :-
 	!,
 	N1 is N0 + 1,
@@ -251,6 +261,21 @@ handle_word('R.R.Donnelley', S, N0, N) :-
 	Word1 = 'R.',
 	Word2 = 'R.',
 	Word3 = 'Donnelley',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N2]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word3, N2, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N2)),
+	assert(word(S, Word3, N2, N)).
+
+handle_word('L.C.Waïkiki', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N2 is N1 + 1,
+	N is N2 + 1,
+	Word1 = 'L.',
+	Word2 = 'C.',
+	Word3 = 'Waïkiki',
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N2]),
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word3, N2, N]),
@@ -405,6 +430,19 @@ element_to_const(Cat, _As, Cs, S0, S, N0, N) :-
         true
     ).
 
+% simplify_words(+ListOfWords, -SimplifiedListOfWords)
+%
+% specify various rewrites of the different multi-words/complex words, ie. these rules
+% are applied to a list of "subwords" of a "w" constituent.
+
+simplify_words(List0, List) :-
+	append(Prefix, ['Gmb.H'], List0),
+	append(Prefix, ['GmbH'], List),
+	!.
+
+simplify_words(['R','19'], ['R','19']) :-
+	xml_files('flmf7aj1ep.indent.xml'),
+	!.
 simplify_words(['R','19'], ['R.19']) :-
 	!.
 simplify_words(['presqu\'','île'], ['presqu\'île']) :-
@@ -426,8 +464,9 @@ simplify_words([X,s], [Y]) :-
 	last(List, '\''),
 	!,
 	atom_concat(X, s, Y).
-simplify_words([X,'\'s'], [Y]) :-
-	atom_concat(X, '\'s', Y),
+simplify_words([no,'man\'',s,land], [no,'man\'s',land]) :-
+	!.
+simplify_words(['Who\'',s,next], ['Who\'s',next]) :-
 	!.
 simplify_words([X,-,ci], [Atom]) :-
 	!,
