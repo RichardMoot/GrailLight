@@ -33,10 +33,10 @@ verbose(false).
 % xml_files('flmf7ai1exp.cat.xml').
 % xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
-xml_files('flmf7ak1ep.indent.xml').
+% xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
 % xml_files('flmf7al1ep.cat.xml').
-% xml_files('flmf7am1ep.xd.cat.xml').
+xml_files('flmf7am1ep.xd.cat.xml').
 % xml_files('flmf7am2ep.xd.cat.xml').
 % xml_files('flmf7an1ep.xml').
 % xml_files('flmf7an2co.af.cat.xml').
@@ -212,12 +212,23 @@ handle_word('l\'on', S, N0, N) :-
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
 	assert(word(S, Word2, N1, N)).
+
 handle_word('T.bond', S, N0, N) :-
 	!,
 	N1 is N0 + 1,
 	N is N1 + 1,
 	Word1 = 'T',
 	Word2 = bond,
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+handle_word('Pan.Am', S, N0, N) :-
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word1 = 'Pan',
+	Word2 = 'Am',
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
@@ -297,8 +308,22 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
+	xml_files('flmf7ak2ep.xd.cat.xml'),
+	atomic_list_concat([Word1,là], '-', W),
+	Word1 \= '',
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-là',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
+handle_word(W, S, N0, N) :-
 	xml_files('flmf7ai2ep.aa.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
+	Word1 \= '',
 	!,
 	N1 is N0 + 1,
 	N is N1 + 1,
@@ -312,6 +337,7 @@ handle_word(W, S, N0, N) :-
 handle_word(W, S, N0, N) :-
 	xml_files('flmf7ag1exp.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
+	Word1 \= '',
 	!,
 	N1 is N0 + 1,
 	N is N1 + 1,
@@ -322,9 +348,8 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
+	W \= '&',
 	atomic_list_concat([Word1,Word3], '&', W),
-	Word1 \= '',
-	Word3 \= '',
 	!,
 	N1 is N0 + 1,
 	N2 is N1 + 1,
@@ -465,6 +490,8 @@ simplify_words([X,s], [Y]) :-
 	!,
 	atom_concat(X, s, Y).
 simplify_words([no,'man\'',s,land], [no,'man\'s',land]) :-
+	!.
+simplify_words(['Rubik\'',s,cube], ['Rubik\'s',cube]) :-
 	!.
 simplify_words(['Who\'',s,next], ['Who\'s',next]) :-
 	!.
