@@ -22,6 +22,8 @@ ap*.pl
 aq*.pl
 as*.pl
 at*.pl
+300*.pl
+8000*.pl
 ml.pl
 lnr.pl
 ml_linearone.pl

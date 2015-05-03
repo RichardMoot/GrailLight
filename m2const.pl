@@ -31,12 +31,12 @@ verbose(false).
 % xml_files('flmf7ah1ep.aa.xml').
 % xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
-% xml_files('flmf7ai2ep.aa.cat.xml').
+xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
 % xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
 % xml_files('flmf7al1ep.cat.xml').
-xml_files('flmf7am1ep.xd.cat.xml').
+% xml_files('flmf7am1ep.xd.cat.xml').
 % xml_files('flmf7am2ep.xd.cat.xml').
 % xml_files('flmf7an1ep.xml').
 % xml_files('flmf7an2co.af.cat.xml').
@@ -298,10 +298,50 @@ handle_word('L.C.Waïkiki', S, N0, N) :-
 handle_word(W, S, N0, N) :-
 	xml_files('flmf7aa1ep.cat.xml'),
 	atomic_list_concat([Word1,ci], '-', W),
+	Word1 \= '',
 	!,
 	N1 is N0 + 1,
 	N is N1 + 1,
 	Word2 = '-ci',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
+handle_word(W, S, N0, N) :-
+	xml_files('flmf7am1ep.xd.cat.xml'),
+	atomic_list_concat([Word1,là], '-', W),
+	Word1 \= '',
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-là',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
+handle_word(W, S, N0, N) :-
+	xml_files('flmf3_08000_08499ep.xd.cat.xml'),
+	atomic_list_concat([Word1,là], '-', W),
+	Word1 \= '',
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-là',
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
+	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
+	assert(word(S, Word1, N0, N1)),
+	assert(word(S, Word2, N1, N)).
+
+handle_word(W, S, N0, N) :-
+	xml_files('flmf7atep.cat.xml'),
+	atomic_list_concat([Word1,là], '-', W),
+	Word1 \= '',
+	!,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	Word2 = '-là',
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word1, N0, N1]),
 	format1('word(~w, ~k, ~w, ~w).~n', [S, Word2, N1, N]),
 	assert(word(S, Word1, N0, N1)),
@@ -365,6 +405,7 @@ handle_word(W, S, N0, N) :-
 handle_word(W, S, N0, N) :-
 	atom_chars(W, List),
 	append(Prefix, ['°','C'], List),
+	Prefix \= [],
 	!,
 	N1 is N0 + 1,
 	N is N1 + 1,
@@ -464,7 +505,14 @@ simplify_words(List0, List) :-
 	append(Prefix, ['Gmb.H'], List0),
 	append(Prefix, ['GmbH'], List),
 	!.
+simplify_words(List0, List) :-
+	append(Prefix, ['Gmb.','H'], List0),
+	append(Prefix, ['GmbH'], List),
+	!.
 
+simplify_words(['Puma','A.G.Rudolf', 'Dassler', 'Sport'],
+	       ['Puma','A.', 'G.', 'Rudolf', 'Dassler', 'Sport']) :-
+	!.
 simplify_words(['R','19'], ['R','19']) :-
 	xml_files('flmf7aj1ep.indent.xml'),
 	!.

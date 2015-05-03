@@ -15531,7 +15531,7 @@ sent(470, A) :-
 		   A).
 sent(471, A) :-
 	prob_parse(
-		   [ si(il, cls-pro:per, il, [np-1]),
+		   [ si('Il', cls-pro:per, il, [np-1]),
 		     si(y, clo-pro:per, y, [cl_y-1]),
 		     si(a,
 			v-ver:pres,

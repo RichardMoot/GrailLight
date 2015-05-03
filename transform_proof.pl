@@ -1,10 +1,26 @@
-:- module(transform_proof, [transform_proof/2]).
+:- module(transform_proof, [transform_proof/2,transform_all_proofs/1]).
 
 :- use_module(sem_utils, [replace_sem/4]).
+:- use_module(print_proof, [print_proof/3]).
+
+quote_mode(1, 1).
 
 % ==============================================
 % =           proof transformations            =
 % ==============================================
+
+transform_all_proofs(OutputFile) :-
+	open(OutputFile, write, Stream, []),
+	transform_all_proofs1(Stream).
+
+transform_all_proofs1(Stream) :-
+	proof(N, P0),
+	transform_proof(P0, P),
+	print_proof(N, P, Stream),
+	fail.
+transform_all_proofs1(Stream) :-
+	close(Stream).
+	
 
 transform_proof(P, Q) :-
 	transform_proof1(P, 0, _N, Q).
