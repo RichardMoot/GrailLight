@@ -242,6 +242,8 @@ proc printatom {string} {
 	return "("
     } elseif {$string eq "*RPAR*"} {
 	return ")"
+    } elseif {$string eq "*QUOTE*"} {
+	return "\""
     } else {
 	return [regsub -all {\*COMMA\*} $string ","]
     }
@@ -515,7 +517,6 @@ proc update_active {p tw} {
     while {$answer != "LIST END"} {
 	$tw insert end "$i. $answer\n"  
 	incr i
-	set list [split $answer]
 	if {[string is integer -strict [lindex $answer 0]]} {
 	    .table insert end [list [printpros [lindex $answer 4]] [printform [lindex $answer 3]] [lindex $answer 6] [lindex $answer 7]]
 	}

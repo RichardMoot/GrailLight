@@ -3132,7 +3132,8 @@ tcl_pros(C, P0, P) :-
 	reconstruct_pros(P0, As, P1),
 	tcl_pros(P1, P).
 
-
+tcl_pros('"', '*QUOTE*') :-
+	!.
 tcl_pros(',', '*COMMA*') :-
 	!.
 tcl_pros('(', '*LPAR*') :-
