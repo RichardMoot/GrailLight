@@ -2881,6 +2881,18 @@ subtract_premisses(gap_e, [A,B], Active0, Active) :-
 	stored(E, _, _, _, X, _),
 	!,
 	ord_delete(Active0, E, Active).
+subtract_premisses(c_r_lnr, [A,B,C], Active0, Active) :-
+	select(D, [A,B,C], [E,F]),
+	stored(D, _, _, _, dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _),
+	!,
+	ord_delete(Active0, E, Active1),
+	ord_delete(Active1, F, Active).
+subtract_premisses(c_l_lnr, [A,B,C], Active0, Active) :-
+	select(D, [A,B,C], [E,F]),
+	stored(D, _, _, _, dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _),
+	!,
+	ord_delete(Active0, E, Active1),
+	ord_delete(Active1, F, Active).
 
 subtract_premisses(_, Ps, As0, As) :-
 	ord_subtract(As0, Ps, As).
