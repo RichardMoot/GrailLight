@@ -1,4 +1,4 @@
-:- module(transform_proof, [transform_proof/2,transform_all_proofs/1]).
+:- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1]).
 
 :- use_module(sem_utils, [replace_sem/4]).
 :- use_module(print_proof, [print_proof/3]).
@@ -8,6 +8,55 @@ quote_mode(1, 1).
 % ==============================================
 % =           proof transformations            =
 % ==============================================
+
+infile(aa1).
+infile(aa2).
+infile(ab2).
+infile(ae1).
+infile(af2).
+infile(ag1).
+infile(ag2).
+infile(ah1).
+infile(ah2).
+infile(ai1).
+infile(ai2).
+infile(aj1).
+infile(ak1).
+infile(ak2).
+infile(al1).
+infile(am1).
+infile(am2).
+infile(an1).
+infile(an2).
+infile(ao1).
+infile(ao2).
+infile(ap1).
+infile(aq2).
+infile(as2).
+infile(at).
+infile(300).
+infile(8000).
+infile(annodis).
+
+chart_dir('chart_proofs/').
+nd_dir('nd_proofs/').
+
+transform_all_proofs :-
+	style_check(-singleton),
+	chart_dir(ChDir),
+	nd_dir(NDDir),
+	infile(Root),
+	format(user_error, '~NStarting ~w~n', [Root]),
+	atom_concat(Root, '_proofs.pl', InFile0),
+	atom_concat(ChDir, InFile0, InFile),
+	atom_concat(Root, '_nd.pl', OutFile0),
+	atom_concat(NDDir, OutFile0, OutFile),
+	compile(InFile),
+	transform_all_proofs(OutFile),
+	format(user_error, '~NDone ~w~n', [Root]),
+	fail.
+transform_all_proofs :-
+	style_check(+singleton).
 
 transform_all_proofs(OutputFile) :-
 	open(OutputFile, write, Stream, []),

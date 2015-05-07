@@ -53,6 +53,7 @@ latex_proofs.pdf
 proof.aux
 proof.log
 proof.pdf
+texput.log
 stored.txt
 tmp*.pl
 annodis_backup.pl

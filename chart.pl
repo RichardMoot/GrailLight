@@ -114,29 +114,73 @@ main :-
 
 
 main([]).
+main([from,A0,to,B0,F|Fs]) :-
+	!,
+	get_integer(A0, A),
+	get_integer(B0, B),
+	compile(F),
+	chart_parse_from_to(A,B),
+	main(Fs).
+main([from,A0,F|Fs]) :-
+	!,
+	get_integer(A0, A),
+	compile(F),
+	chart_parse_all(A),
+	main(Fs).
+main([to,B0,F|Fs]) :-
+	!,
+	get_integer(B0, B),
+	compile(F),
+	chart_parse_until(B),
+	main(Fs).
 main([F|Fs]) :-
 	compile(F),
 	chart_parse_all,
 	main(Fs).
 
+get_integer(N0, N) :-
+	integer(N0),
+	!,
+	N = N0.
+get_integer(N0, N) :-
+	atom(N0),
+	!,
+	atom_number(N0, N).
+
 % = parse all sentences.
 
 chart_parse_all :-
 	default_depth_limit(DLimit),
-	chart_parse_all(1, DLimit).
+	chart_parse_all(1, max, DLimit).
 
 % = parse all sentences with a given depth limit DL
 
 chart_parse_all_dl(DL) :-
-	chart_parse_all(1, DL).
+	chart_parse_all(1, max, DL).
 
 % = parse all sentences starting with SentNo
 
 chart_parse_all(SentNo) :-
 	default_depth_limit(DLimit),
-	chart_parse_all(SentNo, DLimit).
+	chart_parse_all(SentNo, max, DLimit).
 
-chart_parse_all(SentNo, DL) :-
+% = parse all sentences until Max
+
+chart_parse_until(Max) :-
+	default_depth_limit(DLimit),
+	chart_parse_all(1, Max, DLimit).
+
+chart_parse_until(Max, DLimit) :-
+	chart_parse_all(1, Max, DLimit).
+
+chart_parse_from_to(Start, End) :-
+	default_depth_limit(DLimit),
+	chart_parse_all(Start, End, DLimit).	
+
+chart_parse_from_to(Start, End, DLimit) :-
+	chart_parse_all(Start, End, DLimit).	
+
+chart_parse_all(SentNo, Max, DL) :-
 	retractall(unparsed(_,_,_)),
 	new_output_file(grail_log, log),
 	new_output_file(unparsed, unparsed),
@@ -148,7 +192,7 @@ chart_parse_all(SentNo, DL) :-
 	set_global_counter('$CHART_LIMIT', 0),
 	set_global_counter('$CHART_ALL', 0),
 	print_grail_semantics_header,
-	chart_parse_all0(SentNo, DL),
+	chart_parse_all0(SentNo, Max, DL),
 	/* cleanup after failure-driven loop has parsed all sentences */
 	'$CHART_ALL'(ALL),
    (
@@ -174,11 +218,11 @@ chart_parse_all(SentNo, DL) :-
 	close(plog),
 	close(log).
 
-chart_parse_all0(N, DL) :-
+chart_parse_all0(N, Max, DL) :-
 	clause(user:sent(N0,_),_),
     (
-        /* fail for sentence numbers smaller than N */
-        N0 >= N
+        /* fail for sentence numbers smaller than N or bigger than Max */
+        N0 >= N, N0 @=< Max
     ->
         increase_global_counter('$CHART_ALL'),
         set_global_counter('$CHART_CURRENT', N0)
@@ -208,7 +252,7 @@ chart_parse_all0(N, DL) :-
 	format('~nSuccess: ~w (~w)~n', [N0,DepthLimit])
      ),
         fail.
-chart_parse_all0(_, _).
+chart_parse_all0(_, _, _).
 
 % = parse_with_depth_limit(+SentNo, -Result, +MaxDepth, -FinalDepth)
 %

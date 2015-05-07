@@ -5,6 +5,7 @@ addgl = /usr/bin/sed \
 addglc = /usr/bin/sed \
         -e 's/chart.pl/grail_light_cr.pl/g'
 
+proofs: aa1.pl aa2.pl
 
 all: grail_light.pl grail_light_cr.pl parser_cr.tcl parser.tcl
 	chmod a+x parser_cr.tcl parser.tcl
