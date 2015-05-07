@@ -4,24 +4,24 @@
 
 :- module(print_proof, [print_proof/3,xml_proof/3]).
 
+:- use_module(sem_utils, [get_max_variable_number/2]).
+
 print_proof(Index, Proof, Stream) :-
-	numbervars(Proof, 0, _),
 	print_title(Proof, Index, Stream),
 	format(Stream, 'proof(~w, ', [Index]),
 	print_proof1(Proof, 0, Stream),
 	format(Stream, ').~2n', []).
 
-print_proof1(rule(RName,Pros0,Sem,Ds), T0, Stream) :-
-%	reduce_pros(Pros0, Pros),
-	Pros = Pros0,
+print_proof1(rule(RName,Pros,FormulaSem0,Ds), T0, Stream) :-
+	update_sem(FormulaSem0, FormulaSem),
     (
 	Ds = []
     ->
-        write_term(Stream, rule(RName, Pros, Sem, Ds), [numbervars(true),quoted(true)])
+        format(Stream, 'rule(~W, ~W, ~@, [])', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],print_formula_sem(FormulaSem,Stream)])
     ;
         Ds = [D|Ds0], 
         T is T0 + 3,
-        format(Stream, 'rule(~W, ~W ,~W , [~n', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],Sem,[numbervars(true),quoted(true)]]),
+        format(Stream, 'rule(~W, ~W ,~@ , [~n', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],print_formula_sem(FormulaSem,Stream)]),
         tab(Stream, T),
         print_proof_list(Ds0, D, T, Stream),
         format(Stream, '])', [])
@@ -73,7 +73,61 @@ reduce_pros(p(I,_,_,L0,R0), p(I,L,R)) :-
 	reduce_pros(L0, L),
 	reduce_pros(R0, R).
 
+update_sem(lit(let)-_, lit(let)-true) :-
+	/* special case for let to avoid singleton variable warnings */
+	!.
+update_sem(Formula-Sem, Formula-Sem) :-
+	get_max_variable_number(Sem, Max0),
+	Max is Max0 + 1,
+	numbervars(Sem, Max, _).	
 
+print_formula_sem(Formula-Sem, Stream) :-
+	print_formula_sem(Formula, Sem, Stream).
+
+print_formula_sem(Formula, Sem, Stream) :-
+	print_formula(Formula, Stream),
+	format(Stream, '-~W', [Sem, [numbervars(true),quoted(true)]]).
+
+print_formula(lit(A), Stream) :-
+	format(Stream, 'lit(~@)', [print_formula1(A,Stream)]).
+print_formula(dr(I,A,B), Stream) :-
+	format(Stream, 'dr(~w,~@,~@)', [I,print_formula(A,Stream),print_formula(B,Stream)]).
+print_formula(dl(I,A,B), Stream) :-
+	format(Stream, 'dl(~w,~@,~@)', [I,print_formula(A,Stream),print_formula(B,Stream)]).
+print_formula(p(I,A,B), Stream) :-
+	format(Stream, 'p(~w,~@,~@)', [I,print_formula(A,Stream),print_formula(B,Stream)]).
+print_formula(dia(I,A), Stream) :-
+	format(Stream, 'dia(~w,~@)', [I,print_formula(A,Stream)]).
+print_formula(box(I,A), Stream) :-
+	format(Stream, 'dia(~w,~@)', [I,print_formula(A,Stream)]).
+
+print_formula1(np(A,B,C), Stream) :-
+	format(Stream, 'np(~@,~@,~@)', [print_item(A,Stream),print_item(B,Stream),print_item(C,Stream)]).
+print_formula1(s(A), Stream) :-
+	nonvar(A),
+	A = inf(B),
+	!,
+	format(Stream, 's(inf(~@))', [print_item(B,Stream)]).
+print_formula1(s(A), Stream) :-
+	format(Stream, 's(~@)', [print_item(A,Stream)]).
+print_formula1(pp(A), Stream) :-
+	format(Stream, 'pp(~@)', [print_item(A,Stream)]).
+print_formula1(n, Stream) :-
+	write(Stream, n).
+print_formula1(cl_r, Stream) :-
+	write(Stream, cl_r).
+print_formula1(cl_y, Stream) :-
+	write(Stream, cl_y).
+print_formula1(txt, Stream) :-
+	write(Stream, txt).
+print_formula1(let, Stream) :-
+	write(Stream, let).
+
+print_item('$VAR'(_), Stream) :-
+	!,
+	write(Stream, '_').
+print_item(Atom, Stream) :-
+	format(Stream, '~W', [Atom,[quoted(true)]]).
 
 % ==============================================
 % =              output XML proof              =
