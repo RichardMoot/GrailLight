@@ -50,6 +50,9 @@ lassy/latex_proofs.pdf
 latex_proofs.aux
 latex_proofs.log
 latex_proofs.pdf
+proof.aux
+proof.log
+proof.pdf
 stored.txt
 tmp*.pl
 annodis_backup.pl

@@ -115,10 +115,11 @@ transform_proof(rule(dit_np, p(0,p(0,P,Q),R), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
  					ProofPPart])]),
  			    ProofNP])])) :-
  	!,
+%	trace,
  	N is N0 + 1,
  	quote_mode(I0, I),
  	ProofAux = rule(_, _, dr(0,_,PPart)-_, _),
- 	Sem2 = appl(lambda(Z,appl(appl(_X,appl(Y,Z)))),_V),
+ 	Sem2 = appl(lambda(Z,appl(_X,appl(Y,Z))),_V),
  	Sem1 = appl(Sem2,W),
  	Sem = lambda(W,Sem1).
 transform_proof(rule(a_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,

@@ -37,8 +37,8 @@ display_unreduced_semantics(no).
 
 default_depth_limit(10000).
 %default_depth_limit(25000).
-output_proofs(nd).
-%output_proofs(chart).
+%output_proofs(nd).
+output_proofs(chart).
 
 % = function combining the weight of items given a rule application.
 
@@ -2083,7 +2083,7 @@ application_r(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, S
 
 a_dit(I, K, data(Pros1, Sem1, Prob1, H, SetA0, SetB0, SetC0, SetD0),
       data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
-      data(p(0,Pros1,Pros2), lambda(S, appl(appl(Sem1,appl(Sem2,S)))), Prob, H, SetA, SetB, SetC, SetD)) :-
+      data(p(0,Pros1,Pros2), lambda(S, appl(Sem1,appl(Sem2,S))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, a_dit, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 

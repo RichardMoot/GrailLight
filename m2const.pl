@@ -41,7 +41,7 @@ verbose(false).
 % xml_files('flmf7an1ep.xml').
 % xml_files('flmf7an2co.af.cat.xml').
 % xml_files('flmf7ao1ep.xml').
-xml_files('flmf7ao2ep.xml').
+% xml_files('flmf7ao2ep.xml').
 % xml_files('flmf7ap1ep.af.cat.xml').
 % xml_files('flmf7aq2ep.xd.cat.xml').
 % xml_files('flmf7as2ep.af.cat.xml').
@@ -50,7 +50,7 @@ xml_files('flmf7ao2ep.xml').
 % xml_files('flmf300_13000ep.cat.xml').
 % xml_files('flmf3_08000_08499ep.xd.cat.xml').
 %
-% xml_files('annodis.er.xml').
+xml_files('annodis.er.xml').
 
 :- dynamic word/4, lemma/4, constituent/4.
 

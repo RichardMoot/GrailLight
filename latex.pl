@@ -31,7 +31,8 @@
         latex_label/5,            % Label ->
         latex_formula/2,          % Formula x Stream ->
 	latex_semantics/3,        % Semantics x Formula x Stream -> 
-        latex_proof/2,            % Proof x Stream ->
+	latex_proof/2,            % Proof x Stream ->
+	latex_all_proofs/0,	  
 	latex_list/2]).           % List x Stream ->
 
 :- use_module(sem_utils, [get_variable_types/3]).
@@ -1376,6 +1377,23 @@ latex_list1([], _).
 latex_list1([X|Xs], Stream) :-
 	format(Stream, '\\item ~w~n', [X]),
 	latex_list1(Xs, Stream).
+
+
+% = latex_all_proofs
+
+latex_all_proofs :-
+	open('tlgbank_proofs.tex', write, Stream),
+	latex_header(Stream, 'paperwidth=400cm,textwidth=395cm'),
+	latex_all_proofs1(Stream),
+	latex_tail(Stream),
+	close(Stream).
+
+latex_all_proofs1(Stream) :-
+	proof(N, Proof),
+	format(Stream, '~2n~d. ', [N]),
+	latex_proof(Proof, Stream),
+	fail.
+latex_all_proofs1(_).
 
 % = latex_proof(+Proof, +Stream)
 %
