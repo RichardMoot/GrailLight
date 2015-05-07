@@ -541,6 +541,7 @@ proc puts_prolog {prolog string} {
 }
 
 # Button commands
+
 proc prev {} {
 
     global cur_sent max_sent sent plfile
@@ -888,6 +889,12 @@ bind $bodytag <u> {
 	pl_command $plfile "undo($item)" .answer.text
     }
 
+}
+
+bind $bodytag <x> {
+
+    pl_command $plfile "export" .answer.text
+    
 }
 
 bind . <Control-Key-c> {

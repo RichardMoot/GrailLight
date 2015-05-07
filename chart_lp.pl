@@ -995,6 +995,12 @@ check_solution(Sem) :-
 	compute_proof(Index),
        	increase_global_counter('$SOLUTION').
 
+check_solution(Index, Sem) :-
+	final_item(Goal, Index, Sem),
+	item_in_chart(Goal, Index),
+	compute_proof(Index),
+       	increase_global_counter('$SOLUTION').
+
 init_agenda(Axioms, Agenda) :-
 	empty_agenda(Empty),
 	add_axioms_to_agenda(Axioms, Empty, Agenda),
@@ -1876,6 +1882,9 @@ wrappable(F, G, I, _) :-
 wrappable(F, G, _, _) :-
 	other_wrappable(F, G).
 
+
+other_wrappable(dl(0,lit(np(_,_,_)),lit(s(S))), lit(s(S))) :-
+	S \== main.
 other_wrappable(dl(0,lit(n),lit(n)), dl(0,lit(n),lit(n))).
 other_wrappable(dr(0,X,lit(np(_,_,_))), Y) :-
 	other_wrappable(X, Y).
@@ -2673,6 +2682,9 @@ start(choose(Input)) :-
 	write_active(A),
 	flush_output,
 	update_state(A, N).
+start(export) :-
+	!,
+	export_stored.
 start(load(File)) :-
 	!,
 	format('COMPILING~n', []),
@@ -2789,10 +2801,9 @@ update_state(Active, N) :-
 	retractall(state(_,_)),
    (
         Active = [I],
-    	check_solution(Sem)
+    	check_solution(I, Sem)
    ->
-	format('~nSOLUTION~n~w~n', [Sem]),
-        compute_proof(I)
+	format('~nSOLUTION~n~w~n', [Sem])
    ;
         true
    ),
