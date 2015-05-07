@@ -1491,7 +1491,6 @@ add_roles_predicate(L0, P, E) -->
 % =  Default semantics with POS tag   =
 % =====================================
 
-
 % = months and weekdays
 
 default_semantics(siecle, nom, lit(n), lambda(X,drs([],[appl(appl(temps,siecle),X)]))).
@@ -2580,6 +2579,8 @@ default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_)
 % =====================================
 % = Default semantics without POS tag =
 % =====================================
+
+default_semantics(et, dr(0,dl(0,dr(0,lit(s(_)),dia(1,box(1,X))),dr(0,lit(s(_)),box(1,dia(1,X)))),dr(0,lit(s(_)),dia(1,box(1,X)))), lambda(P2,lambda(P1,lambda(V,lambda(E,merge(appl(appl(P1,V),E),merge(drs([event(E2)],[]),appl(appl(P2,V),E2)))))))).
 
 default_semantics(W, dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))), lambda(Adj, lambda(P,lambda(V,merge(appl(appl(Adj,P),V),drs([event(E)],[appl(W,E),bool(E,=,'event?')])))))).
 default_semantics(W, dr(0,dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),lit(pp(Prp))), lambda(PP,lambda(Adj, lambda(P,lambda(V,merge(appl(appl(Adj,P),V),appl(PP,lambda(X,drs([event(E)],[appl(appl(PW,X),E),bool(E,=,'event?')]))))))))) :-
