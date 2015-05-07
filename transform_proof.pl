@@ -15,8 +15,13 @@ transform_all_proofs(OutputFile) :-
 
 transform_all_proofs1(Stream) :-
 	proof(N, P0),
-	transform_proof(P0, P),
-	print_proof(N, P, Stream),
+   (	
+	transform_proof(P0, P)
+   ->
+	print_proof(N, P, Stream)
+   ;
+	format(user_error, '~N{Warning: failed to transform proof ~d!}~n', [N])
+   ),
 	fail.
 transform_all_proofs1(Stream) :-
 	close(Stream).
@@ -133,7 +138,7 @@ transform_proof(rule(a_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0,
 	N is N0 + 1,
  	quote_mode(I0, I),
  	Right = rule(_, _, dl(1,Y,PPart)-_, _), 
- 	Sem = lambda(S, appl(appl(Sem1,appl(Sem2,S)))).
+ 	Sem = lambda(S, appl(Sem1,appl(Sem2,S))).
 transform_proof(rule(dit_np, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
 		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
 		     [rule(dr, p(0,p(1,'$VAR'(N0),ProsL), ProsR), X-Sem1,
