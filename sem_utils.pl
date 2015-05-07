@@ -8,6 +8,7 @@
 		       sem_to_prolog_query/2,
 		       sem_to_prolog_query/3,
 		       check_lexicon_typing/0,
+		       get_max_variable_number/2,
 		       free_vars/2,
 		       freeze/2,
 		       melt/2,
