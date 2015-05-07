@@ -1710,40 +1710,33 @@ inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 
 % These predicates verify side conditions on the different inference rules
 
-combine_gap(I, J, data(_, Term0, _, _, _, _, _, _),
-	          data(Pros1, Term1, Prob1, _, As1, Bs1, Cs1, Ds1),
-	          data(Pros2,Term2,Prob2,H2,As2,Bs2,Cs2,Ds2),
-	          data(p(0,Pros1,Pros2),appl(Term2,lambda(X,Sem)),Prob,H2,As,Bs,Cs,Ds)) :-
-	replace_sem(Term1, Term0, X, Sem),
-%	melt_bound_variables(Sem0, Sem),
-%	numbervars(Sem, 0, _),
+combine_gap(I, J, data(_    , Term0, _    , _ , _  , _  , _  , _  ),   % extracted functor
+	          data(Pros1, Term1, Prob1, _ , As1, Bs1, Cs1, Ds1),   % result sentence
+	          data(Pros2, Term2, Prob2, H2, As2, Bs2, Cs2, Ds2),   % gapping "licensor"
+	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
+	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
+	replace_sem(Term1, Term0, X, TermX),
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob),
 	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).
 
-% =
 
-split_pros(I-K, X, Y, Bs, I-J, J-K) :-
-	stored(_, _, I, J, X, _),
-	stored(_, _, J, K0, Y, _),
-    (
-        Bs = [t(I,K,_,_)|_]
-    ->
-        true
-    ;
-        K0 = K
-    ).
-split_pros(p(0, ProsL0, ProsR0), _, _, _, I-J, J-K) :-
-	!,
-	pros_left(ProsL0, I),
-	pros_right(ProsL0, J),
-	pros_left(ProsR0, J),
-	pros_right(ProsR0, K).
-
-
-% =
+% = is_clitic(+Formula)
+%
+% true if Formula is a clitic
 
 is_clitic(cl_r).
 is_clitic(cl_y).
+
+% = is_clitic(+Word, +POStag)
+%
+% true if Word-POStag is a reflexive clitic (only se/me for now)
+
+is_clitic('s\'', pro:per).
+is_clitic(se, pro:per).
+is_clitic('s\'', clr-pro:per).
+is_clitic(se, clr-pro:per).
+is_clitic(me, clo-pro:per).
+is_clitic(me, pro:per).
 
 % = 
 
@@ -1782,13 +1775,6 @@ move_vp_left(Index) :-
     ;
         true
     ).
-
-is_clitic('s\'', pro:per).
-is_clitic(se, pro:per).
-is_clitic('s\'', clr-pro:per).
-is_clitic(se, clr-pro:per).
-is_clitic(me, clo-pro:per).
-is_clitic(me, pro:per).
 
 assert_if_let(Pos, Index) :-
     (
