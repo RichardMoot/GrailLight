@@ -353,8 +353,8 @@ subterm(N0, X, Y) :-
 
 alpha_conversion(Term0, Term, Max0, Max) :-
 	melt_bound_variables(Term0, Term),
-	Max1 is Max0 + 1,
-	numbervars(Term, Max1, Max).
+	numbervars(Term, Max0, Max1),
+	Max is Max1 + 1.
 
 % = replace_sem(InTerm, Term1, Term2, OutTerm, Max)
 %
@@ -695,12 +695,11 @@ get_variable_numbers_args(A0, A, Term, L0, L) :-
 
 % = get_max_variable_number(+LambdaTerm, ?MaxVar)
 %
-% true if MaxVar is the largest number N which
-% occurs as a subterm '$VAR'(N)) of LambdaTerm
-% That is to say, if LambdaTerm contains variables
-% and MaxVar1 is MaxVar + 1, then the call
+% true if MaxVar+1 is the largest number N which
+% occurs as a subterm '$VAR'(N) of LambdaTerm
+% That is to say, the call
 %
-%   numbervars(LambdaTerm, MaxVar1, NewMaxVar)
+%   numbervars(LambdaTerm, MaxVar, NewMaxVar)
 %
 % is guaranteed to be sound (in the sense that
 % it does not accidentally unifies distinct
@@ -708,10 +707,10 @@ get_variable_numbers_args(A0, A, Term, L0, L) :-
 %
 % If LambdaTerm contains no occurrences of a
 % subterm '$VAR'(N) then MaxVar is defined as
-% -1.
+% 0.
 
 get_max_variable_number(Term, Max) :-
-	get_max_variable_number(Term, -1, Max).
+	get_max_variable_number(Term, 0, Max).
 
 get_max_variable_number(Var, Max, Max) :-
 	var(Var),

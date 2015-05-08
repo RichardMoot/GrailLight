@@ -7,6 +7,8 @@
 :- use_module(sem_utils, [get_max_variable_number/2]).
 
 print_proof(Index, Proof, Stream) :-
+	get_max_variable_number(Proof, Max),
+	numbervars(Proof, Max, _, [singletons(true)]),
 	print_title(Proof, Index, Stream),
 	format(Stream, 'proof(~w, ', [Index]),
 	print_proof1(Proof, 0, Stream),
@@ -76,10 +78,10 @@ reduce_pros(p(I,_,_,L0,R0), p(I,L,R)) :-
 update_sem(lit(let)-_, lit(let)-true) :-
 	/* special case for let to avoid singleton variable warnings */
 	!.
-update_sem(Formula-Sem, Formula-Sem) :-
-	get_max_variable_number(Sem, Max0),
-	Max is Max0 + 1,
-	numbervars(Sem, Max, _).	
+update_sem(FS, FS).
+%update_sem(Formula-Sem, Formula-Sem) :-
+%	get_max_variable_number(Sem, Max),
+%	numbervars(Sem, Max, _).	
 
 print_formula_sem(Formula-Sem, Stream) :-
 	print_formula_sem(Formula, Sem, Stream).

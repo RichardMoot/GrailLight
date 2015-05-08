@@ -9,34 +9,34 @@ quote_mode(1, 1).
 % =           proof transformations            =
 % ==============================================
 
-infile(aa1).
-infile(aa2).
-infile(ab2).
+% infile(aa1).
+% infile(aa2).
+% infile(ab2).
 infile(ae1).
-infile(af2).
-infile(ag1).
-infile(ag2).
-infile(ah1).
-infile(ah2).
-infile(ai1).
-infile(ai2).
-infile(aj1).
-infile(ak1).
-infile(ak2).
-infile(al1).
-infile(am1).
-infile(am2).
-infile(an1).
-infile(an2).
-infile(ao1).
-infile(ao2).
-infile(ap1).
-infile(aq2).
-infile(as2).
-infile(at).
-infile(300).
-infile(8000).
-infile(annodis).
+% infile(af2).
+% infile(ag1).
+% infile(ag2).
+% infile(ah1).
+% infile(ah2).
+% infile(ai1).
+% infile(ai2).
+% infile(aj1).
+% infile(ak1).
+% infile(ak2).
+% infile(al1).
+% infile(am1).
+% infile(am2).
+% infile(an1).
+% infile(an2).
+% infile(ao1).
+% infile(ao2).
+% infile(ap1).
+% infile(aq2).
+% infile(as2).
+% infile(at).
+% infile(300).
+% infile(8000).
+% infile(annodis).
 
 chart_dir('chart_proofs/').
 nd_dir('nd_proofs/').
@@ -65,7 +65,7 @@ transform_all_proofs(OutputFile) :-
 transform_all_proofs1(Stream) :-
 	proof(N, P0),
    (	
-	transform_proof(P0, P)
+	safe_transform_proof(P0, P)
    ->
 	print_proof(N, P, Stream)
    ;
@@ -75,6 +75,13 @@ transform_all_proofs1(Stream) :-
 transform_all_proofs1(Stream) :-
 	close(Stream).
 	
+
+safe_transform_proof(P, _) :-
+	var(P),
+	!,
+	fail.
+safe_transform_proof(P, Q) :-
+	transform_proof(P, Q).
 
 transform_proof(P, Q) :-
 	transform_proof1(P, 0, _N, Q).
@@ -110,7 +117,7 @@ transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
-transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dr(0,A,B)))), [Proof4])])) :-
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dr(0,A,B))))-_, [Proof4])])) :-
         /* X = "et", YZ = sentence with extracted verb */
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,dr(0,A,B))))),
@@ -120,7 +127,7 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	global_replace_pros(Proof3, Pros, p(0,'$VAR'(N0), Pros), N0, Proof4),
 	N is N0 + 1,
 	!.
-transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B))), [Proof4])])) :-
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B)))-_, [Proof4])])) :-
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
 	rule_conclusion(Proof1, X, ExtrForm, _),
@@ -128,7 +135,7 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
 	!.
-transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B))), [Proof4]),Proof2])) :-
+transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-_, [Proof4]),Proof2])) :-
 	GoalPros = p(_,XY,Z),
 	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),
 	rule_conclusion(Proof2, Z, ExtrForm, _),
@@ -176,6 +183,8 @@ transform_proof(rule(dit_np, p(0,p(0,P,Q),R), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
  	Sem2 = appl(lambda(Z,appl(_X,appl(Y,Z))),_V),
  	Sem1 = appl(Sem2,W),
  	Sem = lambda(W,Sem1).
+% Sem = lambda(J,appl(appl(lambda(K,appl(appl(I,appl(J,K)))),J),appl(K,L)))
+% Sem1 = appl(appl(lambda(K,appl(appl(I,appl(J,K)))),J),appl(K,L))
 transform_proof(rule(a_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
  		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
  		     [rule(dr, p(0,ProsL,p(I,'$VAR'(N0),ProsR)), X-appl(Sem1,appl(Sem2,S)),

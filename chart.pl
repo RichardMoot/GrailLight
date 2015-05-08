@@ -1884,7 +1884,8 @@ wrappable(F, G, _, _) :-
 
 
 other_wrappable(dl(0,lit(np(_,_,_)),lit(s(S))), lit(s(S))) :-
-	S \== main.
+	S \== main,
+	S \== pass.
 other_wrappable(dl(0,lit(n),lit(n)), dl(0,lit(n),lit(n))).
 other_wrappable(dr(0,X,lit(np(_,_,_))), Y) :-
 	other_wrappable(X, Y).
@@ -1945,6 +1946,9 @@ no_island_violation(1, Formula, Gap) :-
 	fail.
 no_island_violation(_, _, _).
 
+% this is right for adjectivally used prepositional phrases, but maybe not for eg. passives: VERIFY!
+island_violation(dl(0,lit(n),lit(n)), lit(np(_,_,_))).
+island_violation(dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lit(np(_,_,_))).
 island_violation(lit(pp(_)), lit(np(_,_,_))).
 island_violation(dl(1,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
 % "il y a"
@@ -2108,8 +2112,8 @@ application_l(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, S
 	combine_probability(Prob1, Prob2, J, K, appl_l(Pros1,Pros2), Prob),
 	combine_sets(SetA1, SetB1, SetC1, SetD1, SetA0, SetB0, SetC0, SetD0, SetA, SetB, SetC, SetD).
 application_r(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, SetD0),
-	         data(Pros2, Sem2, Prob2, H2, SetA1, SetB1, SetC1, SetD1),
-	         data(p(M,Pros1,Pros2), appl(Sem1,Sem2), Prob, H, SetA, SetB, SetC, SetD)) :-
+	                     data(Pros2, Sem2, Prob2, H2, SetA1, SetB1, SetC1, SetD1),
+	                     data(p(M,Pros1,Pros2), appl(Sem1,Sem2), Prob, H, SetA, SetB, SetC, SetD)) :-
    (
         Head = f
    ->
@@ -2121,14 +2125,14 @@ application_r(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, S
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 a_dit(I, K, data(Pros1, Sem1, Prob1, H, SetA0, SetB0, SetC0, SetD0),
-      data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
-      data(p(0,Pros1,Pros2), lambda(S, appl(Sem1,appl(Sem2,S))), Prob, H, SetA, SetB, SetC, SetD)) :-
+            data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
+            data(p(0,Pros1,Pros2), lambda(S, appl(Sem1,appl(Sem2,S))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, a_dit, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 dit_np(I, K, data(Pros1, Sem1, Prob1, H, SetA0, SetB0, SetC0, SetD0),
-                 data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
-                 data(p(0,Pros1,Pros2), lambda(S, appl(appl(Sem1, S), Sem2)), Prob, H, SetA, SetB, SetC, SetD)) :-
+             data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
+             data(p(0,Pros1,Pros2), lambda(S, appl(appl(Sem1, S), Sem2)), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, dit_np, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
