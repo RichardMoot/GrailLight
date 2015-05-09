@@ -101,7 +101,7 @@ print_formula(p(I,A,B), Stream) :-
 print_formula(dia(I,A), Stream) :-
 	format(Stream, 'dia(~w,~@)', [I,print_formula(A,Stream)]).
 print_formula(box(I,A), Stream) :-
-	format(Stream, 'dia(~w,~@)', [I,print_formula(A,Stream)]).
+	format(Stream, 'box(~w,~@)', [I,print_formula(A,Stream)]).
 
 print_formula1(np(A,B,C), Stream) :-
 	format(Stream, 'np(~@,~@,~@)', [print_item(A,Stream),print_item(B,Stream),print_item(C,Stream)]).
