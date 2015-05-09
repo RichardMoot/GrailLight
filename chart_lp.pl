@@ -1940,14 +1940,24 @@ wrappable(dr(0,X,dl(0,lit(np(_,_,_)),lit(s(inf(_))))), Y) :-
 	!,
 	wrappable(X, Y).
 
+% = no_island_violation(+Mode, +Formula, +Gap)
+%
+% true if Formula/Gap is a valid point for extraction of Gap
+
 no_island_violation(1, Formula, Gap) :-
 	island_violation(Formula, Gap),
 	!,
 	fail.
 no_island_violation(_, _, _).
 
+% = island_violation(+Formula, +Gap)
+%
+% true if Gap cannot be extracted from Formula/Gap
+
+% this is right for adjectivally used prepositional phrases, but maybe not for eg. passives: VERIFY!
 island_violation(dl(0,lit(n),lit(n)), lit(np(_,_,_))).
 island_violation(dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lit(np(_,_,_))).
+island_violation(lit(np(_,_,_)), lit(np(_,_,_))).
 island_violation(lit(pp(_)), lit(np(_,_,_))).
 island_violation(dl(1,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
 % "il y a"

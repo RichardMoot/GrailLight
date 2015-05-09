@@ -9,34 +9,34 @@ quote_mode(1, 1).
 % =           proof transformations            =
 % ==============================================
 
-% infile(aa1).
-% infile(aa2).
-% infile(ab2).
+infile(aa1).
+infile(aa2).
+infile(ab2).
 infile(ae1).
-% infile(af2).
-% infile(ag1).
-% infile(ag2).
-% infile(ah1).
-% infile(ah2).
-% infile(ai1).
-% infile(ai2).
-% infile(aj1).
-% infile(ak1).
-% infile(ak2).
-% infile(al1).
-% infile(am1).
-% infile(am2).
-% infile(an1).
-% infile(an2).
-% infile(ao1).
-% infile(ao2).
-% infile(ap1).
-% infile(aq2).
-% infile(as2).
-% infile(at).
-% infile(300).
-% infile(8000).
-% infile(annodis).
+infile(af2).
+infile(ag1).
+infile(ag2).
+infile(ah1).
+infile(ah2).
+infile(ai1).
+infile(ai2).
+infile(aj1).
+infile(ak1).
+infile(ak2).
+infile(al1).
+infile(am1).
+infile(am2).
+infile(an1).
+infile(an2).
+infile(ao1).
+infile(ao2).
+infile(ap1).
+infile(aq2).
+infile(as2).
+infile(at).
+infile(300).
+infile(8000).
+infile(annodis).
 
 chart_dir('chart_proofs/').
 nd_dir('nd_proofs/').
@@ -51,6 +51,7 @@ transform_all_proofs :-
 	atom_concat(ChDir, InFile0, InFile),
 	atom_concat(Root, '_nd.pl', OutFile0),
 	atom_concat(NDDir, OutFile0, OutFile),
+	abolish(proof/2),
 	compile(InFile),
 	transform_all_proofs(OutFile),
 	format(user_error, '~NDone ~w~n', [Root]),
@@ -138,7 +139,7 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-_, [Proof4]),Proof2])) :-
 	GoalPros = p(_,XY,Z),
 	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),
-	rule_conclusion(Proof2, Z, ExtrForm, _),
+	rule_conclusion(Proof2, Z, ExtrForm-_, _),
 	find_e_start(Proof1, e_start_l, Z, ExtrForm, B, N0, Pros, Proof3),
 	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
