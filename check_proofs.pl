@@ -2,6 +2,36 @@
 %:- compile(proofs).
 :- use_module(ordset, [ord_insert/3,ord_union/3]).
 
+nd_file(aa1_nd).
+nd_file(aa2_nd).
+nd_file(ab2_nd).
+nd_file(ae1_nd).
+nd_file(af2_nd).
+nd_file(ag1_nd).
+nd_file(ag2_nd).
+nd_file(ah1_nd).
+nd_file(ah2_nd).
+nd_file(ai1_nd).
+nd_file(ai2_nd).
+nd_file(aj1_nd).
+nd_file(ak1_nd).
+nd_file(ak2_nd).
+nd_file(al1_nd).
+nd_file(am1_nd).
+nd_file(am2_nd).
+nd_file(an1_nd).
+nd_file(an2_nd).
+nd_file(ao1_nd).
+nd_file(ao2_nd).
+nd_file(ap1_nd).
+nd_file(aq2_nd).
+nd_file(as2_nd).
+nd_file(at_nd).
+nd_file('300_nd').
+nd_file('8000_nd').
+nd_file(annodis_nd).
+
+
 check_proofs :-
 	findall(N, proof(N, _), ProofList),
 	check_proofs(ProofList, []).
@@ -22,6 +52,23 @@ check_proof(rule(Nm, _, _, Rs), RNs0, RNs) :-
 %        RNs1 = [F|RNs0],	
 	check_proof_list(Rs, RNs1, RNs).
 
+
+all_strange_proofs :-
+	findall(F, nd_file(F), FileList),
+	all_strange_proofs(FileList).
+
+all_strange_proofs([]).
+all_strange_proofs([F|Fs]) :-
+	abolish(proof/2),
+	compile(F),
+	findall(N, proof(N, _), ProofList),
+	strange_proofs(ProofList, 0, ST, 0, TT, Ss, []),
+	Normal is TT - ST,
+	NPct is Normal/TT,
+	SPct is ST/TT,
+	format('~N**~w**~nNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [F,Normal,NPct,ST,SPct,TT]),
+	print_list(Ss),
+	all_strange_proofs(Fs).
 
 strange_proofs :-
 	findall(N, proof(N, _), ProofList),
