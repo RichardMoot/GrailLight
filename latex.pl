@@ -46,6 +46,7 @@ portray_axioms(short).
 
 %invisible_mode('NOTHING').
 invisible_mode(0).
+invisible_unary_mode('NOTHING').
 
 % = latex_header.
 %
@@ -297,7 +298,7 @@ latex_label(dia(I,A), _, Con, Stream) :-
         write(Stream, '\\langle '),
         latex_label(A, 1, Con, Stream),
         write(Stream, '\\rangle^{'),
-        write_mode(I, Stream),
+        write_unary_mode(I, Stream),
         write(Stream, '}').
 
 latex_label(leaf(_L,_R,Word,_Pos,_Lemma), _, _, Stream) :-
@@ -357,8 +358,6 @@ latex_formula(T, Stream) :-
 latex_formula(T) :-
         latex_formula(T, 1, user_output).
 
-% = latex_formula0(+Type)
-% write a type with outer brackets
 
 latex_formula(lit(np(_,_,_)), _, Stream) :- 
 	!,
@@ -442,7 +441,7 @@ latex_formula(p(I,A,B), N, Stream) :-
 latex_formula(dia(I,A), _, Stream) :-
         !,
         write(Stream, '\\Diamond_{'),
-        write_mode(I, Stream),
+        write_unary_mode(I, Stream),
         write(Stream, '}'),
         binding(A, dia(I,A), NA),
         latex_formula(A, NA, Stream).
@@ -450,7 +449,7 @@ latex_formula(dia(I,A), _, Stream) :-
 latex_formula(box(I,A), _, Stream) :-
         !,
         write(Stream, '\\Boxd_{'),
-        write_mode(I, Stream),
+        write_unary_mode(I, Stream),
         write(Stream, '}'),
         binding(A, box(I,A), NA),
         latex_formula(A, NA, Stream).
@@ -499,6 +498,23 @@ write_mode(two(M), Stream):-
 	write(Stream, '_{2}').
 write_mode(Atom, Stream):-
 	write(Stream, Atom).
+
+% write_unary_mode(+Mode, +Stream)
+
+write_unary_mode(I, _) :-
+	invisible_unary_mode(I),
+	!.
+write_unary_mode(one(M), Stream):-
+	!,
+	write(Stream, M),
+	write(Stream, '_{1}').
+write_unary_mode(two(M), Stream):-
+	!,
+	write(Stream, M),
+	write(Stream, '_{2}').
+write_unary_mode(Atom, Stream):-
+	write(Stream, Atom).
+
 
 write_inf(Inf, Stream) :- 
 	!,
@@ -1472,13 +1488,11 @@ latex_premisses([P|Ps], P0, Tab, Stream) :-
 write_rule_name(ax, Stream) :-
 	!,
 	write(Stream, '\\bo\\textit{Lex}\\bc').
-write_rule_name(hyp(N0), Stream) :-
+write_rule_name(hyp(N), Stream) :-
 	!,
-	N is N0 + 1,
 	format(Stream, '\\bo\\textit{Hyp}\\bc_{~w}', [N]).
-write_rule_name(dri(N0), Stream) :-
+write_rule_name(dri(N), Stream) :-
 	!,
-	N is N0 + 1,
 	format(Stream, '\\bo/\\textit{I}\\bc_{~w}', [N]).
 write_rule_name(drdiaboxi(I), Stream) :-
 	!,
@@ -1486,17 +1500,14 @@ write_rule_name(drdiaboxi(I), Stream) :-
 write_rule_name(dldiaboxi(I), Stream) :-
 	!,
 	format(Stream, '\\bo\\backslash\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc', [I,I]).
-write_rule_name(drdiaboxi(I,N0), Stream) :-
+write_rule_name(drdiaboxi(I,N), Stream) :-
 	!,
-	N is N0 + 1,
 	format(Stream, '\\bo/\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc_{~w}', [I,I,N]).
-write_rule_name(dldiaboxi(I,N0), Stream) :-
+write_rule_name(dldiaboxi(I,N), Stream) :-
 	!,
-	N is N0 + 1,
 	format(Stream, '\\bo\\backslash\\Diamond_{~w}\\Box_{~w}\\textit{I}\\bc_{~w}', [I,I,N]).
-write_rule_name(dli(N0), Stream) :-
+write_rule_name(dli(N), Stream) :-
 	!,
-	N is N0 + 1,
 	format(Stream, '\\bo\\backslash\\textit{I}\\bc_{~w}', [N]).
 write_rule_name(dr, Stream) :-
 	!,
@@ -1510,9 +1521,8 @@ write_rule_name(dl, Stream) :-
 write_rule_name(dl1, Stream) :-
 	!,
 	write(Stream, '\\bo\\backslash_1\\textit{E}\\bc').
-write_rule_name(dli1(I, N0), Stream) :-
+write_rule_name(dli1(I, N), Stream) :-
 	!,
-	N is N0 + 1,
 	format(Stream, '\\bo\\backslash_~w\\textit{I}\\bc_{~w}', [I, N]).
 write_rule_name(axiom, Stream) :-
 	!,

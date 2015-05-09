@@ -136,6 +136,46 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
 	!.
+transform_proof(rule(e_endd, GoalPros, dl(I0,E,D)-Sem, [Proof1,Proof2]), N0, N,
+                rule(dli1(I,N1), GoalPros, dl(I,E,D)-Sem,
+		     [rule(dr, p(II,X,p(1,'$VAR'(N1),YZ)), D-Sem,
+			   [Proof1,
+			    rule(drdiaboxi(J,N0), p(1,'$VAR'(N1),YZ), dr(0,C,dia(J,box(J,B)))-_,
+				 [rule(dl, p(1,'$VAR'(N1),YZ1), C-appl(Sem1,Var),
+				       [rule(hyp(N1), '$VAR'(N1), E-Var, []),
+					Proof4
+				       ])])])])) :-
+	N1 is N0 + 1,
+	N is N1 + 1,
+	GoalPros = p(II,X,YZ),
+	ExtrForm = dr(0,D,dr(0,C,dia(J,box(J,B)))),
+	rule_conclusion(Proof1, X, ExtrForm, _),
+	rule_conclusion(Proof2, YZ, dl(I0,E,C), Sem1),
+	quote_mode(I0, I),
+	find_e_start(Proof2, e_start, X, ExtrForm, B, N0, Pros, Proof3),
+	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
+	rule_conclusion(Proof4, YZ1, _, _),
+	!.
+% transform_proof(rule(e_endd, GoalPros, dl(I0,E,D)-Sem, [Proof1,Proof2]), N0, N,
+%                 rule(dli1(I,N1), GoalPros, dl(I,E,D)-Sem,
+% 		     [rule(dr, p(1,'$VAR'(N1),GoalPros), D-Sem,
+% 			   [Proof1,
+% 			    rule(drdiaboxi(J,N0), p(1,'$VAR'(N1),YZ1), dr(0,C,dia(J,box(J,B)))-_,
+% 				 [Proof4])])])) :-
+% 	N1 is N0 + 1,
+% 	N is N1 + 1,
+% 	trace,
+% 	GoalPros = p(_,X,YZ),
+% 	ExtrForm = dr(0,D,dr(0,C,dia(J,box(J,B)))),
+% 	rule_conclusion(Proof1, X, ExtrForm, _),
+% 	rule_conclusion(Proof2, YZ, dl(I0,E,C), Sem1),
+% 	quote_mode(I0, I),
+% 	find_e_start(Proof2, e_start, X, ExtrForm, B, N0, Pros, Proof3),
+% 	global_replace_pros(rule(dl, p(1,'$VAR'(N1),YZ), C-appl(Sem1,Var),
+% 				 [rule(hyp(N1), '$VAR'(N1), E-Var, []),
+% 				  Proof3]), Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
+% 	rule_conclusion(Proof4, p(1,'$VAR'(N1),YZ1), _, _),
+% 	!.
 transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-_, [Proof4]),Proof2])) :-
 	GoalPros = p(_,XY,Z),
 	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),
@@ -164,7 +204,60 @@ transform_proof(rule(wpop, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
 	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
 	!.
+% = simplify dit_np/se_dit/a_dit combinations
+transform_proof(rule(dit_np, p(0,p(0,P,p(0,Q,R)),P1), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
+		     [rule(se_dit, p(0,P,p(0,Q,R)), dl(I0,lit(s(ST)),_)-_,
+			   [ProofClr,
+			    rule(a_dit_se, p(0,Q,R), dl(I0,lit(s(ST)),Res)-_,
+				 [ProofAux,
+				  ProofPPart])]),
+		      ProofNP]),
+ 		N0, N,
+ 		rule(dli1(I,N0), p(0,p(0,P,p(0,Q,R)),P1), dl(I,lit(s(ST)),lit(s(ST)))-Sem,
+ 		     [rule(dr,   p(0,p(0,P,p(0,Q,p(I,'$VAR'(N0),R))),P1), lit(s(ST))-_,
+ 			   [rule(dl, p(0,P,p(0,Q,p(I,'$VAR'(N0),R))), dr(0,lit(s(ST)),lit(np(_,_,_)))-_,
+				 [ProofClr,
+				  rule(dr, p(0,Q,p(I,'$VAR'(N0),R)), Res-_,
+				       [ProofAux,
+					rule(dl, p(I,'$VAR'(N0),R), PPart-appl(_,Z),
+					     [rule(hyp(N0), '$VAR'(N0), lit(s(ST))-Z, []),
+					      ProofPPart])])
+				  ]),
+ 			    ProofNP])])) :-
+ 	!,
+ 	N is N0 + 1,
+ 	quote_mode(I0, I),
+ 	ProofAux = rule(_, _, dr(0,Res,PPart)-_, _).
+transform_proof(rule(dit_np, p(0,p(0,P,p(0,Q,R)),P1), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
+		     [rule(se_dit, p(0,P,p(0,Q,R)), dl(I0,lit(s(ST)),_)-_,
+			   [ProofClr,
+			    rule(a_dit, p(0,Q,R), dl(I0,lit(s(ST)),Res)-_,
+				 [ProofAux,
+				  ProofPPart])]),
+		      ProofNP]),
+ 		N0, N,
+ 		rule(dli1(I,N0), p(0,p(0,P,p(0,Q,R)),P1), dl(I,lit(s(ST)),lit(s(ST)))-Sem,
+ 		     [rule(dr,   p(0,p(0,P,p(0,Q,p(I,'$VAR'(N0),R))),P1), lit(s(ST))-_,
+ 			   [rule(dl, p(0,P,p(0,Q,p(I,'$VAR'(N0),R))), dr(0,lit(s(ST)),lit(np(_,_,_)))-_,
+				 [ProofClr,
+				  rule(dr, p(0,Q,p(I,'$VAR'(N0),R)), Res-_,
+				       [ProofAux,
+					rule(dl, p(I,'$VAR'(N0),R), PPart-appl(_,Z),
+					     [rule(hyp(N0), '$VAR'(N0), lit(s(ST))-Z, []),
+					      ProofPPart])])
+				  ]),
+ 			    ProofNP])])) :-
+ 	!,
+ 	N is N0 + 1,
+ 	quote_mode(I0, I),
+ 	ProofAux = rule(_, _, dr(0,Res,PPart)-_, _).
+
+%Sem2 = appl(lambda(Z,appl(_X,appl(Y,Z))),_V),
+% 	Sem1 = appl(Sem2,W),
+% 	Sem = lambda(W,Sem1).
+
 % = simplify dit_np/a_dit combinations
+
 transform_proof(rule(dit_np, p(0,p(0,P,Q),R), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
  		     [rule(a_dit, p(0,P,Q), dl(I0,lit(s(ST)),dr(0,lit(s(ST)),lit(np(A,B,C))))-_, [ProofAux,ProofPPart]), ProofNP]),
  		N0, N,
@@ -177,16 +270,25 @@ transform_proof(rule(dit_np, p(0,p(0,P,Q),R), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
  					ProofPPart])]),
  			    ProofNP])])) :-
  	!,
-%	trace,
  	N is N0 + 1,
  	quote_mode(I0, I),
  	ProofAux = rule(_, _, dr(0,_,PPart)-_, _),
  	Sem2 = appl(lambda(Z,appl(_X,appl(Y,Z))),_V),
  	Sem1 = appl(Sem2,W),
  	Sem = lambda(W,Sem1).
-% Sem = lambda(J,appl(appl(lambda(K,appl(appl(I,appl(J,K)))),J),appl(K,L)))
-% Sem1 = appl(appl(lambda(K,appl(appl(I,appl(J,K)))),J),appl(K,L))
 transform_proof(rule(a_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
+ 		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
+ 		     [rule(dr, p(0,ProsL,p(I,'$VAR'(N0),ProsR)), X-appl(Sem1,appl(Sem2,S)),
+ 			   [Left,
+ 			    rule(dl, p(I,'$VAR'(N0),ProsR), PPart-appl(Sem2,S),
+ 				 [rule(hyp(N0), '$VAR'(N0), Y-S, []),
+ 				  Right])])])) :-
+ 	!,
+	N is N0 + 1,
+ 	quote_mode(I0, I),
+ 	Right = rule(_, _, dl(1,Y,PPart)-_, _), 
+ 	Sem = lambda(S, appl(Sem1,appl(Sem2,S))).
+transform_proof(rule(a_dit_se, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
  		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
  		     [rule(dr, p(0,ProsL,p(I,'$VAR'(N0),ProsR)), X-appl(Sem1,appl(Sem2,S)),
  			   [Left,
@@ -202,7 +304,8 @@ transform_proof(rule(dit_np, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0
 		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
 		     [rule(dr, p(0,p(1,'$VAR'(N0),ProsL), ProsR), X-Sem1,
 			   [rule(dl, p(1,'$VAR'(N0),ProsL), dr(0,X,lit(np(A,B,C)))-appl(PrtSem,S),
-				 [rule(hyp(N0), '$VAR'(N0), Y-S, []), Left]),
+				 [rule(hyp(N0), '$VAR'(N0), Y-S, []),
+				  Left]),
 			   Right])])) :-
 	!,
 	N is N0 + 1,
@@ -210,6 +313,25 @@ transform_proof(rule(dit_np, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0
 	Right = rule(_, _, lit(np(A,B,C))-_, _),
 	Sem1 = appl(appl(PrtSem, S), _),
 	Sem = lambda(S, Sem1).
+transform_proof(rule(se_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
+		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
+		     [rule(dl, p(0,ProsL,p(1,'$VAR'(N0),ProsR)), X-Sem1,
+			   [Left,
+			    rule(dl, p(1,'$VAR'(N0),ProsR), dl(0,lit(cl_r),X)-appl(PrtSem,S),
+				 [rule(hyp(N0), '$VAR'(N0), Y-S, []),
+				  Right])])])) :-
+	!,
+	N is N0 + 1,
+	quote_mode(I0, I),
+	Left = rule(_, _, lit(cl_r)-_, _),
+	Sem1 = appl(appl(PrtSem, S), _),
+	Sem = lambda(S, Sem1).
+transform_proof(rule(e_end_l_lnr, Pros1, F1-Sem1, [LeftProofs, rule(e_end_r_lnr, Pros2, F2-Sem2, [AndProof,RightProofs])]),
+		N0, N,
+		rule(dl, Pros1, F1-Sem1, [Left, rule(dr, Pros2, F2-Sem2, [AndProof, Right])])) :-
+	!,
+	collect_left_proofs(LeftProofs, N0, N1, Left),
+	collect_right_proofs(RightProofs, N1, N, Right).
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
 	transform_proof_list(Ds0, N0, N, Ds).
 
@@ -217,6 +339,42 @@ transform_proof_list([], N, N, []).
 transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
 	transform_proof(P, N0, N1, Q),
 	transform_proof_list(Ps, N1, N, Qs).
+
+% left-node-raising constructions
+
+collect_left_proofs(LeftProofs, N0, N, rule(dldiaboxi(0,N0), Pros, dl(0,dia(0,box(0,lit(n))),lit(n))-X, [Left])) :-
+	LeftProofs = rule(_, Pros, _-X, _),
+	list_left_proofs(LeftProofs, List, []),
+	N is N0 + 1,
+	StartL = rule(hyp(N0), '$VAR'(N0), lit(n)-_, []),
+	combine_lnr_proofs(List, StartL, Left).
+
+collect_right_proofs(RightProofs, N0, N, rule(drdiaboxi(0,N0), Pros, dl(0,dia(0,box(0,lit(n))),lit(n))-X, [Left])) :-
+	RightProofs = rule(_, Pros, _-X, _),
+	list_right_proofs(RightProofs, List, []),
+	N is N0 +1,
+	StartR = rule(hyp(N0), '$VAR'(N0), lit(n)-_, []),
+	combine_lnr_proofs(List, StartR, Left). 
+
+list_left_proofs(rule(c_l_lnr, _, _, [L1, L2, _]), Rest0, Rest) :-
+	!,
+	list_left_proofs(L1, Rest0, Rest1),
+	list_left_proofs(L2, Rest1, Rest).
+list_left_proofs(Proof, [Proof|Rest], Rest).
+
+list_right_proofs(rule(c_r_lnr, _, _, [_, R1, R2]), Rest0, Rest) :-
+	!,
+	list_right_proofs(R1, Rest0, Rest1),
+	list_right_proofs(R2, Rest1, Rest).
+list_right_proofs(Proof, [Proof|Rest], Rest).
+
+combine_lnr_proofs([], Proof, Proof).
+combine_lnr_proofs([L|Ls], Proof0, Proof) :-
+	L = rule(_, Pros2, _-X, _),
+	Proof0 = rule(_, Pros1, _-Y, _),
+	combine_lnr_proofs(Ls, rule(dl, p(0,Pros1,Pros2), lit(n)-appl(X,Y), [Proof0, L]), Proof).
+
+%
 
 merge_proofs_left(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(P,M), [RuleB, RuleA])) :-
 	/* REMARK: this instance of the \_1 rule is not necessarily a right daughter */

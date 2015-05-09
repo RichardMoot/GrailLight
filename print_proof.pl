@@ -23,7 +23,7 @@ print_proof1(rule(RName,Pros,FormulaSem0,Ds), T0, Stream) :-
     ;
         Ds = [D|Ds0], 
         T is T0 + 3,
-        format(Stream, 'rule(~W, ~W ,~@ , [~n', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],print_formula_sem(FormulaSem,Stream)]),
+        format(Stream, 'rule(~W, ~W, ~@, [~n', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],print_formula_sem(FormulaSem,Stream)]),
         tab(Stream, T),
         print_proof_list(Ds0, D, T, Stream),
         format(Stream, '])', [])
@@ -45,6 +45,8 @@ print_title(rule(_, Pros, _, _), Sent, Stream) :-
 	print_pros(Pros, Stream),
 	nl(Stream),
 	nl(Stream).
+
+
 print_pros(Atom, Stream) :-
 	atomic(Atom),
 	!,
@@ -61,19 +63,6 @@ print_pros(p(_,_,_,L,R), Stream) :-
 print_pros(p(_,L,R), Stream) :-
 	print_pros(L, Stream),
 	print_pros(R, Stream).
-
-reduce_pros(Atom, Atom) :-
-	atomic(Atom),
-	!.
-reduce_pros('$VAR'(N), Atom) :-
-	atomic_concat(p, N, Atom).
-reduce_pros(L-R, L-R).
-reduce_pros(p(I,L,R), p(I,L,R)).
-reduce_pros(hyp(_,_,Pros), Pros).
-reduce_pros(leaf(_,_,Pros,_,_), Pros).
-reduce_pros(p(I,_,_,L0,R0), p(I,L,R)) :-
-	reduce_pros(L0, L),
-	reduce_pros(R0, R).
 
 update_sem(lit(let)-_, lit(let)-true) :-
 	/* special case for let to avoid singleton variable warnings */
@@ -207,3 +196,17 @@ xml_codes([C|Cs], Ds0) :-
          Ds0 = [C|Ds]
      ),
          xml_codes(Cs, Ds).
+
+
+reduce_pros(Atom, Atom) :-
+	atomic(Atom),
+	!.
+reduce_pros('$VAR'(N), Atom) :-
+	atomic_concat(p, N, Atom).
+reduce_pros(L-R, L-R).
+reduce_pros(p(I,L,R), p(I,L,R)).
+reduce_pros(hyp(_,_,Pros), Pros).
+reduce_pros(leaf(_,_,Pros,_,_), Pros).
+reduce_pros(p(I,_,_,L0,R0), p(I,L,R)) :-
+	reduce_pros(L0, L),
+	reduce_pros(R0, R).

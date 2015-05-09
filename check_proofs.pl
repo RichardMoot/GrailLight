@@ -55,10 +55,15 @@ check_proof(rule(Nm, _, _, Rs), RNs0, RNs) :-
 
 all_strange_proofs :-
 	findall(F, nd_file(F), FileList),
-	all_strange_proofs(FileList).
+	all_strange_proofs(FileList, 0, 0).
 
-all_strange_proofs([]).
-all_strange_proofs([F|Fs]) :-
+all_strange_proofs([], Strange, Total) :-
+	Normal is Total - Strange,
+	NPct is Normal/Total,
+	SPct is Strange/Total,
+	format('~N**TOTAL**~nNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [Normal,NPct,Strange,SPct,Total]).
+	
+all_strange_proofs([F|Fs], Strange0, Total0) :-
 	abolish(proof/2),
 	compile(F),
 	findall(N, proof(N, _), ProofList),
@@ -66,9 +71,11 @@ all_strange_proofs([F|Fs]) :-
 	Normal is TT - ST,
 	NPct is Normal/TT,
 	SPct is ST/TT,
+	Total is Total0 + TT,
+	Strange is Strange0 + ST,
 	format('~N**~w**~nNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [F,Normal,NPct,ST,SPct,TT]),
 	print_list(Ss),
-	all_strange_proofs(Fs).
+	all_strange_proofs(Fs, Strange, Total).
 
 strange_proofs :-
 	findall(N, proof(N, _), ProofList),
