@@ -1724,7 +1724,8 @@ inference(prod_cl, [item(X, I, J, data(Pros1,Sem1,Prob0,_H0,SetA0,SetB0,SetC0,Se
 		    combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		    combine_probability(Prob0, Prob1, I, K, prod_cl, Prob)]).
 
-inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1), item(p(0,Y,dia(0,box(0,Z))), J, K, Data2)],
+inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1),
+		    item(p(0,Y,dia(0,box(0,Z))), J, K, Data2)],
 	            item(X, I, K, Data),
                    [application_r(0, I, K, f, Data1, Data2, Data)]).
 
@@ -1749,14 +1750,15 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 	         [I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
-inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,_,_,_,_)),
+inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
-	         [J=<K,start_extraction_l(Y, J, 0, Prob0, Data0, Data)]).
-inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,_,_,_,_)),
-		  item(X, I, J, data(Pros0,Sem,Prob1,H,As,Bs,SetCs0,Ds))],
-	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,As,Bs,SetCs,Ds)),
-	         [J=<K,Pros0=Pros,select(0-t(Y,J,V), SetCs0, SetCs), Prob is Prob0 + Prob1]).
+	  [J=<K,start_extraction_l(Y, J, 0, Prob0, Data0, Data)]).
+% require empty stacks for gap_e to avoid strange scopings
+inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,[],[],[],[])),
+		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
+	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,[],[],[],[])),
+	         [J=<K,Pros0=Pros,select(0-t(Y,J,V), SetCs0, []), Prob is Prob0 + Prob1]).
 
 % ==============================================
 % =            auxiliary predicates            =

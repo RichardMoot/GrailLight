@@ -112,10 +112,36 @@ transform_proof1(P, N0, N, Q) :-
         transform_proof1(Q1, N1, N, Q)
     ).
 
+% transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
+% 		rule(dr, GoalPros, D-Sem,
+% 		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,dr(Z,V))))-true,
+% 			   [rule(dli(N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
+% 			    Proof1
+% 			   ]),
+% 		      Proof2
+% 		     ])) :-
+% 	N is N0 + 1,
+% 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
+% 	rule_conclusion(Proof2, Pros2, dr(0,Z,V), _),
+% 	rule_conclusion(Proof3, _Pros3, _, Sem3),
+% 	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,dr(0,Z,V))))),
+% %	Pros2 = p(0,P21,P22),
+% 	replace_proof(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
+% %	trace,
+% %	replace_proof(Proof4, rule(_, p(0,P21,p(0,P22,P23)), Z-_, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
+% 	/* TODO: globally replace Sem by Var in all of ProofC0 */
+% 	replace_sem(Sem3, Sem2, Z, Sem1), 
+% 	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), N0, ProofC1),
+% %	Pros2 = p(0,P21,P22),
+% %	global_replace_pros(ProofC1, p(0,P21,p(0,P22,P23)), p(0,'$VAR'(N0),P23), ProofC2),
+% 	rule_conclusion(ProofC1, ProsC1, _, _),
+% 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
+% 	!.
+
 transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 		rule(dr, GoalPros, D-Sem,
 		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-true,
-			   [rule(dli(N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
+			   [rule(drdiaboxi(I,N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
 			    Proof1
 			   ]),
 		      Proof2
@@ -132,6 +158,7 @@ transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
+
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 		rule(dr, GoalPros, D-Sem,
 		     [Proof1,
@@ -191,7 +218,15 @@ transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
 	!.
-
+transform_proof(rule(gap_e, GoalPros, dr(0,X,Y)-Sem, [Proof1, Proof2]), N0, N,
+		rule(drdiaboxi(0,N0), GoalPros, dr(0,X,Y)-Sem,
+		     [Proof4])) :-
+	ExtrForm = dl(0,dr(0,_,dia(I,box(I,dr(0,X,Y)))),_),
+	rule_conclusion(Proof2, Z, ExtrForm, _),
+	find_e_start(Proof1, gap_c, Z, ExtrForm, Y, N0, Pros, Proof3),
+	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), N0, Proof4),	
+	N is N0 +1,	
+	!.
 transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	(
 	 Sem = lambda(X,appl(SemADV,appl(_SemVP,X)))
@@ -515,6 +550,10 @@ find_w_start_list([P0|Ps], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 find_w_start_list([P|Ps0], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 	find_w_start_list(Ps0, Left, Pros, AdvF, Sem, AdvProof, Ps).
 
+find_e_start(rule(gap_c,Pros,A-Sem,[Proof,rule(_, Y, EF-_,_)]), gap_c, X, EF, B, N, Pros, rule(dr,Pros,A-Sem,[Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
+	Sem = appl(_,Var0),
+	match_pros_i(X, Y),
+	!.
 find_e_start(rule(ef_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), ef_start, X, EF, dr(0,A,B), N, Pros, rule(dr,Pros,A-Sem,[rule(hyp(N),'$VAR'(N),dr(0,A,B)-Var0,[]),Proof])) :-
 	Sem = appl(Var0, _),
 	match_pros_i(X, Y),
