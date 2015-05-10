@@ -57,6 +57,7 @@ all_strange_proofs :-
 	findall(F, nd_file(F), FileList),
 	all_strange_proofs(FileList, 0, 0).
 
+
 all_strange_proofs([], Strange, Total) :-
 	Normal is Total - Strange,
 	NPct is Normal/Total,
@@ -65,7 +66,9 @@ all_strange_proofs([], Strange, Total) :-
 	
 all_strange_proofs([F|Fs], Strange0, Total0) :-
 	abolish(proof/2),
+	style_check(-singleton),
 	compile(F),
+	style_check(+singleton),
 	findall(N, proof(N, _), ProofList),
 	strange_proofs(ProofList, 0, ST, 0, TT, Ss, []),
 	Normal is TT - ST,
@@ -129,6 +132,10 @@ keep_strange(dri, Rs, Rs) :-
 keep_strange(drdiaboxi, Rs, Rs) :-
 	!.
 keep_strange(dldiaboxi, Rs, Rs) :-
+	!.
+keep_strange(prod_i, Rs, Rs) :-
+	!.
+keep_strange(prod_e, Rs, Rs) :-
 	!.
 keep_strange(F, Rs, [F|Rs]).
 

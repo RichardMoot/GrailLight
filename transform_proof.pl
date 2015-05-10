@@ -356,7 +356,28 @@ transform_proof(rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-Sem, [Left,Mid,Right]), 
   ->
 	Proof1 = Mid,
 	Proof2 = Right
-   ).
+  ).
+transform_proof(rule(prod_e, Pros, FS,
+		     [rule(prod_c, _, _, [Proof1, Proof2])]),
+		N0, N,
+		rule(prod_e(N0), Pros, FS,
+		     [Proof2,
+		      rule(dr, p(0,p(0,Pros1,'$VAR'(N0)),'$VAR'(N1)), A-appl(appl(Sem1,'$VAR'(V0)),'$VAR'(V1)),
+			   [rule(dr, p(0,Pros1,'$VAR'(N0)), dr(0,A,C)-appl(Sem1,'$VAR'(V0)),
+				 [Proof1,
+				  rule(hyp(N0),'$VAR'(N0), B-'$VAR'(V0), [])]),
+			    rule(hyp(N0), '$VAR'(N1), C-'$VAR'(V1), [])
+			   ])
+		     ])) :-
+%	trace,
+	Proof1 = rule(_, Pros1, dr(0,dr(0,A,C),B)-Sem1, _),
+	Proof2 = rule(_, _, p(0,B,dia(0,box(0,C)))-Sem2, _),
+	/* obtain two variables which as fresh wrt Sem1 and Sem2 */
+	get_max_variable_number(appl(Sem1,Sem2), V0),
+	V1 is V0 + 1,
+	N1 is N0 + 1,
+	N is N1 + 1,
+	!.
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
 	transform_proof_list(Ds0, N0, N, Ds).
 
