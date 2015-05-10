@@ -14,6 +14,8 @@
 		       melt/2,
 		       replace_sem/4,
 		       subterm/2,
+		       equivalent_semantics/2,
+		       unify_semantics/2,
 		       melt_bound_variables/2,
 		       translate_dynamics/3]).
 
@@ -585,6 +587,27 @@ create_tree([I|Vs], Tree0, Tree) :-
 	btree_put(Tree0, I, _, Tree1),
 	create_tree(Vs, Tree1, Tree).
 
+% = equivalent_semantics(+Term1, +Term2)
+%
+% true if Term1 and Term2 are alpha equivalent
+
+equivalent_semantics(Term1, Term2) :-
+	/* replaced bound lambda variables by Prolog variables and check for Prolog alphabetic variance */
+	melt_bound_variables(Term1, TermA),
+	melt_bound_variables(Term2, TermB),
+	TermA =@= TermB.
+
+% = unify_semantics(+Term1, +Term2)
+%
+% true if Term1 and Term2 are alpha equivalent
+
+unify_semantics(Term1, Term2) :-
+	/* replaced bound lambda variables by Prolog variables and use Prolog unification */
+	melt_bound_variables(Term1, TermA),
+	melt_bound_variables(Term2, TermB),
+	TermA = TermB.
+
+
 % = melt_bound_variables(+Term0, -Term)
 %
 % true if Term is identical to Term0 but with all occurrences of
@@ -754,6 +777,7 @@ get_variable_types1(Sem, Formula, Tree) :-
         check_type(Sem, Type, goal, empty, Tree),
 	!.
 get_variable_types1(_, _, empty).
+
 
 
 % check_lexicon_typing.

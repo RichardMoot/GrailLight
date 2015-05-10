@@ -1,6 +1,6 @@
 :- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1]).
 
-:- use_module(sem_utils, [replace_sem/4]).
+:- use_module(sem_utils, [replace_sem/4,get_max_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
 :- use_module(print_proof, [print_proof/3]).
 
 quote_mode(1, 1).
@@ -66,7 +66,7 @@ transform_all_proofs(OutputFile) :-
 transform_all_proofs1(Stream) :-
 	proof(N, P0),
    (	
-	safe_transform_proof(P0, P)
+	transform_proof(P0, P)
    ->
 	print_proof(N, P, Stream)
    ;
@@ -76,15 +76,27 @@ transform_all_proofs1(Stream) :-
 transform_all_proofs1(Stream) :-
 	close(Stream).
 	
+% = numbervars_proof(+Proof)
+%
+% uses numbervars/3 only on the different semantic components of the proof.
 
-safe_transform_proof(P, _) :-
-	var(P),
-	!,
-	fail.
-safe_transform_proof(P, Q) :-
-	transform_proof(P, Q).
+numbervars_proof(Proof) :-
+	numbervars_proof(Proof, 0, _).
+
+numbervars_proof(rule(_, _, _-Sem, Premisses), N0, N) :-
+	/* ensure correct behaviour even when the semantics already contains occurrences of '$VAR'(N) terms */
+	get_max_variable_number(Sem, Max0),
+	Max is max(Max0, N0),
+	numbervars(Sem, Max, N1),
+	numbervars_proof_list(Premisses, N1, N).
+
+numbervars_proof_list([], N, N).
+numbervars_proof_list([P|Ps], N0, N) :-
+	numbervars_proof(P, N0, N1),
+	numbervars_proof_list(Ps, N1, N).
 
 transform_proof(P, Q) :-
+	numbervars_proof(P),
 	transform_proof1(P, 0, _N, Q).
 
 % = iterate transform_proof/4 until the proof stays the same
@@ -102,10 +114,12 @@ transform_proof1(P, N0, N, Q) :-
 
 transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 		rule(dr, GoalPros, D-Sem,
-		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-_,
+		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-true,
 			   [rule(dli(N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
-			   Proof1]),
-		     Proof2])) :-
+			    Proof1
+			   ]),
+		      Proof2
+		     ])) :-
 	N is N0 + 1,
 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
 	rule_conclusion(Proof2, Pros2, Z, _),
@@ -118,7 +132,12 @@ transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
-transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dr(0,A,B))))-_, [Proof4])])) :-
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
+		rule(dr, GoalPros, D-Sem,
+		     [Proof1,
+		      rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dr(0,A,B))))-true,
+			   [Proof4])
+		     ])) :-
         /* X = "et", YZ = sentence with extracted verb */
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,dr(0,A,B))))),
@@ -128,7 +147,11 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, 
 	global_replace_pros(Proof3, Pros, p(0,'$VAR'(N0), Pros), N0, Proof4),
 	N is N0 + 1,
 	!.
-transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D-Sem, [Proof1, rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B)))-_, [Proof4])])) :-
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
+		rule(dr, GoalPros, D-Sem,
+		     [Proof1,
+		      rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,B)))-true, [Proof4])
+		     ])) :-
 	GoalPros = p(_,X,YZ),
 	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
 	rule_conclusion(Proof1, X, ExtrForm, _),
@@ -140,7 +163,7 @@ transform_proof(rule(e_endd, GoalPros, dl(I0,E,D)-Sem, [Proof1,Proof2]), N0, N,
                 rule(dli1(I,N1), GoalPros, dl(I,E,D)-Sem,
 		     [rule(dr, p(II,X,p(1,'$VAR'(N1),YZ)), D-Sem,
 			   [Proof1,
-			    rule(drdiaboxi(J,N0), p(1,'$VAR'(N1),YZ), dr(0,C,dia(J,box(J,B)))-_,
+			    rule(drdiaboxi(J,N0), p(1,'$VAR'(N1),YZ), dr(0,C,dia(J,box(J,B)))-true,
 				 [rule(dl, p(1,'$VAR'(N1),YZ1), C-appl(Sem1,Var),
 				       [rule(hyp(N1), '$VAR'(N1), E-Var, []),
 					Proof4
@@ -157,7 +180,10 @@ transform_proof(rule(e_endd, GoalPros, dl(I0,E,D)-Sem, [Proof1,Proof2]), N0, N,
 	rule_conclusion(Proof4, YZ1, _, _),
 	!.
 
-transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N, rule(dl, GoalPros, D-Sem, [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-_, [Proof4]),Proof2])) :-
+transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
+		rule(dl, GoalPros, D-Sem,
+		     [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-true, [Proof4]),
+		      Proof2])) :-
 	GoalPros = p(_,XY,Z),
 	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),
 	rule_conclusion(Proof2, Z, ExtrForm, _),
@@ -195,10 +221,10 @@ transform_proof(rule(dit_np, p(0,p(0,P,p(0,Q,R)),P1), dl(I0,lit(s(ST)),lit(s(ST)
 		      ProofNP]),
  		N0, N,
  		rule(dli1(I,N0), p(0,p(0,P,p(0,Q,R)),P1), dl(I,lit(s(ST)),lit(s(ST)))-Sem,
- 		     [rule(dr,   p(0,p(0,P,p(0,Q,p(I,'$VAR'(N0),R))),P1), lit(s(ST))-_,
- 			   [rule(dl, p(0,P,p(0,Q,p(I,'$VAR'(N0),R))), dr(0,lit(s(ST)),lit(np(_,_,_)))-_,
+ 		     [rule(dr,   p(0,p(0,P,p(0,Q,p(I,'$VAR'(N0),R))),P1), lit(s(ST))-true,
+ 			   [rule(dl, p(0,P,p(0,Q,p(I,'$VAR'(N0),R))), dr(0,lit(s(ST)),lit(np(_,_,_)))-true,
 				 [ProofClr,
-				  rule(dr, p(0,Q,p(I,'$VAR'(N0),R)), Res-_,
+				  rule(dr, p(0,Q,p(I,'$VAR'(N0),R)), Res-true,
 				       [ProofAux,
 					rule(dl, p(I,'$VAR'(N0),R), PPart-appl(_,Z),
 					     [rule(hyp(N0), '$VAR'(N0), lit(s(ST))-Z, []),
@@ -218,10 +244,10 @@ transform_proof(rule(dit_np, p(0,p(0,P,p(0,Q,R)),P1), dl(I0,lit(s(ST)),lit(s(ST)
 		      ProofNP]),
  		N0, N,
  		rule(dli1(I,N0), p(0,p(0,P,p(0,Q,R)),P1), dl(I,lit(s(ST)),lit(s(ST)))-Sem,
- 		     [rule(dr,   p(0,p(0,P,p(0,Q,p(I,'$VAR'(N0),R))),P1), lit(s(ST))-_,
- 			   [rule(dl, p(0,P,p(0,Q,p(I,'$VAR'(N0),R))), dr(0,lit(s(ST)),lit(np(_,_,_)))-_,
+ 		     [rule(dr,   p(0,p(0,P,p(0,Q,p(I,'$VAR'(N0),R))),P1), lit(s(ST))-true,
+ 			   [rule(dl, p(0,P,p(0,Q,p(I,'$VAR'(N0),R))), dr(0,lit(s(ST)),lit(np(_,_,_)))-true,
 				 [ProofClr,
-				  rule(dr, p(0,Q,p(I,'$VAR'(N0),R)), Res-_,
+				  rule(dr, p(0,Q,p(I,'$VAR'(N0),R)), Res-true,
 				       [ProofAux,
 					rule(dl, p(I,'$VAR'(N0),R), PPart-appl(_,Z),
 					     [rule(hyp(N0), '$VAR'(N0), lit(s(ST))-Z, []),
@@ -256,7 +282,7 @@ transform_proof(rule(dit_np, p(0,p(0,P,Q),R), dl(I0,lit(s(ST)),lit(s(ST)))-Sem,
  	ProofAux = rule(_, _, dr(0,_,PPart)-_, _),
  	Sem2 = appl(lambda(Z,appl(_X,appl(Y,Z))),_V),
  	Sem1 = appl(Sem2,W),
- 	Sem = lambda(W,Sem1).
+ 	unify_semantics(Sem,lambda(W,Sem1)).
 transform_proof(rule(a_dit, p(0,ProsL,ProsR), dl(I0,Y,X)-Sem, [Left,Right]), N0, N,
  		rule(dli1(I,N0), p(0,ProsL,ProsR), dl(I,Y,X)-Sem,
  		     [rule(dr, p(0,ProsL,p(I,'$VAR'(N0),ProsR)), X-appl(Sem1,appl(Sem2,S)),
@@ -313,6 +339,24 @@ transform_proof(rule(e_end_l_lnr, Pros1, F1-Sem1, [LeftProofs, rule(e_end_r_lnr,
 	!,
 	collect_left_proofs(LeftProofs, N0, N1, Left),
 	collect_right_proofs(RightProofs, N1, N, Right).
+
+% product rules
+transform_proof(rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-Sem, [Left,Mid,Right]), N, N,
+		rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-Sem, [Proof1,Proof2])) :-
+	/* remove auxiliary hypothesis (of the form C/(A*B) or (A*B)\C) */
+  (
+	Left = rule(_, Pros1, A-_, _),
+	Mid = rule(_, Pros2, B-_, _)
+  ->
+	Proof1 = Left,
+	Proof2 = Mid
+  ;
+	Mid = rule(_, Pros1, A-_, _),
+	Right = rule(_, Pros2, B-_, _)
+  ->
+	Proof1 = Mid,
+	Proof2 = Right
+   ).
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
 	transform_proof_list(Ds0, N0, N, Ds).
 
@@ -431,16 +475,15 @@ interpunction_pros(')').
 interpunction_pros('-').
 interpunction_pros(';').
 
-
 find_w_start(rule(wr,RPros,_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
         match_pros(RPros, p(1,Left,Pros)),
 	RProof = rule(_, Pros, AdvF-Sem0, _),
-	Sem0 =@= Sem,
+	equivalent_semantics(Sem0, Sem),
 	!.
 find_w_start(rule(wr_a,RPros,_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
         match_pros(RPros, p(1,Left,Pros)),
 	RProof = rule(_, Pros, AdvF-Sem0, _),
-	Sem0 =@= Sem,
+	equivalent_semantics(Sem0, Sem),
 	!.
 find_w_start(rule(Nm, P, A, Ds0), Left, Pros, AdvF, Sem, AdvProof, rule(Nm, P, A, Ds)) :-
 	find_w_start_list(Ds0, Left, Pros, AdvF, Sem, AdvProof, Ds),
