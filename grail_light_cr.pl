@@ -1639,10 +1639,10 @@ inference(e_endd, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, I, K, Data0, Data1, Data)]).
 
 
-inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,_,_),
+inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,_,data(_,_,Prob0,_,_,_,_,_)),
 		      item(dr(0,X,Y), I, J, Data0)],
 		      item(X, I, J, Data),
-		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, Data0, Data)]).
+		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, Prob0, Data0, Data)]).
 inference(e_end_l, [item(dl(0,dr(0,Y,dia(0,box(0,Z))),X), J, K, Data0),
 		    item(Y, I, J, Data1)],
 	            item(X, I, K, Data),
@@ -1661,21 +1661,23 @@ inference(e_end_r_lnr, [item(dr(0,Z,dl(0,dia(0,box(0,lit(n))),lit(n))), I, J, Da
 	                item(Z, I, K, Data),
 	               [application_r(0,I,K,f,Data0,Data1,Data)]).
 
-inference(c_l_lnr, [item(dl(0,dl(0,dia(0,box(0,lit(n))),lit(n)),_), K, _, _),
+inference(c_l_lnr, [item(dl(0,dl(0,dia(0,box(0,lit(n))),lit(n)),_), K, _, data(_,_,Prob0,_,_,_,_,_)),
 		    item(dl(0,lit(n),lit(n)), J, K, data(Pros1,Sem1,Prob1,H1,SetA1,SetB1,SetC1,SetD1)),
 		    item(dl(0,lit(n),lit(n)), I, J, data(Pros2,Sem2,Prob2,_H2,SetA2,SetB2,SetC2,SetD2))],
 	            item(dl(0,lit(n),lit(n)), I, K, data(Pros, lambda(X,appl(Sem1,appl(Sem2,X))), Prob, H1, SetA, SetB, SetC, SetD)),
 	           [Pros=p(0,Pros2,Pros1),
 		    combine_sets(SetA1, SetB1, SetC1, SetD1, SetA2, SetB2, SetC2, SetD2, SetA, SetB, SetC, SetD),
-		    combine_probability(Prob1, Prob2, I,K ,c_l_lnr, Prob)]).
+		    combine_probability(Prob1, Prob2, I,K ,c_l_lnr, Prob3),
+		    Prob is Prob0 + Prob3]).
 
-inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, _),
+inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, data(_,_,Prob0,_,_,_,_,_)),
 		    item(dl(0,lit(n),lit(n)), J, K, data(Pros1,Sem1,Prob1,H1,SetA1,SetB1,SetC1,SetD1)),
 		    item(dl(0,lit(n),lit(n)), I, J, data(Pros2,Sem2,Prob2,_H2,SetA2,SetB2,SetC2,SetD2))],
 	            item(dl(0,lit(n),lit(n)), I, K, data(Pros, lambda(X,appl(Sem2,appl(Sem1,X))), Prob, H1, SetA, SetB, SetC, SetD)),
 	           [Pros=p(0,Pros2,Pros1),
 		    combine_sets(SetA1, SetB1, SetC1, SetD1, SetA2, SetB2, SetC2, SetD2, SetA, SetB, SetC, SetD),
-		    combine_probability(Prob1, Prob2, I, K, c_r_lnr, Prob)]).
+		    combine_probability(Prob1, Prob2, I, K, c_r_lnr, Prob3),
+		    Prob is Prob0 + Prob3]).
 
 % = product rules
 % to test: maybe it is reasonable to require all stacks to be empty.
@@ -1683,14 +1685,15 @@ inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, _),
 inference(prod_e, [item(p(0,dr(0,X,Y),dia(0,box(0,Y))), I, J, data(Pros0,Sem0,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,appl(pi1(Sem0),pi2(Sem0)),Prob,H,SetA,SetB,SetC,SetD)),
 	          [Pros=Pros0]).
-inference(prod_i, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
-		   item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
-		   item(F, I0, J0, _)],
+inference(prod_i, [item(X, I, J,   data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
+		   item(Y, J, K,   data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
+		   item(F, I0, J0, data(_    ,_   ,Prob2,_,_,_,_,_))],
 	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, SetA, SetB, SetC, SetD)),
 	          [Pros=p(0,Pros0,Pros1),
 		   prod_formula(F,p(0,X,Y), I0, J0, I, K),
 		   combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
-		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob)]).
+		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob3),
+		   Prob is Prob2 + Prob3]).
 inference(prod_i3, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
 		    item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
 		    item(dl(1,lit(s(S)),lit(s(S))), K, L, data(Pros2,Sem2,Prob2,_H2,SetA2,SetB2,SetC2,SetD2)),
@@ -1707,7 +1710,7 @@ inference(prod_w, [item(p(0,X,dl(1,Y,Z)), I, J, data(Pros0,Sem,Prob,H,SetA,SetB,
 inference(prod_wl, [item(p(0,dl(1,Y,Z),dia(0,box(0,X))), I, J, data(Pros0,Sem,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,pi1(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi2(Sem))|SetB],SetC,SetD)),
 		  [Pros=Pros0]).
-inference(prod_c, [item(dr(0,X,Y), I, J, data(Pros1,Sem1,Prob0,H1,SetA0,SetB0,SetC0,SetD0)),
+inference(prod_c, [item(dr(0,X,Y),              I, J, data(Pros1,Sem1,Prob0,H1,SetA0,SetB0,SetC0,SetD0)),
 		   item(p(0,Y,dia(0,box(0,Z))), J, K, data(Pros2,Sem2,Prob1,_H2,SetA1,SetB1,SetC1,SetD1))],
 	           item(p(0,X,dia(0,box(0,Z))), I, K, data(Pros,pair(appl(Sem1,pi1(Sem2))),Prob,H1,SetA,SetB,SetC,SetD)),
 	          [Pros=p(0,Pros1,Pros2),
@@ -1745,14 +1748,14 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 	         [I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
-inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,_),
+inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,_,_,_,_)),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
-	         [J=<K,start_extraction_l(Y, J, 0, Data0, Data)]).
-inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,_),
-		  item(X, I, J, data(Pros0,Sem,Prob,H,As,Bs,SetCs0,Ds))],
+	         [J=<K,start_extraction_l(Y, J, 0, Prob0, Data0, Data)]).
+inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,_,_,_,_)),
+		  item(X, I, J, data(Pros0,Sem,Prob1,H,As,Bs,SetCs0,Ds))],
 	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,As,Bs,SetCs,Ds)),
-	         [J=<K,Pros0=Pros,select(0-t(Y,J,V), SetCs0, SetCs)]).
+	         [J=<K,Pros0=Pros,select(0-t(Y,J,V), SetCs0, SetCs), Prob is Prob0 + Prob1]).
 
 % ==============================================
 % =            auxiliary predicates            =
@@ -1760,13 +1763,14 @@ inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 
 % These predicates verify side conditions on the different inference rules
 
-combine_gap(I, J, data(_    , Term0, _    , _ , _  , _  , _  , _  ),   % extracted functor
+combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extracted functor
 	          data(Pros1, Term1, Prob1, _ , As1, Bs1, Cs1, Ds1),   % result sentence
 	          data(Pros2, Term2, Prob2, H2, As2, Bs2, Cs2, Ds2),   % gapping "licensor"
 	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
 	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
 	replace_sem(Term1, Term0, X, TermX),
-	combine_probability(Prob1, Prob2, I, J, gap_i, Prob),
+	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
+	Prob is Prob0 + Prob3,
 	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).
 
 
@@ -2262,8 +2266,9 @@ start_extraction_inv(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0),
 % SetC has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)
 % with meaning Formula-SemVar has been used at string position J-J (FormRightEdge)
 
-start_extraction_l(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
-	ord_key_insert_var(SetC0, K, t(Y,J,X), SetC).
+start_extraction_l(Y, J, K, Prob0, data(Pros, Sem, Prob1, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_var(SetC0, K, t(Y,J,X), SetC),
+	Prob is Prob0 + Prob1.
 
 end_extraction_l(Y, J, K, _L, M, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
                           data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
