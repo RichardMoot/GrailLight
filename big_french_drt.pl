@@ -108,6 +108,8 @@ custom_first_order(dia(0,box(0,A0)), dia(0,box(0,A)), P, [X,Y]) :-
 
 macro(dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),dl(0,np,s))))),dr(0,s,box(1,dia(1,dr(0,dl(0,np,s),dl(0,np,s)))))),dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),dl(0,np,s)))))),
       dr(0,dl(0,dr(0,lit(s(S1)),dia(1,box(1,dr(0,dl(0,lit(np(nom,_,_)),lit(s(S2))),dl(0,lit(np(nom,_,_)),lit(s(S3))))))),dr(0,lit(s(S1)),box(1,dia(1,dr(0,dl(0,lit(np(nom,_,_)),lit(s(S2))),dl(0,lit(np(nom,_,_)),lit(s(S3)))))))),dr(0,lit(s(S1)),dia(1,box(1,dr(0,dl(0,lit(np(nom,_,_)),lit(s(S2))),dl(0,lit(np(nom,_,_)),lit(s(S3))))))))).
+macro(dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),pp)))),dr(0,s,box(1,dia(1,dr(0,dl(0,np,s),pp))))),dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),pp))))),
+      dr(0,dl(0,dr(0,lit(s(S1)),dia(1,box(1,dr(0,dl(0,lit(np(nom,_,_)),lit(s(S2))),lit(pp(PP)))))),dr(0,lit(s(S1)),box(1,dia(1,dr(0,dl(0,lit(np(nom,_,_)),lit(s(S2))),lit(pp(PP))))))),dr(0,lit(s(S1)),dia(1,box(1,dr(0,dl(0,lit(np(nom,_,_)),lit(s(S2))),lit(pp(PP)))))))).
 macro(dr(0,dl(0,dr(0,dl(0,np,s),dl(0,np,s)),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dl(0,np,s))),
       dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T)))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T))))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),dl(0,lit(np(nom,_,_)),lit(s(_)))))).
 macro(dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),lit(np(acc,V,W))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),lit(np(acc,V,W)))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),lit(np(acc,_,_))))).

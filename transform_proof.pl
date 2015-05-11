@@ -116,13 +116,12 @@ transform_proof1(P, N0, N, Q) :-
 transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 		rule(dr, GoalPros, D-Sem,
 		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,dr(0,Z,V))))-appl(Term2,lambda(Var,TermX)),
-			   [rule(drdiaboxi(N0), ProsC2, X-lambda(Var,TermX), [ProofC1]),
+			   [rule(drdiaboxi(I,N0), ProsC2, X-lambda(Var,TermX), [ProofC1]),
 			    Proof1
 			   ]),
 		      Proof2
 		     ])) :-
 	N is N0 + 1,
-	trace,
 	Sem = appl(appl(Term2,lambda(Var,TermX)),_Term0),
 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
 	rule_conclusion(Proof2, Pros2, dr(0,Z,V), _),
@@ -402,7 +401,6 @@ transform_proof(rule(prod_e, Pros, FS,
 			    rule(hyp(N0), '$VAR'(N1), C-'$VAR'(V1), [])
 			   ])
 		     ])) :-
-%	trace,
 	Proof1 = rule(_, Pros1, dr(0,dr(0,A,C),B)-Sem1, _),
 	Proof2 = rule(_, _, p(0,B,dia(0,box(0,C)))-Sem2, _),
 	/* obtain two variables which as fresh wrt Sem1 and Sem2 */
@@ -410,6 +408,8 @@ transform_proof(rule(prod_e, Pros, FS,
 	V1 is V0 + 1,
 	N1 is N0 + 1,
 	N is N1 + 1,
+	!.
+transform_proof(rule(prod_dr, Pros, FS, Proofs), N, N, rule(dr, Pros, FS, Proofs)) :-
 	!.
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
 	transform_proof_list(Ds0, N0, N, Ds).
@@ -594,7 +594,13 @@ replace_proof_list([P0|Ps0], ProofA, ProofB, [P|Ps]) :-
 
 % =
 
-replace_proof_bag(rule(Nm, Pros0, X-Sem, Rs0), Bag, Var, Proof, Result) :-
+% = special case to prevent accidental capture of hypotheses
+replace_proof_bag(rule(gap_e, Pros0, X-Sem, [A,B0]), Bag, Var, Proof, rule(gap_e, Pros, X-Sem, [A,B])) :-
+	!,
+	replace_bag(Pros0, Pros, Bag, Var),
+	replace_proof_bag(B0, Bag, Var, Proof, B).
+
+replace_proof_bag(rule(Nm0, Pros0, X-Sem, Rs0), Bag, Var, Proof, Result) :-
 	bag_of_words(Pros0, Bag0),
    (
         Bag0 = Bag
@@ -603,7 +609,9 @@ replace_proof_bag(rule(Nm, Pros0, X-Sem, Rs0), Bag, Var, Proof, Result) :-
    ;
 	replace_bag(Pros0, Pros, Bag, Var),
         Result = rule(Nm, Pros, X-Sem, Rs),
-        replace_proof_bag_list(Rs0, Bag, Var, Proof, Rs)
+        replace_proof_bag_list(Rs0, Bag, Var, Proof, Rs1),
+	/* collapse superfluous unary branches */
+	( Rs1 = [rule(Nm, Pros, _, Rs)] -> true ; Rs = Rs1, Nm = Nm0)
    ).
 
 replace_proof_bag_list([], _, _, _, []).
