@@ -1770,23 +1770,44 @@ combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extract
 	          data(Pros2, Term2, Prob2, H2, As2, Bs2, Cs2, Ds2),   % gapping "licensor"
 	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
 	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
-   (
-	replace_sem(Term1, Term0, X, TermX),
-	subterm(TermX, X)
-   ->
-	true
-   ;
-        copy_term(Term0, Term00),
-        Term00 = lambda(Var,TermV),
-        var(Var)
-   ->
-	subterm_with_unify(Term1, TermV),
-        replace_sem(Term1, TermV, appl(X,Var), TermX)
-   ),		      
+	update_semantics(Term1, Term0, X, TermX),
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
 	Prob is Prob0 + Prob3,
 	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).
 
+
+
+
+update_semantics(Term1, Term0, X, TermX) :-
+	/* simple case: replace Term0 by X */
+	replace_sem(Term1, Term0, X, TermX),
+	subterm(TermX, X),
+	!.
+update_semantics(Term1, Term0, X, TermX) :-
+	/* gap_e/gap_c combination */
+	copy_term(Term0, Term00),
+	Term00 = lambda(Var, TermV),
+	var(Var),
+  (	
+        subterm_with_unify(Term1, TermV)
+  ->
+	replace_sem(Term1, TermV, appl(X,Var), TermX)
+  ;
+	/* adverb */
+	remove_adverbs(TermV, TermV2),	       
+	subterm_with_unify(Term1, TermV2)
+  ->
+        replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
+  ).
+
+% NOTE: we exploit the fact that (vp) adverbs have a very specific form
+% this will not work for sentential adverbs, but I believe this to be correct
+% Typing:  V0/V1: e, Adv: (s->t)->s->t Term:e->s->t
+remove_adverbs(lambda(V0,appl(_Adv,appl(Term,V1))), Result) :-
+	V0 == V1,
+	!,
+	remove_adverbs(Term, Result).
+remove_adverbs(Term, Term).
 
 % = is_clitic(+Formula)
 %
