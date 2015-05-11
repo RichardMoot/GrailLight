@@ -53,7 +53,8 @@
         ord_key_insert/4, %  Set x Key x Value -> Set
 	ord_member/2,           %  Elem x Set ->
 	ord_key_member/3,       %  Key x Set -> Value
-	ord_dup_insert/3,       %  Set x Elem -> Set
+	ord_dup_insert/3,       %  MSet x Elem -> MSet
+	ord_dup_union/3,       %   MSet x MSet -> MSet
 	ord_delete/3,           %  Set x Elem -> Set
 	ord_select/3] ).	%  Elem x Set -> Set
 
@@ -294,6 +295,26 @@ ord_dup_insert(<, Head, Tail, Element, [Head|Set]) :-
 	ord_dup_insert(Tail, Element, Set).
 ord_dup_insert(=, Head, Tail, Element, [Element,Head|Tail]).
 ord_dup_insert(>, Head, Tail, Element, [Element,Head|Tail]).
+
+% = ord_dup_union(OrdBag1, OrdBag2, OrdBag)
+%
+% a version of ord_union/3 for ordered multisets/bags RM
+
+ord_dup_union([], Set2, Set2).
+ord_dup_union([H1|T1], Set2, Union) :-
+	ord_dup_union_2(Set2, H1, T1, Union).
+
+ord_dup_union_2([], H1, T1, [H1|T1]).
+ord_dup_union_2([H2|T2], H1, T1, Union) :-
+	compare(Order, H1, H2),
+	ord_dup_union_3(Order, H1, T1, H2, T2, Union).
+
+ord_dup_union_3(<, H1, T1, H2, T2, [H1|Union]) :-
+	ord_dup_union_2(T1, H2, T2, Union).
+ord_dup_union_3(=, H1, T1, H2, T2, [H1|Union]) :-
+	ord_dup_union_2(T2, H2, T1, Union).
+ord_dup_union_3(>, H1, T1, H2, T2, [H2|Union]) :-
+	ord_dup_union_2(T2, H1, T1, Union).
 
 % = ord_member(+Element, +OrdSet)
 %
