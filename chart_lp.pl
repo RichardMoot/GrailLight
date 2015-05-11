@@ -8,7 +8,7 @@
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
@@ -1770,7 +1770,19 @@ combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extract
 	          data(Pros2, Term2, Prob2, H2, As2, Bs2, Cs2, Ds2),   % gapping "licensor"
 	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
 	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
+   (
 	replace_sem(Term1, Term0, X, TermX),
+	subterm(TermX, X)
+   ->
+	true
+   ;
+        copy_term(Term0, Term00),
+        Term00 = lambda(Var,TermV),
+        var(Var)
+   ->
+	subterm_with_unify(Term1, TermV),
+        replace_sem(Term1, TermV, appl(X,Var), TermX)
+   ),		      
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
 	Prob is Prob0 + Prob3,
 	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).

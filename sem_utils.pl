@@ -14,6 +14,7 @@
 		       melt/2,
 		       replace_sem/4,
 		       subterm/2,
+		       subterm_with_unify/2,
 		       equivalent_semantics/2,
 		       unify_semantics/2,
 		       melt_bound_variables/2,
@@ -350,6 +351,32 @@ subterm(N0, X, Y) :-
 	N0 > 0,
 	N is N0 - 1,
 	subterm(N, X, Y).
+
+% subterm_with_unify(+Term, +SubTerm)
+%
+% true if Term contains SubTerm as a subterm.
+
+subterm_with_unify(X, Y) :-
+	X = Y,
+	!.
+subterm_with_unify(lambda(_, X), Y) :-
+	!,
+	subterm_with_unify(X, Y).
+subterm_with_unify(X, Y) :-
+	functor(X, _, N),
+	subterm_with_unify(N, X, Y).
+
+subterm_with_unify(N0, X, Y) :-
+	N0 > 0,
+	arg(N0, X, A),
+	subterm_with_unify(A, Y),
+	!.
+
+subterm_with_unify(N0, X, Y) :-
+	N0 > 0,
+	N is N0 - 1,
+	subterm_with_unify(N, X, Y).
+
 
 % = alpha_conversion(+InTerm, -OutTerm)
 
