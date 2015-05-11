@@ -1,7 +1,7 @@
 :- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1]).
 
 :- use_module(sem_utils,   [replace_sem/4,get_max_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
-:- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3]).
+:- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3,ord_subtract/3,ord_select/3,ord_subset/2]).
 :- use_module(print_proof, [print_proof/3]).
 
 quote_mode(1, 1).
@@ -115,73 +115,47 @@ transform_proof1(P, N0, N, Q) :-
 
 transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 		rule(dr, GoalPros, D-Sem,
-		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,dr(Z,V))))-true,
-			   [rule(dli(N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
+		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,dr(0,Z,V))))-appl(Term2,lambda(Var,TermX)),
+			   [rule(drdiaboxi(N0), ProsC2, X-lambda(Var,TermX), [ProofC1]),
 			    Proof1
 			   ]),
 		      Proof2
 		     ])) :-
 	N is N0 + 1,
+	trace,
+	Sem = appl(appl(Term2,lambda(Var,TermX)),_Term0),
 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
 	rule_conclusion(Proof2, Pros2, dr(0,Z,V), _),
-	rule_conclusion(Proof3, _Pros3, _, Sem3),
+	rule_conclusion(Proof3, _Pros3, _, _),
 	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,dr(0,Z,V))))),
 	bag_of_words(Pros2, Bag),
-	replace_proof_bag(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
-%	trace,
-%	replace_proof(Proof4, rule(_, p(0,P21,p(0,P22,P23)), Z-_, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
+	replace_proof_bag(Proof3, Bag, '$VAR'(N0), rule(hyp(N0), '$VAR'(N0), dr(0,Z,V)-Var, []), ProofC1),
 	/* TODO: globally replace Sem by Var in all of ProofC0 */
-	replace_sem(Sem3, Sem2, Z, Sem1), 
-	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), N0, ProofC1),
-%	Pros2 = p(0,P21,P22),
-%	global_replace_pros(ProofC1, p(0,P21,p(0,P22,P23)), p(0,'$VAR'(N0),P23), ProofC2),
+%	replace_sem(Sem3, Sem2, Z, Sem1), 
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
 
-replace_proof_bag(rule(Nm, Pros0, X-Sem, Rs0), Bag, Var, Proof, Result) :-
-	bag_of_words(Pros0, Bag0),
-   (
-        Bag0 = Bag
-   ->
-        Result = Proof
-   ;
-	replace_bag(Pros0, Pros, Bag, Var)
-        Result = rule(Nm, Pros, X-Sem, Rs),
-        replace_proof_bag_list(Rs0, Bag, Var, Proof, Rs)
-   ).
-
-% TODO: complete
-
-replace_proof_bag_list([], _, _, _, []).
-replace_proof_bag_list([A0], Bag, Var, Proof, [A]) :-
-	replace_proof_bag(A0, Bag, Var, Proof, A).
-replace_proof_bag_list([A0,B0], Bag, Var, Proof, [A,B]) :-
-	A0 = rule(_, ProsA, _, _),
-	B0 = rule(_, ProsB, _, _),
-	bag_of_words(ProsA, BagA),
-	bag_of_words(ProsB, BarB),
-   
-transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
-		rule(dr, GoalPros, D-Sem,
-		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-true,
-			   [rule(drdiaboxi(I,N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
-			    Proof1
-			   ]),
-		      Proof2
-		     ])) :-
-	N is N0 + 1,
-	rule_conclusion(Proof1, Pros1, ExtrForm, _),
-	rule_conclusion(Proof2, Pros2, Z, _),
-	rule_conclusion(Proof3, _Pros3, _, Sem3),
-	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,Z)))),
-	replace_proof(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
-	/* TODO: globally replace Sem by Var in all of ProofC0 */
-	replace_sem(Sem3, Sem2, Z, Sem1), 
-	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), N0, ProofC1),
-	rule_conclusion(ProofC1, ProsC1, _, _),
-	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
-	!.
+% transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
+% 		rule(dr, GoalPros, D-Sem,
+% 		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-true,
+% 			   [rule(drdiaboxi(I,N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
+% 			    Proof1
+% 			   ]),
+% 		      Proof2
+% 		     ])) :-
+% 	N is N0 + 1,
+% 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
+% 	rule_conclusion(Proof2, Pros2, Z, _),
+% 	rule_conclusion(Proof3, _Pros3, _, Sem3),
+% 	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,Z)))),
+% 	replace_proof(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
+% 	/* TODO: globally replace Sem by Var in all of ProofC0 */
+% 	replace_sem(Sem3, Sem2, Z, Sem1), 
+% 	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), N0, ProofC1),
+% 	rule_conclusion(ProofC1, ProsC1, _, _),
+% 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
+% 	!.
 
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 		rule(dr, GoalPros, D-Sem,
@@ -617,7 +591,63 @@ replace_proof_list([], _, _, []).
 replace_proof_list([P0|Ps0], ProofA, ProofB, [P|Ps]) :-
 	replace_proof(P0, ProofA, ProofB, P),
 	replace_proof_list(Ps0, ProofA, ProofB, Ps).
-	
+
+% =
+
+replace_proof_bag(rule(Nm, Pros0, X-Sem, Rs0), Bag, Var, Proof, Result) :-
+	bag_of_words(Pros0, Bag0),
+   (
+        Bag0 = Bag
+   ->
+        Result = Proof
+   ;
+	replace_bag(Pros0, Pros, Bag, Var),
+        Result = rule(Nm, Pros, X-Sem, Rs),
+        replace_proof_bag_list(Rs0, Bag, Var, Proof, Rs)
+   ).
+
+replace_proof_bag_list([], _, _, _, []).
+replace_proof_bag_list([A|As], Bag, Var, Proof, Results) :-
+	replace_proof_bag_list(As, A, Bag, Var, Proof, Results).
+
+replace_proof_bag_list([], A0, Bag, Var, Proof, [A]) :-
+	replace_proof_bag(A0, Bag, Var, Proof, A).
+replace_proof_bag_list([B0], A0, Bag0, Var, Proof, Result) :-
+	A0 = rule(_, ProsA, _, _),
+	B0 = rule(_, ProsB, _, _),
+	bag_of_words(ProsA, BagA),
+	bag_of_words(ProsB, BagB),
+   (
+        /* the conclusion of the left subproof contains only words from the extracted element */   
+        ord_subset(BagA, Bag0),
+	BagA \= Bag0   
+   ->
+	/* forget left subproof and reduce bag */    
+        ord_subtract(Bag0, BagA, Bag),
+	Result = [B],
+	replace_proof_bag(B0, Bag, Var, Proof, B)
+   ;			      
+        ord_subset(BagB, Bag0),
+        BagB \= Bag0
+   ->
+	ord_subtract(Bag0, BagB, Bag),
+	Result = [A],
+	replace_proof_bag(A0, Bag, Var, Proof, A)
+   ;			      
+        ord_subset(Bag0, BagA)
+   ->
+	B = B0,
+	Result = [A,B],
+	replace_proof_bag(A0, Bag0, Var, Proof, A)
+   ;
+        ord_subset(Bag0, BagB)
+   ->	     
+	A = A0,
+	Result = [A,B],
+	replace_proof_bag(B0, Bag0, Var, Proof, B)
+   ).
+
+
 % = global_replace_pros(+InProof, +Pros1, +Pros2, -OutProof)
 %
 % true if OutProof is a copy of InProof where all occurrences of Pros1 have been
@@ -683,7 +713,7 @@ replace_bag(A, Result, Bag0, Bag, R) :-
 	ord_select(A, Bag0, Bag),
 	!,
 	(Bag = [] -> Result = R ; Result = '$EMPTY').
-replace_bag(B, B, Bag0, Bag, R).
+replace_bag(B, B, Bag, Bag, _R).
 
 cleanup_pros(p(I,X0,Y0), Z) :-
 	!,
@@ -693,20 +723,20 @@ cleanup_pros(p(I,X0,Y0), Z) :-
    ->
         cleanup_pros(Y0, Z)
    ;
-        cleanup_pros(Y0, Y)
+        cleanup_pros(Y0, Y),
    (
         Y == '$EMPTY'
    ->
         Z = X
    ;
         Z = p(I,X,Y)
-   ).
+   )).
 cleanup_pros(X, X).
 
 
 
 bag_of_words(p(_,A,B), Bag) :-
-	!.
+	!,
 	bag_of_words(A, Bag0),
 	bag_of_words(B, Bag1),
 	ord_dup_union(Bag0, Bag1, Bag).
