@@ -1686,13 +1686,12 @@ inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, data(_
 inference(prod_e, [item(p(0,dr(0,X,Y),dia(0,box(0,Y))), I, J, data(Pros0,Sem0,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,appl(pi1(Sem0),pi2(Sem0)),Prob,H,SetA,SetB,SetC,SetD)),
 	          [Pros=Pros0]).
-inference(prod_i, [item(X, I, J,   data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
-		   item(Y, J, K,   data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
+inference(prod_i, [item(X, I, J,   data(Pros0,Sem0,Prob0,H0,[],[],[],[])),
+		   item(Y, J, K,   data(Pros1,Sem1,Prob1,_H1,[],[],[],[])),
 		   item(F, I0, J0, data(_    ,_   ,Prob2,_,_,_,_,_))],
-	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, SetA, SetB, SetC, SetD)),
+	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, [], [], [], [])),
 	          [Pros=p(0,Pros0,Pros1),
 		   prod_formula(F,p(0,X,Y), I0, J0, I, K),
-		   combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob3),
 		   Prob is Prob2 + Prob3]).
 inference(prod_i3, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
@@ -1724,7 +1723,8 @@ inference(prod_cl, [item(X, I, J, data(Pros1,Sem1,Prob0,_H0,SetA0,SetB0,SetC0,Se
 		    combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		    combine_probability(Prob0, Prob1, I, K, prod_cl, Prob)]).
 
-inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1), item(p(0,Y,dia(0,box(0,Z))), J, K, Data2)],
+inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1),
+		    item(p(0,Y,dia(0,box(0,Z))), J, K, Data2)],
 	            item(X, I, K, Data),
                    [application_r(0, I, K, f, Data1, Data2, Data)]).
 
@@ -1753,7 +1753,7 @@ inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
 	  [J=<K,start_extraction_l(Y, J, 0, Prob0, Data0, Data)]).
-% we require empty stacks for gap_e to avoid strange scopings
+% require empty stacks for gap_e to avoid strange scopings
 inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,[],[],[],[])),
 		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
 	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,[],[],[],[])),

@@ -1686,13 +1686,12 @@ inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, data(_
 inference(prod_e, [item(p(0,dr(0,X,Y),dia(0,box(0,Y))), I, J, data(Pros0,Sem0,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,appl(pi1(Sem0),pi2(Sem0)),Prob,H,SetA,SetB,SetC,SetD)),
 	          [Pros=Pros0]).
-inference(prod_i, [item(X, I, J,   data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
-		   item(Y, J, K,   data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
+inference(prod_i, [item(X, I, J,   data(Pros0,Sem0,Prob0,H0,[],[],[],[])),
+		   item(Y, J, K,   data(Pros1,Sem1,Prob1,_H1,[],[],[],[])),
 		   item(F, I0, J0, data(_    ,_   ,Prob2,_,_,_,_,_))],
-	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, SetA, SetB, SetC, SetD)),
+	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, [], [], [], [])),
 	          [Pros=p(0,Pros0,Pros1),
 		   prod_formula(F,p(0,X,Y), I0, J0, I, K),
-		   combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob3),
 		   Prob is Prob2 + Prob3]).
 inference(prod_i3, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
