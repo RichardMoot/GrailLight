@@ -26,14 +26,14 @@ verbose(false).
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
 % xml_files('flmf7af2ep.cat.xml').
-xml_files('flmf7ag1exp.cat.xml').
+% xml_files('flmf7ag1exp.cat.xml').
 % xml_files('flmf7ag2ep.cat.xml').
 % xml_files('flmf7ah1ep.aa.xml').
 % xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
 % xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
-% xml_files('flmf7ak1ep.indent.xml').
+xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
 % xml_files('flmf7al1ep.cat.xml').
 % xml_files('flmf7am1ep.xd.cat.xml').

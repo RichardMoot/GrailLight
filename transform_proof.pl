@@ -1,7 +1,8 @@
-:- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1]).
+:- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1, latex_transform/1]).
 
 :- use_module(sem_utils,   [replace_sem/4,get_max_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
 :- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3,ord_subtract/3,ord_select/3,ord_subset/2]).
+:- use_module(latex,       [latex_proof/2]).
 :- use_module(print_proof, [print_proof/3]).
 
 quote_mode(1, 1).
@@ -95,6 +96,14 @@ numbervars_proof_list([], N, N).
 numbervars_proof_list([P|Ps], N0, N) :-
 	numbervars_proof(P, N0, N1),
 	numbervars_proof_list(Ps, N1, N).
+
+latex_transform(N) :-
+	proof(N, P),
+	transform_proof(P, Q),
+	open('proof.tex', write, Stream),
+	latex_proof(P, Stream),
+	latex_proof(Q, Stream),
+	close(Stream).
 
 transform_proof(P, Q) :-
 	numbervars_proof(P),
@@ -373,11 +382,17 @@ transform_proof(rule(e_end_l_lnr, Pros1, F1-Sem1, [LeftProofs, rule(e_end_r_lnr,
 	!,
 	collect_left_proofs(LeftProofs, N0, N1, Left),
 	collect_right_proofs(RightProofs, N1, N, Right).
+transform_proof(rule(e_end_l_lnr, Pros1, F1-Sem1, [LeftProofs, AndProof]),
+		N0, N,
+		rule(dl, Pros1, F1-Sem1, [Left, AndProof])) :-
+	!,
+	collect_left_proofs(LeftProofs, N0, N, Left).
 
 % product rules
 transform_proof(rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-Sem, [Left,Mid,Right]), N, N,
 		rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-Sem, [Proof1,Proof2])) :-
 	/* remove auxiliary hypothesis (of the form C/(A*B) or (A*B)\C) */
+        !,
   (
 	Left = rule(_, Pros1, A-_, _),
 	Mid = rule(_, Pros2, B-_, _)
@@ -395,11 +410,11 @@ transform_proof(rule(prod_e, Pros, FS,
 		     [rule(prod_c, _, _, [Proof1, Proof2])]),
 		N0, N,
 		rule(prod_e(N0), Pros, FS,
-		     [Proof2,
+		     [PProof,
 		      rule(dr, p(0,p(0,Pros1,'$VAR'(N0)),'$VAR'(N1)), A-appl(appl(Sem1,'$VAR'(V0)),'$VAR'(V1)),
 			   [rule(dr, p(0,Pros1,'$VAR'(N0)), dr(0,A,C)-appl(Sem1,'$VAR'(V0)),
 				 [Proof1,
-				  rule(hyp(N0),'$VAR'(N0), B-'$VAR'(V0), [])]),
+				  AProof]),
 			    rule(hyp(N0), '$VAR'(N1), C-'$VAR'(V1), [])
 			   ])
 		     ])) :-
@@ -410,7 +425,29 @@ transform_proof(rule(prod_e, Pros, FS,
 	V1 is V0 + 1,
 	N1 is N0 + 1,
 	N is N1 + 1,
+	prod_root(Proof2, p(0,B,dia(0,box(0,C))), PProof, rule(hyp(N0),'$VAR'(N0), B-'$VAR'(V0), []), AProof),
 	!.
+
+% transform_proof(rule(prod_e, Pros, FS,
+% 		     [rule(prod_c, _, _, [Proof1, Proof2])]),
+% 		N0, N,
+% 		rule(prod_e(N0), Pros, FS,
+% 		     [Proof2,
+% 		      rule(dr, p(0,p(0,Pros1,'$VAR'(N0)),'$VAR'(N1)), A-appl(appl(Sem1,'$VAR'(V0)),'$VAR'(V1)),
+% 			   [rule(dr, p(0,Pros1,'$VAR'(N0)), dr(0,A,C)-appl(Sem1,'$VAR'(V0)),
+% 				 [Proof1,
+% 				  rule(hyp(N0),'$VAR'(N0), B-'$VAR'(V0), [])]),
+% 			    rule(hyp(N0), '$VAR'(N1), C-'$VAR'(V1), [])
+% 			   ])
+% 		     ])) :-
+% 	Proof1 = rule(_, Pros1, dr(0,dr(0,A,C),B)-Sem1, _),
+% 	Proof2 = rule(_, _, p(0,B,dia(0,box(0,C)))-Sem2, _),
+% 	/* obtain two variables which as fresh wrt Sem1 and Sem2 */
+% 	get_max_variable_number(appl(Sem1,Sem2), V0),
+% 	V1 is V0 + 1,
+% 	N1 is N0 + 1,
+% 	N is N1 + 1,
+% 	!.
 transform_proof(rule(prod_dr, Pros, FS, Proofs), N, N, rule(dr, Pros, FS, Proofs)) :-
 	!.
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
@@ -420,6 +457,24 @@ transform_proof_list([], N, N, []).
 transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
 	transform_proof(P, N0, N1, Q),
 	transform_proof_list(Ps, N1, N, Qs).
+
+
+% = product introduction rules
+prod_root(rule(prod_cl, _, _, [Proof1, Proof2]), p(0,A,dia(0,box(0,C))),
+	  PProof, rule(Nm, HPros, A-V, []), rule(dl, p(0,Pros1,Pros2), B-appl(Y,X), [Proof1,Result])) :-
+	!,
+	Proof1 = rule(_, Pros1, A-X, _),
+	Proof2 = rule(_, _, p(0,dl(0,A,B),dia(0,box(0,C)))-_, _),
+	prod_root(Proof2, p(0,B,dia(0,box(0,C))), PProof, rule(Nm, HPros, B-V, []), Result),
+	Result = rule(_, Pros2, _-Y, _).
+prod_root(rule(prod_c, _, _, [Proof1, Proof2]), p(0,A,dia(0,box(0,C))),
+	  PProof, rule(Nm, HPros, A-V, []), rule(dr, p(0,Pros1,Pros2), A-appl(X,Y), [Proof1,Result])) :-
+	!,
+	Proof1 = rule(_, Pros1, dr(0,A,B)-X, _),
+	Proof2 = rule(_, _, p(0,B,dia(0,box(0,C)))-_, _),
+	prod_root(Proof2, p(0,B,dia(0,box(0,C))), PProof, rule(Nm, HPros, B-V, []), Result),
+	Result = rule(_, Pros2, _-Y, _).
+prod_root(PProof, _, PProof, Result, Result).
 
 % left-node-raising constructions
 

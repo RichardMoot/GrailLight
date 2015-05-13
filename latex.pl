@@ -1572,7 +1572,7 @@ write_rule_name(let, Stream) :-
 
 write_rule_name(prod_e(N), Stream) :-
 	!,
-	format(Stream, '\\bo\\bullet\\textit{E}_{~w}\\bc', [N]).
+	format(Stream, '\\bo\\bullet\\textit{E}\\bc_{~w}', [N]).
 write_rule_name(prod_e, Stream) :-
 	!,
 	format(Stream, '\\bo\\bullet\\textit{E}\\bc', []).
