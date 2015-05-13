@@ -134,38 +134,16 @@ transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 	Sem = appl(appl(Term2,lambda(Var,TermX)),_Term0),
 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
 	rule_conclusion(Proof2, Pros2, dr(0,Z,V), _),
-%	trace,
-	transform_proof(Proof3, N1, N, Proof4), 
+	/* do a recursive transformation before replace_proof_bag which may otherwise erase information */
+	transform_proof1(Proof3, N1, N, Proof4), 
 	rule_conclusion(Proof4, _Pros3, _, _),
 	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,dr(0,Z,V))))),
 	bag_of_words(Pros2, Bag),
 	replace_proof_bag(Proof4, Bag, '$VAR'(N0), rule(hyp(N0), '$VAR'(N0), dr(0,Z,V)-Var, []), ProofC1),
 	/* TODO: globally replace Sem by Var in all of ProofC0 */
-%	replace_sem(Sem3, Sem2, Z, Sem1), 
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
-
-% transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
-% 		rule(dr, GoalPros, D-Sem,
-% 		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,Z)))-true,
-% 			   [rule(drdiaboxi(I,N0), ProsC1, X-lambda(Var,Sem1), [ProofC1]),
-% 			    Proof1
-% 			   ]),
-% 		      Proof2
-% 		     ])) :-
-% 	N is N0 + 1,
-% 	rule_conclusion(Proof1, Pros1, ExtrForm, _),
-% 	rule_conclusion(Proof2, Pros2, Z, _),
-% 	rule_conclusion(Proof3, _Pros3, _, Sem3),
-% 	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,Z)))),
-% 	replace_proof(Proof3, rule(_, Pros2, Z-Sem2, _), rule(hyp(N0), '$VAR'(N0), Z-Var, []), ProofC0),
-% 	/* TODO: globally replace Sem by Var in all of ProofC0 */
-% 	replace_sem(Sem3, Sem2, Z, Sem1), 
-% 	global_replace_pros(ProofC0, Pros2, '$VAR'(N0), N0, ProofC1),
-% 	rule_conclusion(ProofC1, ProsC1, _, _),
-% 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
-% 	!.
 
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 		rule(dr, GoalPros, D-Sem,
@@ -244,6 +222,54 @@ transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	find_w_start(Proof1, LPros, RPros, _AdvF, SemADV, ProofB, Proof2),
 	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
 	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
+	!.
+transform_proof(rule(wpop_vp, GoalPros, dl(0,NP,S)-Sem, [Proof1]), N0, N,
+		rule(dli(N2), GoalPros, dl(0,NP,S)-Sem,
+		     [rule(prod_e(NB), p(0,'$VAR'(N2),GoalPros), S-true,
+			  [ProofP,
+			   rule(dl1, p(0,'$VAR'(N2), GPP), S-true,
+				[rule(dl, p(0,'$VAR'(N2), GPB), S-true, 
+				      [rule(hyp(N2), '$VAR'(N2), NP-'$VAR'(VB), []),
+				       Proof3]),
+				 rule(hyp(N0), '$VAR'(NA), dl(1,S,S)-'$VAR'(VA), [])])])])) :-
+	/* TODO: add clitic possibility here */
+	 Sem = lambda(X,appl(Adv0,appl(_SemVP,X))),
+   (
+	 Adv0 = pi1(SemAdv),NA=N0,NB=N1,VA=V0,VB=V1
+   ;
+         Adv0 = pi2(SemAdv),NA=N1,NB=N0,VA=V1,VB=V0
+   ),
+	get_max_variable_number(Sem, V0),
+	V1 is V0 + 1,
+	N1 is N0 + 1,
+	N2 is N1 + 1,
+	N is N2 + 1,								       
+	find_prod_w_start(Proof1, N0, NB, VB, SemAdv, PPros, ProofP, Proof2),
+	global_replace_pros(Proof2, PPros, '$VAR'(NB), Proof3),
+	replace_pros(GoalPros, PPros, '$VAR'(NB), GPB),
+	replace_pros(GoalPros, PPros, p(0,'$VAR'(N0),'$VAR'(N1)), GPP),
+	!.
+transform_proof(rule(wpop, GoalPros, S-Sem, [Proof1]), N0, N,
+		rule(prod_e(NB), GoalPros, S-Sem,
+			  [ProofP,
+			   rule(dl1, GPP, S-true, 
+				 [Proof3,
+				  rule(hyp(N0), '$VAR'(NA), dl(1,S,S)-'$VAR'(VA), [])])])) :-
+	/* TODO: add clitic possibility here */
+	 Sem = appl(Adv0,_Sem),
+   (
+	 Adv0 = pi1(SemAdv),NA=N0,NB=N1,VA=V0,VB=V1
+   ;
+         Adv0 = pi2(SemAdv),NA=N1,NB=N0,VA=V1,VB=V0
+   ),
+	get_max_variable_number(Sem, V0),
+	V1 is V0 + 1,
+	N1 is N0 + 1,
+	N2 is N1 + 1,
+	N is N2 + 1,								       
+	find_prod_w_start(Proof1, N0, NB, VB, SemAdv, PPros, ProofP, Proof2),
+	global_replace_pros(Proof2, PPros, '$VAR'(NB), Proof3),
+	replace_pros(GoalPros, PPros, p(0,'$VAR'(N0),'$VAR'(N1)), GPP),
 	!.
 transform_proof(rule(wpop_vpi, GoalPros, _, [ProofA,ProofB]), N0, N, ProofC) :-
 	merge_proofs_left(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
@@ -427,27 +453,6 @@ transform_proof(rule(prod_e, Pros, FS,
 	N is N1 + 1,
 	prod_root(Proof2, p(0,B,dia(0,box(0,C))), PProof, rule(hyp(N0),'$VAR'(N0), B-'$VAR'(V0), []), AProof),
 	!.
-
-% transform_proof(rule(prod_e, Pros, FS,
-% 		     [rule(prod_c, _, _, [Proof1, Proof2])]),
-% 		N0, N,
-% 		rule(prod_e(N0), Pros, FS,
-% 		     [Proof2,
-% 		      rule(dr, p(0,p(0,Pros1,'$VAR'(N0)),'$VAR'(N1)), A-appl(appl(Sem1,'$VAR'(V0)),'$VAR'(V1)),
-% 			   [rule(dr, p(0,Pros1,'$VAR'(N0)), dr(0,A,C)-appl(Sem1,'$VAR'(V0)),
-% 				 [Proof1,
-% 				  rule(hyp(N0),'$VAR'(N0), B-'$VAR'(V0), [])]),
-% 			    rule(hyp(N0), '$VAR'(N1), C-'$VAR'(V1), [])
-% 			   ])
-% 		     ])) :-
-% 	Proof1 = rule(_, Pros1, dr(0,dr(0,A,C),B)-Sem1, _),
-% 	Proof2 = rule(_, _, p(0,B,dia(0,box(0,C)))-Sem2, _),
-% 	/* obtain two variables which as fresh wrt Sem1 and Sem2 */
-% 	get_max_variable_number(appl(Sem1,Sem2), V0),
-% 	V1 is V0 + 1,
-% 	N1 is N0 + 1,
-% 	N is N1 + 1,
-% 	!.
 transform_proof(rule(prod_dr, Pros, FS, Proofs), N, N, rule(dr, Pros, FS, Proofs)) :-
 	!.
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
@@ -585,6 +590,30 @@ interpunction_pros('(').
 interpunction_pros(')').
 interpunction_pros('-').
 interpunction_pros(';').
+
+%	find_prod_w_start(Proof1, NB, VB, Adv0, PPros, ProofP, Proof2),
+
+find_prod_w_start(rule(prod_wl, Pros, _, [Prem]),
+		  N0, NB, VB, Adv, Pros, Prem,
+		  rule(hyp(N0), '$VAR'(NB), Y-'$VAR'(VB), [])) :-
+	Prem = rule(_, 	_, p(0,dl(1,_,_),dia(0,box(0,Y)))-Sem, _),		       
+	Sem =@= Adv,
+	!.
+find_prod_w_start(rule(prod_w, Pros, _, [Prem]),
+		  N0, NB, VB, Adv, Pros, Prem,
+		  rule(hyp(N0), '$VAR'(NB), Y-'$VAR'(VB), [])) :-
+	Prem = rule(_, _, p(0,Y,dl(1,_,_))-Sem, _),
+	Sem =@= Adv,
+	!.
+find_prod_w_start(rule(Nm, Pros, F, Rs0), N0, NB, VB, Adv, PPros, ProofP, rule(Nm, Pros, F, Rs)) :-
+	find_prod_w_start_list(Rs0, N0, NB, VB, Adv, PPros, ProofP, Rs).
+
+find_prod_w_start_list([P0|Ps], N0, NB, VB, Adv, PPros, ProofP, [P|Ps]) :-
+	find_prod_w_start(P0, N0, NB, VB, Adv, PPros, ProofP, P).
+find_prod_w_start_list([P|Ps0], N0, NB, VB, Adv, PPros, ProofP, [P|Ps]) :-
+	find_prod_w_start_list(Ps0, N0, NB, VB, Adv, PPros, ProofP, Ps).
+
+%
 
 find_w_start(rule(wr,RPros,_,[LProof,RProof]), Left, Pros, AdvF, Sem, RProof, LProof) :-
         match_pros(RPros, p(1,Left,Pros)),
