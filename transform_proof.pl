@@ -548,32 +548,59 @@ find_w_start_list([P0|Ps], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 find_w_start_list([P|Ps0], Left, Pros, AdvF, Sem, AdvProof, [P|Ps]) :-
 	find_w_start_list(Ps0, Left, Pros, AdvF, Sem, AdvProof, Ps).
 
-find_e_start(rule(gap_c,Pros,A-Sem,[Proof,rule(_, Y, EF-_,_)]), gap_c, X, EF, B, N, Pros, rule(dr,Pros,A-Sem,[Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
+find_e_start(rule(gap_c, Pros, A-Sem, [Proof,rule(_, Y, EF-_,_)]),
+	     gap_c, X, EF, B, N, Pros,
+	     rule(dr, Pros, A-Sem, [Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
 	Sem = appl(_,Var0),
 	match_pros_i(X, Y),
 	!.
-find_e_start(rule(ef_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), ef_start, X, EF, dr(0,A,B), N, Pros, rule(dr,Pros,A-Sem,[rule(hyp(N),'$VAR'(N),dr(0,A,B)-Var0,[]),Proof])) :-
+find_e_start(rule(ef_start, Pros, A-Sem, [rule(_, Y, EF-_, _), Proof]),
+	     ef_start, X, EF, dr(0,A,B), N, Pros,
+	     rule(dr, Pros, A-Sem, [rule(hyp(N),'$VAR'(N),dr(0,A,B)-Var0,[]),Proof])) :-
 	Sem = appl(Var0, _),
 	match_pros_i(X, Y),
 	!.
-find_e_start(rule(e_start,Pros,A-Sem,[rule(_, Y, EF-_, _), Proof]), e_start, X, EF, B, N, Pros, rule(dr,Pros,A-Sem,[Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
+find_e_start(rule(e_start, Pros, A-Sem, [rule(_, Y, EF-_, _), Proof]),
+	     e_start, X, EF, B, N, Pros,
+	     rule(dr, Pros, A-Sem, [Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
 	Sem = appl(_, Var0),
 	match_pros_i(X, Y),
 	!.
-find_e_start(rule(e_start_l,Pros,A-Sem,[Proof, rule(_, Y, EF-_, _)]), e_start_l, X, EF, B, N, Pros, rule(dr,Pros,A-Sem,[Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :-
+find_e_start(rule(e_start_l, Pros, A-Sem, [Proof,rule(_, Y, EF-_, _)]),
+	     e_start_l, X, EF, B, N, Pros,
+	     rule(dr, Pros, A-Sem, [Proof,rule(hyp(N),'$VAR'(N),B-Var0,[])])) :- 
 	Sem = appl(_, Var0),
 	match_pros_i(X, Y),
+%	format(user_error, '~N!!! e_start_l !!!~n', [TermC]),
 	!.
-find_e_start(rule(Nm, P, A, Ds0), StartName, X, EF, B, N, Pros, rule(Nm, P, A, Ds)) :-
-	find_e_start_list(Ds0, StartName, X, EF, B, N, Pros, Ds),
+find_e_start(rule(Nm, P, A, Ds0),
+	     StartName, X, EF, B, N, Pros,
+	     rule(Nm, P, A, Ds)) :-
+%	Term = find_e_start(rule(Nm, P, A, Ds0),StartName, X, EF, B, N, Pros, _),
+%	copy_term(Term, TermC),
+%	numbervars(TermC, 0, _),
+%	TermC = Term,
+	rule_premisses(Nm, Ds0, Ds1, Ds2, Ds),
+	find_e_start_list(Ds1, StartName, X, EF, B, N, Pros, Ds2),
 	!.
-
 
 find_e_start_list([P0|Ps], StartName, X, EF, B, N, Pros, [P|Ps]) :-
 	find_e_start(P0, StartName, X, EF, B, N, Pros, P).
 find_e_start_list([P|Ps0], StartName, X, EF, B, N, Pros, [P|Ps]) :-
 	find_e_start_list(Ps0, StartName, X, EF, B, N, Pros, Ps).
-	
+
+
+%! rule_premisses(+RuleName, +PremissesIn, -AccessiblePremissesIn, -AccessiblePremissesOut, -PremissesOut)
+%
+% 
+
+rule_premisses(e_start_l, [P1,P2], [P1], [P3], [P3,P2]) :-
+	!.
+rule_premisses(e_start,   [P1,P2], [P2], [P3], [P1,P3]) :-
+	!.
+rule_premisses(_, Ds, Ds, Es, Es).
+
+
 rule_conclusion(rule(_, A, F-S, _), A, F, S).
 rule_daughters(rule(_, _, _, Ds), Ds).
 

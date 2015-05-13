@@ -1639,10 +1639,10 @@ inference(e_endd, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, I, K, Data0, Data1, Data)]).
 
 
-inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,_,data(_,_,Prob0,_,_,_,_,_)),
+inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		      item(dr(0,X,Y), I, J, Data0)],
 		      item(X, I, J, Data),
-		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, Prob0, Data0, Data)]).
+		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, L, Prob0, Data0, Data)]).
 inference(e_end_l, [item(dl(0,dr(0,Y,dia(0,box(0,Z))),X), J, K, Data0),
 		    item(Y, I, J, Data1)],
 	            item(X, I, K, Data),
@@ -1748,15 +1748,15 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 	         [I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
-inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,[],[],[],[])),
+inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
-	  [J=<K,start_extraction_l(Y, J, 0, Prob0, Data0, Data)]).
+	  [J=<K,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
 % require empty stacks for gap_e to avoid strange scopings
-inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,data(_,_,Prob0,_,[],[],[],[])),
+inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
 	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,[],[],[],[])),
-	         [J=<K,Pros0=Pros,select(0-t(Y,J,V), SetCs0, []), Prob is Prob0 + Prob1]).
+	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,V), SetCs0, []), Prob is Prob0 + Prob1]).
 
 % ==============================================
 % =            auxiliary predicates            =
@@ -2275,7 +2275,7 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 
 % = extraction
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1 Data2)
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1, Data2)
 %
 % ExtractedFormula: formula extracted
 % RightEdgeOfFormula: string position where the formula has been inserted
@@ -2291,7 +2291,7 @@ start_extraction_inv(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0),
 	ord_key_insert_i(SetD0, K, t(Y,J,X), SetD).
 
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, Data1 Data2)
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, Data1, Data2)
 %
 % ExtractedFormula: formula extracted
 % RightEdgeOfFormula: string position where the formula has been inserted
@@ -2300,18 +2300,21 @@ start_extraction_inv(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0),
 % SetC has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)
 % with meaning Formula-SemVar has been used at string position J-J (FormRightEdge)
 
-start_extraction_l(Y, J, K, Prob0, data(Pros, Sem, Prob1, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
-	ord_key_insert_var(SetC0, K, t(Y,J,X), SetC),
+start_extraction_l0(Y, J, K, L, Prob0, data(Pros, Sem, Prob1, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_var(SetC0, 0, t(Y,J,K,L,X), SetC),
 	Prob is Prob0 + Prob1.
 
-end_extraction_l(Y, J, K, _L, M, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
-                          data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
+start_extraction_l(Y, J, K, L, Prob0, data(Pros, Sem, Prob1, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_var(SetC0, K, t(Y,J,K,L,X), SetC),
+	Prob is Prob0 + Prob1.
+
+end_extraction_l(Y, J, K, _L, M, data(Pros0, Sem0, Prob0, _, [], [], [], []),
+                          data(Pros1, Sem1, Prob1, H, SetA, SetB, SetC1, SetD),
 	                  data(p(0,Pros1,Pros0), appl(Sem0,lambda(X,Sem1)), Prob, H, SetA, SetB, SetC, SetD)) :-
-	select(K-t(Y,J,X), SetC1, SetC2),
+	select(K-t(Y,J,K,M,X), SetC1, SetC),
 	subterm(Sem1, X),
 	!,
-	combine_probability(Prob0, Prob1, K, M, e_end_l, Prob),
-	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC2, SetD1, SetA, SetB, SetC, SetD).
+	combine_probability(Prob0, Prob1, K, M, e_end_l, Prob).
 
 
 end_extraction(Y, J, K, I0, I, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
