@@ -80,17 +80,27 @@ print_formula_sem(Formula, Sem, Stream) :-
 	format(Stream, '-~W', [Sem, [numbervars(true),quoted(true)]]).
 
 print_formula(lit(A), Stream) :-
+	!,
 	format(Stream, 'lit(~@)', [print_formula1(A,Stream)]).
 print_formula(dr(I,A,B), Stream) :-
+	!,
 	format(Stream, 'dr(~w,~@,~@)', [I,print_formula(A,Stream),print_formula(B,Stream)]).
 print_formula(dl(I,A,B), Stream) :-
+	!,
 	format(Stream, 'dl(~w,~@,~@)', [I,print_formula(A,Stream),print_formula(B,Stream)]).
 print_formula(p(I,A,B), Stream) :-
+	!,
 	format(Stream, 'p(~w,~@,~@)', [I,print_formula(A,Stream),print_formula(B,Stream)]).
 print_formula(dia(I,A), Stream) :-
+	!,
 	format(Stream, 'dia(~w,~@)', [I,print_formula(A,Stream)]).
 print_formula(box(I,A), Stream) :-
+	!,
 	format(Stream, 'box(~w,~@)', [I,print_formula(A,Stream)]).
+print_formula(Term, Stream) :-
+	functor(Term, F, A),
+	format(user_error, '{Warning: unknown term ~w with functor ~w/~w}', [Term,F,A]),
+	write(Stream, Term).
 
 print_formula1(np(A,B,C), Stream) :-
 	format(Stream, 'np(~@,~@,~@)', [print_item(A,Stream),print_item(B,Stream),print_item(C,Stream)]).
@@ -100,19 +110,29 @@ print_formula1(s(A), Stream) :-
 	!,
 	format(Stream, 's(inf(~@))', [print_item(B,Stream)]).
 print_formula1(s(A), Stream) :-
+	!,
 	format(Stream, 's(~@)', [print_item(A,Stream)]).
 print_formula1(pp(A), Stream) :-
+	!,
 	format(Stream, 'pp(~@)', [print_item(A,Stream)]).
 print_formula1(n, Stream) :-
+	!,
 	write(Stream, n).
 print_formula1(cl_r, Stream) :-
+	!,
 	write(Stream, cl_r).
 print_formula1(cl_y, Stream) :-
+	!,
 	write(Stream, cl_y).
 print_formula1(txt, Stream) :-
+	!,
 	write(Stream, txt).
 print_formula1(let, Stream) :-
+	!,
 	write(Stream, let).
+print_formula1(Strange, Stream) :-
+	format(user_error, '{Warning: unknown atom: ~w}~n', [Strange]),
+	write(Stream, Strange).
 
 print_item('$VAR'(_), Stream) :-
 	!,
