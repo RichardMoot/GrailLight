@@ -1624,19 +1624,19 @@ inference(se_dit, [item(dl(1,Y,dl(0,lit(cl_r),X)), J, K, Data2),
 
 % = argument extraction
 
-inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))),_,K,_),
+inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))),K0,K,_),
 		    item(dr(0,X,Y), I, J, Data0)],
 		    item(X, I, J, Data),
-		   [K=<I,no_island_violation(Ind,X,Y),start_extraction(Y, J, K, Data0, Data)]).
+		   [K=<I,no_island_violation(Ind,X,Y),start_extraction(Y, J, K0, K, Data0, Data)]).
 inference(e_end, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(Y, J, K, Data1)],
 	          item(X, I, K, Data),
-	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, I, K, Data0, Data1, Data)]).
+	         [check_extraction(Ind,K0,K),end_extraction(Z, I, J, K0, K, Data0, Data1, Data)]).
 
 inference(e_endd, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(dl(1,V,Y), J, K, Data1)],
 	          item(dl(1,V,X), I, K, Data),
-	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, I, K, Data0, Data1, Data)]).
+	         [check_extraction(Ind,K0,K),end_extraction(Z, I, J, K0, K, Data0, Data1, Data)]).
 
 
 inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,L,data(_,_,Prob0,_,[],[],[],[])),
@@ -1730,16 +1730,16 @@ inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1),
 % = gapping
 
 % = functor extraction (used for gapping)
-inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),_,K,_),
+inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),K0,K,_),
 		     item(Y, I, J, Data0)],
 		     item(X, I, J, Data),
-		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K, Data0, Data)]).
+		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K0, K, Data0, Data)]).
 % = intransitive verb gap, very rare (1 occurence in treebank)
 % (formulated this way to avoid n\n traces selecting explicit arguments)
-inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))),_,K,_),
+inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))),K0,K,_),
 			item(lit(np(A,B,C)), I, J, Data0)],
 		        item(lit(s(S)), I, J, Data),
-		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K, Data0, Data)]).
+		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K0, K, Data0, Data)]).
 % easy case:
 inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X)))), K0, K, Data0),
 		  item(X, I, J, Data1),
@@ -2284,11 +2284,11 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 % SetD has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)
 % with meaning Formula-SemVar has been used at string position J-J (FormRightEdge)
 
-start_extraction(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
-	ord_key_insert_i(SetD0, K, t(Y,J,X), SetD).
+start_extraction(Y, J, K0, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_i(SetD0, K, t(Y,J,K0,X), SetD).
 
-start_extraction_inv(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(X,Sem), Prob, H, SetA, SetB, SetC, SetD)) :-
-	ord_key_insert_i(SetD0, K, t(Y,J,X), SetD).
+start_extraction_inv(Y, J, K0, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(X,Sem), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_i(SetD0, K, t(Y,J,K0,X), SetD).
 
 
 % = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, Data1, Data2)
@@ -2317,13 +2317,13 @@ end_extraction_l(Y, J, K, _L, M, data(Pros0, Sem0, Prob0, _, [], [], [], []),
 	combine_probability(Prob0, Prob1, K, M, e_end_l, Prob).
 
 
-end_extraction(Y, J, K, I0, I, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
+end_extraction(Y, I, J, K0, K, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
                   data(Pros1, Sem1, Prob1, _, SetA1, SetB1, SetC1, SetD1),
 	          data(p(0,Pros0,Pros1), appl(Sem0,lambda(X,Sem1)), Prob, H, SetA, SetB, SetC, SetD)) :-
-	select(K-t(Y,J,X), SetD1, SetD2),
+	select(J-t(Y,K0,I,X), SetD1, SetD2),
 	subterm(Sem1, X),
 	!,
-	combine_probability(Prob0, Prob1, I0, I, e_end, Prob),
+	combine_probability(Prob0, Prob1, I, K, e_end, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD2, SetA, SetB, SetC, SetD).
 
 print_stacks(data(_,_,_,_,[],[],[],[])) :-
