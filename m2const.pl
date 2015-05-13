@@ -33,11 +33,11 @@ verbose(false).
 % xml_files('flmf7ai1exp.cat.xml').
 % xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
-xml_files('flmf7ak1ep.indent.xml').
+% xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
 % xml_files('flmf7al1ep.cat.xml').
 % xml_files('flmf7am1ep.xd.cat.xml').
-% xml_files('flmf7am2ep.xd.cat.xml').
+xml_files('flmf7am2ep.xd.cat.xml').
 % xml_files('flmf7an1ep.xml').
 % xml_files('flmf7an2co.af.cat.xml').
 % xml_files('flmf7ao1ep.xml').

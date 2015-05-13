@@ -223,6 +223,37 @@ transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
 	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
 	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
 	!.
+transform_proof(rule(wpop_vp, GoalPros, dl(0,CL,dl(0,NP,S))-Sem, [Proof1]), N0, N,
+		rule(dli(N3), GoalPros, dl(0,CL,dl(0,NP,S))-Sem,
+		     [rule(dli(N2), p(0,'$VAR'(N3),GoalPros), dl(0,NP,S)-true, 
+			  [rule(prod_e(NB), p(0,'$VAR'(N2),p(0,'$VAR'(N3),GoalPros)), S-true,
+				[ProofP,
+				 rule(dl1, p(0,'$VAR'(N2),p(0,'$VAR'(N3), GPP)), S-true,
+				      [rule(dl, p(0,'$VAR'(N2), p(0,'$VAR'(N3), GPB)), S-true, 
+					    [rule(hyp(N2), '$VAR'(N2), NP-'$VAR'(VB), []),
+					     rule(dl, p(0,'$VAR'(N3), GPB), dl(0,NP,S)-true,
+						  [rule(hyp(N3), '$VAR'(N3), CL-'$VAR'(V2),[]),
+						   Proof3])]),
+				       rule(hyp(N0), '$VAR'(NA), dl(1,S,S)-'$VAR'(VA), [])])])])])) :-
+	/* VP with clitic */
+	 Sem = lambda(_CL,lambda(_X,appl(Adv0,_))),
+   (
+	 Adv0 = pi1(SemAdv),NA=N0,NB=N1,VA=V0,VB=V1
+   ;
+         Adv0 = pi2(SemAdv),NA=N1,NB=N0,VA=V1,VB=V0
+   ),
+	get_max_variable_number(Sem, V0),
+	V1 is V0 + 1,
+	V2 is V1 + 1,			 
+	N1 is N0 + 1,
+	N2 is N1 + 1,
+	N3 is N2 + 1,
+	N is N2 + 1,								       
+	find_prod_w_start(Proof1, N0, NB, VB, SemAdv, PPros, ProofP, Proof2),
+	global_replace_pros(Proof2, PPros, '$VAR'(NB), Proof3),
+	replace_pros(GoalPros, PPros, '$VAR'(NB), GPB),
+	replace_pros(GoalPros, PPros, p(0,'$VAR'(N0),'$VAR'(N1)), GPP),
+	!.
 transform_proof(rule(wpop_vp, GoalPros, dl(0,NP,S)-Sem, [Proof1]), N0, N,
 		rule(dli(N2), GoalPros, dl(0,NP,S)-Sem,
 		     [rule(prod_e(NB), p(0,'$VAR'(N2),GoalPros), S-true,
@@ -232,7 +263,7 @@ transform_proof(rule(wpop_vp, GoalPros, dl(0,NP,S)-Sem, [Proof1]), N0, N,
 				      [rule(hyp(N2), '$VAR'(N2), NP-'$VAR'(VB), []),
 				       Proof3]),
 				 rule(hyp(N0), '$VAR'(NA), dl(1,S,S)-'$VAR'(VA), [])])])])) :-
-	/* TODO: add clitic possibility here */
+	/* VP-scope adverb */
 	 Sem = lambda(X,appl(Adv0,appl(_SemVP,X))),
    (
 	 Adv0 = pi1(SemAdv),NA=N0,NB=N1,VA=V0,VB=V1
@@ -255,7 +286,7 @@ transform_proof(rule(wpop, GoalPros, S-Sem, [Proof1]), N0, N,
 			   rule(dl1, GPP, S-true, 
 				 [Proof3,
 				  rule(hyp(N0), '$VAR'(NA), dl(1,S,S)-'$VAR'(VA), [])])])) :-
-	/* TODO: add clitic possibility here */
+	/* sentence-scope adverb */
 	 Sem = appl(Adv0,_Sem),
    (
 	 Adv0 = pi1(SemAdv),NA=N0,NB=N1,VA=V0,VB=V1
@@ -456,7 +487,20 @@ transform_proof(rule(prod_e, Pros, FS,
 transform_proof(rule(prod_dr, Pros, FS, Proofs), N, N, rule(dr, Pros, FS, Proofs)) :-
 	!.
 transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
+	is_list(Ds0),
+	!,
 	transform_proof_list(Ds0, N0, N, Ds).
+
+transform_proof(Strange, _, _, null) :-
+  (	
+	var(Strange)
+  ->
+	format(user_error, '~N{Error: free variable used for proof!}~n', [])
+  ;
+	functor(Strange, F, A),
+	format(user_error, '{Error: strange proof term with functor ~w/~w: ~w}', [F,A,Strange])
+  ),
+        fail.
 
 transform_proof_list([], N, N, []).
 transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
