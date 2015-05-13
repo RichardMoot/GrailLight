@@ -1708,7 +1708,7 @@ inference(prod_w, [item(p(0,X,dl(1,Y,Z)), I, J, data(Pros0,Sem,Prob,H,SetA,SetB,
 	           item(X, I, J, data(Pros,pi1(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi2(Sem))|SetB],SetC,SetD)),
 		  [Pros=Pros0]).
 inference(prod_wl, [item(p(0,dl(1,Y,Z),dia(0,box(0,X))), I, J, data(Pros0,Sem,Prob,H,SetA,SetB,SetC,SetD))],
-	           item(X, I, J, data(Pros,pi1(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi2(Sem))|SetB],SetC,SetD)),
+	           item(X, I, J, data(Pros,pi2(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi1(Sem))|SetB],SetC,SetD)),
 		  [Pros=Pros0]).
 inference(prod_c, [item(dr(0,X,Y),              I, J, data(Pros1,Sem1,Prob0,H1,SetA0,SetB0,SetC0,SetD0)),
 		   item(p(0,Y,dia(0,box(0,Z))), J, K, data(Pros2,Sem2,Prob1,_H2,SetA1,SetB1,SetC1,SetD1))],
