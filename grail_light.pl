@@ -1287,15 +1287,18 @@ reconstruct_pros(I-K, [A|As], Pros) :-
 	!,
 	select(Index, [A|As], Bs),
 	stored(Index, _, J, K, _, data(ProsD,_,_,_,_,_,_,_)),
+	justification(Index, Just),
+	Just =.. [_|Args],
+	reconstruct_pros(ProsD, Args, Pros1),
   (
         I = J
   ->
-	justification(Index, Just),
-	Just =.. [_|Args],
-	reconstruct_pros(ProsD, Args, Pros)
+        /* the stored item spans the complete string */
+        Pros = Pros1
   ;
-        /* special case for prod_i3 */
-        Pros = p(0,Pros0,ProsD),
+        /* special case for prod_i3; the stored item spans only a postfix */
+        /* we therefore compute the missing prefix from the other premisses */
+        Pros = p(0,Pros0,Pros1),
         reconstruct_pros(I-J, Bs, Pros0)
   ).
         
@@ -1311,7 +1314,8 @@ reconstruct_pros(p(Ind,I-J,J-K), Args0, p(Ind,ProsL,ProsR)) :-
 	Just2 =.. [_|Args2],
 	reconstruct_pros(ProsL0, Args1, ProsL),
 	reconstruct_pros(ProsR0, Args2, ProsR).
-reconstruct_pros(Pros, _, Pros).
+reconstruct_pros(Pros, _, Pros) :-
+	format(user_error, '~N{Warning: failed to reconstruct prosodics for "~w"}~n', [Pros]).
 
 
 % = coherent_item(+Left, +Right, +Data)
@@ -1680,7 +1684,6 @@ inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, data(_
 		    Prob is Prob0 + Prob3]).
 
 % = product rules
-% to test: maybe it is reasonable to require all stacks to be empty.
 
 inference(prod_e, [item(p(0,dr(0,X,Y),dia(0,box(0,Y))), I, J, data(Pros0,Sem0,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,appl(pi1(Sem0),pi2(Sem0)),Prob,H,SetA,SetB,SetC,SetD)),

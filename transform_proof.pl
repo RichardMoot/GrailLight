@@ -463,6 +463,19 @@ transform_proof(rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-Sem, [Left,Mid,Right]), 
 	Proof1 = Mid,
 	Proof2 = Right
   ).
+transform_proof(rule(prod_i3, p(0,p(0,Pros1,Pros2),Pros3), p(0,p(0,A,B),C)-Sem, [Left,Mid1,Mid2,Right]), N, N,
+		rule(prod_i, p(0,p(0,Pros1,Pros2),Pros3), p(0,p(0,A,B),C)-Sem,
+		     [rule(prod_i, p(0,Pros1,Pros2), p(0,A,B)-true, [Proof1,Proof2]),
+		      Proof3])) :-
+	/* remove auxiliary hypothesis (of the form C/(A*B) or (A*B)\C) */
+	select(rule(NmA, Pros1, A-SA, PrmsA), [Left,Mid1,Mid2,Right], Rest0),
+	select(rule(NmB, Pros2, B-SB, PrmsB), Rest0, Rest1),
+	member(rule(NmC, Pros3, C-SC, PrmsC), Rest1),
+        !,
+	Proof1 = rule(NmA, Pros1, A-SA, PrmsA),
+	Proof2 = rule(NmB, Pros2, B-SB, PrmsB),
+	Proof3 = rule(NmC, Pros3, C-SC, PrmsC).
+
 transform_proof(rule(prod_e, Pros, FS,
 		     [rule(prod_c, _, _, [Proof1, Proof2])]),
 		N0, N,

@@ -60,8 +60,8 @@ all_strange_proofs :-
 
 all_strange_proofs([], Strange, Total) :-
 	Normal is Total - Strange,
-	NPct is Normal/Total,
-	SPct is Strange/Total,
+	NPct is (Normal/Total)*100,
+	SPct is (Strange/Total)*100,
 	format('~N**TOTAL**~nNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [Normal,NPct,Strange,SPct,Total]).
 	
 all_strange_proofs([F|Fs], Strange0, Total0) :-
@@ -72,8 +72,8 @@ all_strange_proofs([F|Fs], Strange0, Total0) :-
 	findall(N, proof(N, _), ProofList),
 	strange_proofs(ProofList, 0, ST, 0, TT, Ss, []),
 	Normal is TT - ST,
-	NPct is Normal/TT,
-	SPct is ST/TT,
+	NPct is (Normal/TT)*100,
+	SPct is (ST/TT)*100,
 	Total is Total0 + TT,
 	Strange is Strange0 + ST,
 	format('~N**~w**~nNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [F,Normal,NPct,ST,SPct,TT]),
@@ -84,8 +84,8 @@ strange_proofs :-
 	findall(N, proof(N, _), ProofList),
 	strange_proofs(ProofList, 0, ST, 0, TT, Ss, []),
 	Normal is TT - ST,
-	NPct is Normal/TT,
-	SPct is ST/TT,
+	NPct is (Normal/TT)*100,
+	SPct is (ST/TT)*100,
 	format('~NNormal : ~D (~w%)~nStrange: ~D (~w%)~nTotal  : ~D~2n', [Normal,NPct,ST,SPct,TT]),
 	print_list(Ss).
 
