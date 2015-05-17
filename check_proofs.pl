@@ -30,7 +30,8 @@ nd_file(at_nd).
 nd_file('300_nd').
 nd_file('8000_nd').
 nd_file(annodis_nd).
-
+nd_file(monde_a_nd).
+nd_file(monde_b_nd).
 
 check_proofs :-
 	findall(N, proof(N, _), ProofList),
@@ -52,7 +53,41 @@ check_proof(rule(Nm, _, _, Rs), RNs0, RNs) :-
 %        RNs1 = [F|RNs0],	
 	check_proof_list(Rs, RNs1, RNs).
 
+all_sentences :-
+	tell('sentences.txt'),
+	findall(F, nd_file(F), FileList),
+	all_sentences(FileList, 0, 0).
 
+all_sentences([], Sents, Words) :-
+	told,
+	format(user_error, '~NDone!~nTOTAL: ~D sentences, ~D words~n', [Sents, Words]).
+all_sentences([F|Fs], Sents0, Words0) :-
+	abolish(proof/2),
+	style_check(-singleton),
+	compile(F),
+	style_check(+singleton),
+	findall(N, proof(N, _), ProofList),
+	all_sentences(ProofList, Sents0, Sents, Words0, Words),
+	all_sentences(Fs, Sents, Words).
+
+all_sentences([], Sents, Sents, Words, Words).
+all_sentences([N|Ns], Sents0, Sents, Words0, Words) :-
+	Sents1 is Sents0 + 1,
+	proof(N, rule(_, Pros, _, _)),
+	write_pros(Pros, Words0, Words1),
+	nl,
+	all_sentences(Ns, Sents1, Sents, Words1, Words).
+
+write_pros(p(_,A,B), W0, W) :-
+	!,
+	write_pros(A, W0, W1),
+	write_pros(B, W1, W).
+write_pros(A, W0, W) :-
+	W is W0 + 1,
+	write(A),
+	write(' ').
+	
+	
 all_strange_proofs :-
 	findall(F, nd_file(F), FileList),
 	all_strange_proofs(FileList, 0, 0).

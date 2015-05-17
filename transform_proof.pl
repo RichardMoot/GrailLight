@@ -39,6 +39,8 @@ infile(at).
 infile(300).
 infile(8000).
 infile(annodis).
+infile(monde_a).
+infile(monde_b).
 
 chart_dir('chart_proofs/').
 nd_dir('nd_proofs/').

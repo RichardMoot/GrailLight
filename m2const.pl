@@ -22,7 +22,7 @@
 verbose(false).
 
 % xml_files('flmf7aa1ep.cat.xml').
-% xml_files('flmf7aa2ep.cat.xml').
+xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
 % xml_files('flmf7af2ep.cat.xml').
@@ -37,7 +37,7 @@ verbose(false).
 % xml_files('flmf7ak2ep.xd.cat.xml').
 % xml_files('flmf7al1ep.cat.xml').
 % xml_files('flmf7am1ep.xd.cat.xml').
-xml_files('flmf7am2ep.xd.cat.xml').
+% xml_files('flmf7am2ep.xd.cat.xml').
 % xml_files('flmf7an1ep.xml').
 % xml_files('flmf7an2co.af.cat.xml').
 % xml_files('flmf7ao1ep.xml').
