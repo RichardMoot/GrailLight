@@ -78,10 +78,13 @@ latex_header(Stream, PaperSize) :-
 	format(Stream, '\\usepackage{proof}~n', []),         
 	format(Stream, '\\usepackage{moreverb}~n', []),         
 	format(Stream, '\\usepackage{array}~n', []),         
+	format(Stream, '\\usepackage{bm}~n', []),         
+	format(Stream, '\\usepackage{color}~n', []),         
 	format(Stream, '\\newcommand{\\Boxd}{\\Box^{\\downarrow}}~n', []),
 	format(Stream, '\\newcommand{\\bs}{\\backslash}~n', []),         
 	format(Stream, '\\newcommand{\\bo}{[}~n', []),         
 	format(Stream, '\\newcommand{\\bc}{]}~2n', []),         
+	format(Stream, '\\definecolor{gray80}{gray}{0.80}~2n', []),         
         format(Stream, '\\begin{document}~2n', []).
 
 % = latex_tail.
@@ -260,6 +263,15 @@ latex_label([A|As], N, _Con, Stream) :-
 latex_label('$TRACE'(_), _N, _Con, Stream) :-
 	!,
 	write(Stream, '\\epsilon ').
+
+latex_label('(', _, _, Stream) :-
+	!,
+	format(Stream, '\\textcolor{gray80}{\\bm{(}}', []).
+
+latex_label(')', _, _, Stream) :-
+	!,
+	format(Stream, '\\textcolor{gray80}{\\bm{)}}', []).
+
 
 latex_label(A, _N, _Con, Stream) :-
 	atomic(A),
