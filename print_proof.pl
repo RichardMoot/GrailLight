@@ -19,11 +19,11 @@ print_proof1(rule(RName,Pros,FormulaSem0,Ds), T0, Stream) :-
     (
 	Ds = []
     ->
-        format(Stream, 'rule(~W, ~W, ~@, [])', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],print_formula_sem(FormulaSem,Stream)])
+        format(Stream, 'rule(~W, ~W, ~@, [])', [RName,[numbervars(true),quoted(true)],Pros,[quoted(true)],print_formula_sem(FormulaSem,Stream)])
     ;
         Ds = [D|Ds0], 
         T is T0 + 3,
-        format(Stream, 'rule(~W, ~W, ~@, [~n', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],print_formula_sem(FormulaSem,Stream)]),
+        format(Stream, 'rule(~W, ~W, ~@, [~n', [RName,[numbervars(true),quoted(true)],Pros,[quoted(true)],print_formula_sem(FormulaSem,Stream)]),
         tab(Stream, T),
         print_proof_list(Ds0, D, T, Stream),
         format(Stream, '])', [])
