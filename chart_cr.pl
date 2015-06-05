@@ -436,7 +436,7 @@ update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [W0-F0|WFs], [IN-t(W,PosTT,Lemma,F)
    ->
 	update_seminfo(Rest, WFs, Update)
    ;
-        update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], WFs, [IN-t(W,PosTT,Lemma,F)|Update])
+        update_seminfo(Rest, [W0-F0|WFs], Update)
    ).
 
 compute_semantics([], []).
@@ -525,12 +525,12 @@ list_to_chart([], N, H, As0, As, V, V, S, S) :-
 	add_heap_to_chart(H, As0, As).
 % skip final punctuation if its formula is "boring"
 %LPlist_to_chart([si(_, PUN, _, FP)], N, H, As0, As, V, V, S, S) :-
-%LP	  is_punct(PUN),
+%LP       is_punct(PUN),
 %LP       boring(FP) ,
-%LP	  retractall(sentence_length(_)),
-%LP	  assert(sentence_length(N)),
-%LP        !,
-%LP	add_heap_to_chart(H, As0, As).
+%LP       retractall(sentence_length(_)),
+%LP       assert(sentence_length(N)),
+%LP       !,
+%LP       add_heap_to_chart(H, As0, As).
 list_to_chart([si(W,Pos,Lemma,FPs)|Ws], N0, H0, As0, As, V0, V, S0, S) :-
 	N1 is N0 + 1,
 	assert(word(W, Pos, Lemma, N0, N1)),

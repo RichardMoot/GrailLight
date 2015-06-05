@@ -38,6 +38,7 @@ set debugstring ""
 set cvs_prefix        /Users/moot/checkout
 set lefff_prefix      /Users/moot/checkout
 set monde_prefix      /Users/moot/checkout/monde
+set grail_prefix      /Users/moot/checkout/GrailLight
 set model_prefix      /Volumes/richard.moot
 set config_prefix     /Volumes/richard.moot
 set grammar_prefix    "$cvs_prefix/Grail/grammars"
@@ -54,7 +55,7 @@ set pos_model(french) "$monde_prefix/all_pos_tt"
 set pos_model(frenchx) "$monde_prefix/extra_pos_tt"
 set st_model(french)  "$monde_prefix/french_tt"
 set st_model(frenchx)  "$monde_prefix/french_tt"
-set grail_prefix      /Users/moot/grailexec/bin
+#set grail_prefix      /Users/moot/grailexec/bin
 set pos_cmd           "$tagger_prefix/mpos"
 set st_cmd            "$tagger_prefix/msuper"
 set grail_cmd         "$grail_prefix/g3"
@@ -1325,7 +1326,7 @@ proc supertag {sentence} {
 
     global comment grail_cmd pos_cmd pos_model st_cmd st_model
     global beta algo link par grammar_prefix debug debugstring skip
-    global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix
+    global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix grail_prefix
 
     .c delete all
 
@@ -1535,8 +1536,8 @@ proc supertag {sentence} {
 	set saved_dir [pwd]
 	cd $tmp_dir
 	if {[string equal $grail_parse "chart_pos_lemma"]} {
-	    puts stderr "$monde_prefix/grail_light.pl $tmp_dir/parser.pl"
-	    if {[catch {exec $monde_prefix/grail_light.pl $tmp_dir/parser.pl} gl_msg]} {
+	    puts stderr "$grail_prefix/grail_light.pl $tmp_dir/parser.pl"
+	    if {[catch {exec $grail_prefix/grail_light.pl $tmp_dir/parser.pl} gl_msg]} {
 		puts stderr $gl_msg
 	    }
 	    puts stderr "DONE!"
