@@ -1,4 +1,3 @@
-% -*- Mode: Prolog -*-
 #!/Applications/SWI-Prolog.app/Contents/MacOS//swipl -q -t main -f
 
 :- encoding(utf8).
@@ -37,18 +36,18 @@ display_unreduced_semantics(no).
 
 default_depth_limit(10000).
 %default_depth_limit(25000).
-%output_proofs(nd).
-output_proofs(chart).
+output_proofs(nd).
+%output_proofs(chart).
 
 % = function combining the weight of items given a rule application.
 
-%LP% = combine two log-probabilities using sum
-%LPcombine_probability(Prob0, Prob1, _J, _K, _R, Prob) :-
-%LP	Prob is Prob0 + Prob1.
-%LP
-%LP% = take log of initial probability
-%LPcompute_weight(Prob, Weight) :-
-%LP	Weight is log(Prob).
+% = combine two log-probabilities using sum
+combine_probability(Prob0, Prob1, _J, _K, _R, Prob) :-
+	Prob is Prob0 + Prob1.
+
+% = take log of initial probability
+compute_weight(Prob, Weight) :-
+	Weight is log(Prob).
 
 %CR% = count the crossing links (subtract the crossing links since we are maximizing)
 %CRcombine_probability(Prob0, Prob1, J, K, _R, Prob) :-
@@ -108,7 +107,7 @@ output_proofs(chart).
 main :-
 	current_prolog_flag(os_argv, Argv),
         append(_, [A|Av], Argv),
-	file_base_name(A, 'chart.pl'),
+	file_base_name(A, 'grail_light_nd.pl'),
 	!,
         main(Av).
 
@@ -534,13 +533,13 @@ list_to_chart([], N, H, As0, As, V, V, S, S) :-
 	assert(sentence_length(N)),
 	add_heap_to_chart(H, As0, As).
 % skip final punctuation if its formula is "boring"
-%LPlist_to_chart([si(_, PUN, _, FP)], N, H, As0, As, V, V, S, S) :-
-%LP       is_punct(PUN),
-%LP       boring(FP) ,
-%LP       retractall(sentence_length(_)),
-%LP       assert(sentence_length(N)),
-%LP       !,
-%LP       add_heap_to_chart(H, As0, As).
+list_to_chart([si(_, PUN, _, FP)], N, H, As0, As, V, V, S, S) :-
+       is_punct(PUN),
+       boring(FP) ,
+       retractall(sentence_length(_)),
+       assert(sentence_length(N)),
+       !,
+       add_heap_to_chart(H, As0, As).
 list_to_chart([si(W,Pos,Lemma,FPs)|Ws], N0, H0, As0, As, V0, V, S0, S) :-
 	N1 is N0 + 1,
 	assert(word(W, Pos, Lemma, N0, N1)),

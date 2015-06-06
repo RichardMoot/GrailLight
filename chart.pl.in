@@ -419,24 +419,34 @@ startsymbol(lit(let), lambda(_,drs([],[]))).
 
 chart_semantics(SemInfo0, Semantics0, Semantics) :-
     (
-        '$PROOFAXIOMS'(PFs)
+        '$PROOFAXIOMS'(PFs),
+        update_seminfo(SemInfo0, PFs, SemInfo)
     ->
-	update_seminfo(SemInfo0, PFs, SemInfo)
+        true
     ;
+        /* proceed normally if no match is found */
         SemInfo0 = SemInfo
     ),
 	compute_semantics(SemInfo, Subst),
         substitute_sem(Subst, Semantics0, Semantics).	
 
+% = update_seminfo(+InitialEntries, +ProofAxioms, -MergedEntries)
+%
+% try to unify the initial lexical formulas with the axioms of the proof; this may further instantiate some
+% underspecified lexical formulas.
+
 update_seminfo([], [], []).
-update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [W0-F0|WFs], [IN-t(W,PosTT,Lemma,F)|Update]) :-
+update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [W0-F0|WFs], Update0) :-
    (
         W0 = W,
         F = F0
    ->
+        Update0 = [IN-t(W,PosTT,Lemma,F)|Update],
 	update_seminfo(Rest, WFs, Update)
    ;
-        update_seminfo(Rest, [W0-F0|WFs], Update)
+        /* ignore axioms which don't match the given word-formula pair */
+        Update = Update0,
+        update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], WFs, Update)
    ).
 
 compute_semantics([], []).
@@ -1495,6 +1505,10 @@ compute_chart_proof(Index, rule(Rule,Pros,Formula-Sem,Prems)) :-
    ;
 	unify_rule(Rule, Index, Idf, Args0, Formula, List)
    ).
+
+% = proof_axioms(+Proof, -AxiomsDL)
+%
+% TODO: remove auxiliary rule premisses, which are now counted double!
 
 proof_axioms(rule(axiom,Pros,Formula-_,[])) -->
 	!,

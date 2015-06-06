@@ -62,6 +62,7 @@ set grail_cmd         "$grail_prefix/g3"
 set tmp_dir           "/Users/moot/Library/Supertagger"
 set semantics         drt
 set postagset         tt
+set grail_exec        "grail_light_nd.pl"
 
 set bw 1
 
@@ -1326,7 +1327,7 @@ proc supertag {sentence} {
 
     global comment grail_cmd pos_cmd pos_model st_cmd st_model
     global beta algo link par grammar_prefix debug debugstring skip
-    global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix grail_prefix
+    global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix grail_prefix grail_exec
 
     .c delete all
 
@@ -1536,8 +1537,8 @@ proc supertag {sentence} {
 	set saved_dir [pwd]
 	cd $tmp_dir
 	if {[string equal $grail_parse "chart_pos_lemma"]} {
-	    puts stderr "$grail_prefix/grail_light.pl $tmp_dir/parser.pl"
-	    if {[catch {exec $grail_prefix/grail_light.pl $tmp_dir/parser.pl} gl_msg]} {
+	    puts stderr "$grail_prefix/$grail_exec $tmp_dir/parser.pl"
+	    if {[catch {exec $grail_prefix/$grail_exec $tmp_dir/parser.pl} gl_msg]} {
 		puts stderr $gl_msg
 	    }
 	    puts stderr "DONE!"
@@ -1620,6 +1621,7 @@ menu .mb.options -tearoff 0
 .mb.options add cascade -label "POS model" -menu .mb.options.pos
 .mb.options add separator
 .mb.options add cascade -label Parser -menu .mb.options.parser
+.mb.options add cascade -label "Proof Output" -menu .mb.options.output
 .mb.options add cascade -label Semantics -menu .mb.options.sem
 .mb.options add separator
 .mb.options add cascade -label Debug -menu .mb.options.debug
@@ -1628,6 +1630,10 @@ menu .mb.options.parser
 .mb.options.parser add radio -label "Grail + Chart" -variable grail_parse -value chart_pos_lemma -command {update_menus}
 .mb.options.parser add radio -label "Grail + Optimization" -variable grail_parse -value parse_pos_lemma -command {update_menus}
 .mb.options.parser add radio -label "Grail" -variable grail_parse -value "nocontinuity parse_pos_lemma" -command {update_menus}
+
+menu .mb.options.output
+.mb.options.output add radio -label "Chart proof" -variable grail_exec -value "grail_light.pl" -command {update_menus}
+.mb.options.output add radio -label "Natural deduction proof" -variable grail_exec -value "grail_light_nd.pl" -command {update_menus}
 
 menu .mb.options.algo
 .mb.options.algo add radio -label Forward-Backward -variable algo -value fwdbwd

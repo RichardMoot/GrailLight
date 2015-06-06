@@ -4,9 +4,11 @@ addgl = /usr/bin/sed \
         -e 's/chart.pl/grail_light.pl/g'
 addglc = /usr/bin/sed \
         -e 's/chart.pl/grail_light_cr.pl/g'
+addglnd = /usr/bin/sed \
+        -e 's/grail_light.pl/grail_light_nd.pl/g'
 
 
-all: grail_light.pl grail_light_cr.pl
+all: grail_light.pl grail_light_cr.pl grail_light_nd.pl
 
 chart_lp.pl: chart.pl
 	/usr/bin/sed -e 's/%LP//g' chart.pl > chart_lp.pl
@@ -15,5 +17,7 @@ chart_cr.pl: chart.pl
 
 grail_light.pl: chart_lp.pl
 	$(addf) chart_lp.pl | $(addgl) | tail +2 > grail_light.pl
+grail_light_nd.pl: grail_light.pl
+	/usr/bin/sed -e 's/%output_proofs(nd)./output_proofs(nd)./g' grail_light.pl | /usr/bin/sed -e 's/output_proofs(chart)./%output_proofs(chart)./g' | $(addglnd)  > grail_light_nd.pl
 grail_light_cr.pl: chart_cr.pl
 	$(addf) chart_cr.pl | $(addglc) | tail +2 > grail_light_cr.pl
