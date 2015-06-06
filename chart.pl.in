@@ -4,12 +4,14 @@
 :- encoding(utf8).
 :- set_prolog_flag(encoding, utf8).
 
+:- use_module(transform_proof, [transform_proof/2]).
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
+:- use_module(print_proof, [print_proof/3,xml_proof/3]).
 :- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_select/3, ord_delete/3]).
 :- use_module(list_utils, [strip_keys/2,insert_nth0/4]).
 :- use_module(library(pce)).
@@ -28,6 +30,8 @@
 :- dynamic key_index/2.
 
 :- create_options.
+
+quote_mode(1, 1).
 
 display_unreduced_semantics(no).
 
@@ -110,29 +114,73 @@ main :-
 
 
 main([]).
+main([from,A0,to,B0,F|Fs]) :-
+	!,
+	get_integer(A0, A),
+	get_integer(B0, B),
+	compile(F),
+	chart_parse_from_to(A,B),
+	main(Fs).
+main([from,A0,F|Fs]) :-
+	!,
+	get_integer(A0, A),
+	compile(F),
+	chart_parse_all(A),
+	main(Fs).
+main([to,B0,F|Fs]) :-
+	!,
+	get_integer(B0, B),
+	compile(F),
+	chart_parse_until(B),
+	main(Fs).
 main([F|Fs]) :-
 	compile(F),
 	chart_parse_all,
 	main(Fs).
 
+get_integer(N0, N) :-
+	integer(N0),
+	!,
+	N = N0.
+get_integer(N0, N) :-
+	atom(N0),
+	!,
+	atom_number(N0, N).
+
 % = parse all sentences.
 
 chart_parse_all :-
 	default_depth_limit(DLimit),
-	chart_parse_all(1, DLimit).
+	chart_parse_all(1, max, DLimit).
 
 % = parse all sentences with a given depth limit DL
 
 chart_parse_all_dl(DL) :-
-	chart_parse_all(1, DL).
+	chart_parse_all(1, max, DL).
 
 % = parse all sentences starting with SentNo
 
 chart_parse_all(SentNo) :-
 	default_depth_limit(DLimit),
-	chart_parse_all(SentNo, DLimit).
+	chart_parse_all(SentNo, max, DLimit).
 
-chart_parse_all(SentNo, DL) :-
+% = parse all sentences until Max
+
+chart_parse_until(Max) :-
+	default_depth_limit(DLimit),
+	chart_parse_all(1, Max, DLimit).
+
+chart_parse_until(Max, DLimit) :-
+	chart_parse_all(1, Max, DLimit).
+
+chart_parse_from_to(Start, End) :-
+	default_depth_limit(DLimit),
+	chart_parse_all(Start, End, DLimit).	
+
+chart_parse_from_to(Start, End, DLimit) :-
+	chart_parse_all(Start, End, DLimit).	
+
+chart_parse_all(SentNo, Max, DL) :-
 	retractall(unparsed(_,_,_)),
 	new_output_file(grail_log, log),
 	new_output_file(unparsed, unparsed),
@@ -144,7 +192,7 @@ chart_parse_all(SentNo, DL) :-
 	set_global_counter('$CHART_LIMIT', 0),
 	set_global_counter('$CHART_ALL', 0),
 	print_grail_semantics_header,
-	chart_parse_all0(SentNo, DL),
+	chart_parse_all0(SentNo, Max, DL),
 	/* cleanup after failure-driven loop has parsed all sentences */
 	'$CHART_ALL'(ALL),
    (
@@ -170,11 +218,11 @@ chart_parse_all(SentNo, DL) :-
 	close(plog),
 	close(log).
 
-chart_parse_all0(N, DL) :-
+chart_parse_all0(N, Max, DL) :-
 	clause(user:sent(N0,_),_),
     (
-        /* fail for sentence numbers smaller than N */
-        N0 >= N
+        /* fail for sentence numbers smaller than N or bigger than Max */
+        N0 >= N, N0 @=< Max
     ->
         increase_global_counter('$CHART_ALL'),
         set_global_counter('$CHART_CURRENT', N0)
@@ -204,7 +252,7 @@ chart_parse_all0(N, DL) :-
 	format('~nSuccess: ~w (~w)~n', [N0,DepthLimit])
      ),
         fail.
-chart_parse_all0(_, _).
+chart_parse_all0(_, _, _).
 
 % = parse_with_depth_limit(+SentNo, -Result, +MaxDepth, -FinalDepth)
 %
@@ -388,7 +436,7 @@ update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [W0-F0|WFs], [IN-t(W,PosTT,Lemma,F)
    ->
 	update_seminfo(Rest, WFs, Update)
    ;
-        update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], WFs, [IN-t(W,PosTT,Lemma,F)|Update])
+        update_seminfo(Rest, [W0-F0|WFs], Update)
    ).
 
 compute_semantics([], []).
@@ -478,7 +526,7 @@ list_to_chart([], N, H, As0, As, V, V, S, S) :-
 % skip final punctuation if its formula is "boring"
 %LPlist_to_chart([si(_, PUN, _, FP)], N, H, As0, As, V, V, S, S) :-
 %LP       is_punct(PUN),
-%LP       boring(FP),
+%LP       boring(FP) ,
 %LP       retractall(sentence_length(_)),
 %LP       assert(sentence_length(N)),
 %LP       !,
@@ -947,6 +995,12 @@ check_solution(Sem) :-
 	compute_proof(Index),
        	increase_global_counter('$SOLUTION').
 
+check_solution(Index, Sem) :-
+	final_item(Goal, Index, Sem),
+	item_in_chart(Goal, Index),
+	compute_proof(Index),
+       	increase_global_counter('$SOLUTION').
+
 init_agenda(Axioms, Agenda) :-
 	empty_agenda(Empty),
 	add_axioms_to_agenda(Axioms, Empty, Agenda),
@@ -1034,6 +1088,7 @@ hold([Cond|Conds]) :-
 	call(Cond),
 	hold(Conds).
 
+
 matching_rule(Trigger, Nth, RuleName, Others, Consequent, SideConds) :-
 	active_rule(RuleName),
 	inference(RuleName, Antecedent, Consequent, SideConds),
@@ -1092,21 +1147,22 @@ subsumes_list([t(L,R,F0,_)|As], [t(L,R,F,_)|Bs]) :-
 	subsumes_chk(F0, F),
 	subsumes_list(As, Bs).
 
-% If the old value is *identical* to the new one, but the probability is lower,
+% If the old value is *identical* to the new one, but the weight is lower,
 % then erase the old value and fail the subsumption test. Otherwise, succeed.
 
-keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, Justif) :-
+keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Justif) :-
 	F0 == F,
 	I0 == I,
 	J0 == J,
 	!,
 	Data = data(Pros0,Sem0,Prob0,_,_,_,_,_),
 	BetterData = data(Pros1,Sem1,Prob,_,_,_,_,_),
-	/* delete the previous item */
-	retract(stored(IndexofSimilar, H, I, J, F, Data)),
-	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
+	/* delete the lower weight item */
+	retract(stored(IndexofSimilar, _H, I, J, F, Data)),
 	retract(justification(IndexofSimilar, _)),
-	assert(justification(IndexofSimilar, Justif)),
+	/* comment out retracts above and remove comments below to obtain a "packed chart" */
+%	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
+%	assert(justification(IndexofSimilar, Justif)),
    (
         verbose
    ->
@@ -1114,10 +1170,11 @@ keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, Just
 	reduce_sem(Sem0, RSem0),
 	numbervars(Sem1, 0, _),
 	reduce_sem(Sem1, RSem1),
-	format('REPLACED (~w < ~w): ~w~nDATA:~p ~p~nBETTER DATA:~p ~p~n', [Prob, Prob0, IndexofSimilar,Pros0,RSem0,Pros1,RSem1])
+        format('DELETED (~w < ~w): ~w~nDATA:~p ~p~nBETTER DATA:~p ~p~n', [Prob, Prob0, IndexofSimilar,Pros0,RSem0,Pros1,RSem1])
    ;
         true
-   ).
+   ),
+        fail.
 keep_maximum_item(=, _, _, _, _, _, _, _, _, _, _).
 keep_maximum_item(>, _, _, _, _, _, _, _, _, _, _).
 
@@ -1231,15 +1288,18 @@ reconstruct_pros(I-K, [A|As], Pros) :-
 	!,
 	select(Index, [A|As], Bs),
 	stored(Index, _, J, K, _, data(ProsD,_,_,_,_,_,_,_)),
+	justification(Index, Just),
+	Just =.. [_|Args],
+	reconstruct_pros(ProsD, Args, Pros1),
   (
         I = J
   ->
-	justification(Index, Just),
-	Just =.. [_|Args],
-	reconstruct_pros(ProsD, Args, Pros)
+        /* the stored item spans the complete string */
+        Pros = Pros1
   ;
-        /* special case for prod_i3 */
-        Pros = p(0,Pros0,ProsD),
+        /* special case for prod_i3; the stored item spans only a postfix */
+        /* we therefore compute the missing prefix from the other premisses */
+        Pros = p(0,Pros0,Pros1),
         reconstruct_pros(I-J, Bs, Pros0)
   ).
         
@@ -1255,7 +1315,8 @@ reconstruct_pros(p(Ind,I-J,J-K), Args0, p(Ind,ProsL,ProsR)) :-
 	Just2 =.. [_|Args2],
 	reconstruct_pros(ProsL0, Args1, ProsL),
 	reconstruct_pros(ProsR0, Args2, ProsR).
-reconstruct_pros(Pros, _, Pros).
+reconstruct_pros(Pros, _, Pros) :-
+	format(user_error, '~N{Warning: failed to reconstruct prosodics for "~w"}~n', [Pros]).
 
 
 % = coherent_item(+Left, +Right, +Data)
@@ -1418,10 +1479,10 @@ compute_proof(Index, _) :-
 	format('~nFAILED to compute proof for index ~w (~w)~n', [CUR,Index]).
 	
 
-compute_chart_proof(Index, rule(Rule,Pros,Formula,Prems)) :-
+compute_chart_proof(Index, rule(Rule,Pros,Formula-Sem,Prems)) :-
 	justification(Index, Just),
 	Just =.. [Rule|Args0],
-	stored(Index, Idf, _L, _R, Formula, data(Pros0,_,_,_,_,_,_,_)),
+	stored(Index, Idf, _L, _R, Formula, data(Pros0,Sem,_,_,_,_,_,_)),
 	sort_args(Args0, Args),
 	reconstruct_pros(Pros0, Args, Pros),
 	compute_chart_proof_list(Args0, List, KeyList),
@@ -1435,7 +1496,7 @@ compute_chart_proof(Index, rule(Rule,Pros,Formula,Prems)) :-
 	unify_rule(Rule, Index, Idf, Args0, Formula, List)
    ).
 
-proof_axioms(rule(axiom,Pros,Formula,[])) -->
+proof_axioms(rule(axiom,Pros,Formula-_,[])) -->
 	!,
 	[Pros-Formula].
 proof_axioms(rule(_,_,_,List)) -->
@@ -1451,14 +1512,13 @@ unify_rule(RuleName, Index, Idf, Just, Formula, List) :-
 	inference(RuleName, Antecedent, item(Formula,L,R,Data), _SideConds),
 	stored(Index, Idf, L, R, Formula, Data),
 	match_antecedent(Just, Antecedent, List),
-%	hold(SideConds),
 	!.
 
 match_antecedent([], [], []).
-match_antecedent([I|Is], [item(Formula,L,R,Data0)|As], [rule(_Rule,_Pros,Formula,_)|Rs]) :-
+match_antecedent([I|Is], [item(Formula,L,R,Data0)|As], [rule(_Rule,_Pros,Formula-Sem,_)|Rs]) :-
 	stored(I, _, L, R, Formula, Data0),
+	Data0 = data(_, Sem, _, _, _, _, _, _),
 	match_antecedent(Is, As, Rs).
-
 
 compute_chart_proof_list([], [], []).
 compute_chart_proof_list([I|Is], [P|Ps], [K-P|KPs]) :-
@@ -1475,58 +1535,6 @@ add_keys([], []).
 add_keys([I|Is], [K-I|Ks]) :-
 	stored(I, _, K, _, _, _),
 	add_keys(Is, Ks).
-
-transform_proof(P, Q) :-
-	transform_proof(P, 0, _, Q).
-
-transform_proof(rule(e_end, GoalPros, D, [Proof1, Proof2]), N0, N, rule(dr, GoalPros, D, [Proof1, rule(drdiaboxi(I), YZ, dr(0,C,dia(I,box(I,B))), [Proof4])])) :-
-	GoalPros = p(_,X,YZ),
-	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,B)))),
-	rule_conclusion(Proof1, X, ExtrForm),
-	find_e_start(Proof2, X, ExtrForm, B, N0, Pros, Proof3),
-	global_replace_pros(Proof3, Pros, p(0,Pros,'$VAR'(N0)), Proof4),
-	N is N0 + 1,
-	!.
-transform_proof(rule(Nm, Pros, F, Ds0), N0, N, rule(Nm, Pros, F, Ds)) :-
-	transform_proof_list(Ds0, N0, N, Ds).
-
-transform_proof_list([], N, N, []).
-transform_proof_list([P|Ps], N0, N, [Q|Qs]) :-
-	transform_proof(P, N0, N1, Q),
-	transform_proof_list(Ps, N1, N, Qs).
-
-find_e_start(rule(e_start,Pros,A,[rule(_, X, EF, _), Proof]), X, EF, B, N, Pros, rule(dr,Pros,A,[Proof,rule(axiom,'$VAR'(N),B,[])])) :-
-	!.
-find_e_start(rule(Nm, P, A, Ds0), X, EF, B, N, Pros, rule(Nm, P, A, Ds)) :-
-	find_e_start_list(Ds0, X, EF, B, N, Pros, Ds),
-	!.
-
-
-find_e_start_list([P0|Ps], X, EF, B, N, Pros, [P|Ps]) :-
-	find_e_start(P0, X, EF, B, N, Pros, P).
-find_e_start_list([P|Ps0], X, EF, B, N, Pros, [P|Ps]) :-
-	find_e_start_list(Ps0, X, EF, B, N, Pros, Ps).
-	
-rule_conclusion(rule(_, A, F, _), A, F).
-rule_daughters(rule(_, _, _, Ds), Ds).
-
-global_replace_pros(rule(Nm, P0, F, Ds0), A, B, rule(Nm, P, F, Ds)) :-
-	replace_pros(P0, A, B, P),
-	global_replace_pros_list(Ds0, A, B, Ds).
-
-global_replace_pros_list([], _, _, []).
-global_replace_pros_list([P|Ps], A, B, [Q|Qs]) :-
-	global_replace_pros(P, A, B, Q),
-	global_replace_pros_list(Ps, A, B, Qs).
-
-replace_pros(A, A, B, B) :-
-	!.
-replace_pros(p(I,A0,B0), C, D, p(I,A,B)) :-
-	!,
-	replace_pros(A0, C, D, A),
-	replace_pros(B0, C, D, B).
-replace_pros(A, _, _, A).
-
 
 % ==============================================
 % =              chart inferences              =
@@ -1547,10 +1555,10 @@ inference(dl, [item(Y, I, J, Data1), item(dl(M,Y,X), J, K, Data2)],
 
 inference(let, [item(X, I, J, Data1),item(lit(let), J, K, Data2)],
 	        item(X, I, K, Data),
-	       [X\=lit(let),sentence_length(K),combine_let(I,K,Data1,Data2,Data)]).
+	       [X\=lit(let),sentence_length(K),combine_let_l(I,K,Data1,Data2,Data)]).
 inference(let, [item(lit(let), I, J, Data2),item(X, J, K, Data1)],
 	        item(X, I, K, Data),
-	        [K is J + 1,combine_let(I,K,Data2,Data1,Data)]).  % prevent "attachment ambiguity"
+	        [K is J + 1,combine_let_r(I,K,Data2,Data1,Data)]).  % prevent "attachment ambiguity"
 
 % = wrapping rules
 
@@ -1621,29 +1629,29 @@ inference(se_dit, [item(dl(1,Y,dl(0,lit(cl_r),X)), J, K, Data2),
 
 % = argument extraction
 
-inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))),_,K,_),
+inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))),K0,K,_),
 		    item(dr(0,X,Y), I, J, Data0)],
 		    item(X, I, J, Data),
-		   [K=<I,no_island_violation(Ind,X,Y),start_extraction(Y, J, K, Data0, Data)]).
+		   [K=<I,no_island_violation(Ind,X,Y),start_extraction(Y, J, K0, K, Data0, Data)]).
 inference(e_end, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(Y, J, K, Data1)],
 	          item(X, I, K, Data),
-	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, Data0, Data1, Data)]).
+	         [check_extraction(Ind,K0,K),end_extraction(Z, I, J, K0, K, Data0, Data1, Data)]).
 
 inference(e_endd, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(dl(1,V,Y), J, K, Data1)],
 	          item(dl(1,V,X), I, K, Data),
-	         [check_extraction(Ind,K0,K),end_extraction(Z, K0, J, Data0, Data1, Data)]).
+	         [check_extraction(Ind,K0,K),end_extraction(Z, I, J, K0, K, Data0, Data1, Data)]).
 
 
-inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,_,_),
+inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		      item(dr(0,X,Y), I, J, Data0)],
 		      item(X, I, J, Data),
-		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, Data0, Data)]).
+		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, L, Prob0, Data0, Data)]).
 inference(e_end_l, [item(dl(0,dr(0,Y,dia(0,box(0,Z))),X), J, K, Data0),
 		    item(Y, I, J, Data1)],
 	            item(X, I, K, Data),
-	           [end_extraction_l(Z, J, J, Data0, Data1, Data)]).
+	           [end_extraction_l(Z, J, J, I, K, Data0, Data1, Data)]).
 
 
 % = left-node raising (only for sequences of adjectives, quite rare)
@@ -1658,36 +1666,37 @@ inference(e_end_r_lnr, [item(dr(0,Z,dl(0,dia(0,box(0,lit(n))),lit(n))), I, J, Da
 	                item(Z, I, K, Data),
 	               [application_r(0,I,K,f,Data0,Data1,Data)]).
 
-inference(c_l_lnr, [item(dl(0,dl(0,dia(0,box(0,lit(n))),lit(n)),_), K, _, _),
+inference(c_l_lnr, [item(dl(0,dl(0,dia(0,box(0,lit(n))),lit(n)),_), K, _, data(_,_,Prob0,_,_,_,_,_)),
 		    item(dl(0,lit(n),lit(n)), J, K, data(Pros1,Sem1,Prob1,H1,SetA1,SetB1,SetC1,SetD1)),
 		    item(dl(0,lit(n),lit(n)), I, J, data(Pros2,Sem2,Prob2,_H2,SetA2,SetB2,SetC2,SetD2))],
 	            item(dl(0,lit(n),lit(n)), I, K, data(Pros, lambda(X,appl(Sem1,appl(Sem2,X))), Prob, H1, SetA, SetB, SetC, SetD)),
 	           [Pros=p(0,Pros2,Pros1),
 		    combine_sets(SetA1, SetB1, SetC1, SetD1, SetA2, SetB2, SetC2, SetD2, SetA, SetB, SetC, SetD),
-		    combine_probability(Prob1, Prob2, I,K ,c_l_lnr, Prob)]).
+		    combine_probability(Prob1, Prob2, I,K ,c_l_lnr, Prob3),
+		    Prob is Prob0 + Prob3]).
 
-inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, _),
+inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, data(_,_,Prob0,_,_,_,_,_)),
 		    item(dl(0,lit(n),lit(n)), J, K, data(Pros1,Sem1,Prob1,H1,SetA1,SetB1,SetC1,SetD1)),
 		    item(dl(0,lit(n),lit(n)), I, J, data(Pros2,Sem2,Prob2,_H2,SetA2,SetB2,SetC2,SetD2))],
 	            item(dl(0,lit(n),lit(n)), I, K, data(Pros, lambda(X,appl(Sem2,appl(Sem1,X))), Prob, H1, SetA, SetB, SetC, SetD)),
 	           [Pros=p(0,Pros2,Pros1),
 		    combine_sets(SetA1, SetB1, SetC1, SetD1, SetA2, SetB2, SetC2, SetD2, SetA, SetB, SetC, SetD),
-		    combine_probability(Prob1, Prob2, I, K, c_r_lnr, Prob)]).
+		    combine_probability(Prob1, Prob2, I, K, c_r_lnr, Prob3),
+		    Prob is Prob0 + Prob3]).
 
 % = product rules
-% to test: maybe it is reasonable to require all stacks to be empty.
 
 inference(prod_e, [item(p(0,dr(0,X,Y),dia(0,box(0,Y))), I, J, data(Pros0,Sem0,Prob,H,SetA,SetB,SetC,SetD))],
 	           item(X, I, J, data(Pros,appl(pi1(Sem0),pi2(Sem0)),Prob,H,SetA,SetB,SetC,SetD)),
 	          [Pros=Pros0]).
-inference(prod_i, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
-		   item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
-		   item(F, I0, J0, _)],
-	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, SetA, SetB, SetC, SetD)),
+inference(prod_i, [item(X, I, J,   data(Pros0,Sem0,Prob0,H0,[],[],[],[])),
+		   item(Y, J, K,   data(Pros1,Sem1,Prob1,_H1,[],[],[],[])),
+		   item(F, I0, J0, data(_    ,_   ,Prob2,_,_,_,_,_))],
+	           item(p(0,X,Y), I, K, data(Pros,pair(Sem0,Sem1), Prob, H0, [], [], [], [])),
 	          [Pros=p(0,Pros0,Pros1),
 		   prod_formula(F,p(0,X,Y), I0, J0, I, K),
-		   combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
-		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob)]).
+		   combine_probability(Prob0, Prob1, I, K, prod_i, Prob3),
+		   Prob is Prob2 + Prob3]).
 inference(prod_i3, [item(X, I, J, data(Pros0,Sem0,Prob0,H0,SetA0,SetB0,SetC0,SetD0)),
 		    item(Y, J, K, data(Pros1,Sem1,Prob1,_H1,SetA1,SetB1,SetC1,SetD1)),
 		    item(dl(1,lit(s(S)),lit(s(S))), K, L, data(Pros2,Sem2,Prob2,_H2,SetA2,SetB2,SetC2,SetD2)),
@@ -1702,9 +1711,9 @@ inference(prod_w, [item(p(0,X,dl(1,Y,Z)), I, J, data(Pros0,Sem,Prob,H,SetA,SetB,
 	           item(X, I, J, data(Pros,pi1(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi2(Sem))|SetB],SetC,SetD)),
 		  [Pros=Pros0]).
 inference(prod_wl, [item(p(0,dl(1,Y,Z),dia(0,box(0,X))), I, J, data(Pros0,Sem,Prob,H,SetA,SetB,SetC,SetD))],
-	           item(X, I, J, data(Pros,pi1(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi2(Sem))|SetB],SetC,SetD)),
+	           item(X, I, J, data(Pros,pi2(Sem),Prob,H,SetA,[t(I,J,dl(1,Y,Z),pi1(Sem))|SetB],SetC,SetD)),
 		  [Pros=Pros0]).
-inference(prod_c, [item(dr(0,X,Y), I, J, data(Pros1,Sem1,Prob0,H1,SetA0,SetB0,SetC0,SetD0)),
+inference(prod_c, [item(dr(0,X,Y),              I, J, data(Pros1,Sem1,Prob0,H1,SetA0,SetB0,SetC0,SetD0)),
 		   item(p(0,Y,dia(0,box(0,Z))), J, K, data(Pros2,Sem2,Prob1,_H2,SetA1,SetB1,SetC1,SetD1))],
 	           item(p(0,X,dia(0,box(0,Z))), I, K, data(Pros,pair(appl(Sem1,pi1(Sem2))),Prob,H1,SetA,SetB,SetC,SetD)),
 	          [Pros=p(0,Pros1,Pros2),
@@ -1717,23 +1726,24 @@ inference(prod_cl, [item(X, I, J, data(Pros1,Sem1,Prob0,_H0,SetA0,SetB0,SetC0,Se
 		    combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		    combine_probability(Prob0, Prob1, I, K, prod_cl, Prob)]).
 
-inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1), item(p(0,Y,dia(0,box(0,Z))), J, K, Data2)],
+inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1),
+		    item(p(0,Y,dia(0,box(0,Z))), J, K, Data2)],
 	            item(X, I, K, Data),
                    [application_r(0, I, K, f, Data1, Data2, Data)]).
 
 % = gapping
 
 % = functor extraction (used for gapping)
-inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),_,K,_),
+inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),K0,K,_),
 		     item(Y, I, J, Data0)],
 		     item(X, I, J, Data),
-		    [K=<I,start_extraction(dr(0,X,Y), J, K, Data0, Data)]).
+		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K0, K, Data0, Data)]).
 % = intransitive verb gap, very rare (1 occurence in treebank)
 % (formulated this way to avoid n\n traces selecting explicit arguments)
-inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))),_,K,_),
+inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))),K0,K,_),
 			item(lit(np(A,B,C)), I, J, Data0)],
 		        item(lit(s(S)), I, J, Data),
-		       [K=<I,start_extraction(dl(0,lit(np(A,B,C)),lit(s(S))), J, K, Data0, Data)]).
+		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K0, K, Data0, Data)]).
 % easy case:
 inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X)))), K0, K, Data0),
 		  item(X, I, J, Data1),
@@ -1742,14 +1752,15 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 	         [I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
-inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,_),
+inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
-	         [J=<K,start_extraction_l(Y, J, 0, Data0, Data)]).
-inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,_,_),
-		  item(X, I, J, data(Pros0,Sem,Prob,H,As,Bs,SetCs0,Ds))],
-	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,As,Bs,SetCs,Ds)),
-	         [J=<K,Pros0=Pros,select(0-t(Y,J,V), SetCs0, SetCs)]).
+	  [J=<K,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
+% require empty stacks for gap_e to avoid strange scopings
+inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
+		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
+	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,[],[],[],[])),
+	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,V), SetCs0, []), Prob is Prob0 + Prob1]).
 
 % ==============================================
 % =            auxiliary predicates            =
@@ -1757,40 +1768,67 @@ inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 
 % These predicates verify side conditions on the different inference rules
 
-combine_gap(I, J, data(_, Term0, _, _, _, _, _, _),
-	          data(Pros1, Term1, Prob1, _, As1, Bs1, Cs1, Ds1),
-	          data(Pros2,Term2,Prob2,H2,As2,Bs2,Cs2,Ds2),
-	          data(p(0,Pros1,Pros2),appl(Term2,lambda(X,Sem)),Prob,H2,As,Bs,Cs,Ds)) :-
-	replace_sem(Term1, Term0, X, Sem0),
-	melt_bound_variables(Sem0, Sem),
-	numbervars(Sem, 0, _),
-	combine_probability(Prob1, Prob2, I, J, gap_i, Prob),
+combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extracted functor
+	          data(Pros1, Term1, Prob1, _ , As1, Bs1, Cs1, Ds1),   % result sentence
+	          data(Pros2, Term2, Prob2, H2, As2, Bs2, Cs2, Ds2),   % gapping "licensor"
+	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
+	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
+	update_semantics(Term1, Term0, X, TermX),
+	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
+	Prob is Prob0 + Prob3,
 	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).
 
-% =
 
-split_pros(I-K, X, Y, Bs, I-J, J-K) :-
-	stored(_, _, I, J, X, _),
-	stored(_, _, J, K0, Y, _),
-    (
-        Bs = [t(I,K,_,_)|_]
-    ->
-        true
-    ;
-        K0 = K
-    ).
-split_pros(p(0, ProsL0, ProsR0), _, _, _, I-J, J-K) :-
+
+
+update_semantics(Term1, Term0, X, TermX) :-
+	/* simple case: replace Term0 by X */
+	replace_sem(Term1, Term0, X, TermX),
+	subterm(TermX, X),
+	!.
+update_semantics(Term1, Term0, X, TermX) :-
+	/* gap_e/gap_c combination */
+	copy_term(Term0, Term00),
+	Term00 = lambda(Var, TermV),
+	var(Var),
+  (	
+        subterm_with_unify(Term1, TermV)
+  ->
+	replace_sem(Term1, TermV, appl(X,Var), TermX)
+  ;
+	/* adverb */
+	remove_adverbs(TermV, TermV2),	       
+	subterm_with_unify(Term1, TermV2)
+  ->
+        replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
+  ).
+
+% NOTE: we exploit the fact that (vp) adverbs have a very specific form
+% this will not work for sentential adverbs, but I believe this to be correct
+% Typing:  V0/V1: e, Adv: (s->t)->s->t Term:e->s->t
+remove_adverbs(lambda(V0,appl(_Adv,appl(Term,V1))), Result) :-
+	V0 == V1,
 	!,
-	pros_left(ProsL0, I),
-	pros_right(ProsL0, J),
-	pros_left(ProsR0, J),
-	pros_right(ProsR0, K).
+	remove_adverbs(Term, Result).
+remove_adverbs(Term, Term).
 
-
-% =
+% = is_clitic(+Formula)
+%
+% true if Formula is a clitic
 
 is_clitic(cl_r).
 is_clitic(cl_y).
+
+% = is_clitic(+Word, +POStag)
+%
+% true if Word-POStag is a reflexive clitic (only se/me for now)
+
+is_clitic('s\'', pro:per).
+is_clitic(se, pro:per).
+is_clitic('s\'', clr-pro:per).
+is_clitic(se, clr-pro:per).
+is_clitic(me, clo-pro:per).
+is_clitic(me, pro:per).
 
 % = 
 
@@ -1829,13 +1867,6 @@ move_vp_left(Index) :-
     ;
         true
     ).
-
-is_clitic('s\'', pro:per).
-is_clitic(se, pro:per).
-is_clitic('s\'', clr-pro:per).
-is_clitic(se, clr-pro:per).
-is_clitic(me, clo-pro:per).
-is_clitic(me, pro:per).
 
 assert_if_let(Pos, Index) :-
     (
@@ -1892,6 +1923,10 @@ wrappable(F, G, I, _) :-
 wrappable(F, G, _, _) :-
 	other_wrappable(F, G).
 
+
+other_wrappable(dl(0,lit(np(_,_,_)),lit(s(S))), lit(s(S))) :-
+	S \== main,
+	S \== pass.
 other_wrappable(dl(0,lit(n),lit(n)), dl(0,lit(n),lit(n))).
 other_wrappable(dr(0,X,lit(np(_,_,_))), Y) :-
 	other_wrappable(X, Y).
@@ -1946,14 +1981,28 @@ wrappable(dr(0,X,dl(0,lit(np(_,_,_)),lit(s(inf(_))))), Y) :-
 	!,
 	wrappable(X, Y).
 
+% = no_island_violation(+Mode, +Formula, +Gap)
+%
+% true if Formula/Gap is a valid point for extraction of Gap
+
 no_island_violation(1, Formula, Gap) :-
 	island_violation(Formula, Gap),
 	!,
 	fail.
 no_island_violation(_, _, _).
 
+% = island_violation(+Formula, +Gap)
+%
+% true if Gap cannot be extracted from Formula/Gap
+
+% this is right for adjectivally used prepositional phrases, but maybe not for eg. passives: VERIFY!
+island_violation(dl(0,lit(n),lit(n)), lit(np(_,_,_))).
+island_violation(dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lit(np(_,_,_))).
+island_violation(lit(np(_,_,_)), lit(np(_,_,_))).
 island_violation(lit(pp(_)), lit(np(_,_,_))).
 island_violation(dl(1,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
+% "il y a"
+island_violation(dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),dl(1,lit(s(_)),lit(s(_))))), lit(np(_,_,_))).
 island_violation(dr(0,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
 
 check_extraction(0, K, K).
@@ -2089,9 +2138,14 @@ check_coherence([t(J,K,_,_)|As], I) :-
 	I =< J,
 	check_coherence(As, K).
 
-combine_let(J, K, data(Pros0, Sem, Prob1, H, SetA0, SetB0, SetC0, SetD0),
-	         data(Pros1   , _  , Prob2, _, SetA1, SetB1, SetC1, SetD1),
-	         data(p(0,Pros0,Pros1), Sem, Prob, H, SetA, SetB, SetC, SetD)) :-
+combine_let_l(J, K, data(Pros0, Sem, Prob1, H, SetA0, SetB0, SetC0, SetD0),
+	            data(Pros1   , _  , Prob2, _, SetA1, SetB1, SetC1, SetD1),
+	            data(p(0,Pros0,Pros1), Sem, Prob, H, SetA, SetB, SetC, SetD)) :-
+	combine_probability(Prob1, Prob2, J, K, let, Prob),
+	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
+combine_let_r(J, K, data(Pros0, _, Prob1, _, SetA0, SetB0, SetC0, SetD0),
+	            data(Pros1   , Sem  , Prob2, H, SetA1, SetB1, SetC1, SetD1),
+	            data(p(0,Pros0,Pros1), Sem, Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, J, K, let, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
@@ -2108,8 +2162,8 @@ application_l(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, S
 	combine_probability(Prob1, Prob2, J, K, appl_l(Pros1,Pros2), Prob),
 	combine_sets(SetA1, SetB1, SetC1, SetD1, SetA0, SetB0, SetC0, SetD0, SetA, SetB, SetC, SetD).
 application_r(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, SetD0),
-	         data(Pros2, Sem2, Prob2, H2, SetA1, SetB1, SetC1, SetD1),
-	         data(p(M,Pros1,Pros2), appl(Sem1,Sem2), Prob, H, SetA, SetB, SetC, SetD)) :-
+	                     data(Pros2, Sem2, Prob2, H2, SetA1, SetB1, SetC1, SetD1),
+	                     data(p(M,Pros1,Pros2), appl(Sem1,Sem2), Prob, H, SetA, SetB, SetC, SetD)) :-
    (
         Head = f
    ->
@@ -2121,14 +2175,14 @@ application_r(M, J, K, Head, data(Pros1, Sem1, Prob1, H1, SetA0, SetB0, SetC0, S
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 a_dit(I, K, data(Pros1, Sem1, Prob1, H, SetA0, SetB0, SetC0, SetD0),
-      data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
-      data(p(0,Pros1,Pros2), lambda(S, appl(appl(Sem1,appl(Sem2,S)))), Prob, H, SetA, SetB, SetC, SetD)) :-
+            data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
+            data(p(0,Pros1,Pros2), lambda(S, appl(Sem1,appl(Sem2,S))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, a_dit, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 dit_np(I, K, data(Pros1, Sem1, Prob1, H, SetA0, SetB0, SetC0, SetD0),
-                 data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
-                 data(p(0,Pros1,Pros2), lambda(S, appl(appl(Sem1, S), Sem2)), Prob, H, SetA, SetB, SetC, SetD)) :-
+             data(Pros2, Sem2, Prob2, _, SetA1, SetB1, SetC1, SetD1),
+             data(p(0,Pros1,Pros2), lambda(S, appl(appl(Sem1, S), Sem2)), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob1, Prob2, I, K, dit_np, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
@@ -2172,7 +2226,7 @@ pop_vp(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(
 pop_vp_strict(I1, J1, I, J, data(Pros, SemVP, Prob, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(SemVP,X))), Prob, H, SetA, [], SetC, SetD)) :-
 	verify_wrap_strict(I1, I0, J0, J1, I, J),
 	!.
-pop_vp_strict(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),Sem0)|SetB], SetC, SetD), data(Pros, lambda(X,appl(Sem0,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
+pop_vp_strict(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	verify_wrap_strict(I1, I0, J0, J1, I, J),
 	!.
 
@@ -2225,7 +2279,7 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 
 % = extraction
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1 Data2)
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1, Data2)
 %
 % ExtractedFormula: formula extracted
 % RightEdgeOfFormula: string position where the formula has been inserted
@@ -2234,10 +2288,14 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 % SetD has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)
 % with meaning Formula-SemVar has been used at string position J-J (FormRightEdge)
 
-start_extraction(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
-	ord_key_insert_i(SetD0, K, t(Y,J,X), SetD).
+start_extraction(Y, J, K0, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_i(SetD0, K, t(Y,J,K0,X), SetD).
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, Data1 Data2)
+start_extraction_inv(Y, J, K0, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), data(Pros, appl(X,Sem), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_i(SetD0, K, t(Y,J,K0,X), SetD).
+
+
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, Data1, Data2)
 %
 % ExtractedFormula: formula extracted
 % RightEdgeOfFormula: string position where the formula has been inserted
@@ -2246,24 +2304,30 @@ start_extraction(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC, SetD0), dat
 % SetC has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)
 % with meaning Formula-SemVar has been used at string position J-J (FormRightEdge)
 
-start_extraction_l(Y, J, K, data(Pros, Sem, Prob, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
-	ord_key_insert_var(SetC0, K, t(Y,J,X), SetC).
+start_extraction_l0(Y, J, K, L, Prob0, data(Pros, Sem, Prob1, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_var(SetC0, 0, t(Y,J,K,L,X), SetC),
+	Prob is Prob0 + Prob1.
 
-end_extraction_l(Y, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
-                          data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
-	                  data(p(0,Pros1,Pros0), appl(Sem1,lambda(X,Sem0)), Prob, H, SetA, SetB, SetC, SetD)) :-
-	select(K-t(Y,J,X), SetC1, SetC2),
+start_extraction_l(Y, J, K, L, Prob0, data(Pros, Sem, Prob1, H, SetA, SetB, SetC0, SetD), data(Pros, appl(Sem,X), Prob, H, SetA, SetB, SetC, SetD)) :-
+	ord_key_insert_var(SetC0, K, t(Y,J,K,L,X), SetC),
+	Prob is Prob0 + Prob1.
+
+end_extraction_l(Y, J, K, _L, M, data(Pros0, Sem0, Prob0, _, [], [], [], []),
+                          data(Pros1, Sem1, Prob1, H, SetA, SetB, SetC1, SetD),
+	                  data(p(0,Pros1,Pros0), appl(Sem0,lambda(X,Sem1)), Prob, H, SetA, SetB, SetC, SetD)) :-
+	select(K-t(Y,J,K,M,X), SetC1, SetC),
+	subterm(Sem1, X),
 	!,
-	combine_probability(Prob0, Prob1, J, K, e_end_l, Prob),
-	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC2, SetD1, SetA, SetB, SetC, SetD).
+	combine_probability(Prob0, Prob1, K, M, e_end_l, Prob).
 
 
-end_extraction(Y, J, K, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
+end_extraction(Y, I, J, K0, K, data(Pros0, Sem0, Prob0, H, SetA0, SetB0, SetC0, SetD0),
                   data(Pros1, Sem1, Prob1, _, SetA1, SetB1, SetC1, SetD1),
 	          data(p(0,Pros0,Pros1), appl(Sem0,lambda(X,Sem1)), Prob, H, SetA, SetB, SetC, SetD)) :-
-	select(K-t(Y,J,X), SetD1, SetD2),
+	select(J-t(Y,K0,I,X), SetD1, SetD2),
+	subterm(Sem1, X),
 	!,
-	combine_probability(Prob0, Prob1, J, K, e_end, Prob),
+	combine_probability(Prob0, Prob1, I, K, e_end, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD2, SetA, SetB, SetC, SetD).
 
 print_stacks(data(_,_,_,_,[],[],[],[])) :-
@@ -2614,159 +2678,6 @@ user:portray(t(I,J,F,_V)) :-
 	format('~w-~w ~p', [I,J,F]).
 
 % ==============================================
-% =              output XML proof              =
-% ==============================================
-
-xml_proof(Index, Proof, Stream) :-
-	format(Stream, '<?xml version="1.0" encoding="UTF-8"?>~n', []),
-	numbervars(Proof, 0, _),
-	Proof = rule(_, Pros, _, _),
-	format(Stream, '<!-- ~w. ', [Index]),
-	print_pros_xml(Pros, Stream),
-	format(Stream, '>~n', []),
-	xml_proof1(Proof, 0, Stream).
-
-xml_proof1(rule(A,B0,C,Ds), T0, Stream) :-
-	reduce_pros(B0, B),
-	nl(Stream),
-	tab(Stream, T0),
-	format(Stream, '<rule name="~w" pros="~q" formula="~w">', [A,B,C]),
-	T is T0 + 3,
-	xml_proof_list(Ds, T, Stream),
-	nl(Stream),
-	tab(Stream, T0),
-	format(Stream, '</rule>', []).
-
-xml_proof_list([], _, _).
-xml_proof_list([P|Ps], T, Stream) :-
-	xml_proof1(P, T, Stream),
-%	nl(Stream),
-%	tab(Stream, T),
-	xml_proof_list(Ps, T, Stream).
-
-print_pros_xml(Atom, Stream) :-
-	atomic(Atom),
-	!,
-	print_pros_xml1(Atom, Stream).
-print_pros_xml('$VAR'(N), Stream) :-
-	format(Stream, 'p~w', [N]).
-print_pros_xml(L-R, Stream) :-
-	format(Stream, '~w-~w', [L,R]).
-print_pros_xml(leaf(_,_,Pros,_,_), Stream) :-
-	print_pros_xml1(Pros, Stream).
-print_pros_xml(p(_,_,_,L,R), Stream) :-
-	print_pros_xml(L, Stream),
-	print_pros_xml(R, Stream).
-print_pros_xml(p(_,L,R), Stream) :-
-	print_pros_xml(L, Stream),
-	print_pros_xml(R, Stream).
-
-print_pros_xml1(Pros0, Stream) :-
-	name(Pros0, Codes0),
-	xml_codes(Codes0, Codes),
-	name(Pros, Codes),
-	write(Stream, Pros).
-
-xml_codes([], []).
-xml_codes([C|Cs], Ds0) :-
-     (
-         C = 38
-     ->
-         /* &amp; */
-         Ds0 = [38,97,109,112,59|Ds]
-     ;
-         C = 39
-     ->
-         /* &apos; */
-         Ds0 = [38,97,112,111,115,59|Ds]
-     ;
-         C = 34
-     ->
-         /* &quot; */
-         Ds0 = [38,113,117,111,116,59|Ds]
-     ;
-         /* default */
-         Ds0 = [C|Ds]
-     ),
-         xml_codes(Cs, Ds).
-
-
-% ==============================================
-% =            output Prolog proof             =
-% ==============================================
-
-
-print_proof(Index, Proof, Stream) :-
-	numbervars(Proof, 0, _),
-	print_title(Proof, Index, Stream),
-	format(Stream, 'proof(~w, ', [Index]),
-	print_proof1(Proof, 0, Stream),
-	format(Stream, ').~2n', []).
-
-print_proof1(rule(RName,Pros0,Sem,Ds), T0, Stream) :-
-%	reduce_pros(Pros0, Pros),
-	Pros = Pros0,
-    (
-	Ds = []
-    ->
-        write_term(Stream, rule(RName, Pros, Sem, Ds), [numbervars(true),quoted(true)])
-    ;
-        Ds = [D|Ds0], 
-        T is T0 + 3,
-        format(Stream, 'rule(~W, ~W ,~W , [~n', [RName,[numbervars(true),quoted(true)],Pros,[numbervars(true),quoted(true)],Sem,[numbervars(true),quoted(true)]]),
-        tab(Stream, T),
-        print_proof_list(Ds0, D, T, Stream),
-        format(Stream, '])', [])
-    ).
-
-print_proof_list([], D, T, Stream) :-
-	print_proof1(D, T, Stream),
-	nl(Stream),
-	tab(Stream, T).
-print_proof_list([D|Ds], D0, T, Stream) :-
-	print_proof1(D0, T, Stream),
-	write(Stream, ','),
-	nl(Stream),
-	tab(Stream, T),
-	print_proof_list(Ds, D, T, Stream).
-
-print_title(rule(_, Pros, _, _), Sent, Stream) :-
-	format(Stream, '% ~w. ', [Sent]),
-	print_pros(Pros, Stream),
-	nl(Stream),
-	nl(Stream).
-print_pros(Atom, Stream) :-
-	atomic(Atom),
-	!,
-	format(Stream, '~w ', [Atom]).
-print_pros(L-R, Stream) :-
-	format(Stream, '~w-~w', [L,R]).
-print_pros(hyp(_,_,Pros), Stream) :-
-	format(Stream, '~w ', [Pros]).
-print_pros(leaf(_,_,Pros,_,_), Stream) :-
-	format(Stream, '~w ', [Pros]).
-print_pros(p(_,_,_,L,R), Stream) :-
-	print_pros(L, Stream),
-	print_pros(R, Stream).
-print_pros(p(_,L,R), Stream) :-
-	print_pros(L, Stream),
-	print_pros(R, Stream).
-
-reduce_pros(Atom, Atom) :-
-	atomic(Atom),
-	!.
-reduce_pros('$VAR'(N), Atom) :-
-	atomic_concat(p, N, Atom).
-reduce_pros(L-R, L-R).
-reduce_pros(p(I,L,R), p(I,L,R)).
-reduce_pros(hyp(_,_,Pros), Pros).
-reduce_pros(leaf(_,_,Pros,_,_), Pros).
-reduce_pros(p(I,_,_,L0,R0), p(I,L,R)) :-
-	reduce_pros(L0, L),
-	reduce_pros(R0, R).
-
-
-% ==============================================
 % =             interactive parser             =
 % ==============================================
 
@@ -2829,6 +2740,9 @@ start(choose(Input)) :-
 	write_active(A),
 	flush_output,
 	update_state(A, N).
+start(export) :-
+	!,
+	export_stored.
 start(load(File)) :-
 	!,
 	format('COMPILING~n', []),
@@ -2945,10 +2859,9 @@ update_state(Active, N) :-
 	retractall(state(_,_)),
    (
         Active = [I],
-    	check_solution(Sem)
+    	check_solution(I, Sem)
    ->
-	format('~nSOLUTION~n~w~n', [Sem]),
-        compute_proof(I)
+	format('~nSOLUTION~n~w~n', [Sem])
    ;
         true
    ),
@@ -3060,13 +2973,29 @@ subtract_premisses(gap_i, [A,B,C], Active0, Active) :-
 	!,
 	ord_delete(Active0, D, Active1),
 	ord_delete(Active1, F, Active).
-subtract_premisses(gap_c, _, Active, Active).
+subtract_premisses(gap_c, [A,B], Active0, Active) :-
+	select(D, [A,B], [E]),
+	stored(D, _, _, _, dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), _),
+	!,
+	ord_delete(Active0, E, Active).
 subtract_premisses(gap_e, [A,B], Active0, Active) :-
 	select(D, [A,B], [E]),
 	stored(D, _, _, _, dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), _),
 	stored(E, _, _, _, X, _),
 	!,
 	ord_delete(Active0, E, Active).
+subtract_premisses(c_r_lnr, [A,B,C], Active0, Active) :-
+	select(D, [A,B,C], [E,F]),
+	stored(D, _, _, _, dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _),
+	!,
+	ord_delete(Active0, E, Active1),
+	ord_delete(Active1, F, Active).
+subtract_premisses(c_l_lnr, [A,B,C], Active0, Active) :-
+	select(D, [A,B,C], [E,F]),
+	stored(D, _, _, _, dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _),
+	!,
+	ord_delete(Active0, E, Active1),
+	ord_delete(Active1, F, Active).
 
 subtract_premisses(_, Ps, As0, As) :-
 	ord_subtract(As0, Ps, As).
@@ -3318,7 +3247,8 @@ tcl_pros(C, P0, P) :-
 	reconstruct_pros(P0, As, P1),
 	tcl_pros(P1, P).
 
-
+tcl_pros('"', '*QUOTE*') :-
+	!.
 tcl_pros(',', '*COMMA*') :-
 	!.
 tcl_pros('(', '*LPAR*') :-
