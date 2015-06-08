@@ -84,7 +84,7 @@ treebank_file('/Users/moot/Corpus/lassy-r19749/Treebank/wiki-832/wiki-832.p.14.s
 %treebank_file('/Users/moot/Corpus/lassy-r19749/Treebank/dpc-bal-001236-nl-sen/dpc-bal-001236-nl-sen.p.16.s.5.xml').
 
 verbose(yes).
-:- dynamic index/2, current_id/1, current_index/1.
+:- dynamic index/2.
 
 l2pl :-
 	retractall(tree(_,_,_)),
@@ -105,13 +105,67 @@ l2pl :-
 	fail.
 l2pl.
 
+
+l2pl(Pattern) :-
+	retractall(tree(_,_,_)),
+	retractall('$SENT'(_)),
+	assert('$SENT'(1)),
+	expand_file_name(Pattern, Files),
+	member(File, Files),
+	l2pl(File, [[_-Tree,Sent]]),
+	'$SENT'(N0),
+	write_sent(N0, Sent),
+	assert(tree(N0, Tree, Sent)),
+%	simplify_tree(Tree, STree),
+%	yield(Tree, List, []),
+%	format('   ~q~n', [STree]),
+%	format('   ~w~n', [List]),
+	N is N0 + 1,
+	retractall('$SENT'(_)),
+	assert('$SENT'(N)),
+	fail.
+l2pl(_).
+
 l2pl(File, Tree) :-
 	retractall(index/2),
 	load_xml(File, XML, [space(remove)]),
+	retractall(index(_,_)),
+	assert_indices_list(XML),
 	translate_xml(XML, Tree).
 
 write_sent(N, sentence(X)) :-
 	format('~w. ~w~n', [N,X]).
+
+
+assert_indices(element(sentence, _, _)) :-
+	!.
+assert_indices(element(_Tag, Atts0, Dts)) :-
+   (
+	select(index=Idx0, Atts0, Atts1),
+        select(id=Id0, Atts1, Atts),
+	( Dts \= [] ; member(word=_,Atts))
+   ->
+        make_number(Id0, Id),
+        make_number(Idx0, Idx),
+        assert(index(Idx, Id))
+   ;
+        true
+   ),
+	assert_indices_list(Dts).
+
+assert_indices_list([]).
+assert_indices_list([X|Xs]) :-
+	assert_indices(X),
+	assert_indices_list(Xs).
+
+make_number(X0, X) :-
+	integer(X0),
+	!,
+	X = X0.
+make_number(A, X) :-
+	atom(A),
+	!,
+	atom_number(A, X).
 
 translate_xml([], []).
 translate_xml([X|Xs], [T|Ts]) :-
@@ -132,7 +186,7 @@ translate_element(node, Atts, Dts, Term) :-
 
 
 translate_atts(Atts0, R-Term, Dts) :-
-	retractall(current_index(_)),
+%	 retractall(current_index(_)),
      (
          select(cat=Cat, Atts0, Atts)
      ->
@@ -158,9 +212,7 @@ translate_atts(Atts0, R-Term, Dts) :-
          atom_number(Idx0, Idx),
          index(Idx, Index),
          arg(1, Term, Index),
-         translate_other_cat(Atts, Term),
-         retractall(index(_,_)),
-         assert(index(Idx, Index))
+         translate_other_cat(Atts, Term)
      ;
          format('~NWarning: don\'t know how to treat attributes~n~p~n', [Atts0]),
          Term = nil
@@ -175,32 +227,32 @@ translate_other_cat([A|As], Term) :-
 translate_other_cat1(A=B, Term) :-
 	translate_other_cat2(A, B, Term).
 
-translate_other_cat2(id, IdA, Term) :-
-	!,
-	atom_number(IdA, Id),
-	retractall(current_id(_)),
-	assert(current_id(Id)),
-   (
-        current_index(Index)
-   ->
-        retractall(index(_,_)),
-        assert(index(Index, Id))
-   ;
-        true
-   ),
-	arg(2, Term, Id).
-translate_other_cat2(index, IdA, _Term) :-
-	!,
-	atom_number(IdA, Id),
-   (
-        current_id(ID)
-   ->
-        retractall(index(_,_)),
-        assert(index(Id, ID))
-   ;
-	true
-   ),  
-	assert(current_index(Id)).
+translate_other_cat2(id, _, _) :-
+ 	!.
+% 	atom_number(IdA, Id),
+% 	retractall(current_id(_)),
+% 	assert(current_id(Id)),
+%    (
+%         current_index(Index)
+%    ->
+%         retractall(index(_,_)),
+%         assert(index(Index, Id))
+%    ;
+%         true
+%    ),
+% 	arg(2, Term, Id).
+translate_other_cat2(index, _, _) :-
+ 	!.
+% 	atom_number(IdA, Id),
+%    (
+%         current_id(ID)
+%    ->
+%         retractall(index(_,_)),
+%         assert(index(Id, ID))
+%    ;
+% 	true
+%    ),  
+%	assert(current_index(Id)).
 translate_other_cat2(rel, Rel, Term) :-
 	!,
 	arg(3, Term, Rel).
@@ -213,7 +265,7 @@ translate_other_cat2(end, RA, Term) :-
 	atom_number(RA, R),
 	arg(5, Term, R).
 translate_other_cat2(Ignored, Value, _) :-
-	verbose_output('~NIgnored: ~w=~~w~n', [Ignored, Value]).
+	verbose_output('~NIgnored: ~w=~w~n', [Ignored, Value]).
 
 translate_other_pos([], _, OAs, OAs).
 translate_other_pos([A|As], Term, OAs0, OAs) :-
@@ -244,10 +296,11 @@ translate_other_pos2(word, Word, As, As, Term) :-
 translate_other_pos2(lemma, Lemma, As, As, Term) :-
 	!,
 	arg(7, Term, Lemma).
-translate_other_pos2(index, Index, As, As, Term) :-
-	!,
-	arg(2, Term, Id),
-	assert(index(Index,Id)).
+translate_other_pos2(index, _, As, As, _Term) :-
+	!.
+%	atom_number(Index0, Index),
+%	arg(2, Term, Id),
+%	index(Index, Id).
 % = the following attributes are ignored
 translate_other_pos2(postag, _, As, As, _) :-
 	!.
