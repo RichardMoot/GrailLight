@@ -241,8 +241,10 @@ translate_other_cat2(id, _, _) :-
 %         true
 %    ),
 % 	arg(2, Term, Id).
-translate_other_cat2(index, _, _) :-
- 	!.
+translate_other_cat2(index, IdA, Term) :-
+ 	!,
+	make_number(IdA, Id),
+	arg(2, Term, Id).
 % 	atom_number(IdA, Id),
 %    (
 %         current_id(ID)

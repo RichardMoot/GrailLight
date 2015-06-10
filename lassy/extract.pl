@@ -212,6 +212,8 @@ is_head(top, --, let) :-
 	!.
 is_head(_, hd, _) :-
 	!.
+is_head(rel, rhd, _) :-
+	!.
 is_head(_, mwp, _) :-
 	!.
 is_head(conj, crd, _) :-
