@@ -626,7 +626,7 @@ equivalent_semantics(Term1, Term2) :-
 
 % = unify_semantics(+Term1, +Term2)
 %
-% true if Term1 and Term2 are alpha equivalent
+% unifies Term1 and Term2
 
 unify_semantics(Term1, Term2) :-
 	/* replaced bound lambda variables by Prolog variables and use Prolog unification */
