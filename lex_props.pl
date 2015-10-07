@@ -1,5 +1,37 @@
 :- op(400, xfy, \).
 
+max_degree(Max) :-
+	findall(F, formula(F, _), List),
+	max_degree(List, 0, Max).
+
+max_degree([], Max, Max).
+max_degree([F|Fs], Max0, Max) :-
+	degree(F, Deg),
+	Max1 is max(Max0,Deg),
+	max_degree(Fs, Max1, Max).
+
+degree(dr(A,B), D) :-
+	!,
+	degree(A, D0),
+	degree(B, D1),
+	D is D0 + D1.
+degree(dl(A,B), D) :-
+	!,
+	degree(A, D0),
+	degree(B, D1),
+	D is D0 + D1.
+degree(_, 1).
+
+show_degree(Min) :-
+	findall(F-N, formula(F, N), List),
+	show_degree(List, Min, 0).
+
+show_degree([], _, Total) :-
+	format('===~nTotal: ~D~n', [Total]).
+show_degree([F-N|Fs], Min, Total0) :-
+	degree(F, D),
+	(D >= Min -> format('~p-~D [~D]~n', [F,N,D]),Total=Total0+N ; Total=Total0),
+	show_degree(Fs, Min, Total).
 
 max_right_aas(Max) :-
 	findall(F, formula(F,_), List),
