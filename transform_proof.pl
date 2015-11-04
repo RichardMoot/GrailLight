@@ -45,6 +45,10 @@ infile(monde_b).
 chart_dir('chart_proofs/').
 nd_dir('nd_proofs/').
 
+% = transform_all_proofs
+%
+% transform all infiles chart proofs in chart_dir into natural deduction proofs in nd_dir.
+
 transform_all_proofs :-
 	style_check(-singleton),
 	chart_dir(ChDir),
@@ -62,6 +66,11 @@ transform_all_proofs :-
 	fail.
 transform_all_proofs :-
 	style_check(+singleton).
+
+% = transform_all_proofs(+OutFile)
+%
+% transform all proofs in memory (per the proof/2 predicate) into natural deduction
+% files in the OutFile given as an argument.
 
 transform_all_proofs(OutputFile) :-
 	open(OutputFile, write, Stream, []),
@@ -123,6 +132,8 @@ transform_proof1(P, N0, N, Q) :-
     ;
         transform_proof1(Q1, N1, N, Q)
     ).
+
+% Invariant: N0 is the index of the first unused prosodic variable (that is '$VAR'(N0) does not occur in the proof).
 
 transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 		rule(dr, GoalPros, D-Sem,
