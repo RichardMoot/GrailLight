@@ -12,6 +12,8 @@
 		       free_vars/2,
 		       freeze/2,
 		       melt/2,
+		       renumbervars/1,
+		       renumbervars/2,
 		       replace_sem/4,
 		       subterm/2,
 		       subterm_with_unify/2,
@@ -334,6 +336,9 @@ subterm(X, Y) :-
 subterm(X, Y) :-
 	var(Y),
 	X == Y.
+subterm('$VAR'(N0), '$VAR'(N)) :-
+	!,
+	N = N0.
 subterm(lambda(_, X), Y) :-
 	!,
 	subterm(X, Y).
@@ -755,6 +760,14 @@ get_variable_numbers_args(A0, A, Term, L0, L) :-
         A1 is A0 +1,
         get_variable_numbers_args(A1, A, Term, L1, L)
     ).
+
+renumbervars(Term) :-
+	renumbervars(Term, _).
+
+renumbervars(Term0, MaxVar) :-
+	get_max_variable_number(Term0, MaxVar0),
+	MaxVar1 is MaxVar0 + 1,
+	numbervars(Term0, MaxVar1, MaxVar).
 
 % = get_max_variable_number(+LambdaTerm, ?MaxVar)
 %
