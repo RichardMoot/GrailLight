@@ -423,11 +423,12 @@ substitute_sem(L, T0, T) :-
 substitute_sem([], T, T, N, N).
 substitute_sem([X-U|Rest], T0, T, N0, N) :-
 	numbervars(U, N0, N1),
-	replace_sem(T0, '$VAR'(X), U, T1),
+	replace_sem(T0, X, U, T1),
 	substitute_sem(Rest, T1, T, N1, N).
 
 max_key_list([], M, M).
-max_key_list([K-_|Ss], M0, M) :-
+max_key_list([Term-_|Ss], M0, M) :-
+	get_key(Term, K),
     (
        K > M0
     ->
@@ -435,6 +436,18 @@ max_key_list([K-_|Ss], M0, M) :-
     ;
        max_key_list(Ss, M0, M)
     ).
+
+get_key('$VAR'(K), K) :-
+	!.
+get_key(word(K), K) :-
+	!.
+get_key(K0, K) :-
+	integer(K0),
+	!,
+	K = K0.
+% ensure things work correctly when substituting a term
+get_key(Term, K) :-
+	get_max_variable_number(Term, 0, K).
 
 % = free_vars(+Term, -ListOfVariableIndices)
 %
