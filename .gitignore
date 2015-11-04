@@ -5,6 +5,7 @@ autom4te.cache/*
 # XML files
 *.xml
 # automatically generated Prolog files
+itipy*
 aa*.pl
 ab*.pl
 ae*.pl
@@ -30,6 +31,7 @@ ml_linearone.pl
 ml_vpmod.pl
 formulas.pl
 semantics.*
+tlgbank_proofs.*
 proof.tex
 proofs.pl
 grail_log

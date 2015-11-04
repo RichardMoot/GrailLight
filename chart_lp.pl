@@ -541,6 +541,9 @@ list_to_chart([si(_, PUN, _, FP)], N, H, As0, As, V, V, S, S) :-
        assert(sentence_length(N)),
        !,
        add_heap_to_chart(H, As0, As).
+list_to_chart([ex_si(_,_,_,_)|_], _N0, _H0, _As0, _As, _V0, _V, _S0, _S) :-
+	format('~N{Error: unlemmatized sentence!}~n', []),
+	fail.
 list_to_chart([si(W,Pos,Lemma,FPs)|Ws], N0, H0, As0, As, V0, V, S0, S) :-
 	N1 is N0 + 1,
 	assert(word(W, Pos, Lemma, N0, N1)),
@@ -603,12 +606,12 @@ update_heap([F0,P|FPs], PMax, W, Pos, Lemma, N0, N1, IN0, IN, S0, S, H0, H) :-
 %
 % construct Item based on all available information
 
-create_item(F0, P, W, Pos, Lemma, N0, N1, IN, [IN-t(W,PosTT,Lemma,F)|Ss], Ss, item(F, N0, N1, Data)) :-
+create_item(F0, P, W, Pos, Lemma, N0, N1, IN, [word(IN)-t(W,PosTT,Lemma,F)|Ss], Ss, item(F, N0, N1, Data)) :-
 	macro_expand(F0, F1),
 	get_pos_tt(Pos, PosTT),
 	enrich_formula(Lemma, PosTT, F1),
 	correct_formula(PosTT, F1, F),
-	create_data(W, F, Lemma, '$VAR'(IN), P, N0, N1, Data).
+	create_data(W, F, Lemma, word(IN), P, N0, N1, Data).
 
 % = get_semantics(+ChartItem, ?Semantics)
 %
@@ -1025,7 +1028,7 @@ exhaust(queue(Front, Back)) :-
 	assert(max_queue_size(Front)).
 exhaust(Agenda0) :-
 	pop_agenda(Agenda0, Index, Agenda1),
-	print(':'),
+	write(':'),
 	add_consequences_to_agenda(Index, Agenda1, Agenda),
 	exhaust(Agenda).
 
@@ -1358,7 +1361,7 @@ add_item_to_agenda(Item0, Justification, queue(Front,Back), queue(Front, NewBack
 	Item0 = item(F, I, J, Data0),
         update_data(Data0, I, J, Justification, Data),
 	Item = item(F, I, J, Data),
-	print('.'),
+	write('.'),
     (   coherent_item(I, J, Data),
         \+ subsumed_item(Item, Front, Justification)
     ->
@@ -2515,11 +2518,17 @@ check_plog_stream :-
 % a null stream is opened instead.
 
 new_output_file(File, Alias) :-
+   (
+	is_stream(Alias)
+   ->
+	close(Alias)
+    ;
+        true
+   ),
         delete_file_if_exists(File),
 	catch(open(File, update, _, [alias(Alias),buffer(line)]),
 	      _, 
-	      open_null_stream(Alias)).
-
+	      (open_null_stream(Null),set_stream(Null,alias(Alias)))).
 delete_file_if_exists(File) :-
     (
         exists_file(File),
