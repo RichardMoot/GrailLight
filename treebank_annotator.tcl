@@ -31,9 +31,9 @@ set load_dir [file normalize "~"]
 set tagger_prefix "/Users/moot/Corpus/WSJ/candc-1.00/bin"
 # set resources_prefix "$exec_dir../Resources"
 set resources_prefix "/Applications/TreebankAnnotator.app/Contents/Resources"
-set model_prefix /Volumes/richard.moot/
+set model_prefix "/Users/moot/checkout/monde/"
 set pos_model     "$model_prefix/french_pos_merged"
-set super_model "$model_prefix/best_french_merged"
+set super_model "$model_prefix/french"
 set pos_cmd "$tagger_prefix/mpos"
 set super_cmd        "$tagger_prefix/msuper"
 # set grail_prefix  $exec_dir
