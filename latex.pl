@@ -1320,7 +1320,7 @@ write_conn(X, Stream) :-
 
 write_atom_italics(At0, Stream) :-
 	latex_quote_underscores(At0, At),
-	format(Stream, '\\textit{~p}', [At]).
+	format(Stream, '\\textit{~W}', [At,[character_escapes(off)]]).
 
 write_atom(At0, Stream) :-
 	latex_quote_underscores(At0, At),
@@ -1335,7 +1335,7 @@ write_atom(At0, Stream) :-
     ->
         write(Stream, At)
     ;
-	print(Stream, At)
+	write_term(Stream, At, [character_escapes(off)])
     ).
 
 latex_quote_underscores(Word0, Word) :-

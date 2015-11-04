@@ -77,7 +77,7 @@ print_formula_sem(Formula-Sem, Stream) :-
 
 print_formula_sem(Formula, Sem, Stream) :-
 	print_formula(Formula, Stream),
-	format(Stream, '-~W', [Sem, [numbervars(true),quoted(true)]]).
+	format(Stream, '-~W', [Sem, [quoted(true)]]).
 
 print_formula(lit(A), Stream) :-
 	!,
