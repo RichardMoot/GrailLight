@@ -3153,7 +3153,9 @@ lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))
 lex(pas, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,drs([],[not(appl(NP,lambda(X,appl(P,X))))])))).
 
 lex(où, dr(0,dl(0,n,n),s), lambda(S,lambda(P,lambda(V,merge(merge(drs([event(E)],[appl(appl(lieu,E),V)]),appl(S,E)),appl(P,V)))))).
+lex(où, dr(0,dl(0,np,np),s), lambda(S,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([event(E)],[appl(appl(lieu,E),X)]),appl(S,E)),appl(P,X)))))))).
 
+%
 % Generalized Quantifiers
 
 lex(ni, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
@@ -3535,19 +3537,21 @@ lex(a, dr(0,dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),s),lit(np(_,_,_))), lambda(NP
 
 % = coordination
 
-lex('Si', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
-lex(si,   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
-lex(si,   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
-lex('S\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
-lex('s\'',   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
-lex('s\'',   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
+lex('Si', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex(si,   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex(si,   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex('S\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex('s\'',   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex('s\'',   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
 lex(car,  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(mais, dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(et,   dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
 
-lex(parce, dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(s(QQ))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))) :-
-	QQ == q.
+lex(plus, dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(s(QQ))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(plus_que,E),F)]),merge(appl(P,E),appl(Q,F))))))) :-
+	QQ = q.
+lex(parce, dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(s(QQ))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,E),F)]),merge(appl(P,E),appl(Q,F))))))) :-
+	QQ = q.
 lex(lorsque, dr(0,dr(0,s,s),s), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),overlaps,appl(temps,F))]))))))).
 lex(lorsque, dr(0,dl(1,s,s),s), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),overlaps,appl(temps,F))]))))))).
 lex('lorsqu\'', dr(0,dr(0,s,s),s), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),overlaps,appl(temps,F))]))))))).
