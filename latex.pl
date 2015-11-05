@@ -849,6 +849,9 @@ latex_semantics(constant(Const), _, _, Stream) :-
 	!,
 	/* explicit constant */
 	latex_sem_constant(Const, Stream).
+% variables assigned to words in a sentence
+latex_semantics(word(N), _, _, Stream) :-
+	format(Stream, 'w_{~p}', [N]).
 
 latex_semantics(Const, _, _, Stream) :-
 	/* treat all unknowns as constants */
