@@ -1399,10 +1399,23 @@ index_to_item(Index, item(F, I, J, Sem)) :-
 final_item(item(Start,0,Length,D), Best, BestSem) :-
 	sentence_length(Length),
 	has_empty_stack(D),
-	findall(W-(Index-appl(SemI,Sem)),(item_in_chart(item(Start,0,Length,D), Index),get_data_weight(D,W),get_data_semantics(D,Sem),startsymbol(Start, SemI)), Solutions0),
-	keysort(Solutions0, Solutions),
-	Solutions = [_-(Best-BestSem)|_].
+	findall(W-(Index-appl(SemI,Sem)),(startsymbol(Start, SemI),item_in_chart(item(Start,0,Length,D), Index),get_data_weight(D,W),get_data_semantics(D,Sem)), Solutions),
+	get_best_solution(Solutions, Best, BestSem).
 
+
+get_best_solution([W0-(Best0-BestSem0)|Rest], Best, BestSem) :-
+	get_best_solution(Rest, W0, Best0, Best, BestSem0, BestSem).
+
+get_best_solution([], _, Best, Best, BestSem, BestSem).
+get_best_solution([W1-(Best1-BestSem1)|Rest], W0, Best0, Best, BestSem0, BestSem) :-
+   (
+	W1 > W0
+   ->
+	get_best_solution(Rest, W1, Best1, Best, BestSem1, BestSem)
+   ;			    
+	get_best_solution(Rest, W0, Best0, Best, BestSem0, BestSem)		     
+   ).
+			 
 simplified_formula_to_key(SimplifiedFormula, Key) :-
 	term_hash(SimplifiedFormula, Key).
 
