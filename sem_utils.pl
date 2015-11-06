@@ -793,7 +793,13 @@ get_max_variable_number(Var, Max, Max) :-
 	!.
 get_max_variable_number('$VAR'(N), Max0, Max) :-
 	!,
-	Max is max(N,Max0).
+   (
+	integer(N)
+   ->
+        Max is max(N,Max0)
+   ;			 
+        Max = Max0
+   ).
 get_max_variable_number(Term, Max0, Max) :-
 	functor(Term, _, A),
 	get_max_variable_number_args(1, A, Term, Max0, Max).

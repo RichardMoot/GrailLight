@@ -114,7 +114,7 @@ proc latex_proofs {} {
 
     set cur_dir [pwd]
     cd $tmp_dir
-    exec /usr/texbin/pdflatex latex_proofs.tex
+    exec /Library/TeX/texbin/pdflatex latex_proofs.tex
     catch { exec open latex_proofs.pdf }
     cd $cur_dir
 
