@@ -9,6 +9,7 @@
 		       sem_to_prolog_query/3,
 		       check_lexicon_typing/0,
 		       get_max_variable_number/2,
+		       get_fresh_variable_number/2,
 		       free_vars/2,
 		       freeze/2,
 		       melt/2,
@@ -769,6 +770,27 @@ renumbervars(Term0, MaxVar) :-
 	MaxVar1 is MaxVar0 + 1,
 	numbervars(Term0, MaxVar1, MaxVar).
 
+
+% = get_fresh_variable_number(+LambdaTerm, ?FreshVar)
+%
+% true if FreshVar is the largest number N which
+% occurs as a subterm '$VAR'(N) of LambdaTerm
+% That is to say, the call
+%
+%   numbervars(LambdaTerm, MaxVar, NewMaxVar)
+%
+% is guaranteed to be sound (in the sense that
+% it does not accidentally unifies distinct
+% variables.
+%
+% If LambdaTerm contains no occurrences of a
+% subterm '$VAR'(N) then MaxVar is defined as
+% 0.
+
+get_fresh_variable_number(Term, Max) :-
+	get_max_variable_number(Term, -1, Max0),
+	Max is Max0 + 1.
+
 % = get_max_variable_number(+LambdaTerm, ?MaxVar)
 %
 % true if MaxVar+1 is the largest number N which
@@ -783,10 +805,10 @@ renumbervars(Term0, MaxVar) :-
 %
 % If LambdaTerm contains no occurrences of a
 % subterm '$VAR'(N) then MaxVar is defined as
-% 0.
+% -1 (according to the intended semantics).
 
 get_max_variable_number(Term, Max) :-
-	get_max_variable_number(Term, 0, Max).
+	get_max_variable_number(Term, -1, Max).
 
 get_max_variable_number(Var, Max, Max) :-
 	var(Var),
