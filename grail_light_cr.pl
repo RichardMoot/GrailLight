@@ -1774,7 +1774,7 @@ inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),l
 			item(lit(np(A,B,C)), I, J, Data0)],
 		        item(lit(s(S)), I, J, Data),
 		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K0, K, Data0, Data)]).
-% easy case:
+% base case:
 inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X)))), K0, K, Data0),
 		  item(X, I, J, Data1),
 		  item(lit(s(S)), I0, K0, Data2)],
@@ -1789,8 +1789,8 @@ inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 % require empty stacks for gap_e to avoid strange scopings
 inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
-	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,[],[],[],[])),
-	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,V), SetCs0, []), Prob is Prob0 + Prob1]).
+	          item(dr(0,X,Y), I, J, data(Pros,lambda('$VAR'(K),Sem),Prob,H,[],[],[],[])),
+	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,'$VAR'(K)), SetCs0, []), Prob is Prob0 + Prob1]).
 
 % ==============================================
 % =            auxiliary predicates            =
@@ -1818,18 +1818,23 @@ update_semantics(Term1, Term0, X, TermX) :-
 	!.
 update_semantics(Term1, Term0, X, TermX) :-
 	/* gap_e/gap_c combination */
-	copy_term(Term0, Term00),
+	melt_bound_variables(Term1, Term10),
+	melt_bound_variables(Term0, Term00),
 	Term00 = lambda(Var, TermV),
 	var(Var),
   (	
-        subterm_with_unify(Term1, TermV)
+        subterm_with_unify(Term10, TermV)
   ->
+%	Term0 = Term00,   
+	Term1 = Term10,  
 	replace_sem(Term1, TermV, appl(X,Var), TermX)
   ;
 	/* adverb */
 	remove_adverbs(TermV, TermV2),	       
-	subterm_with_unify(Term1, TermV2)
+	subterm_with_unify(Term10, TermV2)
   ->
+%	Term0 = Term00,
+	Term1 = Term10,  
         replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
   ).
 
