@@ -15,11 +15,11 @@
 		       melt/2,
 		       renumbervars/1,
 		       renumbervars/2,
-		       replace_sem/4,
 		       subterm/2,
 		       subterm_with_unify/2,
 		       equivalent_semantics/2,
 		       unify_semantics/2,
+		       try_unify_semantics/2,
 		       melt_bound_variables/2,
 		       translate_dynamics/3]).
 
@@ -416,7 +416,7 @@ replace_sem(0, _, _, _, _) :-
 	!.
 replace_sem(N0, U, X, Y, V) :-
 	N0 > 0,
-	N is N0-1,
+	N is N0 - 1,
 	arg(N0, U, A),
 	replace_sem(A, X, Y, B),
 	arg(N0, V, B),
@@ -657,6 +657,42 @@ unify_semantics(Term1, Term2) :-
 	melt_bound_variables(Term2, TermB),
 	TermA = TermB.
 
+is_sem_var(X) :-
+	var(X),
+	!.
+is_sem_var('$VAR'(_)).
+
+try_unify_semantics('$VAR'(N), '$VAR'(N)) :-
+	!.
+try_unify_semantics(Atom0, Atom) :-
+	atomic(Atom0),
+	!,
+        (Atom = Atom0 -> true ; true).
+try_unify_semantics(lambda(X0,Y0), lambda(X,Y)) :-
+	(is_sem_var(X0) -> true ; replace_sem(Y0, X0, X, Y1), try_unify_semantics(Y1, Y)).
+try_unify_semantics(Term0, Term) :-
+   (
+	compound(Term0)
+   ->
+	functor(Term0, F, A),
+	functor(Term, F, A),
+	try_unify_semantics(1, A, Term0, Term)
+    ;
+        true
+    ).
+
+try_unify_semantics(A0, A, Term0, Term) :-
+   (
+	A0 =< A	
+   ->
+	arg(A, Term0, Arg0),
+	arg(A, Term, Arg),
+	try_unify_semantics(Arg0, Arg),
+	A1 is A0 + 1,
+	try_unify_semantics(A1, A, Term0, Term)
+   ;
+        true
+   ).
 
 % = melt_bound_variables(+Term0, -Term)
 %

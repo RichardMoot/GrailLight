@@ -7,7 +7,7 @@
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
@@ -1825,16 +1825,16 @@ update_semantics(Term1, Term0, X, TermX) :-
   (	
         subterm_with_unify(Term10, TermV)
   ->
-%	Term0 = Term00,   
-	Term1 = Term10,  
+        try_unify_semantics(Term00, Term0),
+	try_unify_semantics(Term10, Term1),  
 	replace_sem(Term1, TermV, appl(X,Var), TermX)
   ;
 	/* adverb */
 	remove_adverbs(TermV, TermV2),	       
-	subterm_with_unify(Term10, TermV2)
+	subterm_with_unify(Term10, appl(TermV2,V4))
   ->
-%	Term0 = Term00,
-	Term1 = Term10,  
+        try_unify_semantics(Term00, Term0),
+	try_unify_semantics(Term10, Term1),  
         replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
   ).
 
