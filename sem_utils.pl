@@ -362,6 +362,10 @@ subterm(N0, X, Y) :-
 %
 % true if Term contains SubTerm as a subterm.
 
+subterm_with_unify(X, _) :-
+	var(X),
+	!,
+	fail.
 subterm_with_unify(X, Y) :-
 	X = Y,
 	!.
@@ -379,7 +383,7 @@ subterm_with_unify(N0, X, Y) :-
 	!.
 
 subterm_with_unify(N0, X, Y) :-
-	N0 > 0,
+	N0 > 1,
 	N is N0 - 1,
 	subterm_with_unify(N, X, Y).
 
