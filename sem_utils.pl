@@ -9,16 +9,17 @@
 		       sem_to_prolog_query/3,
 		       check_lexicon_typing/0,
 		       get_max_variable_number/2,
+		       get_fresh_variable_number/2,
 		       free_vars/2,
 		       freeze/2,
 		       melt/2,
 		       renumbervars/1,
 		       renumbervars/2,
-		       replace_sem/4,
 		       subterm/2,
 		       subterm_with_unify/2,
 		       equivalent_semantics/2,
 		       unify_semantics/2,
+		       try_unify_semantics/2,
 		       melt_bound_variables/2,
 		       translate_dynamics/3]).
 
@@ -361,6 +362,10 @@ subterm(N0, X, Y) :-
 %
 % true if Term contains SubTerm as a subterm.
 
+subterm_with_unify(X, _) :-
+	var(X),
+	!,
+	fail.
 subterm_with_unify(X, Y) :-
 	X = Y,
 	!.
@@ -378,7 +383,7 @@ subterm_with_unify(N0, X, Y) :-
 	!.
 
 subterm_with_unify(N0, X, Y) :-
-	N0 > 0,
+	N0 > 1,
 	N is N0 - 1,
 	subterm_with_unify(N, X, Y).
 
@@ -411,7 +416,7 @@ replace_sem(0, _, _, _, _) :-
 	!.
 replace_sem(N0, U, X, Y, V) :-
 	N0 > 0,
-	N is N0-1,
+	N is N0 - 1,
 	arg(N0, U, A),
 	replace_sem(A, X, Y, B),
 	arg(N0, V, B),
@@ -652,6 +657,42 @@ unify_semantics(Term1, Term2) :-
 	melt_bound_variables(Term2, TermB),
 	TermA = TermB.
 
+is_sem_var(X) :-
+	var(X),
+	!.
+is_sem_var('$VAR'(_)).
+
+try_unify_semantics('$VAR'(N), '$VAR'(N)) :-
+	!.
+try_unify_semantics(Atom0, Atom) :-
+	atomic(Atom0),
+	!,
+        (Atom = Atom0 -> true ; true).
+try_unify_semantics(lambda(X0,Y0), lambda(X,Y)) :-
+	(is_sem_var(X0) -> true ; replace_sem(Y0, X0, X, Y1), try_unify_semantics(Y1, Y)).
+try_unify_semantics(Term0, Term) :-
+   (
+	compound(Term0)
+   ->
+	functor(Term0, F, A),
+	functor(Term, F, A),
+	try_unify_semantics(1, A, Term0, Term)
+    ;
+        true
+    ).
+
+try_unify_semantics(A0, A, Term0, Term) :-
+   (
+	A0 =< A	
+   ->
+	arg(A, Term0, Arg0),
+	arg(A, Term, Arg),
+	try_unify_semantics(Arg0, Arg),
+	A1 is A0 + 1,
+	try_unify_semantics(A1, A, Term0, Term)
+   ;
+        true
+   ).
 
 % = melt_bound_variables(+Term0, -Term)
 %
@@ -769,6 +810,27 @@ renumbervars(Term0, MaxVar) :-
 	MaxVar1 is MaxVar0 + 1,
 	numbervars(Term0, MaxVar1, MaxVar).
 
+
+% = get_fresh_variable_number(+LambdaTerm, ?FreshVar)
+%
+% true if FreshVar is the largest number N which
+% occurs as a subterm '$VAR'(N) of LambdaTerm
+% That is to say, the call
+%
+%   numbervars(LambdaTerm, MaxVar, NewMaxVar)
+%
+% is guaranteed to be sound (in the sense that
+% it does not accidentally unifies distinct
+% variables.
+%
+% If LambdaTerm contains no occurrences of a
+% subterm '$VAR'(N) then MaxVar is defined as
+% 0.
+
+get_fresh_variable_number(Term, Max) :-
+	get_max_variable_number(Term, -1, Max0),
+	Max is Max0 + 1.
+
 % = get_max_variable_number(+LambdaTerm, ?MaxVar)
 %
 % true if MaxVar+1 is the largest number N which
@@ -783,17 +845,23 @@ renumbervars(Term0, MaxVar) :-
 %
 % If LambdaTerm contains no occurrences of a
 % subterm '$VAR'(N) then MaxVar is defined as
-% 0.
+% -1 (according to the intended semantics).
 
 get_max_variable_number(Term, Max) :-
-	get_max_variable_number(Term, 0, Max).
+	get_max_variable_number(Term, -1, Max).
 
 get_max_variable_number(Var, Max, Max) :-
 	var(Var),
 	!.
 get_max_variable_number('$VAR'(N), Max0, Max) :-
 	!,
-	Max is max(N,Max0).
+   (
+	integer(N)
+   ->
+        Max is max(N,Max0)
+   ;			 
+        Max = Max0
+   ).
 get_max_variable_number(Term, Max0, Max) :-
 	functor(Term, _, A),
 	get_max_variable_number_args(1, A, Term, Max0, Max).

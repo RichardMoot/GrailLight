@@ -308,6 +308,7 @@ get_roles1(délabrer, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(délasser, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(délecter, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(délier, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(diviser, [np, cl_r], [agent, null]).
 
 get_roles1(paumer, [np, cl_r], [agent, null]).
 get_roles1(pavaner, [np, cl_r], [agent, null]).

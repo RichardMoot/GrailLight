@@ -37,5 +37,5 @@ following (in a shell terminal).
 
 # Going Further
 
-The file `readme.pdf` contains more detailed instructions whereas the
-file `chart_parser.pdf` describes the strategy used by the chart parser.
+The file [`readme.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/readme.pdf) contains more detailed instructions whereas the
+file [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/chart_parser.pdf) describes the strategy used by the chart parser.

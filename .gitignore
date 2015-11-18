@@ -61,7 +61,7 @@ proof.aux
 proof.log
 proof.pdf
 texput.log
-stored.txt
+stored*.txt
 tmp*.pl
 annodis_backup.pl
 log
