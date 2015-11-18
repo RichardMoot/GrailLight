@@ -2297,10 +2297,11 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 
 % = extraction
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1, Data2)
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, RightEdgeOfIntroduction, Data1, Data2)
 %
-% ExtractedFormula: formula extracted
-% RightEdgeOfFormula: string position where the formula has been inserted
+% ExtractedFormula       : formula extracted
+% RightEdgeOfFormula     : string position where the formula has been inserted
+% LeftEdgeOfIntroduction : string position where the higher-order formula authorizing the introduction starts
 % RightEdgeOfIntroduction: string position where the higher-order formula authorizing the introduction ends
 %
 % SetD has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)

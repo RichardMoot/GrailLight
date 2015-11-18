@@ -2586,6 +2586,11 @@ default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_)
 % = Default semantics without POS tag =
 % =====================================
 
+
+default_semantics(_, let, drs([],[])).
+
+default_semantics(alors, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(alors_que,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+
 default_semantics(et, dr(0,dl(0,dr(0,lit(s(_)),dia(1,box(1,X))),dr(0,lit(s(_)),box(1,dia(1,X)))),dr(0,lit(s(_)),dia(1,box(1,X)))), lambda(P2,lambda(P1,lambda(V,lambda(E,merge(appl(appl(P1,V),E),merge(drs([event(E2)],[]),appl(appl(P2,V),E2)))))))).
 
 default_semantics(W, dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))), lambda(Adj, lambda(P,lambda(V,merge(appl(appl(Adj,P),V),drs([event(E)],[appl(W,E),bool(E,=,'event?')])))))).
@@ -3472,6 +3477,8 @@ lex(et, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lamb
 lex(ni, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,merge(drs([],[not(appl(NP1,P))]),appl(NP2,P)))))).
 
 lex(que, dr(0,dl(0,lit(n),lit(n)),lit(s(q))), lambda(SQ,lambda(CN,lambda(Y,merge(appl(CN,Y),drs([event(E),event(Lab)],[appl(appl(contenu,Lab),Y),drs_label(Lab,appl(SQ,E))])))))).
+lex(que, dr(0,dl(0,lit(n),lit(n)),lit(s(main))), lambda(SQ,lambda(CN,lambda(Y,merge(appl(CN,Y),drs([event(E),event(Lab)],[appl(appl(contenu,Lab),Y),drs_label(Lab,appl(SQ,E))])))))).
+lex(que, dr(0,lit(s(q)),lit(n)), lambda(P,merge(drs([X],[]),appl(P,X)))).
 lex(que, dr(0,lit(s(q)),lit(s(main))), lambda(X,X)).
 lex('qu\'', dr(0,lit(s(q)),lit(s(main))), lambda(X,X)).
 
@@ -3541,11 +3548,13 @@ lex(si,   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(
 lex('S\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
 lex('s\'',   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
 lex('s\'',   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(appl(P,_),->,appl(Q,_))]))))).
-lex(car,  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
-lex(mais, dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
-lex(et,   dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(car,  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+lex(mais, dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+lex(et,   dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(narration,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex('(',   dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(background,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex('(',   dr(0,dl(1,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(background,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
-
+lex('Comme', dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))). % causal intrpretation
 lex(parce, dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(s(QQ))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))) :-
 	QQ == q.
 lex(lorsque, dr(0,dr(0,s,s),s), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),overlaps,appl(temps,F))]))))))).
