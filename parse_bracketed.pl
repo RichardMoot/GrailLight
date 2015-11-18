@@ -8,7 +8,7 @@ read_trees(FileName) :-
 
 read_all_trees :-
 	read_tree(Tree),
-	portray_tree(Tree),
+	portray_clause(Tree),
 	fail.
 read_all_trees.
 
@@ -16,13 +16,9 @@ portray_tree(Tree) :-
 	format('~N'),
 	portray_tree(Tree, 0).
 
-portray_tree(word(Word), Tab) :-
-%	format('~N'),
-%	tab(Tab),
+portray_tree(word(Word), _Tab) :-
 	format('word(~p)', [Word]).
 portray_tree(tree(Label, Daughters), Tab0) :-
-%	format('~N'),
-%	tab(Tab0),
 	format('tree(~p, [', [Label]),
 	Tab is Tab0 + 3,
 	portray_tree_list(Daughters, Tab).
@@ -55,7 +51,7 @@ read_tree('(', tree(Label, Ds)) :-
 	!,
 	read_spaces,
 	read_daughters(Ds).
-read_tree(C, word(W)) :-
+read_tree(C, W) :-
 	read_word(C, W),
 	!.
 
@@ -104,7 +100,18 @@ read_word(Label) :-
 
 read_word(C, Label) :-
 	read_word(C, LabelL, []),
-	atom_chars(Label, LabelL).
+	atom_chars(Label0, LabelL),
+	atomic_list_concat([A|As], '_', Label0),
+	return_word(As, A, Label).
+
+return_word([], A, word(A)).
+return_word([A|As], A0, tree(w, [word(A0)|Words])) :-
+	return_word_list([A|As], Words).
+
+return_word_list([], []).
+return_word_list([A|As0], [word(A)|As]) :-
+	return_word_list(As0, As).
+
 
 read_word(')') -->
 	!,
