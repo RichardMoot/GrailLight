@@ -1,26 +1,75 @@
 
-read_line :-
-	read_tree(X).
+
+read_trees(FileName) :-
+	see(FileName),
+	read_all_trees,
+	seen.
+
+
+read_all_trees :-
+	read_tree(Tree),
+	portray_tree(Tree),
+	fail.
+read_all_trees.
+
+portray_tree(Tree) :-
+	format('~N'),
+	portray_tree(Tree, 0).
+
+portray_tree(word(Word), Tab) :-
+%	format('~N'),
+%	tab(Tab),
+	format('word(~p)', [Word]).
+portray_tree(tree(Label, Daughters), Tab0) :-
+%	format('~N'),
+%	tab(Tab0),
+	format('tree(~p, [', [Label]),
+	Tab is Tab0 + 3,
+	portray_tree_list(Daughters, Tab).
+
+
+portray_tree_list([], _) :-
+	format('])', []).
+portray_tree_list([T|Ts], Tab) :-
+	format('~N'),
+	tab(Tab),
+	portray_tree_list1(Ts, T, Tab).
+
+portray_tree_list1([], T, Tab) :-
+	portray_tree(T, Tab),
+	format('~N', []),
+	tab(Tab),
+	format('])', []).
+portray_tree_list1([T|Ts], T0, Tab) :-
+	portray_tree(T0, Tab),
+	format(',~n', []),
+	tab(Tab),
+	portray_tree_list1(Ts, T, Tab).
 
 read_tree(Tree) :-
 	get_char(C),
 	read_tree(C, Tree).
 
-read_tree('(', Tree) :-
-	!,
+read_tree('(', tree(Label, Ds)) :-
 	read_label(Label),
-	read_daughters(Ds),
-	get_char(')'),
-	Tree =.. [Label|Ds].
-read_tree(C, W) :-
 	!,
-	read_word(W).
+	read_spaces,
+	read_daughters(Ds).
+read_tree(C, word(W)) :-
+	read_word(C, W),
+	!.
 
 read_daughters(Ds) :-
 	get_char(C),
 	read_daughters(C, Ds).
 
-read_daughters(C, W) 
+read_daughters(')', []) :-
+	!.
+read_daughters(C, [W|Ws]) :-
+	read_tree(C, W),
+	read_spaces,
+	!,
+	read_daughters(Ws).
 
 read_label(Label) :-
 	get_char(C),
@@ -34,6 +83,12 @@ read_label(C) -->
 	[CL],
 	{get_char(C2)},
 	read_label(C2).
+read_label(C) -->
+	{char_type(C, lower)},
+	!,
+	[C],
+	{get_char(C2)},
+	read_label(C2).
 
 read_label(' ') -->
 	[].
@@ -45,19 +100,42 @@ read_label(end_of_file) -->
 
 read_word(Label) :-
 	get_char(C),
+	read_word(C, Label).
+
+read_word(C, Label) :-
 	read_word(C, LabelL, []),
 	atom_chars(Label, LabelL).
 
-read_word(C) -->
-	{char_type(C, graph)},
+read_word(')') -->
 	!,
-	[C],
-	{get_char(C2)},
-	read_word(C2).
-
+	[].
 read_word(' ') -->
+	!,
 	[].
 read_word('\n') -->
+	!,
 	[].
 read_word(end_of_file) -->
+	!,
 	[].
+read_word(C, W0, W) :-
+	char_type(C, graph),
+	!,
+	W0 = [C|W1],
+  (
+	peek_char(')')
+  ->
+	 W1 = W
+  ;
+
+	get_char(C2),
+	read_word(C2, W1, W)
+   ).
+
+read_spaces :-
+	peek_char(C),
+	char_type(C, space),
+	!,
+	get_char(C),
+	read_spaces.
+read_spaces.
