@@ -685,8 +685,10 @@ cp(List) :-
 compute_penalties :-
 	abolish(crosses/4),
 	retractall(crosses(_,_,_,_)),
+	/* recover list of sentence numbers */
 	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
 	compute_penalties(Sentences),
+	/* erase zero entries */
 	retractall(crosses(_,_,_,0)).
 
 add_constituents :-
