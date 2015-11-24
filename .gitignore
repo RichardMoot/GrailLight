@@ -39,6 +39,7 @@ rule_logs
 parse_logs
 texlog
 unparsed
+parser_crosses.pl
 previous_semantics.pl
 chart_noadverbs.pl
 semantics.pl

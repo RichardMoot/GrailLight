@@ -1,4 +1,27 @@
+#!/Applications/SWI-Prolog.app/Contents/MacOS/swipl -q -g read_trees -f
+
 :- ensure_loaded(m2const).
+
+read_trees :-
+	current_prolog_flag(os_argv, Argv),
+        append(_, [A|Av], Argv),
+	file_base_name(A, 'read_trees.pl'),
+	!,
+        read_files_trees(Av),
+	halt.
+
+read_files_trees(Files) :-
+	abolish(crosses/4),
+	retractall(crosses(_,_,_,_)),
+	read_files_trees(Files, 0, _),
+	tell('parser_crosses.pl'),
+	listing(crosses/4),
+	told.
+
+read_files_trees([], N, N).
+read_files_trees([F|Fs], N0, N) :-
+	read_trees(F, N0, N1),
+	read_files_trees(Fs, N1, N).
 
 % = read_trees(+FileName)
 %
@@ -9,32 +32,32 @@
 % and converts them into GrailLight crosses/4 declarations.
 
 read_trees(FileName) :-
+	read_trees(FileName, 0, _).
+
+read_trees(FileName, N0, N) :-
 	see(FileName),
-	read_all_trees(0),
+	read_all_trees(N0, N),
 	seen.
 
-read_all_trees(_) :-
+read_all_trees(N, N) :-
 	read_spaces,
 	peek_char(end_of_file),
 	!.
-read_all_trees(N0) :-
+read_all_trees(N0, Last) :-
 	read_tree(Tree),
-	portray_clause(Tree),
+	N is N0 + 1,
+	format('~D. ~@', [N, portray_clause(Tree)]),
 	/* compute constituents */
 	abolish(constituent/4),
 	retractall(constituent(_,_,_,_)),
-	N is N0 + 1,
 	tree_length(Tree, N, 0, Length),
-	listing(constituent/4),
 	/* compute crosses declarations */
-	abolish(crosses/4),
-	retractall(crosses(_,_,_,_)),
 	compute_penalties1(N, Length),
-	retractall(crosses(_,_,_,0)),
-	listing(crosses/4),
+	nl,
+	retractall(crosses(N,_,_,0)),
 	/* just in case, clean up choice points */
 	!,
-	read_all_trees(N).
+	read_all_trees(N, Last).
 
 tree_length(word(_), _, N0, N) :-
 	N is N0 + 1.
@@ -53,37 +76,6 @@ tree_length_list([], _, N, N).
 tree_length_list([T|Ts], Sent, N0, N) :-
 	tree_length(T, Sent, N0, N1),
 	tree_length_list(Ts, Sent, N1, N).
-
-
-portray_tree(Tree) :-
-	format('~N'),
-	portray_tree(Tree, 0).
-
-portray_tree(word(Word), _Tab) :-
-	format('word(~p)', [Word]).
-portray_tree(tree(Label, Daughters), Tab0) :-
-	format('tree(~p, [', [Label]),
-	Tab is Tab0 + 3,
-	portray_tree_list(Daughters, Tab).
-
-
-portray_tree_list([], _) :-
-	format('])', []).
-portray_tree_list([T|Ts], Tab) :-
-	format('~N'),
-	tab(Tab),
-	portray_tree_list1(Ts, T, Tab).
-
-portray_tree_list1([], T, Tab) :-
-	portray_tree(T, Tab),
-	format('~N', []),
-	tab(Tab),
-	format('])', []).
-portray_tree_list1([T|Ts], T0, Tab) :-
-	portray_tree(T0, Tab),
-	format(',~n', []),
-	tab(Tab),
-	portray_tree_list1(Ts, T, Tab).
 
 read_tree(Tree) :-
 	get_char(C),
@@ -144,6 +136,7 @@ read_word(Label) :-
 read_word(C, Label) :-
 	read_word(C, LabelL, []),
 	atom_chars(Label0, LabelL),
+	/* if atom contains "_", split it into multiple words */
 	atomic_list_concat([A|As], '_', Label0),
 	return_word(As, A, Label).
 
@@ -182,6 +175,10 @@ read_word(C, W0, W) :-
 	read_word(C2, W1, W)
    ).
 
+% = read_spaces/0
+%
+% ignore all spaces; read from input until next get_char produces a non-space character
+
 read_spaces :-
 	peek_char(C),
 	char_type(C, space),
@@ -189,3 +186,36 @@ read_spaces :-
 	get_char(C),
 	read_spaces.
 read_spaces.
+
+% tree pretty printer
+
+portray_tree(Tree) :-
+	format('~N'),
+	portray_tree(Tree, 0).
+
+portray_tree(word(Word), _Tab) :-
+	format('word(~p)', [Word]).
+portray_tree(tree(Label, Daughters), Tab0) :-
+	format('tree(~p, [', [Label]),
+	Tab is Tab0 + 3,
+	portray_tree_list(Daughters, Tab).
+
+
+portray_tree_list([], _) :-
+	format('])', []).
+portray_tree_list([T|Ts], Tab) :-
+	format('~N'),
+	tab(Tab),
+	portray_tree_list1(Ts, T, Tab).
+
+portray_tree_list1([], T, Tab) :-
+	portray_tree(T, Tab),
+	format('~N', []),
+	tab(Tab),
+	format('])', []).
+portray_tree_list1([T|Ts], T0, Tab) :-
+	portray_tree(T0, Tab),
+	format(',~n', []),
+	tab(Tab),
+	portray_tree_list1(Ts, T, Tab).
+
