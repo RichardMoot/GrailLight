@@ -1,16 +1,59 @@
+:- ensure_loaded(m2const).
 
+% = read_trees(+FileName)
+%
+% read trees from FileName in Stanford parser output such as the following
+%
+% (NP (Det the) (ADJ interesting) (N idea))
+%
+% and converts them into GrailLight crosses/4 declarations.
 
 read_trees(FileName) :-
 	see(FileName),
-	read_all_trees,
+	read_all_trees(0),
 	seen.
 
-
-read_all_trees :-
+read_all_trees(_) :-
+	read_spaces,
+	peek_char(end_of_file),
+	!.
+read_all_trees(N0) :-
 	read_tree(Tree),
 	portray_clause(Tree),
-	fail.
-read_all_trees.
+	/* compute constituents */
+	abolish(constituent/4),
+	retractall(constituent(_,_,_,_)),
+	N is N0 + 1,
+	tree_length(Tree, N, 0, Length),
+	listing(constituent/4),
+	/* compute crosses declarations */
+	abolish(crosses/4),
+	retractall(crosses(_,_,_,_)),
+	compute_penalties1(N, Length),
+	retractall(crosses(_,_,_,0)),
+	listing(crosses/4),
+	/* just in case, clean up choice points */
+	!,
+	read_all_trees(N).
+
+tree_length(word(_), _, N0, N) :-
+	N is N0 + 1.
+tree_length(tree(Label, List), Sent, N0, N) :-
+	tree_length_list(List, Sent, N0, N),
+	/* assert only non-trivial constituents */
+   (
+	N > N0 + 1
+   ->
+        assert(constituent(Sent, Label, N0, N))
+   ;
+        true
+   ).
+
+tree_length_list([], _, N, N).
+tree_length_list([T|Ts], Sent, N0, N) :-
+	tree_length(T, Sent, N0, N1),
+	tree_length_list(Ts, Sent, N1, N).
+
 
 portray_tree(Tree) :-
 	format('~N'),
