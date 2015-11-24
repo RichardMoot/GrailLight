@@ -1276,6 +1276,12 @@ write_conn(eq, Stream) :-
 write_conn(overlaps, Stream) :-
      !,
      write(Stream, ' \\circ ').
+write_conn(simeq, Stream) :-
+     !,
+     write(Stream, ' \\simeq ').
+write_conn(starts, Stream) :-
+     !,
+     write(Stream, ' \\, \\textit{starts}\\; ').
 write_conn(abuts, Stream) :-
      !,
      write(Stream, ' \\mbox{\\ensuremath{\\supset\\!\\subset}} ').
