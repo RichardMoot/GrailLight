@@ -1515,15 +1515,19 @@ proc supertag {sentence} {
 	close $parser_file
 	# finished sentences
 	# use bootstrap parser to compute constituent structure
-	if {[catch {exec $bootstrap_parser_cmd $bootstrap_parser_length $tmp_dir/input.txt} bparse_msg]} {
-	       puts stderr $bparse_msg
-	}
-	if {[file exists $tmp_dir/input.txt.30.stp]} {
-	    if {[catch {exec $grail_prefix/read_trees.pl $tmp_dir/input.txt.30.stp} ptrees_msg]} {
-		puts stderr $ptrees_msg
+	if {[file executable $bootstrap_parser_cmd]} {
+	    # parse input sentences
+	    if {[catch {exec $bootstrap_parser_cmd $bootstrap_parser_length $tmp_dir/input.txt} bparse_msg]} {
+		puts stderr $bparse_msg
 	    }
-	    if {[file exists $tmp_dir/parser_crosses.pl]} {
-		exec cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl
+	    # if a parse has been found, convert it to crosses declarations and add these to the GrailLight input
+	    if {[file exists $tmp_dir/input.txt.30.stp]} {
+		if {[catch {exec $grail_prefix/read_trees.pl $tmp_dir/input.txt.30.stp} ptrees_msg]} {
+		    puts stderr $ptrees_msg
+		}
+		if {[file exists $tmp_dir/parser_crosses.pl]} {
+		    exec cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl
+		}
 	    }
 	}
 	.c configure -scrollregion [list 0 $miny $maxx 200]
