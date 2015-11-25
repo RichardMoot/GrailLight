@@ -24,15 +24,23 @@ lookup_list([si(Word, Pos, Lemma, [Form0-_|_])|Rest]) :-
 	macro_expand(Form0, Form),
 	get_item_semantics(Word, PosTT, Lemma, Form, Semantics),
 	numbervars(Form),
-	(true_unknown(Word,Form,Semantics) -> format(form, '~W~n', [Form,[numbervars(true)]]), format(word, '~w-~W~n', [Word,Form,[numbervars(true)]]) ; true),
+   (
+	true_unknown(Word,Form,Semantics)
+   ->
+	format(form, '~W~n', [Form,[numbervars(true)]]),
+	format(word, '~w-~W~n', [Word,Form,[numbervars(true)]])
+   ;
+        true
+   ),
 	lookup_list(Rest).
 
 true_unknown(Word, Form, Sem) :-
 	/* no semantics found */
 	Sem = Word,
 	/* not an interpunction symbol */
-	Form \= lit(let),         % ignored for semantics
-	Form \= dl(0,_,lit(txt)). % handled separately
+	Form \= lit(let),          % ignored for semantics
+	Form \= lit(cl_r),         % ignored for semantics
+	Form \= dl(0,_,lit(txt)).  % handled separately by parser
 
 
 get_pos_tt(Pos, PosTT) :-
