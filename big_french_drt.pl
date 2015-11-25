@@ -2088,27 +2088,14 @@ default_semantics(aller, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(
 default_semantics(venir, ver:TIME, dr(_,dl(0,lit(cl_y),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(P,lambda(CLY,lambda(X,lambda(E,merge(appl(CLY,lambda(Y,drs(EVs,[appl(venir,E),appl(appl(lieu,Y),E)|Pred]))),appl(appl(P,X),E))))))) :-
 	SINF == inf,
 	pos_time(ver:TIME, [], EVs, E-Pred).
-default_semantics(Word, ver:TIME, dr(_,dl(0,lit(cl_d3),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(P,lambda(CLD,lambda(X,lambda(E,merge(appl(CLD,lambda(Y,drs(EVs,[appl(PW,E),appl(appl(à,Y),E)|Pred]))),appl(appl(P,X),E))))))) :-
-	SINF == inf(de),
-	combine_prep_word(de, Word, PW),
-	pos_time(ver:TIME, [], EVs, E-Pred).	
-default_semantics(Word, ver:TIME, dr(_,dl(0,lit(cl_d3),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(P,lambda(CLD,lambda(X,lambda(E,merge(appl(CLD,lambda(Y,drs(EVs,[appl(PW,E),appl(appl(à,Y),E)|Pred]))),appl(appl(P,X),E))))))) :-
-	SINF == inf(à),
-	combine_prep_word(à, Word, PW),
-	pos_time(ver:TIME, [], EVs, E-Pred).
 
 % = factive regretter + DEINF
 %
 % the theme of "regretter" is generally something which happens before (though not necessarily, it is possible to regret a future event, however, these cases are rather unusual)
 
-default_semantics(regretter, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SINF)))), lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(merge(drs([event(F)],Pred),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)), drs(EVs,[appl(event,E)|Conds])))))))) :-
-	SINF = inf(de),
-	add_roles([agent-Y,theme-F], regretter, E, Conds, [bool(appl(temps,F),leq,appl(temps,E))]),
-	pos_time(ver:TIME, [], EVs, E-Pred).
-
-default_semantics(regretter, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SINF)))), lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(merge(drs([event(F)],Pred),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)), drs(EVs,[appl(event,E)|Conds])))))))) :-
-	SINF = inf(_),
-	add_roles([agent-Y,theme-F], regretter, E, Conds, [bool(appl(temps,F),leq,appl(temps,E))]),
+default_semantics(regretter, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(Prep))))), lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(merge(drs([event(F)],Pred),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)), drs(EVs,[appl(event,E)|Conds])))))))) :-
+	combine_prep_word(Prep, regretter, PW),
+	add_roles([agent-Y,theme-F], PW, E, Conds, [bool(appl(temps,F),leq,appl(temps,E))]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
 
 % = falloir + INF
@@ -2402,7 +2389,7 @@ default_semantics(Word, ver:TIME, dl(1,lit(s(STp)),dr(0,lit(s(STp)),lit(np(_,_,_
 
 % = past participle/infinitive arguments selecting a sentence
 
-default_semantics(Word, ver:TIME, dl(1,lit(s(_)),dl(_,lit(np(_,_,_)),lit(s(_)))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(V,drs(EVs, [appl(event,E),appl(Word,E),appl(appl(agent,V),E),appl(appl(theme,L),E),drs_label(L,appl(SQ,F))|List]))))))) :-
+default_semantics(Word, ver:TIME, dl(1,lit(s(_)),dl(_,lit(np(_,_,_)),lit(s(_)))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,theme-L], Word, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),		
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 
@@ -3523,6 +3510,7 @@ lex(',', dr(0, dl(0, s, s), np), lambda(NP,lambda(S,lambda(E,merge(appl(S,E),app
 lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(S, lambda(NP, lambda(E, merge(appl(NP,lambda(X,(drs([],[appl(appl(topic,X),E)])))),appl(S,E)))))). 
 lex(':', dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(S, lambda(NP, lambda(E, merge(appl(NP,lambda(X,(drs([],[appl(appl(topic,X),E)])))),appl(S,E)))))). 
 lex(',', dr(0,dl(0,lit(n),lit(s(_))),lit(s(_))), lambda(S, lambda(N, lambda(E, presup(merge(drs([variable(X)],[appl(appl(topic,X),E)]),appl(N,X)),appl(S,E)))))). 
+lex(',', dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
 
 
 lex(':', dr(0,dl(0,lit(n),lit(s(_))),lit(s(_))), lambda(S, lambda(N, lambda(E, presup(merge(drs([variable(X)],[appl(appl(topic,X),E)]),appl(N,X)),appl(S,E)))))). 
@@ -3717,6 +3705,8 @@ lex('Tandis', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F
 lex('Bref', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(summary,E),F),bool(F,=,?)]),appl(S,E))))).
 lex('Or', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(continuation,E),F),bool(F,=,?)]),appl(S,E))))).
 
+lex(sans, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([event(F)],[not(appl(P,F))])))))).
+
 % = interpunction
 
 lex('.', dl(0,lit(s(_)),lit(txt)), Sem) :-
@@ -3747,8 +3737,9 @@ lex(';',  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,
 lex(':',  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 lex('-',  dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(background,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
-
+lex(',', dr(0,dl(0,dl(0,n,n),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP,lambda(ADJ,lambda(P,appl(NP,lambda(X,presup(appl(appl(ADJ,lambda(_,drs([],[]))),X),appl(P,X)))))))).
 lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,n,n)), lambda(ADJ,lambda(NP,lambda(P,appl(NP,lambda(X,presup(appl(appl(ADJ,lambda(_,drs([],[]))),X),appl(P,X)))))))).
+lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,n,n)), lambda(ADJ,lambda(NP,lambda(P,appl(NP,lambda(X,presup(appl(appl(ADJ,lambda(_,drs([],[]))),X),appl(P,X)))))))).
 
 lex(y, dr(0,s,s), lambda(S,lambda(E,merge(drs([variable(X)],[bool(X,=,'lieu?')]),appl(S,E))))).
 lex(y, dr(0,s,dr(0,s,dia(1,box(1,pp_a)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'lieu?')]),appl(appl(P,lambda(R,appl(R,Y))),E))))).
@@ -3901,6 +3892,7 @@ lex('(', dr(0,dl(0,n,n),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(ap
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(N,X),drs([],[appl(P,X)])))))))).
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(NP,lambda(P,appl(NP,lambda(X,drs([event(E)],[appl(S,E),appl(P,X),appl(appl(background,X),E)]))))))).
 lex('(', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+lex('-', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 
 %default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),appl(NP,lambda(Y,drs([],[appl(appl(W,Y),X)])))))))).
 %default_semantics(Word, nam:INFO, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[appl(appl(nommé,Word),X)|Rest0]),appl(P,X)))) :-
