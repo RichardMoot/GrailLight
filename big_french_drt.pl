@@ -3477,11 +3477,13 @@ lex(et, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z))))
 lex(et, dr(0,dl(0,dr(0,lit(np(_,_,_)),lit(n)),dr(0,lit(np(_,_,_)),lit(n))),dr(0,lit(np(_,_,_)),lit(n))),lambda(Det1,lambda(Det2,lambda(N,lambda(P,merge(appl(appl(Det1,N),P),appl(appl(Det2,N),P))))))).
 lex(et, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
 lex(et, dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
+lex(et, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 
 lex(ou, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
 lex(ou, dr(0,dl(0,dr(0,lit(n),lit(n)),dr(0,lit(n),lit(n))),dr(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
 lex(ou, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,bool(appl(appl(Adv1,S),E),\/,merge(drs([event(F)],[]),appl(appl(Adv2,S),F)))))))).
 lex(ou, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(NP,lambda(E,appl(NP,lambda(X,bool(appl(appl(Q,lambda(X1,appl(X1,X))),E),\/,merge(drs([event(F)],[]),appl(appl(P,lambda(X1,appl(X1,X))),F)))))))))).
+lex(ou, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,bool(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),\/,merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(ou, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,bool(appl(NP1,P),\/,appl(NP2,P)))))).
 
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,?)]),appl(S,E))))).
