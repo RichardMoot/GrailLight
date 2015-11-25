@@ -2589,7 +2589,8 @@ default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_)
 
 default_semantics(_, let, drs([],[])).
 
-default_semantics(alors, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(alors_que,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(alors, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(alors_que,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(alors, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(alors_que,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
 default_semantics(et, dr(0,dl(0,dr(0,lit(s(_)),dia(1,box(1,X))),dr(0,lit(s(_)),box(1,dia(1,X)))),dr(0,lit(s(_)),dia(1,box(1,X)))), lambda(P2,lambda(P1,lambda(V,lambda(E,merge(appl(appl(P1,V),E),merge(drs([event(E2)],[]),appl(appl(P2,V),E2)))))))).
 
@@ -3442,10 +3443,13 @@ lex(et, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambd
 lex(ou, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
 lex(ou, dr(0,dl(0,dr(0,lit(n),lit(n)),dr(0,lit(n),lit(n))),dr(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
 lex(ou, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,bool(appl(appl(Adv1,S),E),\/,merge(drs([event(F)],[]),appl(appl(Adv2,S),F)))))))).
+lex(ou, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(NP,lambda(E,appl(NP,lambda(X,bool(appl(appl(Q,lambda(X1,appl(X1,X))),E),\/,merge(drs([event(F)],[]),appl(appl(P,lambda(X1,appl(X1,X))),F)))))))))).
+
 
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,?)]),appl(S,E))))).
 lex(mais, dl(0,lit(s(Z)),dr(0,lit(s(Z)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(mais, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,appl(appl(P,appl(Q,R)),X)))))).
+lex(mais, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(Q,lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[appl(appl(contrast,F),E)]),appl(appl(P,lambda(X1,appl(X1,X))),F)))))))))).
 
 lex(puis, dl(0,lit(s(_)),dr(0,lit(s(_)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(appl(temps,E),'<',appl(temps,F))]),merge(appl(P,E),appl(Q,F))))))).
 lex(puis, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(N,lambda(E,merge(merge(drs([event(F)],[bool(appl(temps,E),'<',appl(temps,F))]),appl(appl(Q,N),E)),appl(appl(P,N),F))))))).
@@ -3638,6 +3642,10 @@ lex(cependant, dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(
 lex(cependant, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(concession,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex('Cependant', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(concession,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 
+lex(comme, dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(comme,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(comme, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(comme,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex('Comme', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(comme,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+
 lex('Néanmoins', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(opposition,F),E),bool(F,=,?)]),appl(S,E))))).
 lex(néanmoins, dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(opposition,F),E),bool(F,=,?)]),appl(S,E))))).
 lex(néanmoins, dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(opposition,F),E),bool(F,=,?)]),appl(S,E))))).
@@ -3699,7 +3707,7 @@ lex(y, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lamb
 lex(y, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,pp_a)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,appl(R,Y))),Q),E)))))).
 lex(y, dr(0,dl(0,cl_r,dl(0,lit(np(_,_,_)),s)),dr(0,dl(0,cl_r,dl(0,lit(np(_,_,_)),s)),dia(1,box(1,pp_a)))), lambda(P,lambda(Cl,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(appl(P,lambda(R,appl(R,Y))),Cl),Q),E))))))).
 
-lex(en, dr(0,dl(0,lit(np(_,_,_)),s),dl(0,lit(np(_,_,_)),s)), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(X,=,'?')]),appl(appl(P,Q),E)))))).
+lex(en, dr(0,dl(0,lit(np(_,_,_)),s),dl(0,lit(np(_,_,_)),s)), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(X,=,'?'),appl(appl(de,X),E)]),appl(appl(P,Q),E)))))).
 lex(en, dr(0,dl(0,np,s),dr(0,dl(0,np,s),dia(1,box(1,pp_de)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,appl(R,Y))),Q),E)))))).
 lex(en, dr(0,dl(0,cl_r,dl(0,np,s)),dr(0,dl(0,cl_r,dl(0,np,s)),dia(1,box(1,pp_de)))), lambda(P,lambda(Cl,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(appl(P,lambda(R,appl(R,Y))),Cl),Q),E))))))).
 
@@ -3825,7 +3833,9 @@ lex(été, dr(0,dl(0,np,s_ppart),dl(0,np,s_pass)), lambda(VP,lambda(NP,lambda(E,
 lex(été, dr(0,dl(0,np,s(_)),dl(0,np,lit(s(ppart)))), Sem) :-
 	auxiliary_verb_etre(ver:pper, [], Sem).
 
-lex(pour, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(P,lambda(S,lambda(E,merge(merge(drs([event(F)],[appl(appl(but,E),F)]),appl(S,E)),appl(appl(P,lambda(Q,appl(Q,_))),F)))))).
+
+lex(à, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(P,lambda(S,lambda(E,merge(merge(drs([event(F)],[appl(appl(à,E),F)]),appl(S,E)),appl(appl(P,merge(drs([variable(X)],[]),lambda(Q,appl(Q,X)))),F)))))).
+
 
 lex(',', dl(0,n,n), lambda(X,X)).
 lex(',', dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(X,X)).
