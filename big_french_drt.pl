@@ -2998,11 +2998,12 @@ lex(unique, dr(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(m
 
 lex(que, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'context?'),bool(num(Y),>,1),bool(X,atomic_sub,Y),bool(drs([variable(Z)],[bool(Z,atomic_sub,Y),bool(Z,neq,X)]),->,not(appl(P,Z)))]))))))).
 
-lex('Rien', lit(np(_,_,_)), lambda(Q,drs([],[drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))])]))).
-lex(rien, lit(np(_,_,_)), lambda(Q,drs([],[drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))])]))).
-%lex(rien, dr(0,dl(0,lit(np(A,B,C)),lit(s(S))),dr(0,dl(0,lit(np(A,B,C)),lit(s(S))),lit(np(_,_,_)))), lambda(TV,lambda(NP,appl(NP,lambda(X,
-lex(personne, lit(np(_,_,_)), lambda(Q,drs([],[drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,not(appl(Q,X)))])]))).
-lex('Personne', lit(np(_,_,_)), lambda(Q,drs([],[drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,not(appl(Q,X)))])]))).
+lex('Rien', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))]))).
+lex(rien, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))]))).
+% eg. "Jean a rien vu"
+lex(rien, dr(0,dl(0,np,s),dr(0,dl(0,np,s),np)), lambda(TV,appl(TV,lambda(Q,drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))]))))).
+lex(personne, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,not(appl(Q,X)))]))).
+lex('Personne', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,not(appl(Q,X)))]))).
 
 lex('non-', dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([X],[not(appl(P,X))])))).
 % TODO: the semantics of the prefix "quasi-" given here is just the standard semantics for a
@@ -3481,7 +3482,7 @@ lex(ou, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))),
 lex(ou, dr(0,dl(0,dr(0,lit(n),lit(n)),dr(0,lit(n),lit(n))),dr(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
 lex(ou, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,bool(appl(appl(Adv1,S),E),\/,merge(drs([event(F)],[]),appl(appl(Adv2,S),F)))))))).
 lex(ou, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(NP,lambda(E,appl(NP,lambda(X,bool(appl(appl(Q,lambda(X1,appl(X1,X))),E),\/,merge(drs([event(F)],[]),appl(appl(P,lambda(X1,appl(X1,X))),F)))))))))).
-
+lex(ou, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,bool(appl(NP1,P),\/,appl(NP2,P)))))).
 
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,?)]),appl(S,E))))).
 lex(mais, dl(0,lit(s(Z)),dr(0,lit(s(Z)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
@@ -3513,6 +3514,7 @@ lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(S, lambda(NP, la
 lex(':', dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(S, lambda(NP, lambda(E, merge(appl(NP,lambda(X,(drs([],[appl(appl(topic,X),E)])))),appl(S,E)))))). 
 lex(',', dr(0,dl(0,lit(n),lit(s(_))),lit(s(_))), lambda(S, lambda(N, lambda(E, presup(merge(drs([variable(X)],[appl(appl(topic,X),E)]),appl(N,X)),appl(S,E)))))). 
 lex(',', dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
+lex(',', dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
 
 
 lex(':', dr(0,dl(0,lit(n),lit(s(_))),lit(s(_))), lambda(S, lambda(N, lambda(E, presup(merge(drs([variable(X)],[appl(appl(topic,X),E)]),appl(N,X)),appl(S,E)))))). 
@@ -3892,12 +3894,11 @@ lex((','), dr(0,lit(s(S)),lit(s(S))), lambda(X,X)).
 lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(N,X),appl(P,X)))))))).
 lex('(', dr(0,dl(0,n,n),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),drs([],[appl(NP,lambda(_,drs([],[])))])))))). 
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(N,X),drs([],[appl(P,X)])))))))).
-lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(NP,lambda(P,appl(NP,lambda(X,drs([event(E)],[appl(S,E),appl(P,X),appl(appl(background,X),E)]))))))).
+lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[appl(appl(background,X),E)]),appl(S,E))))))))).
+lex('(', dr(0,dl(0,n,n),s), lambda(S,lambda(N,lambda(X,merge(appl(N,X),merge(drs([event(E)],[appl(appl(background,X),E))),appl(S,E))))))).
 lex('(', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex('-', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 
-%default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),appl(NP,lambda(Y,drs([],[appl(appl(W,Y),X)])))))))).
-%default_semantics(Word, nam:INFO, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[appl(appl(nommé,Word),X)|Rest0]),appl(P,X)))) :-
 
 example_phrase(pos_lemma, 
           "Le ciel couvert de nuages dort.",
