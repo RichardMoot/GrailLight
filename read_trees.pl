@@ -84,7 +84,9 @@ read_tree(Tree) :-
 
 read_tree('(', nil) :-
 	peek_char(')'),
-	!.
+	!,
+	/* remove close bracket from input */
+	get_char(_).
 read_tree('(', tree(Label, Ds)) :-
 	read_label(Label),
 	!,
