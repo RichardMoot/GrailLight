@@ -308,7 +308,32 @@ get_roles1(délabrer, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(délasser, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(délecter, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(délier, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(démerder, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dépêcher, [np, cl_r], [agent, null]).
+get_roles1(dépenser, [np, cl_r], [agent, null]).
+get_roles1(dépeupler, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dépiter, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(disputer, [np, cl_r], [agent, null]).
 get_roles1(diviser, [np, cl_r], [agent, null]).
+get_roles1(disqualifier, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(disséminer, [np, cl_r], [agent, null]).
+get_roles1(déplaire, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(déployer, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(déplumer, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(déposer, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dépouiller, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dépraver, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(déprécier, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dérégler, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dérider, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dérouler, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(déshabituer, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(désintéresser, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(désister, [np, cl_r], [agent, null]).
+get_roles1(désoler, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(désolidariser, [np, cl_r], [agent, null]).
+get_roles1(désorganiser, [np, cl_r], [patient, null]). % unaccusative
+get_roles1(dessécher, [np, cl_r], [patient, null]). % unaccusative
 
 get_roles1(paumer, [np, cl_r], [agent, null]).
 get_roles1(pavaner, [np, cl_r], [agent, null]).
@@ -592,6 +617,17 @@ get_roles1(dégorger, [np, cl_r, pp(dans)], [patient, null, destination]).
 get_roles1(dégoûter, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
 get_roles1(délecter, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
 get_roles1(délecter, [np, cl_r, inf(à)], [patient, null, theme]). % unaccusative
+get_roles1(dépêcher, [np, cl_r, inf(de)], [agent, null, theme]).
+get_roles1(dépiter, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
+get_roles1(dépouiller, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
+get_roles1(disputer, [np, cl_r, pp(avec)], [agent, null, patient]).
+get_roles1(dérouler, [np, cl_r, pp(_)], [patient, null, lieu]). % unaccusative
+get_roles1(déshabituer, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
+get_roles1(désintéresser, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
+get_roles1(désister, [np, cl_r, pp(de)], [agent, null, theme]).
+get_roles1(désoler, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
+get_roles1(désolidariser, [np, cl_r, pp(de)], [agent, null, theme]).
+get_roles1(dessaisir, [np, cl_r, pp(de)], [agent, null, theme]).
 
 % se défendre: P0 (PP<en>) (PM)
 
