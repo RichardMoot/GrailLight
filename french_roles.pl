@@ -633,6 +633,7 @@ get_roles1(dessaisir, [np, cl_r, pp(de)], [agent, null, theme]).
 
 get_roles1(inquiéter, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(inscrire, [np, cl_r, pp(_)], [agent, null, destination]).
+get_roles1(moquer, [np, cl_r, pp(de)], [patient, null, theme]).
 
 get_roles1(pencher, [np, cl_r, pp(sur)], [agent, null, theme]).
 get_roles1(perdre, [np, cl_r, pp(_)], [agent, null, destination]). % static
@@ -648,7 +649,8 @@ get_roles1(plaire, [np, cl_r, pp(avec)], [agent, null, patient]).
 get_roles1(plaire, [np, cl_r, pp(_)], [agent, null, destination]). % static
 get_roles1(planquer, [np, cl_r, pp(_)], [agent, null, destination]). % static
 
-get_roles1(trouver, [np, cl_r, pp(_)], [agent, null, lieu]).
+get_roles1(situer, [np, cl_r, pp(_)], [patient, null, lieu]).
+get_roles1(trouver, [np, cl_r, pp(_)], [patient, null, lieu]).
 
 
 get_roles1(aliener, [np, cl_r, np], [patient, null, theme]). % unaccusative
