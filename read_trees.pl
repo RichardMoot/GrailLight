@@ -2,6 +2,14 @@
 
 :- ensure_loaded(m2const).
 
+% = read_trees
+%
+% read trees from FileName in Stanford parser output such as the following
+%
+% (NP (Det the) (ADJ interesting) (N idea))
+%
+% and converts them into GrailLight crosses/4 declarations.
+
 read_trees :-
 	current_prolog_flag(os_argv, Argv),
         append(_, [A|Av], Argv),
@@ -23,13 +31,6 @@ read_files_trees([F|Fs], N0, N) :-
 	read_trees(F, N0, N1),
 	read_files_trees(Fs, N1, N).
 
-% = read_trees(+FileName)
-%
-% read trees from FileName in Stanford parser output such as the following
-%
-% (NP (Det the) (ADJ interesting) (N idea))
-%
-% and converts them into GrailLight crosses/4 declarations.
 
 read_trees(FileName) :-
 	read_trees(FileName, 0, _).
@@ -81,6 +82,9 @@ read_tree(Tree) :-
 	get_char(C),
 	read_tree(C, Tree).
 
+read_tree('(', nil) :-
+	peek_char(')'),
+	!.
 read_tree('(', tree(Label, Ds)) :-
 	read_label(Label),
 	!,
