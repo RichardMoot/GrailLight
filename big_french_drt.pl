@@ -3034,8 +3034,8 @@ lex(sans, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(
 lex('Faute', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(faute_de,E),F),appl(appl(explanation,E),F),bool(X,=,'context?')]))))))).
 lex(faute, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(faute_de,E),F),appl(appl(explanation,E),F),bool(X,=,'context?')]))))))).
 
-lex('Quitte', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_ainf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(quitte_à,F),E),bool(X,=,'context?')]))))))).
-lex(quitte, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_ainf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(quitte_à,F),E),bool(X,=,'context?')]))))))).
+lex('Quitte', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_ainf)), lambda(VP,lambda(S,lambda(E,merge(merge(drs([event(F)],[]),appl(appl(VP,lambda(P,appl(P,X))),F)),merge(appl(S,E),drs([variable(X)],[appl(appl(quitte_à,F),E),bool(X,=,'context?')]))))))).
+lex(quitte, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_ainf)), lambda(VP,lambda(S,lambda(E,merge(merge(drs([event(F)],[]),appl(appl(VP,lambda(P,appl(P,X))),F)),merge(appl(S,E),drs([variable(X)],[appl(appl(quitte_à,F),E),bool(X,=,'context?')]))))))).
 
 lex('Avant', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[bool(appl(temps,E),'<',appl(temps,F)),bool(X,=,'context?')]))))))).
 lex('Avant', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[bool(appl(temps,E),'<',appl(temps,F)),bool(X,=,appl(agent,E))]))))))).
