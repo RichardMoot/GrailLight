@@ -1900,22 +1900,26 @@ default_semantics(Word, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(
         CLRole == null
     ->
         combine_se(Word, SeWord),
-        add_roles([SRole-X,PRole-Y], SeWord, E, Conds, Tnse)
+	combine_prep_word(Prep, SeWord, PW),    
+        add_roles([SRole-X,PRole-Y], PW, E, Conds, Tnse)
     ;
-        add_roles([SRole-X,CLRole-X,PRole-Y], Word, E, Conds, Tnse)
+	combine_prep_word(Prep, Word, PW),    
+        add_roles([SRole-X,CLRole-X,PRole-Y], PW, E, Conds, Tnse)
     ),
         pos_time(ver:TIME, [], Es, E-Tnse).
 
 % reflexive + INF
-default_semantics(Word, ver:TIME, dr(_,dl(0,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(_,lit(np(_,_,_)),lit(s(inf(IType))))), lambda(INF, lambda(_Refl, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,Conds)))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(0,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(_,lit(np(_,_,_)),lit(s(inf(Prep))))), lambda(INF, lambda(_Refl, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,Conds)))))))) :-
 	get_roles(Word, [np, cl_r, inf(IType)], [SRole, CLRole, IRole]),
     (
         CLRole == null
     ->
 	combine_se(Word, SeWord),
-	add_roles([SRole-Y,IRole-L], SeWord, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred])
+	combine_prep_word(Prep, SeWord, PW),    
+	add_roles([SRole-Y,IRole-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred])
     ;
-        add_roles([SRole-Y,CLRole-Y,IRole-L], Word, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(appl(INF,lambda(Q,appl(Q,Y))),lambda(P,appl(P,Y))),F)))|Pred])
+	combine_prep_word(Prep, Word, PW),    
+        add_roles([SRole-Y,CLRole-Y,IRole-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(appl(INF,lambda(Q,appl(Q,Y))),lambda(P,appl(P,Y))),F)))|Pred])
     ),
     	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
