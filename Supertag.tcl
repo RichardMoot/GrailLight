@@ -63,6 +63,8 @@ set tmp_dir           "/Users/moot/Library/Supertagger"
 set semantics         drt
 set postagset         tt
 set grail_exec        "grail_light_nd.pl"
+set bootstrap_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
+set bootstrap_parser_length 30
 
 set bw 1
 
@@ -1328,7 +1330,8 @@ proc supertag {sentence} {
     global comment grail_cmd pos_cmd pos_model st_cmd st_model
     global beta algo link par grammar_prefix debug debugstring skip
     global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix grail_prefix grail_exec
-
+    global bootstrap_parser_cmd bootstrap_parser_length
+    
     .c delete all
 
     set s_tok [tokenize $sentence]
@@ -1509,7 +1512,19 @@ proc supertag {sentence} {
 	puts $parser_file ""
 	puts $parser_file "     \], A)."
 	close $parser_file
-
+	# finished sentences
+	# use bootstrap parser to compute constituent structure
+	if {[catch {exec $bootstrap_parser_cmd $bootstrap_parser_length $tmp_dir/input.txt} bparse_msg]} {
+	       puts stderr $bparse_msg
+	}
+	if {[file exists $tmp_dir/input.txt.30.stp]} {
+	    if {[catch {exec $grail_prefix/read_trees.pl $tmp_dir/input.txt.30.stp} ptrees_msg]} {
+		puts stderr $ptrees_msg
+	    }
+	    if {[file exists $tmp_dir/parser_crosses.pl]} {
+		exec {cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl}
+	    }
+	}
 	.c configure -scrollregion [list 0 $miny $maxx 200]
 	update idletasks
 
