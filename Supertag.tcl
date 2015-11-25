@@ -1511,6 +1511,7 @@ proc supertag {sentence} {
 	}
 	puts $parser_file ""
 	puts $parser_file "     \], A)."
+	puts $parser_file ""
 	close $parser_file
 	# finished sentences
 	# use bootstrap parser to compute constituent structure
@@ -1522,7 +1523,7 @@ proc supertag {sentence} {
 		puts stderr $ptrees_msg
 	    }
 	    if {[file exists $tmp_dir/parser_crosses.pl]} {
-		exec {cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl}
+		exec cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl
 	    }
 	}
 	.c configure -scrollregion [list 0 $miny $maxx 200]
