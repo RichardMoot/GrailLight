@@ -1067,12 +1067,10 @@ proc backslash_interpunction {word} {
 
     # convert "European-style" numbers (eg. 12.345.678,90) into real numbers as Prolog likes them
     # (eg. 12345678.90) 
-    puts stderr "BI: $word"
     regsub -all {(\d{3})\.(\d{3})} $word {\1\2} word
     regsub {^(\{?)(\d{1,3})\.(\d{3})(\}?)$} $word {\1\2\3\4} word
 #    regsub {^(\d{1,3})\.(\d{3})$} $word {\1\2} word
     regsub {^(\d+)\,(\d+)$} $word {\1.\2} word
-    puts stderr "BI: $word"
 #    regsub -all {([[:digit:]]{3})\.([[:digit:]]{3})} $word "\1\2" word
 #    regsub -all {([[:digit:]]{1,3})\.([[:digit:]]{3})} $word "\1\2" word
 #    regsub -all {([[:digit:]])\,([[:digit:]])} $word "\1.\2" word
@@ -1090,9 +1088,6 @@ proc backslash_interpunction {word} {
 #    regsub -all {\.} $word "\\\." word
 #    regsub -all {\?} $word "\\\?" word
 #    regsub -all {\!} $word "\\\!" word
-
-    puts stderr "BI: $word"
-    puts stderr "---------"
 
     return $word
 
