@@ -3534,9 +3534,10 @@ lex('qu\'', dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(0,box(0,lit(np(_,_,_))))
 	wh_rel_semantics(Sem).
 lex('qu\'', dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(1,box(1,lit(np(_,_,_)))))), Sem) :-
 	wh_rel_semantics(Sem).
+lex(dont, dr(0,dl(0,n,n),s), lambda(S,lambda(N,lambda(X,merge(appl(N,X),merge(drs([event(E)],[appl(appl(de,X),E)]),appl(S,E))))))).
 lex(dont, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(1,box(1,lit(pp(de)))))), Sem) :-
 	wh_rel_semantics(Sem).
-lex(dont, dr(0,dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(N, lambda(X, merge(appl(NP,lambda(Y,drs([],[appl(appl(de,Y),X)]))),merge(appl(appl(VP,NP),_),appl(N,X)))))))).
+lex(dont, dr(0,dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(N, lambda(X, merge(drs([event(E)],[]),appl(appl(VP,lambda(P,appl(NP,lambda(Y,merge(drs([],[appl(appl(de,Y),X)]),merge(appl(P,Y),appl(N,X))))))),E))))))).
 lex(dont, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(NP2, lambda(P, merge(appl(NP,lambda(Y,appl(NP2,lambda(X,drs([],[appl(appl(de,Y),X)]))))),merge(appl(appl(VP,NP),_),appl(P,Y)))))))).
 
 
