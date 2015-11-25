@@ -1533,8 +1533,6 @@ proc supertag {sentence} {
 	# write logs
 	write_log "# supertag"
 	write_log "$line"
-	write_log "# Grail command"
-	write_log "$grailcmd"
 	write_log "# -------------------------------------------------"
 
 	# write Grail command to a separate file
@@ -1548,7 +1546,6 @@ proc supertag {sentence} {
 	puts $line
 	puts $forms
 	
-	puts $grailcmd
 	set saved_dir [pwd]
 	cd $tmp_dir
 	if {[string equal $grail_parse "chart_pos_lemma"]} {
