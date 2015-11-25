@@ -27,6 +27,10 @@ at*.pl
 8000*.pl
 ml.pl
 lnr.pl
+missing_word.txt
+missing_word_raw.txt
+missing_formula.txt
+missing_formula_raw.txt
 ml_linearone.pl
 ml_vpmod.pl
 formulas.pl
