@@ -614,6 +614,8 @@ combine_prep_word(_, Word0, Word) :-
 	var(Word0),
 	!,
 	Word = Word0.
+combine_prep_word('$VAR'(_), Word, Word) :-
+	!.
 combine_prep_word(a, Word, PrepWord) :-
 	!,
         atomic_list_concat([Word,'_',à], PrepWord).
@@ -1630,7 +1632,7 @@ default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s
 
 % passive (tagged as past participle, should correct some POS-tag errors)
 
-default_semantics(Word, ver:pper, dr(0,dl(0,lit(np(_,_,_)),lit(s(ppart))),lit(pp(par))), lambda(SUJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUJ,lambda(X,drs([],[appl(event,E)|Conds]))))))))) :-
+default_semantics(Word, ver:pper, dr(0,dl(0,lit(np(_,_,_)),lit(s(ppart))),lit(pp(par))), lambda(SUJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUJ,lambda(X,drs([],Conds))))))))) :-
 	role_lexicon(Word, Role1, Role2),
 	add_roles([Role1-X,Role2-Y], Word, E, Conds, []).
 
@@ -1705,7 +1707,7 @@ default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(np(_,_,_))
 	PASS == pass,
 	role_lexicon(V, Arg1, Arg2, Arg3),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], V, E, Conds, []).
-% control verbs, object control only (TODO: verify!)
+% passive+control verb, object control only (TODO: verify!)
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))), lambda(DEINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	PASS == pass,
 	combine_prep_word(de, V, PW),	
@@ -1717,7 +1719,7 @@ default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(np(_,
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	PASS == pass,
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]).
-% adjectival arguments
+% passive+adjectival argument
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	PASS == pass,
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))]).
@@ -2283,21 +2285,12 @@ default_semantics(paraître, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 
-% = generic verbs having an infintive group as an argument; default to subject control
+% = default case for verbs having an infintive group as an argument; default to subject control
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
-	D0 == inf(de),
-	combine_prep_word(de, Word, PW),
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
+	SType = inf(Prep),
+	combine_prep_word(Prep, Word, PW),
 	add_roles([agent-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))|Pred]),
-	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(AINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
-	D0 == inf(à),
-	combine_prep_word(à, Word, PW),
-	add_roles([agent-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(AINF,lambda(P,appl(P,Y))),F)))|Pred]),
-	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
-	D0 = inf(_),
-	add_roles([agent-Y,theme-L], Word, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 % voir+np+inf, faire+np+inf
@@ -2305,13 +2298,18 @@ default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(n
 % the Allen relations E < F, E m F and E o F should be possible as well
 % eg. in the case of indirectly making someone do something
 % It is not clear if these cases are truly factive.
-default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))),lit(np(_,_,_))), lambda(NPO, lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,appl(NPO,lambda(X,merge(drs(EVs,[appl(event,E),appl(Word,E),appl(appl(agent,Y),E),appl(appl(patient,X),E),appl(appl(theme,L),E),drs_label(L,appl(appl(INF,lambda(Prp,appl(Prp,X))),F)),bool(appl(temps,E),subseteq,appl(temps,F))|Pred]),appl(appl(INF,lambda(Prp,appl(Prp,X))),F))))))))))) :-
-	D0 == inf,
-	pos_time(ver:TIME, [event(L),event(F)], EVs, E-Pred).
-% voir+inf+np, faire+inf+np
-default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(INF, lambda(NPO, lambda(NPS, lambda(E, appl(NPS,lambda(Y,appl(NPO,lambda(X,merge(drs(EVs,[appl(event,E),appl(Word,E),appl(appl(agent,Y),E),appl(appl(patient,X),E),appl(appl(theme,L),E),drs_label(L,appl(appl(INF,lambda(Prp,appl(Prp,X))),F)),bool(appl(temps,E),subseteq,appl(temps,F))|Pred]),appl(appl(INF,lambda(Prp,appl(Prp,X))),F))))))))))) :-
-	D0 == inf,
+default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))),lit(np(_,_,_))), lambda(NPO, lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,appl(NPO,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(Prep),
+	combine_prep_word(Prep, Word, PW),
+	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
+% voir+inf+np, faire+inf+np
+default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(INF, lambda(NPO, lambda(NPS, lambda(E, appl(NPS,lambda(Y,appl(NPO,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(Prep),
+	combine_prep_word(Prep, Word, PW),
+	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))|Pred]),
+	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
+
 
 
 %  transitive - sentential complement (factive verbs)
@@ -5277,36 +5275,6 @@ simplify_condition(presup(DRSB,drs(V,C)),presup(DRSB,DRS)) :-
 	simplify_drs(C, V, DRS).
 simplify_condition(drs_label(L,drs(V,C)),drs_label(L,DRS)) :-
 	simplify_drs(C, V, DRS).
-
-% simplify_drs(C0, V0, drs(V,[appl(appl(appl(travel,X),Path),E),appl(moving,X),appl(path,Path),appl(appl(goal,LG),path)|C3])) :-
-% 	select_all([appl(event,E),
-% 		    appl(aller,E),
-% 		    appl(appl(theme,X),E),
-% 		    bool(Y,=,'lieu?'),
-% 		    appl(appl(source,Y),E),
-% 		    appl(appl(à,LG),E)], C0, C1),
-% 	!,
-%     (
-%         select(appl(appl(de,LS),E), C1, C2)
-%     ->
-%         Source = [appl(appl(source,LS),Path)]
-%     ;
-%         Source = [],
-%         C2 = C1
-%     ),
-%     (
-%         select(appl(appl(par,LM),E), C2, C3)
-%     ->
-%         Mid = [appl(appl(mid,LM),Path)|Source]
-%     ;
-%         Mid = Source,
-%         C3 = C2
-%     ),
-%         select(Y, V0, V).
-
-% simplify_drs(C0, V, drs(V,[appl(appl(cross,Path),LM)|C])) :-
-% 	select(appl(appl(par,LM),E), C0, C1),
-% 	select(appl(appl(appl(travel,_),Path),E), C1, C).
 
 
 simplify_drs(C0, V, drs(V,[appl(F,E)|C])) :-
