@@ -2216,7 +2216,7 @@ default_semantics(valoir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit
 	SType = inf(_),
 	add_roles([theme-L], valoir, E, Conds, [drs_label(L,merge(drs([event(F),variable(Y)],[appl(generic,Y)]),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(convenir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(X,drs(EVs,Conds))))))) :-
+default_semantics(convenir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(X,drs(EVs,Conds))))))) :-
 	SType = inf(_),
 	add_roles([agent-X,theme-L], convenir_de, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Pred]),
 	pos_time(POS, [event(L)], EVs, E-Pred).
