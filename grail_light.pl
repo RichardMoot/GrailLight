@@ -1764,7 +1764,7 @@ inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1),
 % = gapping
 
 % = functor extraction (used for gapping)
-inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),K0,K,_),
+inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))), K0, K, _),
 		     item(Y, I, J, Data0)],
 		     item(X, I, J, Data),
 		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K0, K, Data0, Data)]).
@@ -1782,12 +1782,12 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 	         [I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
-inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
+inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
 	  [J=<K,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
 % require empty stacks for gap_e to avoid strange scopings
-inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
+inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
 		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
 	          item(dr(0,X,Y), I, J, data(Pros,lambda('$VAR'(K),Sem),Prob,H,[],[],[],[])),
 	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,'$VAR'(K)), SetCs0, []), Prob is Prob0 + Prob1]).
@@ -2314,10 +2314,11 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 
 % = extraction
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1, Data2)
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, RightEdgeOfIntroduction, Data1, Data2)
 %
-% ExtractedFormula: formula extracted
-% RightEdgeOfFormula: string position where the formula has been inserted
+% ExtractedFormula       : formula extracted
+% RightEdgeOfFormula     : string position where the formula has been inserted
+% LeftEdgeOfIntroduction : string position where the higher-order formula authorizing the introduction starts
 % RightEdgeOfIntroduction: string position where the higher-order formula authorizing the introduction ends
 %
 % SetD has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)

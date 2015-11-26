@@ -3897,7 +3897,7 @@ lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,la
 lex('(', dr(0,dl(0,n,n),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),drs([],[appl(NP,lambda(_,drs([],[])))])))))). 
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(N,X),drs([],[appl(P,X)])))))))).
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[appl(appl(background,X),E)]),appl(S,E))))))))).
-lex('(', dr(0,dl(0,n,n),s), lambda(S,lambda(N,lambda(X,merge(appl(N,X),merge(drs([event(E)],[appl(appl(background,X),E))),appl(S,E))))))).
+lex('(', dr(0,dl(0,n,n),s), lambda(S,lambda(N,lambda(X,merge(appl(N,X),merge(drs([event(E)],[appl(appl(background,X),E)]),appl(S,E))))))).
 lex('(', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex('-', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 
