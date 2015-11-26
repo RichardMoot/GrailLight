@@ -27,6 +27,10 @@ at*.pl
 8000*.pl
 ml.pl
 lnr.pl
+missing_word.txt
+missing_word_raw.txt
+missing_formula.txt
+missing_formula_raw.txt
 ml_linearone.pl
 ml_vpmod.pl
 formulas.pl
@@ -39,6 +43,7 @@ rule_logs
 parse_logs
 texlog
 unparsed
+parser_crosses.pl
 previous_semantics.pl
 chart_noadverbs.pl
 semantics.pl
@@ -61,7 +66,7 @@ proof.aux
 proof.log
 proof.pdf
 texput.log
-stored.txt
+stored*.txt
 tmp*.pl
 annodis_backup.pl
 log

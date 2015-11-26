@@ -7,7 +7,7 @@
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
@@ -1764,7 +1764,7 @@ inference(prod_dr, [item(dr(0,X,p(0,Y,Z)), I, J, Data1),
 % = gapping
 
 % = functor extraction (used for gapping)
-inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))),K0,K,_),
+inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))), K0, K, _),
 		     item(Y, I, J, Data0)],
 		     item(X, I, J, Data),
 		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K0, K, Data0, Data)]).
@@ -1774,7 +1774,7 @@ inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),l
 			item(lit(np(A,B,C)), I, J, Data0)],
 		        item(lit(s(S)), I, J, Data),
 		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K0, K, Data0, Data)]).
-% easy case:
+% base case:
 inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X)))), K0, K, Data0),
 		  item(X, I, J, Data1),
 		  item(lit(s(S)), I0, K0, Data2)],
@@ -1782,15 +1782,15 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 	         [I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
-inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
+inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
 	  [J=<K,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
 % require empty stacks for gap_e to avoid strange scopings
-inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))),K,L,data(_,_,Prob0,_,[],[],[],[])),
+inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
 		  item(X, I, J, data(Pros0,Sem,Prob1,H,[],[],SetCs0,[]))],
-	          item(dr(0,X,Y), I, J, data(Pros,lambda(V,Sem),Prob,H,[],[],[],[])),
-	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,V), SetCs0, []), Prob is Prob0 + Prob1]).
+	          item(dr(0,X,Y), I, J, data(Pros,lambda('$VAR'(K),Sem),Prob,H,[],[],[],[])),
+	         [J=<K,Pros0=Pros,select(0-t(Y,J,K,L,'$VAR'(K)), SetCs0, []), Prob is Prob0 + Prob1]).
 
 % ==============================================
 % =            auxiliary predicates            =
@@ -1818,18 +1818,23 @@ update_semantics(Term1, Term0, X, TermX) :-
 	!.
 update_semantics(Term1, Term0, X, TermX) :-
 	/* gap_e/gap_c combination */
-	copy_term(Term0, Term00),
+	melt_bound_variables(Term1, Term10),
+	melt_bound_variables(Term0, Term00),
 	Term00 = lambda(Var, TermV),
 	var(Var),
   (	
-        subterm_with_unify(Term1, TermV)
+        subterm_with_unify(Term10, TermV)
   ->
+        try_unify_semantics(Term00, Term0),
+	try_unify_semantics(Term10, Term1),  
 	replace_sem(Term1, TermV, appl(X,Var), TermX)
   ;
 	/* adverb */
 	remove_adverbs(TermV, TermV2),	       
-	subterm_with_unify(Term1, TermV2)
+	subterm_with_unify(Term10, appl(TermV2,V4))
   ->
+        try_unify_semantics(Term00, Term0),
+	try_unify_semantics(Term10, Term1),  
         replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
   ).
 
@@ -2309,10 +2314,11 @@ verify_wrap_strict(I, I0, J0, J, I, J) :-
 
 % = extraction
 
-% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, RightEdgeOfIntroduction, Data1, Data2)
+% = start_extraction(+ExtractedFormula, RightEdgeOfFormula, LeftEdgeOfIntroduction, RightEdgeOfIntroduction, Data1, Data2)
 %
-% ExtractedFormula: formula extracted
-% RightEdgeOfFormula: string position where the formula has been inserted
+% ExtractedFormula       : formula extracted
+% RightEdgeOfFormula     : string position where the formula has been inserted
+% LeftEdgeOfIntroduction : string position where the higher-order formula authorizing the introduction starts
 % RightEdgeOfIntroduction: string position where the higher-order formula authorizing the introduction ends
 %
 % SetD has entries of the form IntroRightEdge-r(Formula,FormRightEdge,SemVar)

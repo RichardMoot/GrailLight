@@ -63,6 +63,8 @@ set tmp_dir           "/Users/moot/Library/Supertagger"
 set semantics         drt
 set postagset         tt
 set grail_exec        "grail_light_nd.pl"
+set bootstrap_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
+set bootstrap_parser_length 30
 
 set bw 1
 
@@ -1065,12 +1067,10 @@ proc backslash_interpunction {word} {
 
     # convert "European-style" numbers (eg. 12.345.678,90) into real numbers as Prolog likes them
     # (eg. 12345678.90) 
-    puts stderr "BI: $word"
     regsub -all {(\d{3})\.(\d{3})} $word {\1\2} word
     regsub {^(\{?)(\d{1,3})\.(\d{3})(\}?)$} $word {\1\2\3\4} word
 #    regsub {^(\d{1,3})\.(\d{3})$} $word {\1\2} word
     regsub {^(\d+)\,(\d+)$} $word {\1.\2} word
-    puts stderr "BI: $word"
 #    regsub -all {([[:digit:]]{3})\.([[:digit:]]{3})} $word "\1\2" word
 #    regsub -all {([[:digit:]]{1,3})\.([[:digit:]]{3})} $word "\1\2" word
 #    regsub -all {([[:digit:]])\,([[:digit:]])} $word "\1.\2" word
@@ -1088,9 +1088,6 @@ proc backslash_interpunction {word} {
 #    regsub -all {\.} $word "\\\." word
 #    regsub -all {\?} $word "\\\?" word
 #    regsub -all {\!} $word "\\\!" word
-
-    puts stderr "BI: $word"
-    puts stderr "---------"
 
     return $word
 
@@ -1328,7 +1325,8 @@ proc supertag {sentence} {
     global comment grail_cmd pos_cmd pos_model st_cmd st_model
     global beta algo link par grammar_prefix debug debugstring skip
     global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix grail_prefix grail_exec
-
+    global bootstrap_parser_cmd bootstrap_parser_length
+    
     .c delete all
 
     set s_tok [tokenize $sentence]
@@ -1508,8 +1506,25 @@ proc supertag {sentence} {
 	}
 	puts $parser_file ""
 	puts $parser_file "     \], A)."
+	puts $parser_file ""
 	close $parser_file
-
+	# finished sentences
+	# use bootstrap parser to compute constituent structure
+	if {[file executable $bootstrap_parser_cmd]} {
+	    # parse input sentences
+	    if {[catch {exec $bootstrap_parser_cmd $bootstrap_parser_length $tmp_dir/input.txt} bparse_msg]} {
+		puts stderr $bparse_msg
+	    }
+	    # if a parse has been found, convert it to crosses declarations and add these to the GrailLight input
+	    if {[file exists $tmp_dir/input.txt.30.stp]} {
+		if {[catch {exec $grail_prefix/read_trees.pl $tmp_dir/input.txt.30.stp} ptrees_msg]} {
+		    puts stderr $ptrees_msg
+		}
+		if {[file exists $tmp_dir/parser_crosses.pl]} {
+		    exec cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl
+		}
+	    }
+	}
 	.c configure -scrollregion [list 0 $miny $maxx 200]
 	update idletasks
 
@@ -1518,8 +1533,6 @@ proc supertag {sentence} {
 	# write logs
 	write_log "# supertag"
 	write_log "$line"
-	write_log "# Grail command"
-	write_log "$grailcmd"
 	write_log "# -------------------------------------------------"
 
 	# write Grail command to a separate file
@@ -1533,7 +1546,6 @@ proc supertag {sentence} {
 	puts $line
 	puts $forms
 	
-	puts $grailcmd
 	set saved_dir [pwd]
 	cd $tmp_dir
 	if {[string equal $grail_parse "chart_pos_lemma"]} {

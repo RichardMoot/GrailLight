@@ -130,10 +130,15 @@ get_item_semantics(Word, Formula, Semantics) :-
         default_semantics(Word, Formula, Semantics),
 	!.
 get_item_semantics(Word, Formula, Word) :-
+   (	
+	is_stream(log)
+   ->		    
 	format(log, 'MIS_SEM_FORM: ~p~n', [Formula]),
-	format(log, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]).
-
-
+	format(log, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word])
+   ;
+        true
+   ).
+		
 get_item_semantics(Word, _POS, _Lemma, Formula, Semantics) :-
         lex(Word, Formula0, Semantics),
 	macro_expand(Formula0, Formula),
@@ -148,9 +153,15 @@ get_item_semantics(Word, _POS, _Lemma, Formula, Semantics) :-
         default_semantics(Word, Formula, Semantics),
 	!.
 get_item_semantics(Word, POS, Lemma, Formula, Lemma) :-
+   (	
+	is_stream(log)
+   ->		    
 	format(log, 'MIS_SEM_FORM: ~p~n', [Formula]),
 	format(log, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
-	format(log, 'MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula]).
+	format(log, 'MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula])
+   ;
+        true
+   ).
 
 % = find_missing_words(+ListOfWords)
 %

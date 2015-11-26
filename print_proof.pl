@@ -4,10 +4,10 @@
 
 :- module(print_proof, [print_proof/3,xml_proof/3]).
 
-:- use_module(sem_utils, [get_max_variable_number/2]).
+:- use_module(sem_utils, [get_fresh_variable_number/2]).
 
 print_proof(Index, Proof, Stream) :-
-	get_max_variable_number(Proof, Max),
+	get_fresh_variable_number(Proof, Max),
 	numbervars(Proof, Max, _, [singletons(true)]),
 	print_title(Proof, Index, Stream),
 	format(Stream, 'proof(~w, ', [Index]),
