@@ -1232,7 +1232,8 @@ pop_agenda(queue(Front,Back), Front, queue(NewFront, Back)) :-
 % last-minute changes to the Data fields just before storage.
 
 update_data(data(Pros0, Sem, Prob, H, As, Bs, Cs, Ds), I, J, Justification, data(Pros, Sem, Prob, H, As, Bs, Cs, Ds)) :-
-	simplify_pros(Pros0, Justification, I, J, Pros).
+	simplify_pros(Pros0, Justification, I, J, Pros),
+	renumbervars(Sem).
 
 % no simplification
 % simplify_pros(Pros, _, _, _, Pros).
@@ -1800,16 +1801,13 @@ inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 % These predicates verify side conditions on the different inference rules
 
 combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extracted functor
-	          data(Pros1, Term1, Prob1, _ , As1, Bs1, Cs1, Ds1),   % result sentence
-	          data(Pros2, Term2, Prob2, H2, As2, Bs2, Cs2, Ds2),   % gapping "licensor"
+	          data(Pros1, Term1, Prob1, _ , [], [], [], []),   % result sentence
+	          data(Pros2, Term2, Prob2, H2, As, Bs, Cs, Ds),   % gapping "licensor"
 	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
 	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
 	update_semantics(Term1, Term0, X, TermX),
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
-	Prob is Prob0 + Prob3,
-	combine_sets(As1, Bs1, Cs1, Ds1, As2, Bs2, Cs2, Ds2, As, Bs, Cs, Ds).
-
-
+	Prob is Prob0 + Prob3.
 
 
 update_semantics(Term1, Term0, X, TermX) :-

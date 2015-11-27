@@ -1,6 +1,8 @@
+#!/Applications/SWI-Prolog.app/Contents/MacOS/swipl -q -g transform_all_proofs -f
+
 :- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1, latex_transform/1]).
 
-:- use_module(sem_utils,   [replace_sem/4,get_max_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
+:- use_module(sem_utils,   [replace_sem/4,get_fresh_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
 :- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3,ord_subtract/3,ord_select/3,ord_subset/2]).
 :- use_module(latex,       [latex_proof/2]).
 :- use_module(print_proof, [print_proof/3]).
@@ -50,7 +52,6 @@ nd_dir('nd_proofs/').
 % transform all infiles chart proofs in chart_dir into natural deduction proofs in nd_dir.
 
 transform_all_proofs :-
-	style_check(-singleton),
 	chart_dir(ChDir),
 	nd_dir(NDDir),
 	infile(Root),
@@ -64,8 +65,7 @@ transform_all_proofs :-
 	transform_all_proofs(OutFile),
 	format(user_error, '~NDone ~w~n', [Root]),
 	fail.
-transform_all_proofs :-
-	style_check(+singleton).
+transform_all_proofs.
 
 % = transform_all_proofs(+OutFile)
 %
@@ -98,7 +98,7 @@ numbervars_proof(Proof) :-
 
 numbervars_proof(rule(_, _, _-Sem, Premisses), N0, N) :-
 	/* ensure correct behaviour even when the semantics already contains occurrences of '$VAR'(N) terms */
-	get_max_variable_number(Sem, Max0),
+	get_fresh_variable_number(Sem, Max0),
 	Max is max(Max0, N0),
 	numbervars(Sem, Max, N1),
 	numbervars_proof_list(Premisses, N1, N).
@@ -255,7 +255,7 @@ transform_proof(rule(wpop_vp, GoalPros, dl(0,CL,dl(0,NP,S))-Sem, [Proof1]), N0, 
    ;
          Adv0 = pi2(SemAdv),NA=N1,NB=N0,VA=V1,VB=V0
    ),
-	get_max_variable_number(Sem, V0),
+	get_fresh_variable_number(Sem, V0),
 	V1 is V0 + 1,
 	V2 is V1 + 1,			 
 	N1 is N0 + 1,
@@ -283,7 +283,7 @@ transform_proof(rule(wpop_vp, GoalPros, dl(0,NP,S)-Sem, [Proof1]), N0, N,
    ;
          Adv0 = pi2(SemAdv),NA=N1,NB=N0,VA=V1,VB=V0
    ),
-	get_max_variable_number(Sem, V0),
+	get_fresh_variable_number(Sem, V0),
 	V1 is V0 + 1,
 	N1 is N0 + 1,
 	N2 is N1 + 1,
@@ -306,7 +306,7 @@ transform_proof(rule(wpop, GoalPros, S-Sem, [Proof1]), N0, N,
    ;
          Adv0 = pi2(SemAdv),NA=N1,NB=N0,VA=V1,VB=V0
    ),
-	get_max_variable_number(Sem, V0),
+	get_fresh_variable_number(Sem, V0),
 	V1 is V0 + 1,
 	N1 is N0 + 1,
 	N2 is N1 + 1,
@@ -504,7 +504,7 @@ transform_proof(rule(prod_e, Pros, FS,
 	Proof1 = rule(_, Pros1, dr(0,dr(0,A,C),B)-Sem1, _),
 	Proof2 = rule(_, _, p(0,B,dia(0,box(0,C)))-Sem2, _),
 	/* obtain two variables which as fresh wrt Sem1 and Sem2 */
-	get_max_variable_number(appl(Sem1,Sem2), V0),
+	get_fresh_variable_number(appl(Sem1,Sem2), V0),
 	V1 is V0 + 1,
 	N1 is N0 + 1,
 	N is N1 + 1,
