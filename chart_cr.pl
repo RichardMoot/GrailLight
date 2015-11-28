@@ -8,7 +8,7 @@
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2,is_closed/1]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
@@ -1136,16 +1136,16 @@ similar_item(Item, item(Formula, I, J, Data), IndexofSimilar) :-
 	key_index(Key, IndexofSimilar),
 	stored(IndexofSimilar, Key, I, J, Formula, Data).
 
-subsumed_item(Item, Front, Justif) :-
+subsumed_item(Item, Front, Back, Justif) :-
 	similar_item(Item, OtherItem, IndexofSimilar),
-	subsumes_item(OtherItem, Item, IndexofSimilar, Front, Justif).
+	subsumes_item(OtherItem, Item, IndexofSimilar, Front, Back, Justif).
 
-subsumes_item(item(F0, I0, J0, Data0), item(F, I, J, Data1), IndexofSimilar, _Front, Justif) :-
+subsumes_item(item(F0, I0, J0, Data0), item(F, I, J, Data1), IndexofSimilar, _Front, Back, Justif) :-
 	subsumes_chk(F0, F),
 	subsumes_chk(I0, I),
 	subsumes_chk(J0, J),
 	subsumes_data(Data0, Data1, O),
-	keep_maximum_item(O, IndexofSimilar, F0, F, I0, I, J0, J, Data0, Data1, Justif).
+	keep_maximum_item(O, IndexofSimilar, F0, F, I0, I, J0, J, Data0, Data1, Back, Justif).
 
 
 subsumes_data(data(_,_,Prob0,_,A0,B0,C0,D0),data(_,_,Prob,_,A,B,C,D), O) :-
@@ -1163,7 +1163,7 @@ subsumes_list([t(L,R,F0,_)|As], [t(L,R,F,_)|Bs]) :-
 % If the old value is *identical* to the new one, but the weight is lower,
 % then erase the old value and fail the subsumption test. Otherwise, succeed.
 
-keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Justif) :-
+keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, Back, _Justif) :-
 	F0 == F,
 	I0 == I,
 	J0 == J,
@@ -1173,6 +1173,8 @@ keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Jus
 	/* delete the lower weight item */
 	retract(stored(IndexofSimilar, _H, I, J, F, Data)),
 	retract(justification(IndexofSimilar, _)),
+	/* add back pointer from deleted item to new, better item */
+	assert(justification(IndexofSimilar, id(Back))),
 	/* comment out retracts above and remove comments below to obtain a "packed chart" */
 %	assertz(stored(IndexofSimilar, H, I, J, F, BetterData)),
 %	assert(justification(IndexofSimilar, Justif)),
@@ -1184,13 +1186,13 @@ keep_maximum_item(<, IndexofSimilar, F0, F, I0, I, J0, J, Data, BetterData, _Jus
 	reduce_sem(Sem0, RSem0),
 	numbervars(Sem1, 0, _),
 	reduce_sem(Sem1, RSem1),
-        format('DELETED (~w < ~w): ~w~nDATA:~p ~p~nBETTER DATA:~p ~p~n', [Prob, Prob0, IndexofSimilar,Pros0,RSem0,Pros1,RSem1]))
+        format('~NDELETED (~w < ~w): ~w~nDATA       :~p ~p~nBETTER DATA:~p ~p~n', [Prob, Prob0, IndexofSimilar,Pros0,RSem0,Pros1,RSem1]))
    ;
         true
    ),
         fail.
-keep_maximum_item(=, _, _, _, _, _, _, _, _, _, _).
-keep_maximum_item(>, _, _, _, _, _, _, _, _, _, _).
+keep_maximum_item(=, _, _, _, _, _, _, _, _, _, _, _).
+keep_maximum_item(>, _, _, _, _, _, _, _, _, _, _, _).
 
 init_chart :-
 	reset_global_counters,
@@ -1301,8 +1303,8 @@ reconstruct_pros(I-J, [], Pros) :-
 	!.
 reconstruct_pros(I-K, [A|As], Pros) :-
 	!,
-	select(Index, [A|As], Bs),
-	stored(Index, _, J, K, _, data(ProsD,_,_,_,_,_,_,_)),
+	select(Index0, [A|As], Bs),
+	get_stored(Index0, Index, _, J, K, _, data(ProsD,_,_,_,_,_,_,_)),
 	justification(Index, Just),
 	Just =.. [_|Args],
 	reconstruct_pros(ProsD, Args, Pros1),
@@ -1321,18 +1323,32 @@ reconstruct_pros(I-K, [A|As], Pros) :-
 reconstruct_pros(p(Ind,I-J,J-K), Args0, p(Ind,ProsL,ProsR)) :-
 	!,
 	select(Index1, Args0, Args),
-	stored(Index1, _, I, J, _, data(ProsL0,_,_,_,_,_,_,_)),
+	get_stored(Index1, Index11, _, I, J, _, data(ProsL0,_,_,_,_,_,_,_)),
 	member(Index2, Args),
-	stored(Index2, _, J, K, _, data(ProsR0,_,_,_,_,_,_,_)),
-	justification(Index1, Just1),
+	get_stored(Index2, Index22, _, J, K, _, data(ProsR0,_,_,_,_,_,_,_)),
+	justification(Index11, Just1),
 	Just1 =.. [_|Args1],
-	justification(Index2, Just2),
+	justification(Index22, Just2),
 	Just2 =.. [_|Args2],
 	reconstruct_pros(ProsL0, Args1, ProsL),
 	reconstruct_pros(ProsR0, Args2, ProsR).
 reconstruct_pros(Pros, _, Pros) :-
 	format(user_error, '~N{Warning: failed to reconstruct prosodics for "~w"}~n', [Pros]).
 
+% = get_stored(+Index, ?TrueIndex, ?Key, ?L, ?R, ?Form, ?Data)
+%
+% as stored/6, but follows any back pointers from Index (these indicate an item which
+% has been superseded) to TrueIndex.
+% This predicate only works correctly when Index is instantiated (ie. it cannot be used
+% to enumerate the stored/6 database by leaving Index a variable).
+
+get_stored(Index0, Index, Key, L, R, Form, Data) :-
+	/* back pointer found, follow it */
+	justification(Index0, id(Index1)),
+	!,
+	get_stored(Index1, Index, Key, L, R, Form, Data).
+get_stored(Index, Index, Key, L, R, Form, Data) :-
+	stored(Index, Key, L, R, Form, Data).
 
 % = coherent_item(+Left, +Right, +Data)
 %
@@ -1365,7 +1381,7 @@ add_item_to_agenda(Item0, Justification, queue(Front,Back), queue(Front, NewBack
 	Item = item(F, I, J, Data),
 	write('.'),
     (   coherent_item(I, J, Data),
-        \+ subsumed_item(Item, Front, Justification)
+        \+ subsumed_item(Item, Front, Back, Justification)
     ->
         simplify_formula(F, SF),
         simplified_formula_to_key(SF, Key),
@@ -1396,7 +1412,7 @@ add_axioms_to_chart([Item|Items], N0, N, [N0|Ls]) :-
 
 
 index_to_item(Index, item(F, I, J, Sem)) :-
-	stored(Index, _, I, J, F, Sem).
+	get_stored(Index, _, _, I, J, F, Sem).
 
 final_item(item(Start,0,Length,D), Best, BestSem) :-
 	sentence_length(Length),
@@ -1504,13 +1520,13 @@ compute_proof(Index, _) :-
     ),
 	format(proof, '~n% FAILED to compute proof for index ~w (~w)~n', [CUR,Index]),
 	format(log, '~nFAILED to compute proof for index ~w (~w)~n', [CUR,Index]),
-	format('~nFAILED to compute proof for index ~w (~w)~n', [CUR,Index]).
-	
+	format('~nFAILED to compute proof for index ~w (~w)~n', [CUR,Index]),
+	fail.	
 
-compute_chart_proof(Index, rule(Rule,Pros,Formula-Sem,Prems)) :-
+compute_chart_proof(Index0, rule(Rule,Pros,Formula-Sem,Prems)) :-
+	get_stored(Index0, Index, Idf, _L, _R, Formula, data(Pros0,Sem,_,_,_,_,_,_)),
 	justification(Index, Just),
 	Just =.. [Rule|Args0],
-	stored(Index, Idf, _L, _R, Formula, data(Pros0,Sem,_,_,_,_,_,_)),
 	sort_args(Args0, Args),
 	reconstruct_pros(Pros0, Args, Pros),
 	compute_chart_proof_list(Args0, List, KeyList),
@@ -1542,19 +1558,19 @@ list_axioms([P|Ps]) -->
 
 unify_rule(RuleName, Index, Idf, Just, Formula, List) :-
 	inference(RuleName, Antecedent, item(Formula,L,R,Data), _SideConds),
-	stored(Index, Idf, L, R, Formula, Data),
+	get_stored(Index, _, Idf, L, R, Formula, Data),
 	match_antecedent(Just, Antecedent, List),
 	!.
 
 match_antecedent([], [], []).
 match_antecedent([I|Is], [item(Formula,L,R,Data0)|As], [rule(_Rule,_Pros,Formula-Sem,_)|Rs]) :-
-	stored(I, _, L, R, Formula, Data0),
+	get_stored(I, _, _, L, R, Formula, Data0),
 	Data0 = data(_, Sem, _, _, _, _, _, _),
 	match_antecedent(Is, As, Rs).
 
 compute_chart_proof_list([], [], []).
 compute_chart_proof_list([I|Is], [P|Ps], [K-P|KPs]) :-
-	stored(I, _, K, _, _, _),
+	get_stored(I, _, _, K, _, _, _),
 	compute_chart_proof(I, P),
 	compute_chart_proof_list(Is, Ps, KPs).
 
@@ -1565,7 +1581,7 @@ sort_args(As, Ss) :-
 
 add_keys([], []).
 add_keys([I|Is], [K-I|Ks]) :-
-	stored(I, _, K, _, _, _),
+	get_stored(I, _, _, K, _, _, _),
 	add_keys(Is, Ks).
 
 % ==============================================
@@ -1801,13 +1817,17 @@ inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit
 % These predicates verify side conditions on the different inference rules
 
 combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extracted functor
-	          data(Pros1, Term1, Prob1, _ , [], [], [], []),   % result sentence
-	          data(Pros2, Term2, Prob2, H2, As, Bs, Cs, Ds),   % gapping "licensor"
+	          data(Pros1, Term1, Prob1, _ , [], [], [], []),       % result sentence
+	          data(Pros2, Term2, Prob2, H2, As, Bs, Cs, Ds),       % gapping "licensor"
 	          data(p(0,Pros1,Pros2),appl(appl(Term2,lambda(X,TermX)),Term0), Prob, H2, As, Bs, Cs, Ds)) :-
 	/* in the result semantics Term1, replace functor semantics Term0 by a fresh variable X */
+	/* require Term0 to be closed to prevent accidental capture */
+	is_closed(Term0),
 	update_semantics(Term1, Term0, X, TermX),
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
 	Prob is Prob0 + Prob3.
+%	ord_key_union_var(Cs0, Cs1, Cs),
+%	ord_key_union_i(Ds0, Ds1, Ds).
 
 
 update_semantics(Term1, Term0, X, TermX) :-
@@ -1817,7 +1837,8 @@ update_semantics(Term1, Term0, X, TermX) :-
 	!.
 update_semantics(Term1, Term0, X, TermX) :-
 	/* gap_e/gap_c combination */
-	melt_bound_variables(Term1, Term10),
+	%	melt_bound_variables(Term1, Term10),
+	Term1 = Term10,
 	melt_bound_variables(Term0, Term00),
 	Term00 = lambda(Var, TermV),
 	var(Var),
@@ -1825,7 +1846,7 @@ update_semantics(Term1, Term0, X, TermX) :-
         subterm_with_unify(Term10, TermV)
   ->
         try_unify_semantics(Term00, Term0),
-	try_unify_semantics(Term10, Term1),  
+%	try_unify_semantics(Term10, Term1),  
 	replace_sem(Term1, TermV, appl(X,Var), TermX)
   ;
 	/* adverb */
@@ -3391,7 +3412,7 @@ export_stored1.
 compute_rule_counts_init :-
 	retractall(rule_counts_init(_)),
 	findall(Name-0, inference(Name, _, _, _), List),
-	sort([axiom-0|List], Set),
+	sort([axiom-0,id-1|List], Set),
 	assert(rule_counts_init(Set)).
 	
 :- compute_rule_counts_init.
