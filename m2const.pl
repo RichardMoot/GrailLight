@@ -21,8 +21,8 @@
 
 verbose(false).
 
-% xml_files('flmf7aa1ep.cat.xml').
-xml_files('flmf7aa2ep.cat.xml').
+xml_files('flmf7aa1ep.cat.xml').
+%xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
 % xml_files('flmf7af2ep.cat.xml').
