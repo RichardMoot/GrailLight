@@ -8,6 +8,7 @@
 		       sem_to_prolog_query/2,
 		       sem_to_prolog_query/3,
 		       check_lexicon_typing/0,
+		       is_closed/1,
 		       get_max_variable_number/2,
 		       get_fresh_variable_number/2,
 		       free_vars/2,
@@ -337,7 +338,9 @@ subterm(X, Y) :-
 subterm(X, Y) :-
 	var(Y),
 	X == Y.
-subterm('$VAR'(N0), '$VAR'(N)) :-
+subterm('$VAR'(N0), Y) :-
+	nonvar(Y),
+	Y = '$VAR'(N),
 	!,
 	N = N0.
 subterm(lambda(_, X), Y) :-
@@ -349,14 +352,16 @@ subterm(X, Y) :-
 
 subterm(N0, X, Y) :-
 	N0 > 0,
+   (	
 	arg(N0, X, A),
-	subterm(A, Y),
-	!.
-
-subterm(N0, X, Y) :-
-	N0 > 0,
+	subterm(A, Y)
+   ->
+        true
+   ;
+	N0 > 1,
 	N is N0 - 1,
-	subterm(N, X, Y).
+	subterm(N, X, Y)
+   ).
 
 % subterm_with_unify(+Term, +SubTerm)
 %
@@ -395,7 +400,7 @@ alpha_conversion(Term0, Term, Max0, Max) :-
 	numbervars(Term, Max0, Max1),
 	Max is Max1 + 1.
 
-% = replace_sem(InTerm, Term1, Term2, OutTerm, Max)
+% = replace_sem(+InTerm, +Term1, +Term2, -OutTerm)
 %
 % true if OutTerm is InTerm with all occurrences of Term1 replaced
 % by occurrences of Term2.
@@ -459,13 +464,24 @@ get_key(K0, K) :-
 get_key(Term, K) :-
 	get_max_variable_number(Term, 0, K).
 
+% = is_closed(+Term)
+%
+% true if Term is closed; uses renumbervars to work correctly
+% with Prolog variable subterms and simply checks whether
+% there are no free variables. Double negation is used to
+% prevent instantiating Term
+
+is_closed(Term) :-
+	\+ \+ (renumbervars(Term), free_vars(Term, [])).
+
 % = free_vars(+Term, -ListOfVariableIndices)
 %
 % given a Term representing a lambda term (or lambda-DRS) return
 % all indices of variables occurring freely in this lambda term.
 
-free_vars('$VAR'(N), [N]) :-
-	!.
+free_vars('$VAR'(N), List) :-
+	!,
+	List = [N].
 free_vars(A, []) :-
 	atomic(A),
 	!.
