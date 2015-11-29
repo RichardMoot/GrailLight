@@ -1251,6 +1251,9 @@ expand_data(data(Pros0, Sem, Prob, H, As, Bs, Cs, Ds), Justification, data(Pros,
 % storing the complete term, which can get quite big, we only give the positions
 % of the two immediate substrings; this means extra work when reconstructing
 % the proof tree, but uses considerably less memory.
+%
+% TODO: it would be useful to adopt the same strategy for the semantic terms
+% at some point, especially when using packed charts.
 
 simplify_pros(p(0,p(0,Pros1,Pros2),Pros3), Justification, I, L, p(0,Result,K-L)) :-
 	Justification =.. [_|List0],
@@ -1277,21 +1280,31 @@ simplify_pros(p(Ind,ProsL,ProsR), Justification, I, K, p(Ind,I-J,J-K)) :-
 	get_stored(Index2, _, _, I, J, _, data(ProsL,_,_,_,_,_,_,_)),
 	!.
 simplify_pros(_, _, I, K, I-K).
-%% simplify_pros(_, Justification, I, K, Pros) :-
-%%    (	
-%%         Justification =.. [_,Index]
-%%    ->				     
-%% 	get_stored(Index, _, _, I, K, _, data(Pros,_,_,_,_,_,_,_))
-%%    ;
-%% 	Pros = I-K
-%%    ).
+
+% = pros_left(+Prosodics, ?LeftEdge)
+%
+% true if LeftEdge is the leftmost position of Prosodics
 
 pros_left(I-_, I).
 pros_left(p(_,L,_), I) :-
 	pros_left(L, I).
+
+
+% = pros_right(+Prosodics, ?RightEdge)
+%
+% true if RightEdge is the rightmost position of Prosodics
+
 pros_right(_-J, J).
 pros_right(p(_,_,R), J) :-
 	pros_right(R, J).
+
+% = pros_mid(+Prosodics, ?Mid)
+%
+% true if, for a prosodic term of the form p(I,Left,Right), Mid
+% is the point where Left and Right join; it is computed here by
+% taking the right edge of Left, but could equivalently be
+% computed by taking the left edge of Right.
+
 pros_mid(p(_,L,_), M) :-
 	pros_right(L, M).
 
@@ -1840,8 +1853,6 @@ combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extract
 	!,
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
 	Prob is Prob0 + Prob3.
-%	ord_key_union_var(Cs0, Cs1, Cs),
-%	ord_key_union_i(Ds0, Ds1, Ds).
 
 
 update_semantics(Term1, Term0, X, TermX) :-
@@ -1850,7 +1861,6 @@ update_semantics(Term1, Term0, X, TermX) :-
 	subterm(TermX, X).
 update_semantics(Term1, Term0, X, TermX) :-
 	/* gap_e/gap_c combination */
-	%	melt_bound_variables(Term1, Term10),
 	Term1 = Term10,
 	melt_bound_variables(Term0, Term00),
 	Term00 = lambda(Var, TermV),
@@ -1859,33 +1869,8 @@ update_semantics(Term1, Term0, X, TermX) :-
         subterm_with_unify(Term10, TermV)
   ->
         try_unify_semantics(Term00, Term0),
-%	try_unify_semantics(Term10, Term1),  
 	replace_sem(Term1, TermV, appl(X,Var), TermX)
-  %% ;
-  %% 	/* adverb */
-  %% 	remove_adverbs(TermV, TermV2),	       
-  %% 	subterm_with_unify(Term10, appl(TermV2,V4))
-  %% ->
-  %%       try_unify_semantics(Term00, Term0),
-  %% 	try_unify_semantics(Term10, Term1),  
-  %%       replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
   ).
-
-% NOTE: we exploit the fact that (vp) adverbs have a very specific form
-% this will not work for sentential adverbs, but I believe this to be correct
-% Typing:  V0/V1: e, Adv: (s->t)->s->t Term:e->s->t
-% ensure that at least one adverb is removed
-remove_adverbs(lambda(V0,appl(_Adv,appl(Term,V1))), Result) :-
-	V0 == V1,
-	!,
-	remove_adverbs1(Term, Result).
-
-remove_adverbs1(lambda(V0,appl(_Adv,appl(Term,V1))), Result) :-
-	V0 == V1,
-	!,
-	remove_adverbs1(Term, Result).
-remove_adverbs1(Term, Term).
-
 
 % = is_clitic(+Formula)
 %
