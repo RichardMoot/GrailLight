@@ -1255,9 +1255,9 @@ expand_data(data(Pros0, Sem, Prob, H, As, Bs, Cs, Ds), Justification, data(Pros,
 simplify_pros(p(0,p(0,Pros1,Pros2),Pros3), Justification, I, L, p(0,Result,K-L)) :-
 	Justification =.. [_|List0],
 	select(Index1, List0, List),
-	stored(Index1, _, I, J, _, data(Pros1,_,_,_,_,_,_,_)),
+	get_stored(Index1, _, _, I, J, _, data(Pros1,_,_,_,_,_,_,_)),
 	member(Index2, List),
-	stored(Index2, _, J, L, _, data(ProsR,_,_,_,_,_,_,_)),
+	get_stored(Index2, _, _, J, L, _, data(ProsR,_,_,_,_,_,_,_)),
 	!,
    (
         ProsR = p(0,Pros2,Pros3)
@@ -1272,12 +1272,19 @@ simplify_pros(p(0,p(0,Pros1,Pros2),Pros3), Justification, I, L, p(0,Result,K-L))
 simplify_pros(p(Ind,ProsL,ProsR), Justification, I, K, p(Ind,I-J,J-K)) :-
 	Justification =.. [_|List0],
 	select(Index1, List0, List),
-	stored(Index1, _, J, K, _, data(ProsR,_,_,_,_,_,_,_)),
+	get_stored(Index1, _, _, J, K, _, data(ProsR,_,_,_,_,_,_,_)),
 	member(Index2, List),
-	stored(Index2, _, I, J, _, data(ProsL,_,_,_,_,_,_,_)),
-	!.	
+	get_stored(Index2, _, _, I, J, _, data(ProsL,_,_,_,_,_,_,_)),
+	!.
 simplify_pros(_, _, I, K, I-K).
-
+%% simplify_pros(_, Justification, I, K, Pros) :-
+%%    (	
+%%         Justification =.. [_,Index]
+%%    ->				     
+%% 	get_stored(Index, _, _, I, K, _, data(Pros,_,_,_,_,_,_,_))
+%%    ;
+%% 	Pros = I-K
+%%    ).
 
 pros_left(I-_, I).
 pros_left(p(_,L,_), I) :-
@@ -1301,6 +1308,12 @@ pros_mid(p(_,L,_), M) :-
 reconstruct_pros(I-J, [], Pros) :-
 	word(Pros, _, _, I, J),
 	!.
+reconstruct_pros(I-K, [Index0], Pros) :-
+	!,
+	get_stored(Index0, Index, _, I, K, _, data(ProsD,_,_,_,_,_,_,_)),
+	justification(Index, Just),
+	Just =.. [_|Args],
+	reconstruct_pros(ProsD, Args, Pros).	
 reconstruct_pros(I-K, [A|As], Pros) :-
 	!,
 	select(Index0, [A|As], Bs),
@@ -1824,6 +1837,7 @@ combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extract
 	/* require Term0 to be closed to prevent accidental capture */
 	is_closed(Term0),
 	update_semantics(Term1, Term0, X, TermX),
+	!,
 	combine_probability(Prob1, Prob2, I, J, gap_i, Prob3),
 	Prob is Prob0 + Prob3.
 %	ord_key_union_var(Cs0, Cs1, Cs),
@@ -1833,8 +1847,7 @@ combine_gap(I, J, data(_    , Term0, Prob0, _ , _  , _  , _  , _  ),   % extract
 update_semantics(Term1, Term0, X, TermX) :-
 	/* simple case: replace Term0 by X */
 	replace_sem(Term1, Term0, X, TermX),
-	subterm(TermX, X),
-	!.
+	subterm(TermX, X).
 update_semantics(Term1, Term0, X, TermX) :-
 	/* gap_e/gap_c combination */
 	%	melt_bound_variables(Term1, Term10),
@@ -1848,24 +1861,31 @@ update_semantics(Term1, Term0, X, TermX) :-
         try_unify_semantics(Term00, Term0),
 %	try_unify_semantics(Term10, Term1),  
 	replace_sem(Term1, TermV, appl(X,Var), TermX)
-  ;
-	/* adverb */
-	remove_adverbs(TermV, TermV2),	       
-	subterm_with_unify(Term10, appl(TermV2,V4))
-  ->
-        try_unify_semantics(Term00, Term0),
-	try_unify_semantics(Term10, Term1),  
-        replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
+  %% ;
+  %% 	/* adverb */
+  %% 	remove_adverbs(TermV, TermV2),	       
+  %% 	subterm_with_unify(Term10, appl(TermV2,V4))
+  %% ->
+  %%       try_unify_semantics(Term00, Term0),
+  %% 	try_unify_semantics(Term10, Term1),  
+  %%       replace_sem(Term1, appl(TermV2,V4), appl(appl(X,Var),V4), TermX)
   ).
 
 % NOTE: we exploit the fact that (vp) adverbs have a very specific form
 % this will not work for sentential adverbs, but I believe this to be correct
 % Typing:  V0/V1: e, Adv: (s->t)->s->t Term:e->s->t
+% ensure that at least one adverb is removed
 remove_adverbs(lambda(V0,appl(_Adv,appl(Term,V1))), Result) :-
 	V0 == V1,
 	!,
-	remove_adverbs(Term, Result).
-remove_adverbs(Term, Term).
+	remove_adverbs1(Term, Result).
+
+remove_adverbs1(lambda(V0,appl(_Adv,appl(Term,V1))), Result) :-
+	V0 == V1,
+	!,
+	remove_adverbs1(Term, Result).
+remove_adverbs1(Term, Term).
+
 
 % = is_clitic(+Formula)
 %
