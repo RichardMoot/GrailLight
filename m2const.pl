@@ -21,7 +21,7 @@
 
 verbose(false).
 
-%xml_files('flmf7aa1ep.cat.xml').
+xml_files('flmf7aa1ep.cat.xml').
 %xml_files('flmf7aa2ep.cat.xml').
 % xml_files('flmf7ab2ep.xml').
 % xml_files('flmf7ae1ep.cat.xml').
@@ -31,7 +31,7 @@ verbose(false).
 % xml_files('flmf7ah1ep.aa.xml').
 % xml_files('flmf7ah2ep.aa.xml').
 % xml_files('flmf7ai1exp.cat.xml').
-xml_files('flmf7ai2ep.aa.cat.xml').
+% xml_files('flmf7ai2ep.aa.cat.xml').
 % xml_files('flmf7aj1ep.indent.xml').
 % xml_files('flmf7ak1ep.indent.xml').
 % xml_files('flmf7ak2ep.xd.cat.xml').
@@ -93,6 +93,7 @@ export(FileRoot) :-
 	tell(WordFile),
 	listing(word(_,_,_,_)),
 	told,
+	rebracket_constituents,
 	tell(ConstFile),
 	listing(constituent(_,_,_,_)),
 	told,
@@ -691,50 +692,71 @@ compute_penalties :-
 	/* erase zero entries */
 	retractall(crosses(_,_,_,0)).
 
-add_constituents :-
-	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
-	add_constituents(Sentences),
+% = compute_let(+SentNo, -Let)
+%
+% true if Let is the list containing all right edge numbers of words assigned the formula "let"
 
-add_constituents([]).
-add_constituents([S|Ss]) :-
-	add_constituents1(S),
-	add_constituents(Ss).
+compute_let(SentNo, Let) :-
+	clause(sent(SentNo,Sem),prob_parse(List0,Sem)),
+	compute_let(List0, 0, Let).
 
-add_constituents1(S) :-
-	findall(t(Cat,L,R), constituent(S, Cat, L, R), Triples),
-	add_constituents2(Triples, S).
-
-add_constituents2([], _).
-add_constituents2([t(Cat, L, R)|Rest], S) :-
-	add_constituents2(S, Cat, L, R),
-	add_constituents2(Rest, S).
-
-% check if there is an interpunction symbol to the left of the current constituent,
-% if so add a new constituent which includes this interpunction symbol (and do so
-% recursively, adding multiple interpunction symbols if necessary).
-
-add_constituents2(S, Cat, L, R) :-
+compute_let([], _, []).
+compute_let([si(_, _, _, [Formula-_])|Rest], N0, Let0) :-
+	N is N0 + 1,
    (
-	word(S, W, L0, L),
-        is_interpunction(W)
+        Formula = let
    ->
-        format1('constituent(~w, ~w, ~w, ~w).~n', [S,Cat,L0,R]),
-        retractall(constituent(S, Cat, L, R)),
-        assert(constituent(S, Cat, L0, R)),
-        add_constituents2(S, Cat, L0, R)
+        Let0 = [N|Let1]
    ;
-        true
-   ).
+        Let1 = Let0
+   ),
+        compute_let(Rest, N, Let1).
 
-is_interpunction('...').
-is_interpunction(',').
-is_interpunction(':').
-is_interpunction(';').
-is_interpunction('(').
-is_interpunction(')').
-is_interpunction('"').
-is_interpunction('[').
-is_interpunction(']').
+rebracket_constituents :-
+	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
+	rebracket_constituents_list(Sentences).
+
+rebracket_constituents_list([]).
+rebracket_constituents_list([S|Ss]) :-
+	rebracket_constituents(S),
+	rebracket_constituents_list(Ss).
+
+rebracket_constituents(S) :-
+    (
+	S =:= 0
+    ->
+	true
+    ;
+	compute_let(S, Let),
+	rebracket_constituents(Let, S)
+    ).
+
+rebracket_constituents([], _).
+rebracket_constituents([LR|Ls], S) :-
+	LR1 is LR - 1,
+	LR2 is LR + 1,
+	findall(t(Cat,R), constituent(S, Cat, LR, R), ListTR), % touching interpunction symbol on right edge 
+	findall(t(Cat,L), constituent(S, Cat, L, LR), ListTL), % touching interpunction symbol on left edge
+	retractall(constituent(S, Cat, LR, _)),
+	retractall(constituent(S, Cat, _, LR)),
+	assert_all_left(ListTL, S, LR1),
+	assert_all_right(ListTR, S, LR1),
+	/* create new constituent interpunction symbol combined with word */
+	assert(constituent(S, w, LR1, LR2)),
+	rebracket_constituents(Ls, S).
+
+assert_all_left([], _, _).
+assert_all_left([t(Cat,L)|Rest], S, LR) :-
+	assert(constituent(S, Cat, L, LR)),
+	assert_all_left(Rest, S, LR).
+
+assert_all_right([], _, _).
+assert_all_right([t(Cat,R)|Rest], S, LR) :-
+	assert(constituent(S, Cat, LR, R)),
+	assert_all_right(Rest, S, LR).
+
+
+
 
 compute_penalties([]).
 compute_penalties([S|Ss]) :-
