@@ -2266,42 +2266,57 @@ wrap_arg(dl(1,V,W), I, J, K, data(Pros1, Sem, Prob1, H0, SetA0, SetB0, SetC0, Se
 
 % only wrap from the incidental adverbs stack when there are no integrated adverbs (with net result that
 % incidental adverbs outscope integrated adverbs, as they should)
-pop(X, I1, J1, I, J, data(Pros, Sem, Prob, H, [t(I0,J0,X,Sem0)|SetA], [], SetC, SetD), data(Pros, appl(Sem0,Sem), Prob, H, SetA, [], SetC, SetD)) :-
+pop(X, I1, J1, I, J, data(Pros, Sem, Prob0, H, [t(I0,J0,X,Sem0)|SetA], [], SetC, SetD), data(Pros, appl(Sem0,Sem), Prob, H, SetA, [], SetC, SetD)) :-
 	/* verify the wrapped constituent is a substing of the current string */
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop, I1, J1, I0, J0),
 	!.
-pop(X, I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,X,Sem0)|SetB], SetC, SetD), data(Pros, appl(Sem0,Sem), Prob, H, SetA, SetB, SetC, SetD)) :-
-	/* verify the wrapped constituent is a substing of the current string */
+pop(X, I1, J1, I, J, data(Pros, Sem, Prob0, H, SetA, [t(I0,J0,X,Sem0)|SetB], SetC, SetD), data(Pros, appl(Sem0,Sem), Prob, H, SetA, SetB, SetC, SetD)) :-
+	/* verify the wrapped constituent is a substring of the current string */
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop, I1, J1, I0, J0),
 	!.
 
-pop_vp(I1, J1, I, J, data(Pros, SemVP, Prob, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(SemVP,X))), Prob, H, SetA, [], SetC, SetD)) :-
+pop_vp(I1, J1, I, J, data(Pros, SemVP, Prob0, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(SemVP,X))), Prob, H, SetA, [], SetC, SetD)) :-
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vp, I1, J1, I0, J0),
 	!.
-pop_vp(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),Sem0)|SetB], SetC, SetD), data(Pros, lambda(X,appl(Sem0,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
+pop_vp(I1, J1, I, J, data(Pros, Sem, Prob0, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),Sem0)|SetB], SetC, SetD), data(Pros, lambda(X,appl(Sem0,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vp, I1, J1, I0, J0),
 	!.
 
-pop_vp_strict(I1, J1, I, J, data(Pros, SemVP, Prob, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(SemVP,X))), Prob, H, SetA, [], SetC, SetD)) :-
+pop_vp_strict(I1, J1, I, J, data(Pros, SemVP, Prob0, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(SemVP,X))), Prob, H, SetA, [], SetC, SetD)) :-
 	verify_wrap_strict(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vp, I1, J1, I0, J0),
 	!.
-pop_vp_strict(I1, J1, I, J, data(Pros, Sem, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
+pop_vp_strict(I1, J1, I, J, data(Pros, Sem, Prob0, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(X,appl(SemADV,appl(Sem,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	verify_wrap_strict(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vp, I1, J1, I0, J0),
 	!.
 
 % variant of pop_vp with additional clitic
-pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(CL,lambda(X,appl(SemADV,appl(appl(SemVP,CL),X)))), Prob, H, SetA, [], SetC, SetD)) :-
+pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob0, H, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(CL,lambda(X,appl(SemADV,appl(appl(SemVP,CL),X)))), Prob, H, SetA, [], SetC, SetD)) :-
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vpc, I1, J1, I0, J0),
 	!.
-pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob, H, [t(I0,J0,dl(1,dl(0,lit(np(A,B,C)),lit(s(S))),dl(0,lit(np(A,B,C)),lit(s(S)))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(CL,appl(SemADV,appl(SemVP,CL))), Prob, H, SetA, [], SetC, SetD)) :-
+pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob0, H, [t(I0,J0,dl(1,dl(0,lit(np(A,B,C)),lit(s(S))),dl(0,lit(np(A,B,C)),lit(s(S)))),SemADV)|SetA], [], SetC, SetD), data(Pros, lambda(CL,appl(SemADV,appl(SemVP,CL))), Prob, H, SetA, [], SetC, SetD)) :-
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vpc, I1, J1, I0, J0),
 	!.
-pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(CL,lambda(X,appl(SemADV,appl(appl(SemVP,CL),X)))), Prob, H, SetA, SetB, SetC, SetD)) :-
+pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob0, H, SetA, [t(I0,J0,dl(1,lit(s(S)),lit(s(S))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(CL,lambda(X,appl(SemADV,appl(appl(SemVP,CL),X)))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vpc, I1, J1, I0, J0),
 	!.
-pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob, H, SetA, [t(I0,J0,dl(1,dl(0,lit(np(A,B,C)),lit(s(S))),dl(0,lit(np(A,B,C)),lit(s(S)))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(CL,appl(SemADV,appl(SemVP,CL))), Prob, H, SetA, SetB, SetC, SetD)) :-
+pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob0, H, SetA, [t(I0,J0,dl(1,dl(0,lit(np(A,B,C)),lit(s(S))),dl(0,lit(np(A,B,C)),lit(s(S)))),SemADV)|SetB], SetC, SetD), data(Pros, lambda(CL,appl(SemADV,appl(SemVP,CL))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	verify_wrap(I1, I0, J0, J1, I, J),
+	combine_probability_pop(Prob0, Prob, pop_vpc, I1, J1, I0, J0),
 	!.
+
+combine_probability_pop(Prob0, Prob, Rule, PL, PR, AL, AR) :-
+	combine_probability(Prob0, 0, PL, AL, Rule, ProbL),
+	combine_probability(Prob0, 0, AR, PR, Rule, ProbR),
+	Prob is max(ProbL, ProbR).
 
 
 adv_vp(I, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
@@ -2322,12 +2337,13 @@ verify_wrap(I, I0, J0, J, I, J) :-
 	I0 >= I,
 	J0 =< J,
 	!.
+% TODO: does this every occur?
 % I = I0 --- J0 = I1 -- J1 = J
-verify_wrap(I1, I0, J0, J1, I, J) :-
+%verify_wrap(I1, I0, J0, J1, I, J) :-
 %	format('I0:~w I1: ~w J0: ~w J1: ~w', [I0,I1,J0,J1]),
-	I0 = I,
-	J0 = I1,
-	J1 = J.
+%	I0 = I,
+%	J0 = I1,
+%	J1 = J.
 
 % I < I1 --- I0 --- J0 --- J1 < J
 
