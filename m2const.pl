@@ -24,7 +24,7 @@ verbose(false).
 xml_files(File) :-
 	xml_files(File, _).
 
-% xml_files('flmf7aa1ep.cat.xml', aa1).
+xml_files('flmf7aa1ep.cat.xml', aa1).
 % xml_files('flmf7aa2ep.cat.xml', aa2).
 % xml_files('flmf7ab2ep.xml', ab2).
 % xml_files('flmf7ae1ep.cat.xml', ae1).
@@ -41,7 +41,7 @@ xml_files(File) :-
 % xml_files('flmf7al1ep.cat.xml', al1).
 % xml_files('flmf7am1ep.xd.cat.xml', am1).
 % xml_files('flmf7am2ep.xd.cat.xml', am2).
-xml_files('flmf7an1ep.xml', an1).
+% xml_files('flmf7an1ep.xml', an1).
 % xml_files('flmf7an2co.af.cat.xml', an2).
 % xml_files('flmf7ao1ep.xml', ao1).
 % xml_files('flmf7ao2ep.xml', ao2).

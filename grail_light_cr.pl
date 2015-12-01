@@ -2323,11 +2323,11 @@ verify_wrap(I, I0, J0, J, I, J) :-
 	J0 =< J,
 	!.
 % I = I0 --- J0 = I1 -- J1 = J
-verify_wrap(I1, I0, J0, J1, I, J) :-
+%verify_wrap(I1, I0, J0, J1, I, J) :-
 %	format('I0:~w I1: ~w J0: ~w J1: ~w', [I0,I1,J0,J1]),
-	I0 = I,
-	J0 = I1,
-	J1 = J.
+%	I0 = I,
+%	J0 = I1,
+%	J1 = J.
 
 % I < I1 --- I0 --- J0 --- J1 < J
 
