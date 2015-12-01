@@ -21,38 +21,41 @@
 
 verbose(false).
 
-xml_files('flmf7aa1ep.cat.xml').
-%xml_files('flmf7aa2ep.cat.xml').
-% xml_files('flmf7ab2ep.xml').
-% xml_files('flmf7ae1ep.cat.xml').
-% xml_files('flmf7af2ep.cat.xml').
-% xml_files('flmf7ag1exp.cat.xml').
-% xml_files('flmf7ag2ep.cat.xml').
-% xml_files('flmf7ah1ep.aa.xml').
-% xml_files('flmf7ah2ep.aa.xml').
-% xml_files('flmf7ai1exp.cat.xml').
-% xml_files('flmf7ai2ep.aa.cat.xml').
-% xml_files('flmf7aj1ep.indent.xml').
-% xml_files('flmf7ak1ep.indent.xml').
-% xml_files('flmf7ak2ep.xd.cat.xml').
-% xml_files('flmf7al1ep.cat.xml').
-% xml_files('flmf7am1ep.xd.cat.xml').
-% xml_files('flmf7am2ep.xd.cat.xml').
-% xml_files('flmf7an1ep.xml').
-% xml_files('flmf7an2co.af.cat.xml').
-% xml_files('flmf7ao1ep.xml').
-% xml_files('flmf7ao2ep.xml').
-% xml_files('flmf7ap1ep.af.cat.xml').
-% xml_files('flmf7aq2ep.xd.cat.xml').
-% xml_files('flmf7as2ep.af.cat.xml').
-% xml_files('flmf7atep.cat.xml').
-%
-% xml_files('flmf300_13000ep.cat.xml').
-% xml_files('flmf3_08000_08499ep.xd.cat.xml').
-%
-% xml_files('annodis.er.xml').
+xml_files(File) :-
+	xml_files(File, _).
 
-:- dynamic word/4, lemma/4, constituent/4.
+% xml_files('flmf7aa1ep.cat.xml', aa1).
+% xml_files('flmf7aa2ep.cat.xml', aa2).
+% xml_files('flmf7ab2ep.xml', ab2).
+% xml_files('flmf7ae1ep.cat.xml', ae1).
+% xml_files('flmf7af2ep.cat.xml', af2).
+% xml_files('flmf7ag1exp.cat.xml', ag1).
+% xml_files('flmf7ag2ep.cat.xml', ag2).
+% xml_files('flmf7ah1ep.aa.xml', ah1).
+% xml_files('flmf7ah2ep.aa.xml', ah2).
+% xml_files('flmf7ai1exp.cat.xml', ai1).
+% xml_files('flmf7ai2ep.aa.cat.xml', ai2).
+% xml_files('flmf7aj1ep.indent.xml', aj1).
+% xml_files('flmf7ak1ep.indent.xml', ak1).
+% xml_files('flmf7ak2ep.xd.cat.xml', ak2).
+% xml_files('flmf7al1ep.cat.xml', al1).
+% xml_files('flmf7am1ep.xd.cat.xml', am1).
+% xml_files('flmf7am2ep.xd.cat.xml', am2).
+% xml_files('flmf7an1ep.xml', an1).
+% xml_files('flmf7an2co.af.cat.xml', an2).
+% xml_files('flmf7ao1ep.xml', ao1).
+% xml_files('flmf7ao2ep.xml', ao2).
+% xml_files('flmf7ap1ep.af.cat.xml', ap1).
+% xml_files('flmf7aq2ep.xd.cat.xml', aq2).
+% xml_files('flmf7as2ep.af.cat.xml', as2).
+% xml_files('flmf7atep.cat.xml', at).
+%
+% xml_files('flmf300_13000ep.cat.xml', '300').
+% xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
+%
+xml_files('annodis.er.xml', annodis).
+
+:- dynamic word/4, lemma/4, constituent/4, current_file/1.
 
 % create word/4 and constituent/4 declarations for the XML files declared by xml_file/1 (above).
 
@@ -73,6 +76,26 @@ start([F|Fs], N0, N) :-
 	nl(user_error),
 	start(Fs, N1, N).
 
+start(XMLFile) :-
+	abolish(word/4),
+	retractall(lemma(_,_,_,_)),
+	retractall(word(_,_,_,_)),
+	retractall(constituent(_,_,_,_)),
+	retractall(current_file(_)),
+	assert(current_file(XMLFile)),
+	load_structure(XMLFile, L0, [dialect(xml), space(default)]),
+	delete_all_spaces(L0, L),
+	xml_to_const(L, 0, _, 0, _).
+
+export_all :-
+	findall(FileRoot, xml_files(_, FileRoot), List),
+	export_all(List).
+
+export_all([]).
+export_all([F|Fs]) :-
+	export(F),
+	export_all(Fs).
+	
 % = export(FileRoot)
 %
 % Given a file *head.pl and the currently loaded XML file, create a file *.pl (with intermediate
@@ -80,6 +103,7 @@ start([F|Fs], N0, N) :-
 % (* is replaced by FileRoot).
 
 export(FileRoot) :-
+	xml_files(XMLFile, FileRoot),
 	atom_concat(FileRoot, 'head.pl', HeadFile),
 	check_exists(HeadFile),
 	atom_concat(FileRoot, '.pl', TargetFile),
@@ -89,10 +113,13 @@ export(FileRoot) :-
 	delete_if_exists(WordFile),
 	atom_concat(FileRoot, 'crosses.pl', CrossFile),
 	delete_if_exists(CrossFile),
-	start,
+	format(user_error, '~NXML File: ~w~n', [XMLFile]),
+	start(XMLFile),
+	nl(user_error),
 	tell(WordFile),
 	listing(word(_,_,_,_)),
 	told,
+	[HeadFile],
 	rebracket_constituents,
 	tell(ConstFile),
 	listing(constituent(_,_,_,_)),
@@ -297,7 +324,7 @@ handle_word('L.C.Waïkiki', S, N0, N) :-
 
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf7aa1ep.cat.xml'),
+	current_file('flmf7aa1ep.cat.xml'),
 	atomic_list_concat([Word1,ci], '-', W),
 	Word1 \= '',
 	!,
@@ -310,7 +337,7 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf7am1ep.xd.cat.xml'),
+	current_file('flmf7am1ep.xd.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	Word1 \= '',
 	!,
@@ -323,7 +350,7 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf3_08000_08499ep.xd.cat.xml'),
+	current_file('flmf3_08000_08499ep.xd.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	Word1 \= '',
 	!,
@@ -336,7 +363,7 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf7atep.cat.xml'),
+	current_file('flmf7atep.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	Word1 \= '',
 	!,
@@ -349,7 +376,7 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf7ak2ep.xd.cat.xml'),
+	current_file('flmf7ak2ep.xd.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	Word1 \= '',
 	!,
@@ -362,7 +389,7 @@ handle_word(W, S, N0, N) :-
 	assert(word(S, Word2, N1, N)).
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf7ai2ep.aa.cat.xml'),
+	current_file('flmf7ai2ep.aa.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	Word1 \= '',
 	!,
@@ -376,7 +403,7 @@ handle_word(W, S, N0, N) :-
 
 
 handle_word(W, S, N0, N) :-
-	xml_files('flmf7ag1exp.cat.xml'),
+	current_file('flmf7ag1exp.cat.xml'),
 	atomic_list_concat([Word1,là], '-', W),
 	Word1 \= '',
 	!,
@@ -515,7 +542,7 @@ simplify_words(['Puma','A.G.Rudolf', 'Dassler', 'Sport'],
 	       ['Puma','A.', 'G.', 'Rudolf', 'Dassler', 'Sport']) :-
 	!.
 simplify_words(['R','19'], ['R','19']) :-
-	xml_files('flmf7aj1ep.indent.xml'),
+	current_file('flmf7aj1ep.indent.xml'),
 	!.
 simplify_words(['R','19'], ['R.19']) :-
 	!.
@@ -528,6 +555,8 @@ simplify_words([X,'aujourd\'',hui], [X,'aujourd\'hui']) :-
 simplify_words([X,Y,'d\'',oeuvre], [X,Y,'d\'oeuvre']) :-
 	!.
 simplify_words(['Côte',-,'d\'',ivoire], ['Côte-d\'ivoire']) :-
+	!.
+simplify_words(['Côtes',-,'d\'','Armor'], ['Côtes-d\'Armor']) :-
 	!.
 simplify_words(['côte',-,'d\'',ivoire], ['côte-d\'ivoire']) :-
 	!.
@@ -698,11 +727,31 @@ compute_penalties :-
 
 compute_let(SentNo, Let) :-
 	clause(sent(SentNo,Sem),prob_parse(List0,Sem)),
-	compute_let(List0, 0, Let).
+	!,
+	compute_let(List0, SentNo, 0, Let).
+% do nothing when no clauses have been found
+compute_let(_, []).
 
-compute_let([], _, []).
-compute_let([si(_, _, _, [Formula-_])|Rest], N0, Let0) :-
+get_word(Sent, Word, L, R) :-
+	word(Sent, Word, L, R),
+	!.
+get_word(_, 'NULL', _, _).
+
+
+compute_let([], _, _, []).
+compute_let([si(Word, _, _, [Formula-_])|Rest], SentNo, N0, Let0) :-
 	N is N0 + 1,
+	get_word(SentNo, Word0, N0, N),
+   (
+	/* do not distinguish number atoms '9' from integers */
+	atom_codes(Word0, Codes0),
+	atom_codes(Word, Codes),
+	Codes = Codes0
+   ->
+	true
+   ;
+        format(user_error, '[~d] ~d-~d "~w" "~w"~n', [SentNo,N0,N,Word0,Word])
+   ),
    (
         Formula = let
    ->
@@ -710,7 +759,7 @@ compute_let([si(_, _, _, [Formula-_])|Rest], N0, Let0) :-
    ;
         Let1 = Let0
    ),
-        compute_let(Rest, N, Let1).
+        compute_let(Rest, SentNo, N, Let1).
 
 rebracket_constituents :-
 	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
@@ -722,19 +771,13 @@ rebracket_constituents_list([S|Ss]) :-
 	rebracket_constituents_list(Ss).
 
 rebracket_constituents(S) :-
-    (
-	S =:= 0
-    ->
-	true
-    ;
 	compute_let(S, Let),
-	rebracket_constituents(Let, S)
-    ).
+	rebracket_constituents(Let, S).
 
 rebracket_constituents([], _).
 rebracket_constituents([LR|Ls], S) :-
 	LR1 is LR - 1,
-	LR2 is LR + 1,
+%	LR2 is LR + 1,
 	findall(t(Cat,R), constituent(S, Cat, LR, R), ListTR), % touching interpunction symbol on right edge 
 	findall(t(Cat,L), constituent(S, Cat, L, LR), ListTL), % touching interpunction symbol on left edge
 	retractall(constituent(S, Cat, LR, _)),
@@ -742,7 +785,7 @@ rebracket_constituents([LR|Ls], S) :-
 	assert_all_left(ListTL, S, LR1),
 	assert_all_right(ListTR, S, LR1),
 	/* create new constituent interpunction symbol combined with word */
-	assert(constituent(S, w, LR1, LR2)),
+%	assert(constituent(S, w, LR1, LR2)),
 	rebracket_constituents(Ls, S).
 
 assert_all_left([], _, _).
