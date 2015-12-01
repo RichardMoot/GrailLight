@@ -41,7 +41,7 @@ xml_files(File) :-
 % xml_files('flmf7al1ep.cat.xml', al1).
 % xml_files('flmf7am1ep.xd.cat.xml', am1).
 % xml_files('flmf7am2ep.xd.cat.xml', am2).
-% xml_files('flmf7an1ep.xml', an1).
+xml_files('flmf7an1ep.xml', an1).
 % xml_files('flmf7an2co.af.cat.xml', an2).
 % xml_files('flmf7ao1ep.xml', ao1).
 % xml_files('flmf7ao2ep.xml', ao2).
@@ -53,7 +53,7 @@ xml_files(File) :-
 % xml_files('flmf300_13000ep.cat.xml', '300').
 % xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
 %
-xml_files('annodis.er.xml', annodis).
+% xml_files('annodis.er.xml', annodis).
 
 :- dynamic word/4, lemma/4, constituent/4, current_file/1.
 
@@ -815,7 +815,6 @@ compute_penalties1(S, Max) :-
 	initialize(0, Max, S),
 	write(user_error, ':'),
 	cross_comp(2, Max, S).
-
 initialize(N0, N, S) :-
 	NR is N0 + 2,
     (
@@ -826,17 +825,33 @@ initialize(N0, N, S) :-
         findall(L,(constituent(S,_,L,R),aux_crosses(L,R,N0,NR)), Cs),
         length(Cs, Cr),
         assert(crosses(S, N0, NR, Cr)),
-        N1 is N0 +1,
+        N1 is N0 + 1,
         initialize(N1, N, S)
     ).
 
+
+assert_crosses(S, NL, NR) :-
+        findall(L-R,(constituent(S,_,L,R),aux_crosses(L,R,NL,NR)), Cs),
+        length(Cs, Cr),
+        assert(crosses(S, NL, NR, Cr)).
+	
+% = aux_crosses(+L, +R, +NL, +NR)
+% 
+%
 % L -- N0 -- R -- NR
+%
+% xxxxxxxxxxxx
+%      ooooooooooooo
 
 aux_crosses(L, R, N0, NR) :-
 	L < N0,
 	N0 < R,
 	R < NR.
 % N0 -- L -- NR -- R
+%
+% ooooooooooooo
+%       xxxxxxxxxxxx
+
 aux_crosses(L, R, N0, NR) :-
 	N0 < L,
 	L < NR,
@@ -861,16 +876,17 @@ compute_crosses(D, N0, N, S) :-
     ->
         true
     ;
-        NR0 is NR - 1,
-        crosses(S, N0, NR0, Cr0),
-        /* crossed at length D-1, but no longer crosses at length D */
-        findall(., (constituent(S,_,L,NR),L > N0), List0),
-        /* didn't cross at length D-1, but crosses at length D */
-        findall(., constituent(S,_,NR0,_), List1),
-        length(List0, C0),
-        length(List1, C1),
-        Cr is (Cr0 + C1) - C0,
-        assert(crosses(S, N0, NR, Cr)),
+%        NR0 is NR - 1,
+%        crosses(S, N0, NR0, Cr0),
+%        /* crossed at length D-1, but no longer crosses at length D */
+%        findall(., (constituent(S,_,L,NR),L > N0), List0),
+%        /* didn't cross at length D-1, but crosses at length D */
+%        findall(., constituent(S,_,NR0,_), List1),
+%        length(List0, C0),
+%        length(List1, C1),
+%        Cr is (Cr0 + C1) - C0,
+    %        assert(crosses(S, N0, NR, Cr)),
+        assert_crosses(S, N0, NR),
         N1 is N0 +1,
         compute_crosses(D, N1, N, S)
      ). 
