@@ -1,4 +1,12 @@
 
+:- module(m2const, [start/0,
+		    start/1,
+		    export_all/0,
+		    export/1,
+		    verify_sentences/0,
+		    compute_penalties/0,
+		    compute_penalties1/2]).
+
 % constituent calculations
 
 % start/0   computes word/4 and constituent/4 declarations from all files declared by xml_files/1
@@ -24,7 +32,7 @@ verbose(false).
 xml_files(File) :-
 	xml_files(File, _).
 
-% xml_files('flmf7aa1ep.cat.xml', aa1).
+xml_files('flmf7aa1ep.cat.xml', aa1).
 % xml_files('flmf7aa2ep.cat.xml', aa2).
 % xml_files('flmf7ab2ep.xml', ab2).
 % xml_files('flmf7ae1ep.cat.xml', ae1).
@@ -53,7 +61,7 @@ xml_files(File) :-
 % xml_files('flmf300_13000ep.cat.xml', '300').
 % xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
 %
-xml_files('annodis.er.xml', annodis).
+% xml_files('annodis.er.xml', annodis).
 
 :- dynamic word/4, lemma/4, constituent/4, current_file/1.
 

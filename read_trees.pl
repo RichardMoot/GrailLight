@@ -1,6 +1,6 @@
 #!/Applications/SWI-Prolog.app/Contents/MacOS/swipl -q -g read_trees -f
 
-:- ensure_loaded(m2const).
+:- use_module(m2const, [compute_penalties1/2]).
 
 % = read_trees
 %
