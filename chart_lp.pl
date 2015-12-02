@@ -2314,10 +2314,20 @@ pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob0, H, SetA, [t(I0,J0,dl(1,dl(0,lit(n
 	combine_probability_pop(Prob0, Prob, pop_vpc, I1, J1, I0, J0),
 	!.
 
+% = combine_probability_pop(+InWeight, -OutWeight, +RuleName, +ParentLeft, +ParentRight, +AdverbLeft, +AdverbRight)
+%
+% a special version of combine_probability which computes the penalty of an adverb (spanning positions
+% AdverbLeft-AdverbRight) taking scope within an ancestor (spanning ParentLeft-ParentRight).
+% we assign as weight the worst of the number of brackets crossing between ParentLeft-AdverbLeft and
+% AdverbRight-ParentRight. Does nothing when we are dealing with probabilities.
+
 combine_probability_pop(Prob0, Prob, Rule, PL, PR, AL, AR) :-
 	combine_probability(Prob0, 0, PL, AL, Rule, ProbL),
 	combine_probability(Prob0, 0, AR, PR, Rule, ProbR),
-	Prob is max(ProbL, ProbR).
+	/* we are dealing with negative weights (log probs or crossing branches) so we keep the minimum */
+	/* I'm not sure whether the sum would be a good alternative; the maximum is not a good idea since */
+	/* it does not penalize certain scopes which are higher than they should be at all */ 
+	Prob is min(ProbL, ProbR).
 
 
 adv_vp(I, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
