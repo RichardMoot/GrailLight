@@ -1,11 +1,57 @@
-#!/Applications/SWI-Prolog.app/Contents/MacOS/swipl -q -g transform_all_proofs -f
+#!/Applications/SWI-Prolog.app/Contents/MacOS/swipl -q -g start -f
 
-:- module(transform_proof, [transform_proof/2,transform_all_proofs/0,transform_all_proofs/1, latex_transform/1]).
+:- module(transform_proof, [start/0,transform_proof/2,transform_all_proofs/0,transform_all_proofs/1, latex_transform/1]).
 
 :- use_module(sem_utils,   [replace_sem/4,get_fresh_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
 :- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3,ord_subtract/3,ord_select/3,ord_subset/2]).
 :- use_module(latex,       [latex_proof/2]).
 :- use_module(print_proof, [print_proof/3]).
+
+start :-
+	current_prolog_flag(os_argv, Argv),
+        append(_, [A|Av], Argv),
+	file_base_name(A, 'transform_proof.pl'),
+	!,
+	chart_dir(ChDir),
+	nd_dir(NDDir),
+        tap(Av, ChDir, NDDir).
+
+
+tap([], _, _) :-
+	transform_all_proofs,
+	halt.
+tap([F|Fs], ChDir, NDDir) :-
+	tap1([F|Fs], ChDir, NDDir).
+
+tap1([], _, _) :-
+	halt.
+tap1([File0|Files], ChDir, NDDir) :-
+	match_file(File0, File),
+	format(user_error, '~NStarting ~w~n', [File]),
+	atom_concat(File, '_proofs.pl', InFile0),
+	atom_concat(ChDir, InFile0, InFile),
+	atom_concat(File, '_nd.pl', OutFile0),
+	atom_concat(NDDir, OutFile0, OutFile),
+	abolish(proof/2),
+	compile(InFile),
+	transform_all_proofs(OutFile),
+	format(user_error, '~NDone ~w~n', [File]),
+	tap1(Files, ChDir, NDDir).
+
+
+match_file(File0, File) :-
+	infile(File0),
+	!,
+	File = File0.
+match_file(File0, File) :-
+	name('chart_proofs/', X),
+	name('_proofs.pl', W),
+	name(File0, FN),
+	append(X, Y, FN),
+	append(V, W, Y),
+	name(File, V),
+	infile(File),
+	!.
 
 quote_mode(1, 1).
 
