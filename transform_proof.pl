@@ -7,6 +7,8 @@
 :- use_module(latex,       [latex_proof/2]).
 :- use_module(print_proof, [print_proof/3]).
 
+:- dynamic user:proof/2.
+
 start :-
 	current_prolog_flag(os_argv, Argv),
         append(_, [A|Av], Argv),
@@ -18,6 +20,7 @@ start :-
 
 
 tap([], _, _) :-
+	/* treat all files if no file argument specified */
 	transform_all_proofs,
 	halt.
 tap([F|Fs], ChDir, NDDir) :-
@@ -26,23 +29,31 @@ tap([F|Fs], ChDir, NDDir) :-
 tap1([], _, _) :-
 	halt.
 tap1([File0|Files], ChDir, NDDir) :-
-	match_file(File0, File),
+   (	
+	match_file(File0, File)
+   ->		     
 	format(user_error, '~NStarting ~w~n', [File]),
 	atom_concat(File, '_proofs.pl', InFile0),
 	atom_concat(ChDir, InFile0, InFile),
 	atom_concat(File, '_nd.pl', OutFile0),
 	atom_concat(NDDir, OutFile0, OutFile),
-	abolish(proof/2),
-	compile(InFile),
+	abolish(user:proof/2),
+	user:compile(InFile),
 	transform_all_proofs(OutFile),
-	format(user_error, '~NDone ~w~n', [File]),
+	format(user_error, '~NDone ~w~n', [File])
+   ;
+	format(user_error, '~NIgnored ~w~n', [File0])
+   ),
 	tap1(Files, ChDir, NDDir).
-
-
+  
+   
 match_file(File0, File) :-
-	infile(File0),
+	/* coverts atoms like '8000' and '300' to Prolog integers */
+	name(File0, Name),
+	name(File1, Name),
+	infile(File1),
 	!,
-	File = File0.
+	File = File1.
 match_file(File0, File) :-
 	name('chart_proofs/', X),
 	name('_proofs.pl', W),
@@ -50,8 +61,7 @@ match_file(File0, File) :-
 	append(X, Y, FN),
 	append(V, W, Y),
 	name(File, V),
-	infile(File),
-	!.
+	infile(File).
 
 quote_mode(1, 1).
 
@@ -123,7 +133,7 @@ transform_all_proofs(OutputFile) :-
 	transform_all_proofs1(Stream).
 
 transform_all_proofs1(Stream) :-
-	proof(N, P0),
+	user:proof(N, P0),
    (	
 	transform_proof(P0, P)
    ->
@@ -155,7 +165,7 @@ numbervars_proof_list([P|Ps], N0, N) :-
 	numbervars_proof_list(Ps, N1, N).
 
 latex_transform(N) :-
-	proof(N, P),
+	user:proof(N, P),
 	transform_proof(P, Q),
 	open('proof.tex', write, Stream),
 	latex_proof(P, Stream),
