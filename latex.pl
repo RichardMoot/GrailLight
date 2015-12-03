@@ -1338,10 +1338,27 @@ write_atom(At0, Stream) :-
 	write_term(Stream, At, [character_escapes(off)])
     ).
 
+safe_name(Pros, Codes) :-
+	name(Pros0, Codes),
+	handle_numbers(Pros0, Pros, Codes).
+
+handle_numbers(Pros0, Pros, _Codes) :-
+	/* default name/2 treatment of integers */
+	integer(Pros0),
+	!,
+	Pros = Pros0.
+handle_numbers(Pros0, Pros, Codes) :-
+	/* take care we don't "round off" numbers like '100.000'  to '100.0' ! */
+	number(Pros0),
+	!,
+	atom_chars(Pros, Codes).
+handle_numbers(Pros, Pros, _Codes).
+
+
 latex_quote_underscores(Word0, Word) :-
 	name(Word0, List0),
 	latex_quote_underscores1(List0, List),
-	name(Word, List).
+	safe_name(Word, List).
 
 latex_quote_underscores1([], []).
 latex_quote_underscores1([194,178|As], Bs) :-
@@ -1420,6 +1437,7 @@ latex_all_proofs1(Stream) :-
 	proof(N, Proof),
 	format(Stream, '~2n~d. ', [N]),
 	latex_proof(Proof, Stream),
+	format(Stream, '~n\\medskip~n', []),
 	fail.
 latex_all_proofs1(_).
 
