@@ -1642,7 +1642,7 @@ inference(let, [item(lit(let), I, J, Data2),item(X, J, K, Data1)],
 
 inference(wr, [item(lit(let), I, J, Data1), item(dl(1,V,V), J, K, Data2)],
 	       item(lit(let), I, K, Data),
-              [J is I + 1, wrap(dl(1,V,V), I, J, K, Data1, Data2, Data)]).
+              [wrap(dl(1,V,V), I, J, K, Data1, Data2, Data)]).
 
 inference(wr_a, [item(X, I, J, Data1),item(dl(1,V,V), J, K, Data2)],
 	         item(X, I, K, Data),
@@ -3348,7 +3348,25 @@ tcl_pros(p(I,A0,B0), p(I,A,B)) :-
 tcl_pros(Pros0, Pros) :-
 	name(Pros0, Codes0),
 	replace_commas(Codes0, Codes),
-	name(Pros, Codes).
+	safe_name(Pros, Codes).
+
+
+safe_name(Pros, Codes) :-
+	name(Pros0, Codes),
+	handle_numbers(Pros0, Pros, Codes).
+
+handle_numbers(Pros0, Pros, _Codes) :-
+	/* default name/2 treatment of integers */
+	integer(Pros0),
+	!,
+	Pros = Pros0.
+handle_numbers(Pros0, Pros, Codes) :-
+	/* take care we don't "round off" numbers like '100.000'  to '100.0' ! */
+	number(Pros0),
+	!,
+	atom_chars(Pros, Codes).
+handle_numbers(Pros, Pros, _Codes).
+
 
 replace_commas([], []).
 replace_commas([C|Cs], Ds0) :-

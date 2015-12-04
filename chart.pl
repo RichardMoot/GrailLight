@@ -1642,7 +1642,7 @@ inference(let, [item(lit(let), I, J, Data2),item(X, J, K, Data1)],
 
 inference(wr, [item(lit(let), I, J, Data1), item(dl(1,V,V), J, K, Data2)],
 	       item(lit(let), I, K, Data),
-              [J is I + 1, wrap(dl(1,V,V), I, J, K, Data1, Data2, Data)]).
+              [wrap(dl(1,V,V), I, J, K, Data1, Data2, Data)]).
 
 inference(wr_a, [item(X, I, J, Data1),item(dl(1,V,V), J, K, Data2)],
 	         item(X, I, K, Data),

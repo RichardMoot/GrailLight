@@ -32,7 +32,7 @@ verbose(false).
 xml_files(File) :-
 	xml_files(File, _).
 
-xml_files('flmf7aa1ep.cat.xml', aa1).
+% xml_files('flmf7aa1ep.cat.xml', aa1).
 % xml_files('flmf7aa2ep.cat.xml', aa2).
 % xml_files('flmf7ab2ep.xml', ab2).
 % xml_files('flmf7ae1ep.cat.xml', ae1).
@@ -768,6 +768,11 @@ compute_let([si(Word, _, _, [Formula-_])|Rest], SentNo, N0, Let0) :-
         Let1 = Let0
    ),
         compute_let(Rest, SentNo, N, Let1).
+
+% =
+% TODO: add some additional rules, for example:
+% - when a "VPinf" constituent has "de" as first word, add a new "VPinf" constituent without "de"
+% Recommended when release is stable, followed by verification
 
 rebracket_constituents :-
 	setof(X, A^B^C^constituent(X,A,B,C), Sentences),
