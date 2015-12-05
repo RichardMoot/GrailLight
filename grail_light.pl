@@ -2084,6 +2084,7 @@ check_islands(lit(np(_,_,_)), Data) :-
 	Data = data(_, _, _, _, _, [], _, _).
 check_islands(lit(pp(_)), Data) :-
 	!,
+	/* no extraction of np's out of a pp */
 	Data = data(_, _, _, _, _, _, [], []).
 check_islands(_, _).
 
@@ -2115,30 +2116,29 @@ check_wrap(lit(s(S)), _, _, data(_,_,_,_,As,Bs,_,_)) :-
     ;
         Bs = []
     ).
-check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
-	S == main,
-	!,
-	Bs = [].
-check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-	S == ppart,
-	!,
-	As = [],
-	Bs = [].
-check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-	S == pass,
-	!,
-	As = [],
-	Bs = [].
-check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-	S == ppart,
+%check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
+%	S == main,
+%	!,
+%	Bs = [].
+%check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+%	S == ppart,
+%	!,
+%	As = [],
+%	Bs = [].
+check_wrap(dl(0,lit(np(_,_,_)),lit(s(_))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
 	!,
 	As = [],
 	Bs = [].
-check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-	S == pass,
+check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+%	S == ppart,
 	!,
 	As = [],
 	Bs = [].
+%check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+%	S == pass,
+%	!,
+%	As = [],
+%	Bs = [].
 check_wrap(_, _, _, _).
 
 
@@ -2320,7 +2320,9 @@ pop_vpc(I1, J1, I, J, data(Pros, SemVP, Prob0, H, SetA, [t(I0,J0,dl(1,dl(0,lit(n
 % we assign as weight the worst of the number of brackets crossing between ParentLeft-AdverbLeft and
 % AdverbRight-ParentRight. Does nothing when we are dealing with probabilities.
 
-combine_probability_pop(Prob0, Prob, Rule, PL, PR, AL, AR) :-
+combine_probability_pop(Prob0, Prob, Rule, PL, PR, AL0, AR0) :-
+	AL is AL0 + 1,
+	AR is AR0 - 1,
 	combine_probability(Prob0, 0, PL, AL, Rule, ProbL),
 	combine_probability(Prob0, 0, AR, PR, Rule, ProbR),
 	/* we are dealing with negative weights (log probs or crossing branches) so we keep the minimum */
@@ -2330,15 +2332,21 @@ combine_probability_pop(Prob0, Prob, Rule, PL, PR, AL, AR) :-
 
 
 adv_vp(I, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
-       data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
-       data(p(0,Pros0, Pros1), lambda(X,appl(Sem0,appl(Sem1,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
-	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob),
+             data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
+             data(p(0,Pros0, Pros1), lambda(X,appl(Sem0,appl(Sem1,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
+	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
+	I1 is I + 1,
+	K1 is K - 1,
+	combine_probability(Prob2, 0, I1, K1, wrap_vpi, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 % variant of adv_vp with additional clitic
 adv_vpc(I, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
-       data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
-       data(p(0,Pros0, Pros1), lambda(CL,lambda(X,appl(Sem0,appl(appl(Sem1,CL),X)))), Prob, H, SetA, SetB, SetC, SetD)) :-
-	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob),
+              data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
+              data(p(0,Pros0, Pros1), lambda(CL,lambda(X,appl(Sem0,appl(appl(Sem1,CL),X)))), Prob, H, SetA, SetB, SetC, SetD)) :-
+	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
+	I1 is I + 1,
+	K1 is K - 1,
+	combine_probability(Prob2, 0, I1, K1, wrap_vpi, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 % I = I1 --- I0 --- J0 --- J1 = J
