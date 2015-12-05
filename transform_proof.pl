@@ -1,10 +1,10 @@
 #!/Applications/SWI-Prolog.app/Contents/MacOS/swipl -q -g start -f
 
-:- module(transform_proof, [start/0,transform_proof/2,transform_all_proofs/0,transform_all_proofs/1, latex_transform/1]).
+:- module(transform_proof, [start/0,transform_proof/2,transform_all_proofs/0,transform_all_proofs/1, latex_transform/1, latex_transform_full/1]).
 
 :- use_module(sem_utils,   [replace_sem/4,get_fresh_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
 :- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3,ord_subtract/3,ord_select/3,ord_subset/2]).
-:- use_module(latex,       [latex_proof/2]).
+:- use_module(latex,       [latex_proof/2,latex_header/2,latex_tail/1]).
 :- use_module(print_proof, [print_proof/3]).
 
 :- dynamic user:proof/2.
@@ -168,9 +168,36 @@ latex_transform(N) :-
 	user:proof(N, P),
 	transform_proof(P, Q),
 	open('proof.tex', write, Stream),
+	latex_header(Stream, 'paperwidth=400cm,textwidth=395cm'),
 	latex_proof(P, Stream),
 	latex_proof(Q, Stream),
+	latex_tail(Stream),
 	close(Stream).
+
+latex_transform_full(N) :-
+	user:proof(N, P),
+	open('proof.tex', write, Stream),
+	latex_header(Stream, 'paperwidth=400cm,textwidth=395cm'),
+	latex_proof(P, Stream),
+	latex_transform_proof_full1(P, Stream),
+	latex_tail(Stream),
+	close(Stream).
+
+latex_transform_proof_full1(P, Stream) :-
+	numbervars_proof(P),
+	latex_transform_proof_full1(P, 0, _N, Stream).
+
+latex_transform_proof_full1(P, N0, N, Stream) :-
+	transform_proof(P, N0, N1, Q),
+    (
+	P = Q
+     ->
+        N = N1
+    ;
+	latex_proof(Q, Stream),
+        latex_transform_proof_full1(Q, N1, N, Stream)
+    ).
+
 
 transform_proof(P, Q) :-
 	numbervars_proof(P),
@@ -283,11 +310,14 @@ transform_proof(rule(gap_e, GoalPros, dr(0,X,Y)-Sem, [Proof1, Proof2]), N0, N,
 	N is N0 +1,	
 	!.
 transform_proof(rule(wpop_vp, GoalPros, _-Sem, [Proof1]), N0, N, ProofC) :-
-	(
-	 Sem = lambda(X,appl(SemADV,appl(_SemVP,X)))
-	;
-	 Sem = lambda(CL,lambda(X,appl(SemADV,appl(appl(_SemVP,CL),X))))
-	),
+   (
+	Sem = lambda(X,appl(SemADV,appl(_SemVP,X0))),
+	X0 == X
+   ;
+        Sem = lambda(CL,lambda(X,appl(SemADV,appl(appl(_SemVP,CL0),X0)))),
+	X0 == X,
+	CL0 == CL
+   ),
 	find_w_start(Proof1, LPros, RPros, _AdvF, SemADV, ProofB, Proof2),
 	global_replace_pros(Proof2, p(1,LPros,RPros), LPros, ProofA),
 	merge_proofs(ProofA, ProofB, Wrap, Wrap, GoalPros, N0, N, ProofC),
