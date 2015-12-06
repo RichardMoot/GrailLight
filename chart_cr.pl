@@ -1670,15 +1670,15 @@ inference(wpop_vp, [item(dl(1,lit(s(S)),lit(s(S))), I0, J0, Data0)],
 inference(wpop_vpi, [item(dl(0,lit(np(A,B,C)),lit(s(S))), J, K, Data0),
 		     item(dl(1,lit(s(S)),lit(s(S))), I, J, Data1)],
 	             item(dl(0,lit(np(A,B,C)),lit(s(S))), I, K, Data),
-	            [adv_vp(I, K, Data1, Data0, Data)]).
+	            [adv_vp(I, J, K, Data1, Data0, Data)]).
 inference(wpop_vpi, [item(dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(S)))), J, K, Data0),
 		     item(dl(1,lit(s(S)),lit(s(S))), I, J, Data1)],
 	             item(dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(S)))), I, K, Data),
-	            [adv_vpc(I, K, Data1, Data0, Data)]).
+	            [adv_vpc(I, J, K, Data1, Data0, Data)]).
 inference(wpop_vpi, [item(dl(1,lit(s(S2)),dl(0,lit(np(A,B,C)),lit(s(S)))), J, K, Data0),
 		     item(dl(1,lit(s(S)),lit(s(S))), I, J, Data1)],
 	             item(dl(1,lit(s(S2)),dl(0,lit(np(A,B,C)),lit(s(S)))), I, K, Data),
-	            [adv_vpc(I, K, Data1, Data0, Data)]).
+	            [adv_vpc(I, J, K, Data1, Data0, Data)]).
 
 % = special rules for reported speech of the form "SENT, a dit NP"
 
@@ -2332,22 +2332,22 @@ combine_probability_pop(Prob0, Prob, Rule, PL, PR, AL0, AR0) :-
 	Prob is min(ProbL, ProbR).
 
 
-adv_vp(I, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
+adv_vp(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
              data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
              data(p(0,Pros0, Pros1), lambda(X,appl(Sem0,appl(Sem1,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
-	I1 is I + 1,
+	J1 is J - 1,
 	K1 is K - 1,
-	combine_probability(Prob2, 0, I1, K1, wrap_vpi, Prob),
+	combine_probability(Prob2, 0, J1, K1, wrap_vpi, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 % variant of adv_vp with additional clitic
-adv_vpc(I, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
+adv_vpc(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
               data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
               data(p(0,Pros0, Pros1), lambda(CL,lambda(X,appl(Sem0,appl(appl(Sem1,CL),X)))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
-	I1 is I + 1,
+	J1 is J + 1,
 	K1 is K - 1,
-	combine_probability(Prob2, 0, I1, K1, wrap_vpi, Prob),
+	combine_probability(Prob2, 0, J1, K1, wrap_vpi, Prob),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 % I = I1 --- I0 --- J0 --- J1 = J
