@@ -2336,17 +2336,21 @@ adv_vp(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
              data(p(0,Pros0, Pros1), lambda(X,appl(Sem0,appl(Sem1,X))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
 	J1 is J - 1,
-	K1 is K - 1,
-	combine_probability(Prob2, 0, J1, K1, wrap_vpi, Prob),
+	I1 is I + 1,
+	combine_probability(Prob2, 0, I1, K, wrap_vpi, ProbL),
+	combine_probability(Prob2, 0, J1, J, wrap_vpi, ProbR),
+	Prob is min(ProbL, ProbR),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 % variant of adv_vp with additional clitic
 adv_vpc(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
               data(Pros1, Sem1, Prob1, H, SetA1, SetB1, SetC1, SetD1),
               data(p(0,Pros0, Pros1), lambda(CL,lambda(X,appl(Sem0,appl(appl(Sem1,CL),X)))), Prob, H, SetA, SetB, SetC, SetD)) :-
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
-	J1 is J + 1,
-	K1 is K - 1,
-	combine_probability(Prob2, 0, J1, K1, wrap_vpi, Prob),
+	J1 is J - 1,
+	I1 is I + 1,
+	combine_probability(Prob2, 0, I1, K, wrap_vpi, ProbL),
+	combine_probability(Prob2, 0, J1, J, wrap_vpi, ProbR),
+	Prob is min(ProbL, ProbR),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
 % I = I1 --- I0 --- J0 --- J1 = J
