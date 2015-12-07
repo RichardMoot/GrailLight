@@ -56,9 +56,9 @@ xml_files(File) :-
 % xml_files('flmf7ap1ep.af.cat.xml', ap1).
 % xml_files('flmf7aq2ep.xd.cat.xml', aq2).
 % xml_files('flmf7as2ep.af.cat.xml', as2).
-% xml_files('flmf7atep.cat.xml', at).
+xml_files('flmf7atep.cat.xml', at).
 %
-xml_files('flmf300_13000ep.cat.xml', '300').
+% xml_files('flmf300_13000ep.cat.xml', '300').
 % xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
 %
 % xml_files('annodis.er.xml', annodis).
@@ -785,21 +785,32 @@ rebracket_constituents_list([S|Ss]) :-
 
 rebracket_constituents(S) :-
 	compute_let(S, Let),
-	rebracket_constituents(Let, S).
+	reverse(Let, LetR),
+	rebracket_constituents_left(LetR, S),
+	rebracket_constituents_right(Let, S).
 
-rebracket_constituents([], _).
-rebracket_constituents([LR|Ls], S) :-
+rebracket_constituents_right([], _).
+rebracket_constituents_right([LR|Ls], S) :-
 	LR1 is LR - 1,
 %	LR2 is LR + 1,
 	findall(t(Cat,R), constituent(S, Cat, LR, R), ListTR), % touching interpunction symbol on right edge 
-	findall(t(Cat,L), constituent(S, Cat, L, LR), ListTL), % touching interpunction symbol on left edge
 	retractall(constituent(S, Cat, LR, _)),
-	retractall(constituent(S, Cat, _, LR)),
-	assert_all_left(ListTL, S, LR1),
 	assert_all_right(ListTR, S, LR1),
 	/* create new constituent interpunction symbol combined with word */
 %	assert(constituent(S, w, LR1, LR2)),
-	rebracket_constituents(Ls, S).
+	rebracket_constituents_right(Ls, S).
+
+	
+rebracket_constituents_left([], _).
+rebracket_constituents_left([LR|Ls], S) :-
+	LR1 is LR - 1,
+%	LR2 is LR + 1,
+	findall(t(Cat,L), constituent(S, Cat, L, LR), ListTL), % touching interpunction symbol on left edge
+	retractall(constituent(S, Cat, _, LR)),
+	assert_all_left(ListTL, S, LR1),
+	/* create new constituent interpunction symbol combined with word */
+%	assert(constituent(S, w, LR1, LR2)),
+	rebracket_constituents_left(Ls, S).
 
 assert_all_left([], _, _).
 assert_all_left([t(Cat,L)|Rest], S, LR) :-
