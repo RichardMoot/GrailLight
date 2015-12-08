@@ -348,6 +348,8 @@ get_roles1(piquer, [np, cl_r], [agent, null]).
 get_roles1(plaindre, [np, cl_r], [agent, null]).
 get_roles1(planquer, [np, cl_r], [agent, null]).
 
+get_roles1(répartir, [np, cl_r], [patient, null]).
+
 get_roles1(tromper, [np, cl_r], [patient, null]).
 
 % reflexive objects and prepositions
