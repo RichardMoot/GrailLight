@@ -1,5 +1,6 @@
 # emacs backups
 *~
+head/*
 # autoconf traces
 autom4te.cache/*
 # XML files
