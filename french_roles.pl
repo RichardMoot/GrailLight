@@ -636,6 +636,8 @@ get_roles1(engager, [np, cl_r, pp(à)], [agent, null, theme]).
 
 % se défendre: P0 (PP<en>) (PM)
 
+get_roles1(lancer, [np, cl_r, pp(dans)], [agent, null, theme]).
+
 get_roles1(inquiéter, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(inscrire, [np, cl_r, pp(_)], [agent, null, destination]).
 get_roles1(moquer, [np, cl_r, pp(de)], [patient, null, theme]).
