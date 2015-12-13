@@ -458,6 +458,7 @@ get_roles1(appesantir, [np, cl_r, pp(sur)], [agent, null, theme]).
 get_roles1(applaudir, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(appliquer, [np, cl_r, pp(à)], [agent, null, theme]).
 get_roles1(apprêter, [np, cl_r, pp(à)], [agent, null, theme]).
+get_roles1(apprécier, [np, cl_r, pp(de)], [patient, null, mésure]).
 get_roles1(apprivoiser, [np, cl_r, pp(à)], [patient, null, theme]). % unaccusative
 get_roles1(approcher, [np, cl_r, pp(de)], [agent, null, destination]). % unaccusative
 get_roles1(appuyer, [np, cl_r, pp(à)], [agent, null, lieu]).
@@ -635,6 +636,7 @@ get_roles1(désoler, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
 get_roles1(désolidariser, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(dessaisir, [np, cl_r, pp(de)], [agent, null, theme]).
 
+get_roles1(effectuer, [np, cl_r, pp(_)], [patient, null, theme]). 
 get_roles1(engager, [np, cl_r, inf(à)], [agent, null, theme]). 
 get_roles1(engager, [np, cl_r, pp(à)], [agent, null, theme]). 
 
@@ -663,6 +665,12 @@ get_roles1(plaire, [np, cl_r, pp(dans)], [agent, null, theme]).
 get_roles1(plaire, [np, cl_r, pp(avec)], [agent, null, patient]).
 get_roles1(plaire, [np, cl_r, pp(_)], [agent, null, destination]). % static
 get_roles1(planquer, [np, cl_r, pp(_)], [agent, null, destination]). % static
+
+get_roles1(remettre, [np, cl_r, pp(de)], [patient, null, theme]).
+get_roles1(remettre, [np, cl_r, pp(à)], [patient, null, theme]).
+
+get_roles1(rendre, [np, cl_r, np, pp(de)], [patient, null, compte, theme]). % se rendre compte de
+get_roles1(rendre, [np, cl_r, np, s(q)], [patient, null, compte, theme]). % se rendre compte que
 
 get_roles1(retrouver, [np, cl_r, pp(_)], [patient, null, lieu]).
 get_roles1(situer, [np, cl_r, pp(_)], [patient, null, lieu]).
