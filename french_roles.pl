@@ -350,9 +350,13 @@ get_roles1(piquer, [np, cl_r], [agent, null]).
 get_roles1(plaindre, [np, cl_r], [agent, null]).
 get_roles1(planquer, [np, cl_r], [agent, null]).
 
+get_roles1(retourner, [np, cl_r], [agent, null]).
 get_roles1(répartir, [np, cl_r], [patient, null]).
 
+
 get_roles1(tromper, [np, cl_r], [patient, null]).
+
+get_roles1(étonner, [np, cl_r], [patient, null]). 
 
 % reflexive objects and prepositions
 
@@ -637,8 +641,12 @@ get_roles1(désolidariser, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(dessaisir, [np, cl_r, pp(de)], [agent, null, theme]).
 
 get_roles1(effectuer, [np, cl_r, pp(_)], [patient, null, theme]). 
+get_roles1(efforcer, [np, cl_r, inf(de)], [agent, null, theme]). 
+get_roles1(efforcer, [np, cl_r, inf(à)], [agent, null, theme]). 
 get_roles1(engager, [np, cl_r, inf(à)], [agent, null, theme]). 
 get_roles1(engager, [np, cl_r, pp(à)], [agent, null, theme]). 
+get_roles1(étonner, [np, cl_r, pp(de)], [patient, null, theme]). 
+get_roles1(étonner, [np, cl_r, s(q)], [patient, null, theme]). 
 
 % se défendre: P0 (PP<en>) (PM)
 
@@ -672,7 +680,12 @@ get_roles1(remettre, [np, cl_r, pp(à)], [patient, null, theme]).
 get_roles1(rendre, [np, cl_r, np, pp(de)], [patient, null, compte, theme]). % se rendre compte de
 get_roles1(rendre, [np, cl_r, np, s(q)], [patient, null, compte, theme]). % se rendre compte que
 
+get_roles1(retourner, [np, cl_r, pp(contre)], [agent, null, theme]).
 get_roles1(retrouver, [np, cl_r, pp(_)], [patient, null, lieu]).
+
+get_roles1(révéler, [np, cl_r, np], [patient, null, theme]).
+get_roles1(révéler, [np, cl_r, pp(par)], [agent, null, theme]).
+
 get_roles1(situer, [np, cl_r, pp(_)], [patient, null, lieu]).
 get_roles1(trouver, [np, cl_r, pp(_)], [patient, null, lieu]).
 
@@ -691,11 +704,11 @@ get_roles1(coltiner, [np, cl_r, np], [agent, null, patient]).
 get_roles1(concilier, [np, cl_r, np], [agent, null, patient]).
 get_roles1(confesser, [np, cl_r, np], [agent, null, theme]).
 
-
-
 get_roles1(affirmer, [np, cl_r, adj], [patient, null, patient_attr]). % unaccusative
 get_roles1(annoncer, [np, cl_r, adj], [patient, null, patient_attr]). % unaccusative
 get_roles1(avérer, [np, cl_r, adj], [patient, null, patient_attr]). % unaccusative
 get_roles1(avouer, [np, cl_r, adj], [agent, null, theme]).
 get_roles1(classer, [np, cl_r, adj], [patient, null, theme]).
 get_roles1(confesser, [np, cl_r, adj], [agent, null, theme]).
+
+get_roles1(révéler, [np, cl_r, adj], [patient, null, theme]).
