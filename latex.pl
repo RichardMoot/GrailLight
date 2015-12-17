@@ -1437,7 +1437,7 @@ latex_all_proofs1(Stream) :-
 	proof(N, Proof),
 	format(Stream, '~2n~d. ', [N]),
 	latex_proof(Proof, Stream),
-	format(Stream, '~n\\medskip~n', []),
+	format(Stream, '~n\\bigskip~n', []),
 	fail.
 latex_all_proofs1(_).
 
