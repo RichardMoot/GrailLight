@@ -702,11 +702,31 @@ boring_item(dl(0,_,lit(txt))).
 % given a Word-POStag pair, tries to unify Formula with a formula containing more detailed information;
 % for example, Word with formula dr(0,pp(_),np) is instantiated to dr(0,pp(Word),np)
 
+enrich_formula(à, _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(à)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
+	!.
+enrich_formula(à, _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(à)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
+	!.
+enrich_formula(à, _, dr(0,lit(pp(à)),lit(np(acc,_,_)))) :-
+	!.
+enrich_formula(de, _, dr(0,lit(pp(de)),lit(n))) :-
+	!.
+enrich_formula(de, _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(de)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
+	!.
+enrich_formula('d\'', _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(de)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
+	!.
+enrich_formula(de, _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(de)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
+	!.
+enrich_formula(de, _, dr(0,lit(pp(de)),lit(np(acc,_,_)))) :-
+	!.
+enrich_formula(de, _, dr(0,lit(pp(de)),lit(n))) :-
+	!.
 enrich_formula(par, _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(par)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
 	!.
 enrich_formula(par, _, dr(0,lit(pp(par)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(par, _, dr(0,lit(pp(par)),lit(n))) :-
+	!.
+enrich_formula(pour, _, dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(pour)))),dl(0,lit(np(_,_,_)),lit(s(inf(base)))))) :-
 	!.
 enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(np(acc,_,_)))) :-
 	!.
@@ -727,10 +747,6 @@ enrich_formula(sur, _, dr(0,lit(pp(sur)),lit(n))) :-
 enrich_formula(en, _, dr(0,lit(pp(en)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(en, _, dr(0,lit(pp(en)),lit(n))) :-
-	!.
-enrich_formula(de, _, dr(0,lit(pp(de)),lit(np(acc,_,_)))) :-
-	!.
-enrich_formula(de, _, dr(0,lit(pp(de)),lit(n))) :-
 	!.
 enrich_formula(avant, _, dr(0,lit(pp(avant)),lit(np(acc,_,_)))) :-
 	!.
@@ -1656,6 +1672,9 @@ inference(wpop, [item(X, I0, J0, Data0)],
 inference(wpop_vp, [item(dl(0,lit(np(A,B,C)),lit(s(S))), I0, J0, Data0)],
 	            item(dl(0,lit(np(A,B,C)),lit(s(S))), I, J, Data),
 	           [pop_vp(I0, J0, I, J, Data0, Data)]).
+inference(wpop_vp, [item(dl(0,dl(0,lit(np(A,B,C)),lit(s(inf(Inf)))),lit(s(S))), I0, J0, Data0)],
+	            item(dl(0,dl(0,lit(np(A,B,C)),lit(s(inf(Inf)))),lit(s(S))), I, J, Data),
+	           [pop_vp(I0, J0, I, J, Data0, Data)]).
 inference(wpop_vp, [item(dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(S)))), I0, J0, Data0)],
 	            item(dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(S)))), I, J, Data),
 	           [pop_vpc(I0, J0, I, J, Data0, Data)]).
@@ -1745,7 +1764,7 @@ inference(c_l_lnr, [item(dl(0,dl(0,dia(0,box(0,lit(n))),lit(n)),_), K, _, data(_
 	            item(dl(0,lit(n),lit(n)), I, K, data(Pros, lambda(X,appl(Sem1,appl(Sem2,X))), Prob, H1, SetA, SetB, SetC, SetD)),
 	           [Pros=p(0,Pros2,Pros1),
 		    combine_sets(SetA1, SetB1, SetC1, SetD1, SetA2, SetB2, SetC2, SetD2, SetA, SetB, SetC, SetD),
-		    combine_probability(Prob1, Prob2, I,K ,c_l_lnr, Prob3),
+		    combine_probability(Prob1, Prob2, I, K ,c_l_lnr, Prob3),
 		    Prob is Prob0 + Prob3]).
 
 inference(c_r_lnr, [item(dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))), _, I, data(_,_,Prob0,_,_,_,_,_)),
