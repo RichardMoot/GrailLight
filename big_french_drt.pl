@@ -1755,6 +1755,14 @@ default_semantics(aller, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P,lambda(E,
 default_semantics(aller, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q,lambda(P,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,presup(drs(Es,Time),drs([],[appl(event,E)|Conds])))))))))) :-
 	add_roles([moving-X,path-Path], travel, E, Conds, [appl(appl(destination,Y),Path)]),
 	pos_time(POS, [], Es, E-Time).
+% version of "aller" which presupposes the speaker is not at the destination (as a sort of symmetry to "venir")
+%default_semantics(aller, POS, dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q, lambda(P, lambda(E,appl(P,lambda(V,appl(Q,lambda(W,presup(drs([X,OL,T],[appl(orateur,X),appl(appl(temps,T),E),appl(appl(appl(lieu,OL),T),X),bool(OL,neq,W)]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(appl(destination,W),Path)|Time])))))))))) :-
+%	pos_time(POS, [], EVs, E-Time).
+
+% "se rendre à"
+default_semantics(rendre, POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(pp(à))), lambda(Q,lambda(P,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,presup(drs(Es,Time),drs([],[appl(event,E)|Conds])))))))))) :-
+	add_roles([moving-X,path-Path], travel, E, Conds, [appl(appl(destination,Y),Path)]),
+	pos_time(POS, [], Es, E-Time).
 
 % "revenir" presupposes "partir"
 
@@ -1769,9 +1777,6 @@ default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda
 	pos_time(POS, [], EVs, E-Time).
 % intransitive "partir", resolve implicit source anaphor
 default_semantics(partir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,D),Path),appl(appl(destination,complement(D)),Path)|Time]))))))) :-
-	pos_time(POS, [], EVs, E-Time).
-
-default_semantics(aller, POS, dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q, lambda(P, lambda(E,appl(P,lambda(V,appl(Q,lambda(W,presup(drs([X,OL,T],[appl(orateur,X),appl(appl(temps,T),E),appl(appl(appl(lieu,OL),T),X),bool(OL,neq,W)]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(appl(destination,W),Path)|Time])))))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 
 % = intransitive --- DEFAULT CASE
@@ -2909,7 +2914,7 @@ default_semantics(W, dl(1,lit(s(ST)),lit(s(ST))), lambda(P,lambda(E,merge(appl(P
 default_semantics(W, dl(1,lit(s(ST)),lit(s(ST))), lambda(P,lambda(E,merge(appl(P,E),drs([],[appl(W,E)]))))).
 default_semantics(W, dr(0,lit(s(ST)),lit(s(ST))), lambda(P,lambda(E,merge(appl(P,E),drs([],[appl(W,E)]))))).
 
-% = adverbs - infinitives with "à" and "de"
+% = adverbs - infinitives with "à", "de", "par" and "pour"
 
 default_semantics('d\'', dr(_,dl(_,lit(np(N1,N2,N3)),lit(s(SS))),dl(_,lit(np(N1,N2,N3)),lit(s(inf(_))))), lambda(X,X)) :-
 	SS = inf(de).
@@ -2948,12 +2953,12 @@ default_semantics(à, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_
 
 % = adverbial prepositions
 
-default_semantics(W, dr(0,dl(_,lit(s(_)),lit(s(_))),lit(n)), lambda(N,lambda(S,lambda(E,merge(merge(drs([variable(X)],[appl(appl(W,X),E)]),appl(N,X)),appl(S,E)))))).
-default_semantics(W, dr(0,dr(_,lit(s(_)),lit(s(_))),lit(n)), lambda(N,lambda(S,lambda(E,merge(merge(drs([variable(X)],[appl(appl(W,X),E)]),appl(N,X)),appl(S,E)))))).
+default_semantics(W, dr(0,dl(_,lit(s(ST)),lit(s(ST))),lit(n)), lambda(N,lambda(S,lambda(E,merge(merge(drs([variable(X)],[appl(appl(W,X),E)]),appl(N,X)),appl(S,E)))))).
+default_semantics(W, dr(0,dr(_,lit(s(ST)),lit(s(ST))),lit(n)), lambda(N,lambda(S,lambda(E,merge(merge(drs([variable(X)],[appl(appl(W,X),E)]),appl(N,X)),appl(S,E)))))).
 
-default_semantics(W, dr(0,dl(_,lit(s(_)),lit(s(_))),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
+default_semantics(W, dr(0,dl(_,lit(s(ST)),lit(s(ST))),lit(np(acc,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
 
-default_semantics(W, dr(0,dr(_,lit(s(_)),lit(s(_))),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
+default_semantics(W, dr(0,dr(_,lit(s(ST)),lit(s(ST))),lit(np(acc,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
 
 % "beaucoup de" etc. n/pp
 
