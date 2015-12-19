@@ -11,7 +11,7 @@
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
-:- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_select/3, ord_delete/3]).
+:- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_key_insert_unify/4, ord_select/3, ord_delete/3]).
 :- use_module(list_utils, [strip_keys/2,insert_nth0/4]).
 :- use_module(library(pce)).
 :- use_module(library(pce_util)).
@@ -435,7 +435,7 @@ chart_semantics(SemInfo0, Semantics0, Semantics) :-
 % underspecified lexical formulas.
 
 update_seminfo([], [], []).
-update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [W0-F0|WFs], Update0) :-
+update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [_-(W0-F0)|WFs], Update0) :-
    (
         W0 = W,
         F = F0
@@ -1541,7 +1541,7 @@ compute_proof(Index, Pred) :-
 	current_sentence(Sent),
 	compute_chart_proof(Index, Proof),
 	!,
-        proof_axioms(Proof, Axioms, []),
+        proof_axioms(Proof, [], Axioms),
 	retractall('$PROOFAXIOMS'(_)),
 	assert('$PROOFAXIOMS'(Axioms)),
 	call(Pred, Proof, TrueProof),
@@ -1585,17 +1585,16 @@ compute_chart_proof(Index0, rule(Rule,Pros,Formula-Sem,Prems)) :-
 %
 % TODO: remove auxiliary rule premisses, which are now counted double!
 
-proof_axioms(rule(axiom,Pros,Formula-_,[])) -->
+proof_axioms(rule(axiom,Pros,Formula-word(N),[]), Ax0, Ax) :-
 	!,
-	[Pros-Formula].
-proof_axioms(rule(_,_,_,List)) -->
-	list_axioms(List).
+	ord_key_insert_unify(Ax0, N, Pros-Formula, Ax).
+proof_axioms(rule(_,_,_,List), Ax0, Ax) :-
+	proof_axioms_list(List, Ax0, Ax).
 
-list_axioms([]) -->
-	[].
-list_axioms([P|Ps]) -->
-	proof_axioms(P),
-	list_axioms(Ps).
+proof_axioms_list([], Ax, Ax).
+proof_axioms_list([P|Ps], Ax0, Ax) :-
+	proof_axioms(P, Ax0, Ax1),
+	proof_axioms_list(Ps, Ax1, Ax).
 
 unify_rule(RuleName, Index, Idf, Just, Formula, List) :-
 	inference(RuleName, Antecedent, item(Formula,L,R,Data), _SideConds),

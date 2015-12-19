@@ -50,11 +50,12 @@
 	ord_key_union_i/3,      %  Set x Set -> Set
 	ord_key_select/4,       %  Key x Set -> Value x Set
 	ord_key_delete/3,       %  Set x Key -> Set
-        ord_key_insert/4, %  Set x Key x Value -> Set
+        ord_key_insert/4,       %  Set x Key x Value -> Set
+        ord_key_insert_unify/4, %  Set x Key x Value -> Set
 	ord_member/2,           %  Elem x Set ->
 	ord_key_member/3,       %  Key x Set -> Value
 	ord_dup_insert/3,       %  MSet x Elem -> MSet
-	ord_dup_union/3,       %   MSet x MSet -> MSet
+	ord_dup_union/3,        %  MSet x MSet -> MSet
 	ord_delete/3,           %  Set x Elem -> Set
 	ord_select/3] ).	%  Elem x Set -> Set
 
@@ -414,6 +415,20 @@ ord_key_insert(<, Tail, Key0, Data0, Key, Data, [Key0-Data0,Key-Data|Tail]).
 ord_key_insert(=, Rest, Key, Data0, Key, _Data, [Key-Data0|Rest]).
 ord_key_insert(>, Tail, Key0, Data0, Key, Data, [Key-Data|Rest]) :-
 	ord_key_insert(Tail, Key0, Data0, Rest).
+
+% = ord_key_insert_unify(+OrdSet, +Key, +Data, -OrdSet)
+%
+% as ord_key_insert/3, but assumes unifies identical values         RM
+
+ord_key_insert_unify([], Key, Data, [Key-Data]).
+ord_key_insert_unify([Key-Data|Tail], Key0, Data0, Rest) :-
+	compare(Order, Key0, Key),
+	ord_key_insert_unify(Order, Tail, Key0, Data0, Key, Data, Rest).
+
+ord_key_insert_unify(<, Tail, Key0, Data0, Key, Data, [Key0-Data0,Key-Data|Tail]).
+ord_key_insert_unify(=, Rest, Key,  Data,  Key, Data, [Key-Data|Rest]).
+ord_key_insert_unify(>, Tail, Key0, Data0, Key, Data, [Key-Data|Rest]) :-
+	ord_key_insert_unify(Tail, Key0, Data0, Rest).
 
 
 % = ord_key_union(+Map1, +Map2, ?Map3)
