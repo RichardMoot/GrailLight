@@ -218,6 +218,23 @@ transform_proof1(P, N0, N, Q) :-
 
 % Invariant: N0 is the index of the first unused prosodic variable (that is '$VAR'(N0) does not occur in the proof).
 
+% = remove "let" rule altogether
+
+transform_proof(rule(let, Pros, D-Sem, [Proof1, Proof2]), N0, N, Proof) :-
+   (	
+	Proof1 = rule(axiom, _, lit(let)-true, []),
+	Proof2 = rule(Nm, _, D-Sem, Proofs)
+   ->
+        true
+   ;
+	Proof1 = rule(Nm, _, D-Sem, Proofs),
+	Proof2 = rule(axiom, _, lit(let)-true, [])
+   ->
+         true
+   ),
+	N = N0,
+	Proof = rule(Nm, Pros, D-Sem, Proofs).
+			
 transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 		rule(dr, GoalPros, D-Sem,
 		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,dr(0,Z,V))))-appl(Term2,lambda(Var,TermX)),
@@ -685,14 +702,14 @@ merge_proofs_left(RuleA, RuleB, Pros0, p(0,Pros,'$VAR'(N0)), GoalPros, N0, N, ru
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, ProsA, _), _, _), 
+	Rule = rule(_, p(_, ProsA, _), A-_, _), 
         merge_proofs_left(RuleA, rule(dr, p(I,ProsB,'$VAR'(N0)), A-M, [RuleA, Hyp]), Pros0, Pros, GoalPros, N1, N, Rule).
 merge_proofs_left(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dli(N0), ProsA, dl(I,B,A)-lambda(X,M), [Rule])) :-
 	RuleB = rule(_, ProsB, dl(I,B,A)-_, _),
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, _, ProsA), _, _),
+	Rule = rule(_, p(_, _, ProsA), A-_, _),
 	merge_proofs_left(RuleA, rule(dl, p(I,'$VAR'(N0),ProsB), A-M, [Hyp, RuleB]), Pros0, Pros, GoalPros, N1, N, Rule).
 
 	
@@ -706,14 +723,14 @@ merge_proofs(RuleA, RuleB, Pros0, p(0,Pros,'$VAR'(N0)), GoalPros, N0, N, rule(dr
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, ProsB, _), _, _), 
+	Rule = rule(_, p(_, ProsB, _), A-_, _), 
         merge_proofs(rule(dr, p(I,ProsA,'$VAR'(N0)), A-M, [RuleA, Hyp]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
 merge_proofs(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dli(N0), ProsB, dl(I,B,A)-lambda(X,M), [Rule])) :-
 	RuleA = rule(_, ProsA, dl(I,B,A)-_, _),
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, _, ProsB), _, _),
+	Rule = rule(_, p(_, _, ProsB), A-_, _),
 	merge_proofs(rule(dl, p(I,'$VAR'(N0),ProsA), A-M, [Hyp, RuleA]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
 
 match_pros(X, X) :-
