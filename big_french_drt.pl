@@ -116,6 +116,8 @@ macro(dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),np)))),dr(0,s,box(1,dia(1,dr(
 % coordination
 macro(dr(0,dl(0,dr(0,dl(0,np,s),dl(0,np,s)),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dl(0,np,s))),
       dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T)))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T))))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),dl(0,lit(np(nom,_,_)),lit(s(_)))))).
+macro(dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s)))),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s))))),
+      dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dia(0,box(0,dl(0,lit(np(nom,X,Y)),lit(s(T)))))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T))))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),dia(0,box(0,dl(0,lit(np(nom,_,_)),lit(s(_)))))))).
 macro(dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),lit(np(acc,V,W))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),lit(np(acc,V,W)))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),lit(np(acc,_,_))))).
 macro(dr(0,dl(0,dr(0,dr(0,dl(0,np,s),np),pp),dr(0,dr(0,dl(0,np,s),np),pp)),dr(0,dr(0,dl(0,np,s),np),pp)),dr(0,dl(0,dr(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),lit(np(acc,V,W))),lit(pp(U))),dr(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),lit(np(acc,V,W))),lit(pp(U)))),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),lit(np(acc,_,_))),lit(pp(_))))).
 macro(dr(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s)),dr(0,dl(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(S)))),dl(0,lit(np(nom,_,_)),lit(s(_))))).
