@@ -1720,7 +1720,7 @@ inference(se_dit, [item(dl(1,Y,dl(0,lit(cl_r),X)), J, K, Data2),
 
 % = argument extraction
 
-inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))),K0,K,_),
+inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))), K0, K, _),
 		    item(dr(0,X,Y), I, J, Data0)],
 		    item(X, I, J, Data),
 		   [K=<I,no_island_violation(Ind,X,Y),start_extraction(Y, J, K0, K, Data0, Data)]).
@@ -1831,7 +1831,7 @@ inference(ef_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,X,Y))))), K0, K, _)
 		    [K=<I,start_extraction_inv(dr(0,X,Y), J, K0, K, Data0, Data)]).
 % = intransitive verb gap, very rare (1 occurence in treebank)
 % (formulated this way to avoid n\n traces selecting explicit arguments)
-inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))),K0,K,_),
+inference(ef_start_iv, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(A,B,C)),lit(s(S))))))), K0, K, _),
 			item(lit(np(A,B,C)), I, J, Data0)],
 		        item(lit(s(S)), I, J, Data),
 		       [K=<I,start_extraction_inv(dl(0,lit(np(A,B,C)),lit(s(S))), J, K0, K, Data0, Data)]).
@@ -2134,29 +2134,38 @@ check_wrap(lit(s(S)), _, _, data(_,_,_,_,As,Bs,_,_)) :-
     ;
         Bs = []
     ).
-%check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
-%	S == main,
-%	!,
-%	Bs = [].
-%check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-%	S == ppart,
-%	!,
-%	As = [],
-%	Bs = [].
+% check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
+% 	S == main,
+% 	!,
+% 	Bs = [].
+% check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == ppart,
+% 	!,
+% 	As = [],
+% 	Bs = [].
+% check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == pass,
+% 	!,
+% 	As = [],
+% 	Bs = [].
 check_wrap(dl(0,lit(np(_,_,_)),lit(s(_))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
 	!,
 	As = [],
 	Bs = [].
 check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-%	S == ppart,
 	!,
 	As = [],
 	Bs = [].
-%check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-%	S == pass,
-%	!,
-%	As = [],
-%	Bs = [].
+% check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == ppart,
+% 	!,
+% 	As = [],
+% 	Bs = [].
+% check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == pass,
+% 	!,
+% 	As = [],
+% 	Bs = [].
 check_wrap(_, _, _, _).
 
 

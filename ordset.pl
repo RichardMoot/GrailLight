@@ -411,14 +411,14 @@ ord_key_insert([Key-Data|Tail], Key0, Data0, Rest) :-
 	compare(Order, Key0, Key),
 	ord_key_insert(Order, Tail, Key0, Data0, Key, Data, Rest).
 
-ord_key_insert(<, Tail, Key0, Data0, Key, Data, [Key0-Data0,Key-Data|Tail]).
-ord_key_insert(=, Rest, Key, Data0, Key, _Data, [Key-Data0|Rest]).
-ord_key_insert(>, Tail, Key0, Data0, Key, Data, [Key-Data|Rest]) :-
+ord_key_insert(<, Tail, Key0, Data0, Key, Data,  [Key0-Data0,Key-Data|Tail]).
+ord_key_insert(=, Rest, Key,  Data0, Key, _Data, [Key-Data0|Rest]).
+ord_key_insert(>, Tail, Key0, Data0, Key, Data,  [Key-Data|Rest]) :-
 	ord_key_insert(Tail, Key0, Data0, Rest).
 
 % = ord_key_insert_unify(+OrdSet, +Key, +Data, -OrdSet)
 %
-% as ord_key_insert/3, but assumes unifies identical values         RM
+% as ord_key_insert/3, but unifies identical values                 RM
 
 ord_key_insert_unify([], Key, Data, [Key-Data]).
 ord_key_insert_unify([Key-Data|Tail], Key0, Data0, Rest) :-
@@ -427,6 +427,8 @@ ord_key_insert_unify([Key-Data|Tail], Key0, Data0, Rest) :-
 
 ord_key_insert_unify(<, Tail, Key0, Data0, Key, Data, [Key0-Data0,Key-Data|Tail]).
 ord_key_insert_unify(=, Rest, Key,  Data,  Key, Data, [Key-Data|Rest]).
+% uncomment next line to output unification failure
+%	( Data0 = Data -> true ; format(user_error, '{Error: unification failure~n~w~n~w~n}~n', [Data0,Data])).
 ord_key_insert_unify(>, Tail, Key0, Data0, Key, Data, [Key-Data|Rest]) :-
 	ord_key_insert_unify(Tail, Key0, Data0, Rest).
 
