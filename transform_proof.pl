@@ -698,19 +698,19 @@ merge_proofs_left(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-
 	!,
 	Wrap = GoalPros.
 merge_proofs_left(RuleA, RuleB, Pros0, p(0,Pros,'$VAR'(N0)), GoalPros, N0, N, rule(dri(N0), ProsA, dr(I,A,B)-lambda(X,M), [Rule])) :-
-	RuleB = rule(_, ProsB, dr(I,A,B)-_, _),
+	RuleB = rule(_, ProsB, dr(I,A,B)-SemAB, _),
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, ProsA, _), A-_, _), 
-        merge_proofs_left(RuleA, rule(dr, p(I,ProsB,'$VAR'(N0)), A-M, [RuleA, Hyp]), Pros0, Pros, GoalPros, N1, N, Rule).
+	Rule = rule(_, p(_, ProsA, _), A-M, _), 
+        merge_proofs_left(RuleA, rule(dr, p(I,ProsB,'$VAR'(N0)), A-appl(SemAB,X), [RuleA, Hyp]), Pros0, Pros, GoalPros, N1, N, Rule).
 merge_proofs_left(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dli(N0), ProsA, dl(I,B,A)-lambda(X,M), [Rule])) :-
-	RuleB = rule(_, ProsB, dl(I,B,A)-_, _),
+	RuleB = rule(_, ProsB, dl(I,B,A)-SemBA, _),
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, _, ProsA), A-_, _),
-	merge_proofs_left(RuleA, rule(dl, p(I,'$VAR'(N0),ProsB), A-M, [Hyp, RuleB]), Pros0, Pros, GoalPros, N1, N, Rule).
+	Rule = rule(_, p(_, _, ProsA), A-M, _),
+	merge_proofs_left(RuleA, rule(dl, p(I,'$VAR'(N0),ProsB), A-appl(SemBA,X), [Hyp, RuleB]), Pros0, Pros, GoalPros, N1, N, Rule).
 
 	
 merge_proofs(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(P,M), [RuleA, RuleB])) :-
@@ -719,19 +719,19 @@ merge_proofs(RuleA, RuleB, Wrap0, Wrap, GoalPros, N, N, rule(dl1, Wrap0, A-appl(
 	!,
 	Wrap = GoalPros.
 merge_proofs(RuleA, RuleB, Pros0, p(0,Pros,'$VAR'(N0)), GoalPros, N0, N, rule(dri(N0), ProsB, dr(I,A,B)-lambda(X,M), [Rule])) :-
-	RuleA = rule(_, ProsA, dr(I,A,B)-_, _),
+	RuleA = rule(_, ProsA, dr(I,A,B)-SemAB, _),
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, ProsB, _), A-_, _), 
-        merge_proofs(rule(dr, p(I,ProsA,'$VAR'(N0)), A-M, [RuleA, Hyp]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
+	Rule = rule(_, p(_, ProsB, _), A-M, _), 
+        merge_proofs(rule(dr, p(I,ProsA,'$VAR'(N0)), A-appl(SemAB,X), [RuleA, Hyp]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
 merge_proofs(RuleA, RuleB, Pros0, p(0,'$VAR'(N0),Pros), GoalPros, N0, N, rule(dli(N0), ProsB, dl(I,B,A)-lambda(X,M), [Rule])) :-
-	RuleA = rule(_, ProsA, dl(I,B,A)-_, _),
+	RuleA = rule(_, ProsA, dl(I,B,A)-SemBA, _),
 	!,
 	N1 is N0 + 1,
 	Hyp = rule(hyp(N0), '$VAR'(N0), B-X, []),
-	Rule = rule(_, p(_, _, ProsB), A-_, _),
-	merge_proofs(rule(dl, p(I,'$VAR'(N0),ProsA), A-M, [Hyp, RuleA]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
+	Rule = rule(_, p(_, _, ProsB), A-M, _),
+	merge_proofs(rule(dl, p(I,'$VAR'(N0),ProsA), A-appl(SemBA,X), [Hyp, RuleA]), RuleB, Pros0, Pros, GoalPros, N1, N, Rule).
 
 match_pros(X, X) :-
 	!.
