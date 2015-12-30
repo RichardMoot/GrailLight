@@ -774,13 +774,23 @@ correct_formula(pro:rel, dl(0, dr(0, dl(0, lit(np(A,B,C)), lit(s(main))), lit(np
 	!.
 correct_formula(adv, dr(0, dl(0, lit(np(nom, A, B)), lit(s(main))), lit(s(q))), dr(0, dl(0,lit(np(nom,A,B)), lit(s(_))), lit(s(q)))) :-
 	!.
-correct_formula(ver:impe, dr(0, lit(s(S)),lit(np(nom,A,B))), dr(0, lit(s(S)), lit(np(acc,A,B)))) :-
+correct_formula(ver:impe, dr(0, lit(s(_)),lit(np(nom,A,B))), dr(0, lit(s(impe)), lit(np(acc,A,B)))) :-
 	!.
-correct_formula(ver:impe, dr(0, dr(0, lit(s(S)),lit(np(nom,A,B))), lit(pp(P))), dr(0, dr(0, lit(s(S)), lit(np(acc,A,B))), lit(pp(P)))) :-
+correct_formula(ver:impe, dr(0, dr(0, lit(s(_)),lit(np(nom,A,B))), lit(pp(P))), dr(0, dr(0, lit(s(impe)), lit(np(acc,A,B))), lit(pp(P)))) :-
 	!.
-correct_formula(ver:impe, dr(0, dr(0, lit(s(S)), lit(pp(P))),lit(np(nom,A,B))), dr(0, dr(0, lit(s(S)), lit(pp(P))), lit(np(acc,A,B)))) :-
+correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(pp(P))),lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(pp(P))), lit(np(acc,A,B)))) :-
 	!.
-correct_formula(ver:impe, dr(0, dr(0, lit(s(S)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(S)), lit(s(Q))), lit(np(acc,A,B)))) :-
+correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(s(Q))), lit(np(acc,A,B)))) :-
+	!.
+correct_formula(ver:infi, dl(0, X, lit(s(_))), dl(0, X, lit(s(inf(base))))) :-
+	!.
+correct_formula(ver:infi, dl(0, X, dl(0, Y, lit(s(_)))), dl(0, X, dl(0, Y, lit(s(inf(base)))))) :-
+	!.
+correct_formula(ver:infi, dr(0, dl(0, X, dl(0, Y, lit(s(_)))), Z), dr(0, dl(0, X, dl(0, Y, lit(s(inf(base))))), Z)) :-
+	!.
+correct_formula(ver:infi, dr(0, dl(0, X, lit(s(_))), Y), dr(0, dl(0, X, lit(s(inf(base)))), Y)) :-
+	!.
+correct_formula(ver:infi, dr(0, dr(0, dl(0, X, lit(s(_))), Y), Z), dr(0, dr(0, dl(0, X, lit(s(inf(base)))), Y), Z)) :-
 	!.
 correct_formula(_, F, F).
 
