@@ -103,7 +103,7 @@ export_all([]).
 export_all([F|Fs]) :-
 	export(F),
 	export_all(Fs).
-	
+
 % = export(FileRoot)
 %
 % Given a file *head.pl and the currently loaded XML file, create a file *.pl (with intermediate
