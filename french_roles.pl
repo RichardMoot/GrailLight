@@ -675,6 +675,8 @@ get_roles1(maintenir, [np, cl_r, np], [patient, null, theme]).
 
 get_roles1(moquer, [np, cl_r, pp(de)], [patient, null, theme]).
 
+get_roles1(partager, [np, cl_r, pp(entre)], [theme, null, patient]).
+get_roles1(partager, [np, cl_r, np], [agent, null, patient]).
 get_roles1(passer, [np, cl_r, pp(_)], [patient, null, lieu]).
 get_roles1(pencher, [np, cl_r, pp(sur)], [agent, null, theme]).
 get_roles1(perdre, [np, cl_r, pp(_)], [agent, null, destination]). % static
