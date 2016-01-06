@@ -26,6 +26,8 @@ as*.pl
 at*.pl
 300*.pl
 8000*.pl
+frwiki*
+*.out
 ml.pl
 lnr.pl
 missing_word.txt
