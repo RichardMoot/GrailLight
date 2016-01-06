@@ -97,6 +97,8 @@ infile(at).
 infile(300).
 infile(8000).
 infile(annodis).
+infile(frwiki1).
+infile(frwiki2).
 infile(monde_a).
 infile(monde_b).
 
