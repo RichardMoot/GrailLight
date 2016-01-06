@@ -144,6 +144,10 @@ macro(dr(0,dr(0,dl(0,np,s),np),pp),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main)))
 macro(dr(0,dr(0,dl(0,np,s),pp),np),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(pp(_))),lit(np(acc,_,_)))).
 macro(dr(0,dl(0,np,s),np),dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(np(acc,_,_)))).
 macro(dr(0,dr(0,s,np),np),dr(0,dr(0,lit(s(main)),lit(np(acc,_,_))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,dl(0,cl_r,s),np),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(acc,_,_))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,dl(0,cl_r,s),pp),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(pp(_))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,dl(0,cl_r,s),pp_a),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(pp(à))),lit(np(nom,_,_)))).
+macro(dr(0,dl(0,cl_r,s),np),dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(nom,_,_)))).
 macro(dr(0,dr(0,s,dl(0,np,s_ppart)),np),dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(ppart)))),lit(np(nom,_,_)))).
 macro(dr(0,dr(0,s,np),dl(0,np,s_ppart)),dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),dl(0,lit(np(nom,_,_)),lit(s(ppart))))).
 macro(dr(0,dr(0,s,np),dl(0,np,s_pass)),dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),dl(0,lit(np(nom,_,_)),lit(s(pass))))).
@@ -3191,14 +3195,17 @@ lex('Il', lit(np(nom,il,3-s)), lambda(P,merge(drs([X],[bool(X,=,'masculin?')]),a
 lex('Elle', lit(np(_,n,3-s)), lambda(P,merge(drs([X],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex(il, lit(np(nom,il,3-s)), lambda(P,merge(drs([X],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex('-il', lit(np(nom,il,3-s)), lambda(P,merge(drs([X],[bool(X,=,'masculin?')]),appl(P,X)))).
+lex('-t-il', lit(np(nom,il,3-s)), lambda(P,merge(drs([X],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex(ils, lit(np(nom,il,3-p)), lambda(P,merge(drs([X,Y],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
 lex('-ils', lit(np(nom,il,3-p)), lambda(P,merge(drs([X,Y],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
 lex('Ils', lit(np(nom,il,3-p)), lambda(P,merge(drs([X,Y],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
 lex(elles, lit(np(nom,il,3-p)), lambda(P,merge(drs([X],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-elles', lit(np(nom,il,3-p)), lambda(P,merge(drs([X],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
+lex('-t-elles', lit(np(nom,il,3-p)), lambda(P,merge(drs([X],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
 lex('Elles', lit(np(nom,il,3-p)), lambda(P,merge(drs([X],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
 lex(elle, lit(np(_,_,3-s)), lambda(P,merge(drs([X],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-elle', lit(np(_,_,3-s)), lambda(P,merge(drs([X],[bool(X,=,'feminin?')]),appl(P,X)))).
+lex('-t-elle', lit(np(_,_,3-s)), lambda(P,merge(drs([X],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex('l\'', lit(np(_,_,_)), lambda(P,merge(drs([X],[bool(X,=,'?')]),appl(P,X)))).
 lex(lui, lit(np(_,_,_)), lambda(P,merge(drs([X],[bool(X,=,'?')]),appl(P,X)))).
 lex('-lui', lit(np(_,_,_)), lambda(P,merge(drs([X],[bool(X,=,'?')]),appl(P,X)))).
