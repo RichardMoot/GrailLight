@@ -54,9 +54,9 @@ xml_files(File) :-
 % xml_files('flmf7ao1ep.xml', ao1).
 % xml_files('flmf7ao2ep.xml', ao2).
 % xml_files('flmf7ap1ep.af.cat.xml', ap1).
-% xml_files('flmf7aq2ep.xd.cat.xml', aq2).
+xml_files('flmf7aq2ep.xd.cat.xml', aq2).
 % xml_files('flmf7as2ep.af.cat.xml', as2).
-xml_files('flmf7atep.cat.xml', at).
+% xml_files('flmf7atep.cat.xml', at).
 %
 % xml_files('flmf300_13000ep.cat.xml', '300').
 % xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').

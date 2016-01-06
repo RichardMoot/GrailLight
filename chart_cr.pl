@@ -733,6 +733,8 @@ enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(n))) :-
 	!.
+enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(s(q)))) :-
+	!.
 enrich_formula(contre, _, dr(0,lit(pp(contre)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(contre, _, dr(0,lit(pp(contre)),lit(n))) :-
@@ -761,6 +763,16 @@ enrich_formula(L, _, dr(0,lit(pp(L)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(L, _, dr(0,lit(pp(L)),lit(n))) :-
 	!.
+enrich_formula(_, ver:infi, dl(0, _X, lit(s(inf(base))))) :-
+	!.
+enrich_formula(_, ver:infi, dl(0, _X, dl(0, _Y, lit(s(inf(base)))))) :-
+	!.
+enrich_formula(_, ver:infi, dr(0, dl(0, _X, dl(0, _Y, lit(s(inf(base))))), _Z)) :-
+	!.
+enrich_formula(_, ver:infi, dr(0, dl(0, _X, lit(s(inf(base)))), _Y)) :-
+	!.
+enrich_formula(_, ver:infi, dr(0, dr(0, dl(0, _X, lit(s(inf(base)))), _Y), _Z)) :-
+	!.
 enrich_formula(_, _, _).
 
 % = correct_formula(+TTPostag, +Formula, -CorrectedFormula)
@@ -781,16 +793,6 @@ correct_formula(ver:impe, dr(0, dr(0, lit(s(_)),lit(np(nom,A,B))), lit(pp(P))), 
 correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(pp(P))),lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(pp(P))), lit(np(acc,A,B)))) :-
 	!.
 correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(s(Q))), lit(np(acc,A,B)))) :-
-	!.
-correct_formula(ver:infi, dl(0, X, lit(s(_))), dl(0, X, lit(s(inf(base))))) :-
-	!.
-correct_formula(ver:infi, dl(0, X, dl(0, Y, lit(s(_)))), dl(0, X, dl(0, Y, lit(s(inf(base)))))) :-
-	!.
-correct_formula(ver:infi, dr(0, dl(0, X, dl(0, Y, lit(s(_)))), Z), dr(0, dl(0, X, dl(0, Y, lit(s(inf(base))))), Z)) :-
-	!.
-correct_formula(ver:infi, dr(0, dl(0, X, lit(s(_))), Y), dr(0, dl(0, X, lit(s(inf(base)))), Y)) :-
-	!.
-correct_formula(ver:infi, dr(0, dr(0, dl(0, X, lit(s(_))), Y), Z), dr(0, dr(0, dl(0, X, lit(s(inf(base)))), Y), Z)) :-
 	!.
 correct_formula(_, F, F).
 
