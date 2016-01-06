@@ -99,6 +99,9 @@ infile(8000).
 infile(annodis).
 infile(frwiki1).
 infile(frwiki2).
+infile(europar).
+infile(emea_d).
+infile(emea_t).
 infile(monde_a).
 infile(monde_b).
 

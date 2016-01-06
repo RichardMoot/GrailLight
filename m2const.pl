@@ -62,6 +62,11 @@ xml_files('flmf7aq2ep.xd.cat.xml', aq2).
 % xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
 %
 % xml_files('annodis.er.xml', annodis).
+% xml_files('frwiki1.xml', frwiki1).
+% xml_files('frwiki2.xml', frwiki2).
+% xml_files('Europar.550.xml', europar).
+% xml_files('emea-fr-dev.xml', emea_d).
+% xml_files('emea-fr-test.xml', emea_t).
 
 :- dynamic word/4, lemma/4, constituent/4, current_file/1.
 
