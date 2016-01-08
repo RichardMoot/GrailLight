@@ -926,7 +926,7 @@ crosses1(S, L, R, C) :-
 crosses1(_, _, _, 0).
 
 compute_length(S, 0, Max) :-
-	findall(R, constituent(S,_,_,R), Rights),
+	findall(R, word(S,_,_,R), Rights),
 	compute_lengths1(Rights, 0, Max).
 
 compute_lengths1([], M, M).
