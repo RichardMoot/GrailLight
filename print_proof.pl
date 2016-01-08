@@ -2,9 +2,18 @@
 % =            output Prolog proof             =
 % ==============================================
 
-:- module(print_proof, [print_proof/3,xml_proof/3]).
+:- module(print_proof, [print_proof/3,print_proof/4,xml_proof/3]).
 
 :- use_module(sem_utils, [get_fresh_variable_number/2]).
+
+:- dynamic ignore_variables/1.
+
+ignore_variables(false).
+
+print_proof(Index, Proof, Stream, Bool) :-
+	retractall(ignore_variables(_)),
+	assert(ignore_variables(Bool)),
+	print_proof(Index, Proof, Stream).
 
 print_proof(Index, Proof, Stream) :-
 	get_fresh_variable_number(Proof, Max),
@@ -103,7 +112,7 @@ print_formula(Term, Stream) :-
 	write(Stream, Term).
 
 print_formula1(np(A,B,C), Stream) :-
-	format(Stream, 'np(~@,~@,~@)', [print_item(A,Stream),print_item(B,Stream),print_item(C,Stream)]).
+	format(Stream, 'np(~@,~@,~@)', [print_case_item(A,Stream),print_case_item(B,Stream),print_case_item(C,Stream)]).
 print_formula1(s(A), Stream) :-
 	nonvar(A),
 	A = inf(B),
@@ -134,11 +143,27 @@ print_formula1(Strange, Stream) :-
 	format(user_error, '{Warning: unknown atom: ~w}~n', [Strange]),
 	write(Stream, Strange).
 
+print_item(V, Stream) :-
+	var(V),
+	!,
+	(ignore_variables(true) -> write(Stream, '_') ; print(Stream, V)).
+print_item('$VAR'(N), Stream) :-
+	integer(N),
+	!,
+	(ignore_variables(true) -> write(Stream, '_') ; print(Stream, '$VAR'(N))).
 print_item('$VAR'(_), Stream) :-
 	!,
 	write(Stream, '_').
 print_item(Atom, Stream) :-
 	format(Stream, '~W', [Atom,[quoted(true)]]).
+
+
+print_case_item('$VAR'(_), Stream) :-
+	!,
+	write(Stream, '_').
+print_case_item(Atom, Stream) :-
+	format(Stream, '~W', [Atom,[quoted(true)]]).
+
 
 % ==============================================
 % =              output XML proof              =
