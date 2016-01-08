@@ -5,7 +5,7 @@
 :- use_module(sem_utils,   [replace_sem/4,get_fresh_variable_number/2,equivalent_semantics/2,unify_semantics/2]).
 :- use_module(ordset,      [ord_dup_union/3,ord_dup_insert/3,ord_subtract/3,ord_select/3,ord_subset/2]).
 :- use_module(latex,       [latex_proof/2,latex_header/2,latex_tail/1]).
-:- use_module(print_proof, [print_proof/3]).
+:- use_module(print_proof, [print_proof/3,print_proof/4]).
 
 :- dynamic user:proof/2.
 
@@ -142,7 +142,7 @@ transform_all_proofs1(Stream) :-
    (	
 	transform_proof(P0, P)
    ->
-	print_proof(N, P, Stream)
+	print_proof(N, P, Stream, true)
    ;
 	format(user_error, '~N{Warning: failed to transform proof ~d!}~n', [N])
    ),
