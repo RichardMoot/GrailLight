@@ -139,20 +139,28 @@ macro(dr(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s)), dr(0,dl(0,dl(0,lit(np(U,V,W)
 macro(dr(0,dl(0,np,np),dr(0,s,dia(1,box(1,np)))),dr(0,dl(0,lit(np(U,V,W)),lit(np(U,V,W))),dr(0,lit(s(_)),dia(1,box(1,lit(np(acc,_,_))))))).
 macro(dr(0,s,dia(1,box(1,np))),dr(0,lit(s(_)),dia(1,box(1,lit(np(acc,_,_)))))).
 
+macro(dr(0,dr(0,s,dl(0,np,s)),np), dr(0,dr(0,lit(s(S)),dl(0,lit(np(nom,B,C)),lit(s(S)))),lit(np(nom,B,C)))).
 % verbs
 macro(dr(0,dr(0,dl(0,np,s),np),pp),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(np(acc,_,_))),lit(pp(_)))).
 macro(dr(0,dr(0,dl(0,np,s),pp),np),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(pp(_))),lit(np(acc,_,_)))).
 macro(dr(0,dl(0,np,s),np),dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(np(acc,_,_)))).
 macro(dr(0,dr(0,s,np),np),dr(0,dr(0,lit(s(main)),lit(np(acc,_,_))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,s,s_q),np),dr(0,dr(0,lit(s(main)),lit(s(q))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,s,dl(0,n,n)),np),dr(0,dr(0,lit(s(main)),dl(0,lit(n),lit(n))),lit(np(nom,_,_)))).
 macro(dr(0,dr(0,dl(0,cl_r,s),np),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(acc,_,_))),lit(np(nom,_,_)))).
 macro(dr(0,dr(0,dl(0,cl_r,s),pp),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(pp(_))),lit(np(nom,_,_)))).
 macro(dr(0,dr(0,dl(0,cl_r,s),pp_a),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(pp(à))),lit(np(nom,_,_)))).
 macro(dr(0,dl(0,cl_r,s),np),dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(nom,_,_)))).
 macro(dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,n,n)),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),dl(0,lit(n),lit(n)))).
+macro(dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,np,s_inf)),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
+macro(dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,cl_r,dl(0,np,s))),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(S)))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(S)))))).
 macro(dr(0,dr(0,s,dl(0,np,s_ppart)),np),dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(ppart)))),lit(np(nom,_,_)))).
 macro(dr(0,dr(0,s,np),dl(0,np,s_ppart)),dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),dl(0,lit(np(nom,_,_)),lit(s(ppart))))).
 macro(dr(0,dr(0,s,np),dl(0,np,s_pass)),dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),dl(0,lit(np(nom,_,_)),lit(s(pass))))).
 macro(dr(0,dr(0,s,np),dl(0,np,s_inf)),dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
+macro(dr(0,dr(0,s,dl(0,np,s_inf)),np),dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,s,dl(0,np,s_ppart)),np),dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(ppart)))),lit(np(nom,_,_)))).
+macro(dr(0,dr(0,s,dl(0,np,s_pass)),np),dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(pass)))),lit(np(nom,_,_)))).
 macro(dr(0,dl(0,dr(0,s,dia(0,box(0,dl(0,np,s)))),dr(0,s,dl(0,np,s))),dr(0,s,dia(0,box(0,dl(0,np,s))))),dr(0,dl(0,dr(0,lit(s(X)),dia(0,box(0,dl(0,np,lit(s(Y)))))),dr(0,lit(s(X)),dl(0,np,lit(s(Y))))),dr(0,lit(s(X)),dia(0,box(0,dl(0,np,lit(s(Y)))))))).
 macro(dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), dr(0,dl(0,dr(0,lit(s(X)),lit(s(Y))),dr(0,lit(s(X)),lit(s(Y)))),dr(0,lit(s(_)),lit(s(_))))).
 macro(dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), dr(0,dl(0,dl(1,lit(s(X)),lit(s(X))),dl(1,lit(s(X)),lit(s(X)))),dl(1,lit(s(Y)),lit(s(Y))))).
