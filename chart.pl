@@ -763,6 +763,11 @@ enrich_formula(L, _, dr(0,lit(pp(L)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(L, _, dr(0,lit(pp(L)),lit(n))) :-
 	!.
+% preposed prepositions
+enrich_formula(L, _, dr(0, dr(0, lit(s(S)), dr(0, lit(s(S)), dia(1, box(1, lit(pp(L)))))), lit(np(acc,_,_)))) :-
+	!.
+enrich_formula(L, _, dr(0, dr(0, lit(s(S)), dr(0, lit(s(S)), dia(1, box(1, lit(pp(L)))))), lit(n))) :-
+	!.
 % = quoted speech (note that only sentence-modifier, as used here, works correctly for the entire corpus)
 enrich_formula(_, ver:futu, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
 	!.
