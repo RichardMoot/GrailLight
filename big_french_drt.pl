@@ -113,6 +113,7 @@ macro(dr(0,dl(0,dr(0,pp,np),dl(0,n,n)),dr(0,s,dia(1,box(1,pp)))), dr(0,dl(0,dr(0
 
 macro(dr(0,dl(0,np,s),dl(0,np,s)), dr(0,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
 macro(dl(0,dl(0,np,s),dl(0,np,s)), dl(0,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
+macro(dl(1,dl(0,np,s),dl(0,np,s)), dl(1,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
 
 macro(dr(0,dl(0,np,np),dr(0,s,dia(1,box(1,np)))),dr(0,dl(0,lit(np(U,V,W)),lit(np(U,V,W))),dr(0,lit(s(_)),dia(1,box(1,lit(np(acc,_,_))))))).
 macro(dr(0,s,dia(1,box(1,np))),dr(0,lit(s(_)),dia(1,box(1,lit(np(acc,_,_)))))).
