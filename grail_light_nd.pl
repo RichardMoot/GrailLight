@@ -762,25 +762,34 @@ enrich_formula(L, _, dr(0,lit(pp(L)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(L, _, dr(0,lit(pp(L)),lit(n))) :-
 	!.
-enrich_formula(_, ver:infi, dl(0, _X, lit(s(inf(base))))) :-
+% = quoted speech (note that only sentence-modifier, as used here, works correctly for the entire corpus)
+enrich_formula(_, ver:futu, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
 	!.
-enrich_formula(_, ver:infi, dl(0, _X, dl(0, _Y, lit(s(inf(base)))))) :-
+enrich_formula(_, ver:pres, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
 	!.
-enrich_formula(_, ver:infi, dr(0, dl(0, _X, dl(0, _Y, lit(s(inf(base))))), _Z)) :-
+enrich_formula(_, ver:impf, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
 	!.
-enrich_formula(_, ver:infi, dr(0, dl(0, _X, lit(s(inf(base)))), _Y)) :-
+enrich_formula(_, ver:impe, lit(s(impe))) :-
 	!.
-enrich_formula(_, ver:infi, dr(0, dr(0, dl(0, _X, lit(s(inf(base)))), _Y), _Z)) :-
+enrich_formula(_, ver:_, lit(s(main))) :-
 	!.
-enrich_formula(_, ver:pres, dr(0, dl(1, lit(s(main)), lit(s(main))), lit(np(nom,_,_)))) :-
+enrich_formula(_, int, lit(s(main))) :-
 	!.
-enrich_formula(_, ver:impf, dr(0, dl(1, lit(s(main)), lit(s(main))), lit(np(nom,_,_)))) :-
+enrich_formula(_, adv, lit(s(main))) :-
+	!.
+enrich_formula(_, ver:impe, dr(0, lit(s(impe)), lit(s(q)))) :-
+	!.
+enrich_formula(_, ver:impe, dr(0, lit(s(impe)), lit(cl_r))) :-
+	!.
+enrich_formula(_, ver:impe, dr(0,lit(s(impe)),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))) :-
+	!.
+enrich_formula(_, ver:_, dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))) :-
 	!.
 enrich_formula(_, prp, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(_, prp, dr(0, dr(0, lit(s(S)), lit(s(S))), lit(np(acc,_,_)))) :-
 	!.
-enrich_formula(_, pun, dl(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
+enrich_formula(_, pun, dr(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
 	!.
 enrich_formula(_, pun, dl(0, dl(0, dl(0, lit(np(_,_,_)), lit(s(_))), lit(s(S))), lit(s(S)))) :-
 	!.
@@ -807,7 +816,10 @@ correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(pp(P))),lit(np(nom,A,B))), 
 	!.
 correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(s(Q))), lit(np(acc,A,B)))) :-
 	!.
-correct_formula(ver:impe, dr(0, lit(s(_)), lit(s(q))), dr(0, lit(s(impe)), lit(s(q)))) :-
+correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), dl(0, lit(n), lit(n))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(_)), dl(0, lit(n), lit(n))), lit(np(acc,A,B)))) :-
+	!.
+correct_formula(ver:infi, dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(_)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))),
+		          dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(base)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C)))))) :-
 	!.
 %correct_formula(ver:_, dr(0, dl(1, lit(s(_)), lit(s(S2))), lit(np(_,A,B))), dr(0, dl(1, lit(s(S1)), lit(s(S2))), lit(np(nom,A,B)))
 correct_formula(_, F, F).
