@@ -14,6 +14,9 @@ translate_form(dr(0,dl(1,dl(0,np,s),dl(0,np,s)),dl(1,dl(0,np,s),dl(0,np,s))),
 translate_form(dl(1,dl(0,np,s),dl(0,np,s)), dl(1,dl(0,lit(np(nom,A,B)),lit(s(C))),dl(0,lit(np(nom,A,B)),lit(s(C))))).
 translate_form(dr(0,dr(0,dl(0,np,s),dl(0,np,s)),dr(0,dl(0,np,s),dl(0,np,s))),
 	       dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(C))),dl(0,lit(np(nom,D,E)),lit(s(F)))),dr(0,dl(0,lit(np(nom,A,B)),lit(s(C))),dl(0,lit(np(nom,D,E)),lit(s(F)))))).
+% vp with infinitive subject
+translate_form(dr(0,dl(0,dl(0,np,s),s),dl(0,dl(0,np,s),s)),
+	       dr(0,dl(0,dl(0,lit(np(nom,A,B)),lit(s(C)),lit(s(D))),dl(0,dl(0,lit(np(nom,A,B)),lit(s(C))),lit(s(D))))).
 
 % prefixed vp followed by subject
 translate_form(dr(0,dl(0,dl(0,np,s),np),np), dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(_))),lit(np(A,B,C))),lit(np(A,B,C)))).
@@ -213,9 +216,14 @@ translate_form(dr(0,s,dr(0,s,dia(1,box(1,np)))), dr(0,lit(s(X)),dr(0,lit(s(X)),d
 translate_form(dr(0,s,dr(0,s,dia(1,box(1,pp_a)))), dr(0,lit(s(X)),dr(0,lit(s(X)),dia(1,box(1,lit(pp(à))))))).
 translate_form(dr(0,s,dr(0,s,dia(1,box(1,pp_de)))), dr(0,lit(s(X)),dr(0,lit(s(X)),dia(1,box(1,lit(pp(de))))))).
 
-% coordination
+% preposed constituents
 
 translate_form(dr(0,dl(0,dl(0,np,s),s),s), dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(_))),lit(s(A))),lit(s(A)))).
+translate_form(dr(0,dl(0,np,s),s), dr(0,dl(0,lit(np(_,_,_)),lit(s(A))),lit(s(A)))).
+translate_form(dr(0,dl(0,n,s),s), dr(0,dl(0,lit(n),lit(s(A))),lit(s(A)))).
+translate_form(dr(0,dl(0,dl(0,n,n),s),s), dr(0,dl(0,dl(0,lit(n),lit(n)),lit(s(A))),lit(s(A)))).
+
+% coordination
 
 translate_form(dr(0,dl(0,dr(0,dl(0,np,s),dl(0,np,s)),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dl(0,np,s))),
 	       dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T)))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T))))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),dl(0,lit(np(nom,_,_)),lit(s(_)))))).
