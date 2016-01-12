@@ -183,8 +183,8 @@ macro(s_pass, lit(s(pass))).
 macro(cs, lit(s(q))).
 macro(s_q, lit(s(q))).
 macro(s_whq, lit(s(whq))).
-macro(s, lit(s(_))).
 macro(s_top, lit(s(_))).
+macro(s, lit(s(_))).
 
 macro(dia(1,box(1,np)), dia(1,box(1,lit(np(acc,_,3-s))))).
 

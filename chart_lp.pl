@@ -785,6 +785,8 @@ enrich_formula(_, adv, lit(s(main))) :-
 	!.
 enrich_formula(_, ver:impe, dr(0, lit(s(impe)), lit(s(q)))) :-
 	!.
+enrich_formula(_, ver:_, dr(0, lit(s(main)), lit(s(q)))) :-
+	!.
 enrich_formula(_, ver:impe, dr(0, lit(s(impe)), lit(cl_r))) :-
 	!.
 enrich_formula(_, ver:impe, dr(0,lit(s(impe)),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))) :-
@@ -800,6 +802,8 @@ enrich_formula(_, pun, dr(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
 enrich_formula(_, pun, dl(0, dl(0, dl(0, lit(np(_,_,_)), lit(s(_))), lit(s(S))), lit(s(S)))) :-
 	!.
 enrich_formula(_, kon, dl(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
+	!.
+enrich_formula(_, ver:_, dr(0,dr(0,lit(s(main)),dl(1,lit(s(S)),lit(s(S)))),lit(np(nom,_,_)))) :-
 	!.
 enrich_formula(_, _, _).
 
@@ -823,6 +827,9 @@ correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(pp(P))),lit(np(nom,A,B))), 
 correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(s(Q))), lit(np(acc,A,B)))) :-
 	!.
 correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), dl(0, lit(n), lit(n))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(_)), dl(0, lit(n), lit(n))), lit(np(acc,A,B)))) :-
+	!.
+correct_formula(ver:impe, dr(0, dr(0, lit(s(_)), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))), lit(cl_r)),
+		          dr(0, dr(0, lit(s(impe)), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))), lit(cl_r))) :-
 	!.
 correct_formula(ver:infi, dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(_)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))),
 		          dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(base)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C)))))) :-
