@@ -68,9 +68,9 @@ proc annotate_dialog {} {
     pack .anno.i -side top
 
     label .anno.t -text "Corpus annotation script 1.0" -anchor w
-    label .anno.t2 -text "© 2010 Richard Moot" -anchor w
-    label .anno.t3 -text "© 2010 CNRS" -anchor w
-    label .anno.t4 -text "© 2010 INRIA" -anchor w
+    label .anno.t2 -text "© 2010-2016 Richard Moot" -anchor w
+    label .anno.t3 -text "© 2010-2016 CNRS" -anchor w
+    label .anno.t4 -text "© 2010-2011 INRIA" -anchor w
 
     pack .anno.t .anno.t2 .anno.t3 .anno.t4 -side top -fill x -padx 4
 
