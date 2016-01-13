@@ -108,7 +108,6 @@ custom_first_order(dia(0,box(0,A0)), dia(0,box(0,A)), P, [X,Y]) :-
 	add_first_order(A0, A, P, [X,Y]).
 
 % coordination
-macro(dr(0,dl(0,dr(0,pp,np),dl(0,n,n)),dr(0,s,dia(1,box(1,pp)))), dr(0,dl(0,dr(0,lit(pp(P)),np),dl(0,n,n)),dr(0,lit(s(main)),dia(1,box(1,lit(pp(P))))))).
 
 
 macro(dr(0,dl(0,np,s),dl(0,np,s)), dr(0,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
@@ -128,9 +127,11 @@ macro(dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), dr(0,dl(0,dr(0,lit(s(X)),lit(s(
 macro(dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), dr(0,dl(0,dl(1,lit(s(X)),lit(s(X))),dl(1,lit(s(X)),lit(s(X)))),dl(1,lit(s(Y)),lit(s(Y))))).
 macro(dr(0,dl(1,s,s),dl(1,s,s)), dr(0,dl(1,lit(s(X)),lit(s(X))),dl(1,lit(s(X)),lit(s(X))))).
 macro(dl(0,dl(1,s,s),dl(1,s,s)), dl(0,dl(1,lit(s(X)),lit(s(X))),dl(1,lit(s(X)),lit(s(X))))).
-macro(dr(0,dr(0,s,s),dr(0,s,s)), dr(0,dr(0,lit(s(X)),lit(s(Y))),dr(0,lit(s(X)),lit(s(Y))))).
+macro(dr(0,dr(0,s,s),dr(0,s,s)), dr(0,dr(0,lit(s(X)),lit(s(X))),dr(0,lit(s(X)),lit(s(X))))).
 macro(dr(0,s,s), dr(0,lit(s(X)),lit(s(X)))).
 macro(dl(1,s,s), dl(1,lit(s(X)),lit(s(X)))).
+
+macro(dr(0,pp,pp),dr(0,lit(pp(P)),lit(pp(P)))).
 
 macro(pp_apres, lit(pp(apres))).
 macro(pp_pour, lit(pp(pour))).

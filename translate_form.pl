@@ -31,6 +31,7 @@ translate_form(dr(0,dl(0,s,s),pp), dr(0,dl(0,lit(s(A)),lit(s(A))),lit(pp(_)))).
 translate_form(dr(0,dr(0,s,np),s), dr(0,dr(0,lit(s(A)),lit(np(_,_,_))),lit(s(A)))).
 
 % verbs
+translate_form(dr(0,dl(0,dl(0,n,n),s),np), dr(0,dl(0,dl(0,lit(n),lit(n)),lit(s(main))),lit(np(_,_,_)))). % np not necessarily a subject
 translate_form(dr(0,dr(0,dl(0,np,s),dl(0,n,n)),np),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),dl(0,lit(n),lit(n))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dl(0,np,s),np),dl(0,n,n)),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(np(acc,_,_))),dl(0,lit(n),lit(n)))).
 translate_form(dr(0,dr(0,dl(0,np,s),np),pp_a),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(np(acc,_,_))),lit(pp(à)))).
@@ -64,7 +65,7 @@ translate_form(dr(0,s,np), dr(0,lit(s(main)),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,s,np),pp), dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dr(0,s,pp_a),np),np), dr(0,dr(0,dr(0,lit(s(main)),lit(pp(à))),lit(np(acc,_,_))),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,dr(0,s,np),pp_a),np), dr(0,dr(0,dr(0,lit(s(main)),lit(np(acc,_,_))),lit(pp(à))),lit(np(nom,_,_)))).
-translate_form(dr(0,dl(0,np,s),dl(0,np,s_inf)),dr(0,dl(0,lit(np(nom,B,C)),lit(s(main))),dl(0,lit(np(nom,B,C)),lit(s(inf(_)))))).
+translate_form(dr(0,dl(0,np,s),dl(0,np,s_inf)),dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
 translate_form(dr(0,dl(0,np,s),dl(0,np,s_ppart)),dr(0,dl(0,lit(np(nom,B,C)),lit(s(main))),dl(0,lit(np(nom,B,C)),lit(s(ppart))))).
 translate_form(dr(0,dr(0,s,np),dl(0,np,s_ppart)),dr(0,dr(0,lit(s(main)),lit(np(nom,B,C))),dl(0,lit(np(nom,B,C)),lit(s(ppart))))).
 translate_form(dr(0,dl(0,np,s),dl(0,np,s_pass)),dr(0,dl(0,lit(np(nom,B,C)),lit(s(main))),dl(0,lit(np(nom,B,C)),lit(s(pass))))).
@@ -258,6 +259,7 @@ translate_form(dr(0,dl(0,dl(0,n,n),s),s), dr(0,dl(0,dl(0,lit(n),lit(n)),lit(s(A)
 
 % coordination
 
+translate_form(dr(0,dl(0,dr(0,pp,pp),dr(0,pp,pp)),dr(0,pp,pp)), dr(0,dl(0,dr(0,lit(pp(P)),lit(pp(P))),dr(0,lit(pp(P)),lit(pp(P)))),dr(0,lit(pp(Q)),lit(pp(Q))))).
 translate_form(dr(0,dl(0,dr(0,dl(0,np,s),dl(0,np,s)),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dl(0,np,s))),
 	       dr(0,dl(0,dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T)))),dr(0,dl(0,lit(np(nom,X,Y)),lit(s(S))),dl(0,lit(np(nom,X,Y)),lit(s(T))))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(_))),dl(0,lit(np(nom,_,_)),lit(s(_)))))).
 translate_form(dr(0,dl(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,dl(0,np,s),dl(0,np,s))),dl(0,dl(0,np,s),dl(0,np,s))),
