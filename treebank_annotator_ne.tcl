@@ -18,29 +18,30 @@ set maxrow 0
 set editing 0
 set postags [lsort -dictionary [list NC-NOM P-PRP PONCT-PUN DET-DET:ART ADJ-ADJ ADV-ADV V-VER:pres NPP-NAM P+D-PRP:det VPP-VER:pper CC-KON VINF-VER:infi DET-NUM PONCT-PUN:cit CLS-PRO:PER ADJ-NUM PROREL-PRO:REL CS-KON DET-DET:POS CLR-PRO:PER NC-SYM NPP-ABR DET-PRO:DEM V-VER:impf NC-NUM DET-PRP:det VPR-VER:ppre NC-ABR CLO-PRO:PER V-VER:futu NC-NAM V-VER:cond PRO-PRO:DEM DET-PRO:IND CLS-PRO:DEM PRO-NUM PRO-PRO:IND DET-PRP ADV-KON VS-VER:subp PRO-PRO:PER PREF-ADV V-VER:simp ET-NOM CS-ADV PONCT-SYM ADJ-PRO:IND ADVWH-ADV VIMP-VER:impe PROWH-PRO:REL CC-ADV P+PRO-PRO:REL ET-PRP PRO-PRO ADV-PRO:IND ADV-ABR ADJWH-PRO:REL ET-ADJ I-INT ET-KON ET-ADV DETWH-PRO:REL ADVWH-PRO:REL PRO-PRO:POS ET-ABR DET-ADV ET-VER:infi ET-DET:ART ADVWH-KON ET-VER:pres ET-PRP:det ]]
 set netags [lsort -dictionary [list I-MON I-ORG I-PER I-LOC I-TIM I-PCT O]]
-set pos_beta 0.1
-set super_beta 0.01
-set data_dir [file normalize "~/Library/TreebankAnnotator"]
-set tmp_dir $data_dir
-set exec_dir [file normalize "."]
-# set exec_dir "[file dirname [info script]]/../../../"
-set lefff_prefix      /Users/moot/checkout/
-set load_dir [file normalize "~"]
-# set tagger_prefix $exec_dir
-set tagger_prefix "/Users/moot/Corpus/WSJ/candc-1.00/bin"
-# set resources_prefix "$exec_dir../Resources"
-set resources_prefix "/Users/moot/checkout/monde/Resources"
-set model_prefix "/Users/moot/checkout/monde"
-set pos_model     "$model_prefix/french_pos_merged"
-set super_model "$model_prefix/french_bootstrap"
-set ner_model "$model_prefix/ner"
-set pos_cmd "$tagger_prefix/mpos"
-set super_cmd        "$tagger_prefix/msuper"
-set ner_cmd        "$tagger_prefix/ner"
-# set grail_prefix  $exec_dir
-set grail_prefix /Users/moot/grailexec/bin
-set grail_cmd     "$grail_prefix/g3"
-# set grammar_prefix $resources_prefix
+set pos_beta          0.1
+set super_beta        0.01
+set data_dir          [file normalize "~/Library/TreebankAnnotator"]
+set tmp_dir           $data_dir
+set exec_dir          [file normalize "."]
+
+set lefff_prefix      [file normalize ".."]
+set load_dir          [file normalize "."]
+
+set tagger_prefix     "/Users/moot/Corpus/WSJ/candc-1.00/bin"
+
+set resources_prefix  [file normalize "./Resources"]
+set model_prefix      [file normalize "../models"]
+
+set pos_model         "$model_prefix/french_pos_merged"
+set super_model       "$model_prefix/french_bootstrap"
+set ner_model         "$model_prefix/ner"
+set pos_cmd           "$tagger_prefix/mpos"
+set super_cmd         "$tagger_prefix/msuper"
+set ner_cmd           "$tagger_prefix/ner"
+
+set grail_prefix       /Users/moot/grailexec/bin
+set grail_cmd          "$grail_prefix/g3"
+
 set grammar_prefix /Users/moot/checkout/Grail/grammars
 set link xpce
 set par xpce
@@ -69,8 +70,8 @@ proc annotate_dialog {} {
     pack .anno.i -side top
 
     label .anno.t -text "Corpus annotation script 1.0" -anchor w
-    label .anno.t2 -text "© 2010-2013 Richard Moot" -anchor w
-    label .anno.t3 -text "© 2010-2013 CNRS" -anchor w
+    label .anno.t2 -text "© 2010-2016 Richard Moot" -anchor w
+    label .anno.t3 -text "© 2010-2016 CNRS" -anchor w
     label .anno.t4 -text "© 2010-2011 INRIA" -anchor w
 
     pack .anno.t .anno.t2 .anno.t3 .anno.t4 -side top -fill x -padx 4
@@ -361,8 +362,6 @@ proc ner_tag {} {
 	set ilist [split $i "|"]
 	lappend inlist "[lindex $ilist 0]|[lindex $ilist 1]|[lindex $ilist 2]"
     }
-
-    puts stderr "$ner_model"
 
     set fh [open $infile w]
     puts $fh [join $inlist]
