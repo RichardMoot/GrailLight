@@ -367,6 +367,7 @@ get_roles1(répartir, [np, cl_r], [patient, null]).
 get_roles1(réunir, [np, cl_r], [agent, null]).
 get_roles1(rattraper, [np, cl_r], [agent, null]).
 
+get_roles1(suicider, [np, cl_r], [agent, null]).
 
 get_roles1(tromper, [np, cl_r], [patient, null]).
 
