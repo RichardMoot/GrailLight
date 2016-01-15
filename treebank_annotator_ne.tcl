@@ -1032,12 +1032,12 @@ tablelist::tablelist .table -columns {0 "Word" 0 "POS tag" 0 "Supertag" 0 "NE"} 
 frame .f -background #FFFFFF -borderwidth 0
 
 
-image create photo plus -file [file join $resources_prefix "plus26.gif"]
-image create photo previmg -file [file join $resources_prefix "prev.gif"]
-image create photo nextimg -file [file join $resources_prefix "next.gif"]
+image create photo plus      -file [file join $resources_prefix "plus26.gif"]
+image create photo previmg   -file [file join $resources_prefix "prev.gif"]
+image create photo nextimg   -file [file join $resources_prefix "next.gif"]
 image create photo noprevimg -file [file join $resources_prefix "noprev.gif"]
 image create photo nonextimg -file [file join $resources_prefix "nonext.gif"]
-image create photo logo -file [file join $resources_prefix "Tree-256x256.gif"]
+image create photo logo      -file [file join $resources_prefix "Tree-256x256.gif"]
 
 
 #set ::tk::mac::iconBitmap $logo
@@ -1168,22 +1168,22 @@ update_arrows
 read_formulas
 set entrysent $cursent
 
-bind . <Control-s> { save_sent }
-bind . <Command-s> { save_file }
-bind . <Command-d> { delete_sent }
-bind . <Command-g> { grail_parse }
+bind . <Control-s>       { save_sent }
+bind . <Command-s>       { save_file }
+bind . <Command-d>       { delete_sent }
+bind . <Command-g>       { grail_parse }
 bind . <Command-Shift-s> { save_file_name }
-bind . <Command-l> { load_file }
-bind . <Command-q> { destroy . }
-bind . <Command-p> {
+bind . <Command-l>       { load_file }
+bind . <Command-q>       { destroy . }
+bind . <Command-p>       {
 
     catch { exec open "$model_dir/semantics.pdf" }
 
 }
-bind . <Key-Prior> { prev }
-bind . <Key-Next> { next }
-bind . <Key-End> { goto_last_sent }
-bind . <Key-Home> { goto_first_sent }
+bind . <Key-Prior>       { prev }
+bind . <Key-Next>        { next }
+bind . <Key-End>         { goto_last_sent }
+bind . <Key-Home>        { goto_first_sent }
 bind .entry <Key-Return> {
 
     if {![string is integer -strict $entrysent]} {
@@ -1202,8 +1202,8 @@ bind .entry <Key-Return> {
 }
 
 event add <<Paste>> <Command-v> <Control-y>
-event add <<Cut>> <Command-x> <Control-k>
-event add <<Copy>> <Command-c>
+event add <<Cut>>   <Command-x> <Control-k>
+event add <<Copy>>  <Command-c>
 
 bind . <<Copy>> {
     if {$editing == 0} {
