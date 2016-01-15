@@ -362,8 +362,6 @@ proc ner_tag {} {
 	lappend inlist "[lindex $ilist 0]|[lindex $ilist 1]|[lindex $ilist 2]"
     }
 
-    puts stderr "$ner_model"
-
     set fh [open $infile w]
     puts $fh [join $inlist]
     close $fh
@@ -771,7 +769,7 @@ proc read_formulas {} {
 
     global formulas resources_prefix
 
-    set form_file "$resources_prefix/formulas.txt"
+    set form_file "$resources_prefix/bootstrap_formulas.txt"
 
     catch {unset formulas}
     if {[file exists $form_file] && [file readable $form_file]} {
