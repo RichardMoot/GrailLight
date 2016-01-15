@@ -360,6 +360,8 @@ get_roles1(plaindre, [np, cl_r], [agent, null]).
 get_roles1(planquer, [np, cl_r], [agent, null]).
 get_roles1(produire, [np, cl_r], [patient, null]).
 
+get_roles1(racheter, [np, cl_r], [agent, null]).
+
 get_roles1(retourner, [np, cl_r], [agent, null]).
 get_roles1(répartir, [np, cl_r], [patient, null]).
 get_roles1(réunir, [np, cl_r], [agent, null]).
@@ -600,6 +602,7 @@ get_roles1(consacrer, [np, cl_r, pp(à)], [agent, null, theme]).
 get_roles1(consumer, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
 get_roles1(consumer, [np, cl_r, pp(en)], [agent, null, theme]).
 get_roles1(contenter, [np, cl_r, pp(de)], [patient, null, theme]). % unaccusative
+get_roles1(contenter, [np, cl_r, inf(de)], [patient, null, theme]). % unaccusative
 get_roles1(contrebalancer, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(cotiser, [np, cl_r, pp(avec), pp(pour)], [agent, null, patient, but]).
 get_roles1(cotiser, [np, cl_r, pp(pour)], [agent, null, but]).
@@ -693,6 +696,7 @@ get_roles1(plaire, [np, cl_r, pp(_)], [agent, null, destination]). % static
 get_roles1(planquer, [np, cl_r, pp(_)], [agent, null, destination]). % static
 get_roles1(prononcer, [np, cl_r, pp(_)], [agent, null, theme]). % se prononcer sur/pour/contre/en faveur de
 
+get_roles1(racheter, [np, cl_r, pp(de)], [agent, null, theme]).
 
 get_roles1(remettre, [np, cl_r, pp(de)], [patient, null, theme]).
 get_roles1(remettre, [np, cl_r, pp(à)], [patient, null, theme]).
