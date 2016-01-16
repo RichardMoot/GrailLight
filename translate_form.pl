@@ -65,7 +65,9 @@ translate_form(dr(0,s,np), dr(0,lit(s(main)),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,s,np),pp), dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),lit(pp(_)))).
 translate_form(dr(0,dr(0,s,np),pp_a), dr(0,dr(0,lit(s(main)),lit(np(nom,_,_))),lit(pp(à)))).
 translate_form(dr(0,dr(0,dr(0,s,pp_a),np),np), dr(0,dr(0,dr(0,lit(s(main)),lit(pp(à))),lit(np(acc,_,_))),lit(np(nom,_,_)))).
+translate_form(dr(0,dr(0,dr(0,s,pp),np),np), dr(0,dr(0,dr(0,lit(s(main)),lit(pp(_))),lit(np(acc,_,_))),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,dr(0,s,np),pp_a),np), dr(0,dr(0,dr(0,lit(s(main)),lit(np(acc,_,_))),lit(pp(à))),lit(np(nom,_,_)))).
+translate_form(dr(0,dr(0,dr(0,s,np),pp),np), dr(0,dr(0,dr(0,lit(s(main)),lit(np(acc,_,_))),lit(pp(_))),lit(np(nom,_,_)))).
 translate_form(dr(0,dl(0,np,s),dl(0,np,s_inf)),dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
 translate_form(dr(0,dl(0,np,s),dl(0,np,s_ppart)),dr(0,dl(0,lit(np(nom,B,C)),lit(s(main))),dl(0,lit(np(nom,B,C)),lit(s(ppart))))).
 translate_form(dr(0,dr(0,s,np),dl(0,np,s_ppart)),dr(0,dr(0,lit(s(main)),lit(np(nom,B,C))),dl(0,lit(np(nom,B,C)),lit(s(ppart))))).
@@ -94,6 +96,7 @@ translate_form(dr(0,dr(0,dl(0,cl_y,dl(0,np,s)),s_q),np),
 % verbs with infinitive subject
 translate_form(dl(0,dl(0,np,s_inf),s), dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main)))).
 translate_form(dr(0,dl(0,dl(0,np,s_inf),s),np),dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),lit(np(acc,_,_)))).
+translate_form(dr(0,dl(0,dl(0,np,s_inf),s),pp),dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),lit(pp(_)))).
 translate_form(dr(0,dl(0,dl(0,np,s_inf),s),pp_a),dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),lit(pp(à)))).
 translate_form(dr(0,dl(0,dl(0,np,s_inf),s),pp_de),dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),lit(pp(de)))).
 translate_form(dr(0,dl(0,dl(0,np,s_inf),s),dl(0,np,s_inf)), dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
@@ -101,6 +104,7 @@ translate_form(dr(0,dl(0,cl_r,dl(0,dl(0,np,s_inf),s)),dl(0,np,s_inf)), dr(0,dl(0
 translate_form(dr(0,dl(0,dl(0,np,s_inf),s),dl(0,np,s_ppart)), dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(ppart))))).
 translate_form(dr(0,dl(0,dl(0,np,s_inf),s),dl(0,n,n)),dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),dl(0,lit(n),lit(n)))).
 translate_form(dr(0,dr(0,dl(0,dl(0,np,s_inf),s),pp_a),dl(0,n,n)),dr(0,dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),lit(pp(à))),dl(0,lit(n),lit(n)))).
+translate_form(dr(0,dr(0,dl(0,dl(0,np,s_inf),s),pp),dl(0,n,n)),dr(0,dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s(inf(_)))),lit(s(main))),lit(pp(_))),dl(0,lit(n),lit(n)))).
 translate_form(dr(0,dr(0,s,dl(0,np,s_inf)),dl(0,np,s_ppart)), dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),dl(0,lit(np(nom,_,_)),lit(s(ppart))))).
 % verbs with y clitic
 translate_form(dr(0,dl(0,cl_y,dl(0,np,s)),dl(0,np,s_inf)),dr(0,dl(0,lit(cl_y),dl(0,lit(np(nom,B,C)),lit(s(main)))),dl(0,lit(np(nom,B,C)),lit(s(inf(_)))))).
@@ -130,13 +134,14 @@ translate_form(dr(0,dl(0,cl_r,s),np), dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(n
 translate_form(dr(0,dr(0,dl(0,cl_r,s),np),np), dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(np(acc,_,_))),lit(np(nom,_,_)))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s)),np), dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dl(0,cl_r,s),pp_a),np), dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(pp(à))),lit(np(nom,_,_)))).
-translate_form(dr(0,dl(0,cl_r,dr(0,s,np)),dl(0,cl_r,dl(0,np,s_ppart))), dr(0,dl(0,lit(cl_r),dr(0,lit(s(main)),lit(np(nom,A,B)))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(ppart)))))).
 translate_form(dr(0,dr(0,dl(0,cl_r,s),pp),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),lit(pp(_))),lit(np(nom,_,_)))).
+translate_form(dr(0,dl(0,cl_r,dr(0,s,np)),dl(0,cl_r,dl(0,np,s_ppart))), dr(0,dl(0,lit(cl_r),dr(0,lit(s(main)),lit(np(nom,A,B)))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(ppart)))))).
 translate_form(dr(0,dr(0,dl(0,cl_r,s),dl(0,np,s_inf)),np), dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s)),pp_de),np), dr(0,dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),lit(pp(de))),lit(np(acc,_,_)))).
 translate_form(dr(0,dl(0,cl_r,dr(0,s,np)),dl(0,np,s_inf)), dr(0,dl(0,lit(cl_r),dr(0,lit(s(main)),lit(np(nom,_,_)))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s)),dl(1,s,s)), dr(0,dl(0,cl_r,dl(0,lit(np(nom,_,_)),lit(s(main)))),dl(1,lit(s(A)),lit(s(A))))).
 translate_form(dr(0,dr(0,s,dl(0,np,s_inf)),pp_a), dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(pp(à)))). % "[a quoi] sert ..."
+translate_form(dr(0,dr(0,s,dl(0,np,s_inf)),pp), dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(pp(_)))). % "[a quoi] sert ..."
 translate_form(dr(0,dr(0,dr(0,s,s_q),pp),np), dr(0,dr(0,dr(0,lit(s(main)),lit(s(q))),lit(pp(_))),lit(np(nom,_,_)))). % "est -ce pp que ..."
 translate_form(dr(0,dr(0,dr(0,s,s_q),dl(0,np,s_inf)),np), dr(0,dr(0,dr(0,lit(s(main)),lit(s(q))),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,dr(0,s,s_q),dl(0,n,n)),np), dr(0,dr(0,dr(0,lit(s(main)),lit(s(q))),dl(0,lit(n),lit(n))),lit(np(nom,_,_)))).
