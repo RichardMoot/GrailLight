@@ -10,6 +10,8 @@
 %
 % and converts them into GrailLight crosses/4 declarations.
 
+:- dynamic user:crosses/4, user:constituent/4.
+
 read_trees :-
 	current_prolog_flag(os_argv, Argv),
         append(_, [A|Av], Argv),
@@ -19,11 +21,11 @@ read_trees :-
 	halt.
 
 read_files_trees(Files) :-
-	abolish(crosses/4),
-	retractall(crosses(_,_,_,_)),
+	user:abolish(crosses/4),
+	user:retractall(crosses(_,_,_,_)),
 	read_files_trees(Files, 0, _),
 	tell('parser_crosses.pl'),
-	listing(crosses/4),
+	user:listing(crosses/4),
 	told.
 
 read_files_trees([], N, N).
@@ -49,13 +51,13 @@ read_all_trees(N0, Last) :-
 	N is N0 + 1,
 	format('~D. ~@', [N, portray_clause(Tree)]),
 	/* compute constituents */
-	abolish(constituent/4),
-	retractall(constituent(_,_,_,_)),
+	user:abolish(constituent/4),
+	user:retractall(constituent(_,_,_,_)),
 	tree_length(Tree, N, 0, Length),
 	/* compute crosses declarations */
 	compute_penalties1(N, Length),
 	nl,
-	retractall(crosses(N,_,_,0)),
+	user:retractall(crosses(N,_,_,0)),
 	/* just in case, clean up choice points */
 	!,
 	read_all_trees(N, Last).
@@ -68,7 +70,7 @@ tree_length(tree(Label, List), Sent, N0, N) :-
    (
 	N > N0 + 1
    ->
-        assert(constituent(Sent, Label, N0, N))
+        user:assert(constituent(Sent, Label, N0, N))
    ;
         true
    ).
