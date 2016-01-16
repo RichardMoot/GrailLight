@@ -14,32 +14,34 @@ package require parseform 1.0
 
 catch {namespace import combobox::*}
 
-
 set maxrow 0
 set editing 0
 set postags [lsort -dictionary [list NC-NOM P-PRP PONCT-PUN DET-DET:ART ADJ-ADJ ADV-ADV V-VER:pres NPP-NAM P+D-PRP:det VPP-VER:pper CC-KON VINF-VER:infi DET-NUM PONCT-PUN:cit CLS-PRO:PER ADJ-NUM PROREL-PRO:REL CS-KON DET-DET:POS CLR-PRO:PER NC-SYM NPP-ABR DET-PRO:DEM V-VER:impf NC-NUM DET-PRP:det VPR-VER:ppre NC-ABR CLO-PRO:PER V-VER:futu NC-NAM V-VER:cond PRO-PRO:DEM DET-PRO:IND CLS-PRO:DEM PRO-NUM PRO-PRO:IND DET-PRP ADV-KON VS-VER:subp PRO-PRO:PER PREF-ADV V-VER:simp ET-NOM CS-ADV PONCT-SYM ADJ-PRO:IND ADVWH-ADV VIMP-VER:impe PROWH-PRO:REL CC-ADV P+PRO-PRO:REL ET-PRP PRO-PRO ADV-PRO:IND ADV-ABR ADJWH-PRO:REL ET-ADJ I-INT ET-KON ET-ADV DETWH-PRO:REL ADVWH-PRO:REL PRO-PRO:POS ET-ABR DET-ADV ET-VER:infi ET-DET:ART ADVWH-KON ET-VER:pres ET-PRP:det ]]
-set netags [lsort -dictionary [list B(ORG) B(PERS) B(TIME) B(LOC) I O]]
-set pos_beta 0.1
-set super_beta 0.01
-set data_dir [file normalize "~/Library/TreebankAnnotator"]
-set tmp_dir $data_dir
-set exec_dir [file normalize "."]
-# set exec_dir "[file dirname [info script]]/../../../"
-set lefff_prefix      /Users/moot/checkout/
-set load_dir [file normalize "~"]
-# set tagger_prefix $exec_dir
-set tagger_prefix "/Users/moot/Corpus/WSJ/candc-1.00/bin"
-# set resources_prefix "$exec_dir../Resources"
-set resources_prefix "/Applications/TreebankAnnotator.app/Contents/Resources"
-set model_prefix "/Users/moot/checkout/monde/"
-set pos_model     "$model_prefix/french_pos_merged"
-set super_model "$model_prefix/french"
-set pos_cmd "$tagger_prefix/mpos"
-set super_cmd        "$tagger_prefix/msuper"
-# set grail_prefix  $exec_dir
-set grail_prefix /Users/moot/grailexec/bin
-set grail_cmd     "$grail_prefix/g3"
-# set grammar_prefix $resources_prefix
+set netags [lsort -dictionary [list I-MON I-ORG I-PER I-LOC I-TIM I-PCT O]]
+set pos_beta          0.1
+set super_beta        0.01
+set data_dir          [file normalize "~/Library/TreebankAnnotator"]
+set tmp_dir           $data_dir
+set exec_dir          [file normalize "."]
+
+set lefff_prefix      [file normalize ".."]
+set load_dir          [file normalize "."]
+
+set tagger_prefix     "/Users/moot/Corpus/WSJ/candc-1.00/bin"
+
+set resources_prefix  [file normalize "./Resources"]
+set model_prefix      [file normalize "../models"]
+
+set pos_model         "$model_prefix/french_pos_merged"
+set super_model       "$model_prefix/french_bootstrap"
+set ner_model         "$model_prefix/ner"
+set pos_cmd           "$tagger_prefix/mpos"
+set super_cmd         "$tagger_prefix/msuper"
+set ner_cmd           "$tagger_prefix/ner"
+
+set grail_prefix       /Users/moot/grailexec/bin
+set grail_cmd          "$grail_prefix/g3"
+
 set grammar_prefix /Users/moot/checkout/Grail/grammars
 set link xpce
 set par xpce
@@ -54,7 +56,7 @@ set syms(2) ".."
 set syms(3) "..."
 
 mk::file open lefff $lefff_prefix/lefff.db -readonly
-set morph [mk::view layout lefff.morph "word cat pos lemma hum loc masc fem sing plur"]
+set morph [mk::view layout lefff.morph "wordpos lemma features"]
 
 proc annotate_dialog {} {
 
@@ -68,9 +70,9 @@ proc annotate_dialog {} {
     pack .anno.i -side top
 
     label .anno.t -text "Corpus annotation script 1.0" -anchor w
-    label .anno.t2 -text "© 2010 Richard Moot" -anchor w
-    label .anno.t3 -text "© 2010 CNRS" -anchor w
-    label .anno.t4 -text "© 2010 INRIA" -anchor w
+    label .anno.t2 -text "© 2010-2016 Richard Moot" -anchor w
+    label .anno.t3 -text "© 2010-2016 CNRS" -anchor w
+    label .anno.t4 -text "© 2010-2011 INRIA" -anchor w
 
     pack .anno.t .anno.t2 .anno.t3 .anno.t4 -side top -fill x -padx 4
 
@@ -90,17 +92,30 @@ proc help_window {} {
 
 proc editStartCmd {tbl row col text} {
 
-    global table postags editing
+    global table postags netags editing
 
     set item $table($row)
     set poslist [lindex $item 0]
     set superlist [lindex $item 1]
+    set nelist [lindex $item 2]
 
     set w [$tbl editwinpath]
     switch [$tbl columncget $col -name] {
 	pos {
 	    set rest $postags
 	    foreach i $poslist {
+		$w list insert end $i
+		set del [lsearch -sorted -dictionary $rest $i]
+		lreplace $rest $del $del
+	    }
+	    $w list insert end "---"
+	    foreach i $rest {
+		$w list insert end $i
+	    }
+	}
+        ne {
+	    set rest $netags
+	    foreach i $nelist {
 		$w list insert end $i
 		set del [lsearch -sorted -dictionary $rest $i]
 		lreplace $rest $del $del
@@ -165,13 +180,25 @@ proc editEndCmd {tbl row col text} {
 		set ip [expr $row + 1]
 		foreach mw $morewords {
 		    $tbl insert $ip  [list $mw "" ""]
-		    set table($ip) [list {} {}]
+		    set table($ip) [list {} {} {}]
 		    incr ip
 		}
 		incr maxrow $mlen
 		.super configure -state disabled
+		.ner configure -state disabled
 	    }
 	    return [new_tokenize_words [lindex $textlist 0]]
+	}
+	ne {
+	    if {[string equal $text "---"]}  {
+		$tbl rejectinput
+		return ""
+	    } else {
+		set w [lindex $table($row) 0]
+		set super [lindex $table($row) 1]
+		set table($row) [list $w $super $text]
+		return $text
+	    }
 	}
 	pos {
 	    if {[string equal $text "---"]}  {
@@ -179,7 +206,8 @@ proc editEndCmd {tbl row col text} {
 		return ""
 	    } else {
 		set super [lindex $table($row) 1]
-		set table($row) [list $text $super]
+		set ne [lindex $table($row) 2]
+		set table($row) [list $text $super $ne]
 		update_superbutton
 		return $text
 	    }
@@ -212,35 +240,15 @@ proc editEndCmd {tbl row col text} {
 
 proc grail_parse {} {
 
-    global sent cursent grail_cmd link par tmp_dir grammar_prefix
+    global sent cursent model_prefix
 
-    set grailcmd "$grail_cmd grammar '$grammar_prefix/big_french.pl' link $link par $par parse_pos_lemma "
-    foreach i $sent($cursent) {
-	set il [split $i "|"]
-	set word [lindex $il 0]
-	set pos [lindex $il 1]
-	set nlist [lrange $il 3 end]
-	set word [backslash_interpunction $word]
-	set lemma [get_lemma $word $pos]
-
-	set grailcmd "$grailcmd {$word} $pos $lemma"
-	set flist {}
-	foreach j $nlist {
-	    lappend flist $j
-	}
-	set forms [join $flist -]
-	set grailcmd "$grailcmd '$forms'"
-
+    set fh [open "ta_parse.pl" w]
+    puts $fh [translate_export $fh 1 $sent($cursent)]
+	
+    if {[catch {exec $model_prefix/grail_light.pl ta_parse.pl} gl_msg]} {
+	puts stderr $gl_msg
     }
-
-    puts stderr $grailcmd
-
-    set saved_dir [pwd]
-    cd $tmp_dir
-    if {[catch {exec /bin/sh -c $grailcmd > grail_log.txt} grail_msg]} {
-	puts stderr $grail_msg
-    }
-    cd $saved_dir
+    puts stderr "DONE!"
 
 }
 
@@ -336,6 +344,40 @@ proc super_tag {} {
     } else {
 	.msg configure -text "Error: No supertagger output!"
     }
+
+}
+
+proc ner_tag {} {
+
+    global cursent sent ner_cmd ner_model data_dir super_beta
+
+    updatesent
+
+    set inlist {}
+    set infile "$data_dir/ner_in.txt"
+    set outfile "$data_dir/ner_out.txt"
+
+    set list [split $sent($cursent)]
+    foreach i $list {
+	set ilist [split $i "|"]
+	lappend inlist "[lindex $ilist 0]|[lindex $ilist 1]|[lindex $ilist 2]"
+    }
+
+    set fh [open $infile w]
+    puts $fh [join $inlist]
+    close $fh
+    catch {exec [file normalize $ner_cmd] --model [file normalize $ner_model] --ifmt "%w|%p|%s \n" --ofmt "%w|%p|%s|%n \n" --input [file normalize $infile] --output [file normalize $outfile]}
+    if {[file exists $outfile] && [file mtime $outfile] >= [file mtime $infile]} {
+	set fh [open $outfile r]
+	gets $fh line
+	close $fh
+    
+	set sent($cursent) $line
+	fill_table $line
+    } else {
+	.msg configure -text "Error: No NER tagger output!"
+    }
+
 
 }
 
@@ -456,7 +498,7 @@ proc export_file_name {} {
 
     updatesent
 
-    set filetypes { {{Prolog files} {.pl}} {{Text files} {.txt}} {{All files} {*}}}
+    set filetypes {{{Prolog files} {.pl}} {{Text files} {.txt}} {{All files} {*}}}
 
     set of [tk_getSaveFile -message "Enter file name" -defaultextension ".pl" -filetypes $filetypes]
     if {$of != ""} {
@@ -492,21 +534,17 @@ proc get_lemma {word pos} {
     }
 
     # search for word in Lefff
-    set rows [mk::select $morph -exact word $word]
+    set rows [mk::select $morph -exact wordpos $word|$pos]
     # in case no matches are found, try the lower-case
     if {$rows == {}} {
-	set rows [mk::select $morph -exact word [string tolower $word]]
+	set rows [mk::select $morph -exact wordpos [string tolower $word]|$pos]
     }
     if {$rows == {}} {
 	return $word
     }
- 
-    foreach row [mk::select $morph -globnc word $word] {
-	if {[string equal [mk::get $morph!$row pos] $pos]} {
-	    set lemma [mk::get $morph!$row lemma]
-#	    puts stderr "LEMMA: ($word) [mk::get $morph!$row pos] [mk::get $morph!$row lemma]"
-	}
-    }
+
+    set row [lindex $rows 0]
+    set lemma [mk::get $morph!$row lemma]
 
     return $lemma
 }
@@ -519,16 +557,16 @@ proc translate_export {fh sentno string} {
     foreach i $list {
 	set item [split $i "|"]
 	set word [lindex $item 0]
-	if {[llength $item] != 3} {
+	if {[llength $item] < 3} {
 	    return ""
 	}
 	set sentence "$sentence $word"
     }
 
-
-    puts $fh "sent($sentno A) :- "
+    puts $fh "sent($sentno, A) :- "
     puts $fh "      prob_parse("
-    puts $fh "                  ["
+    puts $fh "                 \["
+    puts -nonewline $fh "                   "
 
     set max [llength $list]
     set j 0
@@ -537,16 +575,20 @@ proc translate_export {fh sentno string} {
 	set word [lindex $item 0]
 	set pos [lindex $item 1]
 	set lpos [string tolower $pos]
+	set posl [split $pos "-"]
+	set ttpos [lindex $posl 1]
 	set form [lindex $item 2]
-	set lemma [get_lemma $word $pos]
+	set lemma [get_lemma $word $ttpos]
 	incr j
 	if {$j < $max} {
-	    set end ", \n           "
+	    set end ", \n                   "
 	} else {
-	    set end "\]).\n           "
+	    set end "\n"
 	}
-	puts -nonewline $fh "           si('[backslash_interpunction $word]', $lpos, '[backslash_interpunction $lemma]', $form)$end"
+	puts -nonewline $fh "si('[backslash_interpunction $word]', $lpos, '[backslash_interpunction $lemma]', \[$form-1\])$end"
     }
+    puts $fh "                 \], A)."
+    
 
 }
 
@@ -611,10 +653,13 @@ proc updatesent {} {
 	set word [lindex [.table cellconfigure $i,0 -text] end]
 	set pos [lindex [.table cellconfigure $i,1 -text] end]
 	set super [lindex [.table cellconfigure $i,2 -text] end]
+	set ne [lindex [.table cellconfigure $i,3 -text] end]
 	if {[string length $super] == 0} {
 	    set line "$line $word|$pos"
-	} else {
+	} elseif {[string length $ne] == 0} {
 	    set line "$line $word|$pos|$super"
+	} else {
+	    set line "$line $word|$pos|$super|$ne"
 	}
     }
     set out [string trim $line]
@@ -637,8 +682,10 @@ proc update_superbutton {} {
     }
     if {$super == 0} {
 	.super configure -state disabled
+	.ner configure -state disabled
     } else {
 	.super configure -state normal
+	.ner configure -state normal
     }
 
 }
@@ -844,6 +891,7 @@ proc fill_table {in} {
     .table columnconfigure 0 -name word -editable yes
     .table columnconfigure 1 -name pos -editable yes -editwindow combobox -maxwidth 8
     .table columnconfigure 2 -name super -editable yes -editwindow combobox
+    .table columnconfigure 3 -name ne -editable yes -editwindow combobox
 
     set super_b normal
     foreach i $list {
@@ -853,14 +901,16 @@ proc fill_table {in} {
 	if {[string is integer -strict [lindex $ilist 1]]} {
 	    # no supertags and multiple part-of-speech tags
 	    set default ""
+	    set nedefault ""
 	    set posdefault [lindex $ilist 2]
 	    for {set j 2} {$j < [llength $ilist]} {incr j +2} {
 		lappend pos_valuelist [lindex $ilist $j]
 	    }
-	} elseif {[llength $ilist] < 4} {
+	} elseif {[llength $ilist] < 5} {
 	    # just a single POS tag or a single POS tag and a single supertag
 	    set posdefault [lindex $ilist 1]
 	    set default [lindex $ilist 2]
+	    set nedefault [lindex $ilist 3]
 	    set valuelist [list $default]
 	    if {[string equal $posdefault ""]} {
 		set super_b disabled
@@ -870,19 +920,24 @@ proc fill_table {in} {
 	    # multiple supertags
 	    set posdefault [lindex $ilist 1]
 	    set default [lindex $ilist 3]
+	    set nedefault [lindex $ilist end]
 	    set pos_valuelist $postags
-	    for {set j 3} {$j < [llength $ilist]} {incr j +2} {
+	    for {set j 3} {$j < [expr [llength $ilist]-1]} {incr j +2} {
 		lappend valuelist [lindex $ilist $j]
 	    }
 	}
 
-	.table insert end [list [lindex $ilist 0] $posdefault $default]
+	if {[string is double $nedefault]} {
+	    set nedefault ""
+	}
+	.table insert end [list [lindex $ilist 0] $posdefault $default $nedefault]
 	set table($maxrow) [list $pos_valuelist $valuelist]
 	incr maxrow
 	
     }
 
     .super configure -state $super_b
+    .ner configure -state $super_b
 
 }
 proc get_pos_dir {} {
@@ -972,17 +1027,20 @@ proc read_file {filename} {
 }
 
 tablelist::addOakleyCombobox
-tablelist::tablelist .table -columns {0 "Word" 0 "POS tag" 0 "Supertag"} -relief flat -labelrelief flat -activestyle frame -editstartcommand editStartCmd -editendcommand editEndCmd -forceeditendcommand 1 -stripebackground #e0e8f0 -showseparators yes -background gray98 -stretch all -yscrollcommand [list .fr.sc set]
+tablelist::tablelist .table -columns {0 "Word" 0 "POS tag" 0 "Supertag" 0 "NE"} -relief flat -labelrelief flat -activestyle frame -editstartcommand editStartCmd -editendcommand editEndCmd -forceeditendcommand 1 -stripebackground #e0e8f0 -showseparators yes -background gray98 -stretch all -yscrollcommand [list .fr.sc set]
 
 frame .f -background #FFFFFF -borderwidth 0
 
 
-image create photo plus -file [file join $resources_prefix "plus26.gif"]
-image create photo previmg -file [file join $resources_prefix "prev.gif"]
-image create photo nextimg -file [file join $resources_prefix "next.gif"]
+image create photo plus      -file [file join $resources_prefix "plus26.gif"]
+image create photo previmg   -file [file join $resources_prefix "prev.gif"]
+image create photo nextimg   -file [file join $resources_prefix "next.gif"]
 image create photo noprevimg -file [file join $resources_prefix "noprev.gif"]
 image create photo nonextimg -file [file join $resources_prefix "nonext.gif"]
-image create photo logo -file [file join $resources_prefix "Tree-256x256.gif"]
+image create photo logo      -file [file join $resources_prefix "Tree-256x256.gif"]
+
+
+#set ::tk::mac::iconBitmap $logo
 
 menu .mb -tearoff 0
 
@@ -1049,6 +1107,7 @@ label .filler2
 
 button .pos -text "POS" -command {pos_tag}
 button .super -text "Super" -command {super_tag}
+button .ner -text "NER" -command {ner_tag}
 
 pack .p -in .f -side left
 pack .n -in .f -side left
@@ -1056,6 +1115,7 @@ pack .filler -in .f -side left
 pack .plus -in .f -side left
 pack .filler2 -in .f -side left
 
+pack .ner -in .f -side right
 pack .super -in .f -side right
 pack .pos -in .f -side right
 
@@ -1081,6 +1141,7 @@ pack .table -fill both -expand true -side left
 .table columnconfigure 0 -name text -editable yes -labelbackground gray80 -labelborderwidth 2 -labelrelief groove
 .table columnconfigure 1 -name pos -editable yes -editwindow combobox -labelbackground gray80 -maxwidth 8 -labelborderwidth 2 -labelrelief groove
 .table columnconfigure 2 -name super -editable yes -editwindow combobox -labelbackground gray80 -labelborderwidth 2 -labelrelief groove
+.table columnconfigure 3 -name ne -editable yes -editwindow combobox -labelbackground gray80 -labelborderwidth 2 -labelrelief groove
 
 if {$argc > 0} {
     set currentfile [lindex $argv 0]
@@ -1107,22 +1168,22 @@ update_arrows
 read_formulas
 set entrysent $cursent
 
-bind . <Control-s> { save_sent }
-bind . <Command-s> { save_file }
-bind . <Command-d> { delete_sent }
-bind . <Command-g> { grail_parse }
+bind . <Control-s>       { save_sent }
+bind . <Command-s>       { save_file }
+bind . <Command-d>       { delete_sent }
+bind . <Command-g>       { grail_parse }
 bind . <Command-Shift-s> { save_file_name }
-bind . <Command-l> { load_file }
-bind . <Command-q> { destroy . }
-bind . <Command-p> {
+bind . <Command-l>       { load_file }
+bind . <Command-q>       { destroy . }
+bind . <Command-p>       {
 
-    exec open "$tmp_dir/semantics.pdf"
+    catch { exec open "$model_dir/semantics.pdf" }
 
 }
-bind . <Key-Prior> { prev }
-bind . <Key-Next> { next }
-bind . <Key-End> { goto_last_sent }
-bind . <Key-Home> { goto_first_sent }
+bind . <Key-Prior>       { prev }
+bind . <Key-Next>        { next }
+bind . <Key-End>         { goto_last_sent }
+bind . <Key-Home>        { goto_first_sent }
 bind .entry <Key-Return> {
 
     if {![string is integer -strict $entrysent]} {
@@ -1141,8 +1202,8 @@ bind .entry <Key-Return> {
 }
 
 event add <<Paste>> <Command-v> <Control-y>
-event add <<Cut>> <Command-x> <Control-k>
-event add <<Copy>> <Command-c>
+event add <<Cut>>   <Command-x> <Control-k>
+event add <<Copy>>  <Command-c>
 
 bind . <<Copy>> {
     if {$editing == 0} {
