@@ -43,6 +43,8 @@ output_proofs(nd).
 
 % = combine two log-probabilities using sum
 combine_probability(Prob0, Prob1, J, K, _R, Prob) :-
+	/* assign penalty based on crosses tree branches */
+	/* experimental, needs to be properly evaluated */
 	crosses(J, K, Cross),
 	CrossProb is log(1/(Cross+1)),
 	Prob is Prob0 + Prob1 + CrossProb.

@@ -43,8 +43,12 @@ output_proofs(chart).
 % = function combining the weight of items given a rule application.
 
 % = combine two log-probabilities using sum
-combine_probability(Prob0, Prob1, _J, _K, _R, Prob) :-
-	Prob is Prob0 + Prob1.
+combine_probability(Prob0, Prob1, J, K, _R, Prob) :-
+	/* assign penalty based on crosses tree branches */
+	/* experimental, needs to be properly evaluated */
+	crosses(J, K, Cross),
+	CrossProb is log(1/(Cross+1)),
+	Prob is Prob0 + Prob1 + CrossProb.
 
 % = take log of initial probability
 compute_weight(Prob, Weight) :-
