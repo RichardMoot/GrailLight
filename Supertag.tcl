@@ -13,20 +13,21 @@ set sent_values {}
 set skip 90
 set xwidth [expr $skip/9]
 
-set diamond "\u25c7"
+# utf-8 character codes
+set diamond  "\u25c7"
 # set diamond "<>"
 set diamond0 "\u25c7\u2080"
 set diamond1 "\u25c7\u2081"
-set box "\u25a1"
-# set box "[]"
-set box0 "\u25a1\u2080"
-set box1 "\u25a1\u2081"
-set bs1 "\\\u2081"
-set bullet "\u2022"
+set box      "\u25a1"
+# set box    "[]"
+set box0     "\u25a1\u2080"
+set box1     "\u25a1\u2081"
+set bs1      "\\\u2081"
+set bullet   "\u2022"
 # set bullet "*"
-set mode0 ""
-# set mode0 "\u2080"
-set spc "\u2006"
+set mode0    ""
+# set mode0  "\u2080"
+set spc      "\u2006"
 # set spc " "
 
 set debug off
@@ -35,34 +36,30 @@ set debugstring ""
 # set debugstring "spy prob_parse"
 # set debugstring "noregin nozeroheap"
 
-set cvs_prefix        /Users/moot/checkout
-set lefff_prefix      /Users/moot/checkout
-set monde_prefix      /Users/moot/checkout/monde
-set grail_prefix      /Users/moot/checkout/GrailLight
-set model_prefix      /Volumes/richard.moot
-set config_prefix     /Volumes/richard.moot
-set grammar_prefix    "$cvs_prefix/Grail/grammars"
-set tagger_prefix     /Users/moot/Corpus/WSJ/candc-1.00/bin
-set pos_model(dutch)  "$model_prefix/best_dutch_pos_reduced"
-set st_model(dutch)   "$model_prefix/best_dutch_model"
+set cvs_prefix         [file normalize ".."]
+set lefff_prefix       [file normalize ".."]
+set model_prefix       [file normalize "../models"]
+set grail_prefix       [file normalize "../GrailLight"]
+set grammar_prefix     [file normalize "../Grail/grammars"]
+set tagger_prefix      /Users/moot/Corpus/WSJ/candc-1.00/bin
+
+set pos_model(dutch)   "$model_prefix/best_dutch_pos_reduced"
+set st_model(dutch)    "$model_prefix/best_dutch_model"
 set pos_model(dutchx)  "$model_prefix/best_dutch_pos_reduced"
 set st_model(dutchx)   "$model_prefix/detailed_dutch_model"
-# Best model on Cloud
-# set st_model(french)  "$model_prefix/best_french_tt"
-# set pos_model(french) "$model_prefix/french_pos_tt"
-# Last local model
-set pos_model(french) "$monde_prefix/all_pos_tt"
-set pos_model(frenchx) "$monde_prefix/extra_pos_tt"
-set st_model(french)  "$monde_prefix/french_tt"
-set st_model(frenchx)  "$monde_prefix/french_tt"
-#set grail_prefix      /Users/moot/grailexec/bin
-set pos_cmd           "$tagger_prefix/mpos"
-set st_cmd            "$tagger_prefix/msuper"
-set grail_cmd         "$grail_prefix/g3"
-set tmp_dir           "/Users/moot/Library/Supertagger"
-set semantics         drt
-set postagset         tt
-set grail_exec        "grail_light_nd.pl"
+
+set pos_model(french)  "$model_prefix/french_pos_tt"
+set pos_model(frenchx) "$model_prefix/extra_pos_tt"
+set st_model(french)   "$model_prefix/french_tt"
+set st_model(frenchx)  "$model_prefix/french_tt"
+
+set pos_cmd            "$tagger_prefix/mpos"
+set st_cmd             "$tagger_prefix/msuper"
+set grail_cmd          "$grail_prefix/g3"
+set tmp_dir            "/Users/moot/Library/Supertagger"
+set semantics          drt
+set postagset          tt
+set grail_exec         "grail_light_nd.pl"
 set bootstrap_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
 set bootstrap_parser_length 30
 
@@ -1324,7 +1321,7 @@ proc supertag {sentence} {
 
     global comment grail_cmd pos_cmd pos_model st_cmd st_model
     global beta algo link par grammar_prefix debug debugstring skip
-    global lang tmp_dir c_pos_list semantics grail_parse monde_prefix lefff_prefix grail_prefix grail_exec
+    global lang tmp_dir c_pos_list semantics grail_parse model_prefix lefff_prefix grail_prefix grail_exec
     global bootstrap_parser_cmd bootstrap_parser_length
     
     .c delete all
