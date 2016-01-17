@@ -58,11 +58,11 @@ xml_files(File) :-
 % xml_files('flmf7as2ep.af.cat.xml', as2).
 % xml_files('flmf7atep.cat.xml', at).
 %
-xml_files('flmf300_13000ep.cat.xml', '300').
-xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
+% xml_files('flmf300_13000ep.cat.xml', '300').
+% xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
 %
 % xml_files('annodis.er.xml', annodis).
-% xml_files('frwiki1.xml', frwiki1).
+xml_files('frwiki1.xml', frwiki1).
 % xml_files('frwiki2.xml', frwiki2).
 % xml_files('Europar.550.xml', europar).
 % xml_files('emea-fr-dev.xml', emea_d).
