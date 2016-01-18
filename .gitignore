@@ -1,5 +1,7 @@
 # emacs backups
 *~
+config.log
+config.status
 head/*
 # autoconf traces
 autom4te.cache/*
