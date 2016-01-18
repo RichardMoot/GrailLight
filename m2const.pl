@@ -3,6 +3,7 @@
 		    start/1,
 		    export_all/0,
 		    export/1,
+		    export_text/1,
 		    verify_sentences/0,
 		    compute_penalties/0,
 		    compute_penalties1/2]).
@@ -155,6 +156,41 @@ export(FileRoot) :-
 	process_create(path(sh), ['-c',Cmd], []),
 	delete_file(CrossFile),
 	format(user_error, 'done!~n', []).
+
+% = export_text(+FileRoot)
+%
+% export the XML annotation file denoted by FileRoot as a standard text file (with .txt extension),
+% using the same mechanisms as the extraction procedure.
+
+export_text(FileRoot) :-
+	xml_files(XMLFile, FileRoot),
+	atom_concat(FileRoot, '.txt', TextFile),
+	delete_if_exists(TextFile),
+	user:abolish(word/4),
+	user:retractall(lemma(_,_,_,_)),
+	user:retractall(word(_,_,_,_)),
+	user:retractall(constituent(_,_,_,_)),
+	start([XMLFile], 0, N),
+	nl(user_error),
+	tell(TextFile),
+	export_text_words(0, N),
+	told.
+
+export_text_words(N, N) :-
+	!.
+export_text_words(N0, N) :-
+	N0 < N,
+	N1 is N0 + 1,
+	findall(W, word(N1, W, _, _), WL),
+	print_word_list(WL),
+	!,
+	export_text_words(N1, N).
+
+print_word_list([]) :-
+	nl.
+print_word_list([W|Ws]) :-
+	format(' ~W', [W,[quoted(false)]]),
+	print_word_list(Ws).
 
 check_exists(File) :-
    (
