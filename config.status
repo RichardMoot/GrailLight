@@ -585,7 +585,7 @@ echo 'BEGIN {' >"$ac_tmp/subs1.awk" &&
 cat >>"$ac_tmp/subs1.awk" <<\_ACAWK &&
 S["LTLIBOBJS"]=""
 S["LIBOBJS"]=""
-S["GRAIL_YEAR"]="2015"
+S["GRAIL_YEAR"]="2016"
 S["PDF"]="NULL"
 S["SED"]="/usr/bin/sed"
 S["MV"]="/bin/mv"

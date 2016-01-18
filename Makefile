@@ -21,3 +21,9 @@ grail_light_nd.pl: grail_light.pl
 	/usr/bin/sed -e 's/%output_proofs(nd)./output_proofs(nd)./g' grail_light.pl | /usr/bin/sed -e 's/output_proofs(chart)./%output_proofs(chart)./g' | $(addglnd)  > grail_light_nd.pl
 grail_light_cr.pl: chart_cr.pl
 	$(addf) chart_cr.pl | $(addglc) | tail +2 > grail_light_cr.pl
+
+parser.tcl: gui.tcl
+	/usr/bin/sed -e 's/#LP //g' gui.tcl > parser.tcl
+parser_cr.tcl: gui.tcl
+	/usr/bin/sed -e 's/#CR //g' gui.tcl > parser_cr.tcl
+
