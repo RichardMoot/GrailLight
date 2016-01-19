@@ -1595,7 +1595,7 @@ write_rule_name(ef_start, Stream) :-
 	write(Stream, '\\bo\\textit{Ef start}\\bc').
 write_rule_name(ef_start_iv, Stream) :-
 	!,
-	write(Stream, '\\bo\\textit{Ef start}_{\\texit{iv}}\\bc').
+	write(Stream, '\\bo\\textit{Ef start}_{\\textit{iv}}\\bc').
 write_rule_name(e_end, Stream) :-
 	!,
 	write(Stream, '\\bo\\textit{E end}\\bc').
