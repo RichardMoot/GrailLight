@@ -8,7 +8,7 @@ addglnd = /usr/bin/sed \
         -e 's/grail_light.pl/grail_light_nd.pl/g'
 
 
-all: grail_light.pl grail_light_cr.pl grail_light_nd.pl
+all: grail_light.pl grail_light_cr.pl grail_light_nd.pl parser.tcl parser_cr.tcl
 
 chart_lp.pl: chart.pl
 	/usr/bin/sed -e 's/%LP//g' chart.pl > chart_lp.pl
