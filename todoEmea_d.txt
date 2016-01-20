@@ -1,0 +1,574 @@
+ European Medicines Agency
+ EMEA / H/C/562
+ RAPPORT EUROPÉEN PUBLIC D' ÉVALUATION ( EPAR )
+ ANGIOX
+ Résumé EPAR à l' intention du public
+ Ce document est un résumé du rapport européen public d' évaluation ( EPAR ) .
+ Il explique comment le comité des médicaments à usage humain ( CHMP ) a évalué les études réalisées afin d' aboutir à ses recommandations relatives aux conditions d' utilisation du médicament .
+ Pour plus d' informations sur votre condition ou votre traitement , veuillez consulter la notice ( également comprise dans l' EPAR ) ou contacter votre médecin ou votre pharmacien .
+ Si vous souhaitez davantage d' informations sur la base des recommandations du CHMP , veuillez lire la discussion scientifique ( également comprise dans l' EPAR ) .
+ Qu' est -ce que Angiox ?
+ Angiox est une poudre blanche à reconstituer en solution injectable ou pour perfusion ( goutte à goutte dans une veine ) .
+ Il contient le principe actif bivalirudine .
+ Dans quel cas Angiox est -il utilisé ?
+ Angiox est utilisé pour traiter les patients adultes souffrant de " syndrome coronaire aigu " ( SCA , réduction du flux sanguin vers le coeur ) , comme un angor instable ( douleurs thoraciques de gravité variable ) ou un infarctus du myocarde ( crise cardiaque ) sans " sus-décalage du segment ST " ( relevé anormal à l' électrocardiogramme ou ECG ) .
+ Il est utilisé en conjonction avec de l' aspirine et du clopidogel ( médicaments contribuant à prévenir les caillots sanguins ) chez les patients sur le point de subir un traitement pour leur SCA , comme un traitement médicamenteux , subissant une angioplastie ou un pontage coronarien .
+ L' angioplastie , ou " intervention coronaire percutanée " ( ICP ) est une opération destinée à débloquer les vaisseaux sanguins du coeur .
+ Angiox est aussi utilisé pour prévenir la formation de caillots sanguins chez les patients qui vont subir une ICP .
+ Le médicament n' est délivré que sur ordonnance .
+ Comment Angiox est -il utilisé ?
+ Angiox est prévu pour un usage par voie intraveineuse ( dans une veine ) .
+ Il doit être prescrit par un médecin ayant l' expérience des prises en charge urgentes de patients souffrant de problèmes cardiaques ou des interventions sur le coeur .
+ La dose d' Angiox et la durée du traitement dépendent des motifs de son utilisation .
+ La première dose est administrée par injection , et immédiatement suivie par une perfusion .
+ Pour les SCA , la durée de la perfusion dépend de la manière dont le SCA doit être traité : elle peut durer jusqu' à 72 heures au maximum chez les patients devant recevoir des médicaments .
+ Lorsqu' il est utilisé pour prévenir la formation de caillots sanguins chez les patients subissant une ICP , une dose plus élevée d' Angiox est utilisée , et la perfusion peut être poursuivie jusqu' à quatre heures après la procédure .
+ Les doses de perfusion doivent être réduites chez les patients ayant des problèmes rénaux subissant une ICP .
+ Angiox ne doit pas être utilisé chez les patients qui présentent des problèmes rénaux aigus .
+ Pour plus d' informations , voir le résumé des caractéristiques du produit ( également inclus dans l' EPAR ) .
+ Comment Angiox agit -il ?
+ La coagulation sanguine peut poser un problème en cas de perturbation du flux sanguin .
+ Angiox est un anticoagulant ;
+ il empêche le sang de coaguler ( formation de caillots ) .
+ La bivalirudine , principe actif de Angiox , est une substance synthétique dérivée de l' hirudine , la substance anticoagulante produite par les sangsues .
+ Elle bloque spécifiquement l' une des substances impliquées dans le processus de coagulation , la thrombine .
+ Celle-ci se trouve au centre des processus complexes de la coagulation sanguine .
+ En utilisant Angiox durant le SCA ou l' ICP , le risque de formation de caillots sanguins est considérablement réduit .
+ Ceci peut contribuer à maintenir le flux sanguin vers le coeur chez les patients atteints d' angor ou d' une crise cardiaque et à améliorer l' efficacité de leur ICP .
+ Quelles études ont été menées avec Angiox ?
+ Angiox a été étudié chez plus de 20.000 patients .
+ Pour le traitement des SCA , l' étude principale a porté sur près de 14.000 patients et a comparé l' efficacité de Angiox , pris seul ou avec un inhibiteur de la glycoprotéine IIb/IIIa ( inhibiteur de GP , un autre type de médicament contribuant à prévenir la formation de caillots ) , avec le traitement standard en combinaison avec de l' héparine ( un autre anticoagulant ) et un inhibiteur de GP .
+ Tous les patients ont également reçu de l' aspirine , avec ou sans clopidogrel .
+ L' efficacité d' Angiox en tant qu' anticoagulant utilisé dans l' ICP a été étudiée chez plus de 6.000 patients .
+ Angiox a été comparé à l' héparine .
+ Durant l' ICP , un stent ( petit tube qui reste dans l' artère afin d' en empêcher la fermeture ) est souvent posé chez les patients et d' autres anticoagulants sont également administrés , comme l' abciximab , l' aspirine .
+ Pour toutes les études , les quatre critères principaux ont été les suivants : taux de décès , crise cardiaque , revascularisation urgente ( rétablissement du flux sanguin vers le coeur ) et hémorragie importante ( saignement ) .
+ Quel est le bénéfice démontré par Angiox au cours des études ?
+ Angiox s' est avéré aussi efficace que les traitements auxquels il a été comparé .
+ Lorsqu' il a été utilisé pour le traitement de SCA , Angiox , administré avec ou sans inhibiteur de GP , a été aussi efficace que le traitement standard pour prévenir l' apparition globale de nouveaux événements ( décès , crises cardiaques ou revascularisations ) après 30 jours et après un an .
+ Angiox a été le plus efficace chez les patients ayant également reçu de l' aspirine et du clopidogrel .
+ Les patients ayant reçu Angiox sans inhibiteur de GP ont également présenté un taux d' hémorragies inférieur après 30 jours et après un an .
+ Chez les patients subissant un ICP , Angiox s' est montré aussi efficace que l' héparine pour toutes les mesures , excepté en ce qui concerne le saignement majeur , pour lequel il s' est révélé nettement meilleur ( niveau de saignement inférieur ) que l' héparine .
+ Quel est le risque associé à l' utilisation de Angiox ?
+ L' effet indésirable le plus fréquent avec Angiox ( observé chez plus d' un patient sur 10 ) est le saignement bénin .
+ Pour avoir le détail de tous les effets indésirables observés lors de l' utilisation de Angiox , voir la notice .
+ Angiox ne doit pas être utilisé chez les personnes pouvant présenter une hypersensibilité ( allergie ) à la bivalirudine , aux autres hirudines , ou à l' un des autres composants constituant Angiox .
+ Il convient en outre de ne pas l' utiliser chez les patients ayant eu une hémorragie récente , souffrant d' hypertension aiguë ou présentant des troubles graves des reins , ou encore chez les patients présentant une infection cardiaque .
+ Pour une liste complète des restrictions , voir la notice .
+ Pourquoi Angiox a -t-il été approuvé ?
+ Le comité des médicaments à usage humain ( CHMP ) a estimé que Angiox constitue un substitut acceptable pour l' héparine dans le cadre du traitement du SCA et pendant l' ICP .
+ Le comité a conclu que les bénéfices de Angiox sont supérieurs aux risques qu' il comporte pour le traitement des patients adultes souffrant de SCA et devant subir une intervention urgente ou précoce , avec de l' aspirine et du clopidogrel , et comme anticoagulant chez les patients subissant une intervention coronaire percutanée ( ICP ) .
+ Le comité a recommandé l' octroi d' une autorisation de mise sur le marché pour Angiox .
+ Autres informations relatives à Angiox : La Commission européenne a délivré une autorisation de mise sur le marché valide dans toute l' Union européenne pour Angiox à The Medicines Company UK Ltd , le 20 septembre 2004
+ L' EPAR complet relatif à Angiox est disponible ici .
+ Dernière mise à jour du présent résumé :
+ ©EMEA 2008
+ Numéro UE
+ Nom de fantaisie
+ Dosage
+ Forme pharmaceutique
+ Voie d' administration
+ Conditionnement
+ Taille de l' emballage
+ EU / 1/04/289/001
+ Angiox
+ 250 mg
+ Poudre pour solution à diluer pour solution injectable ou pour perfusion
+ Voie intraveineuse
+ Flacon ( verre )
+ 10 flacons
+ EU / 1/04/289/002
+ 2 flacons
+ ANNEXE I
+ RESUME DES CARACTERISTIQUES DU PRODUIT
+ DENOMINATION DU MEDICAMENT
+ Angiox 250 mg poudre pour solution à diluer pour solution injectable ou pour perfusion .
+ COMPOSITION QUALITATIVE ET QUANTITATIVE
+ Chaque flacon contient 250 mg de bivalirudine .
+ Après reconstitution , 1 ml contient 50 mg de bivalirudine .
+ Après dilution , 1 ml contient 5 mg de bivalirudine .
+ Pour la liste complète des excipients , voir rubrique 6.1 .
+ FORME PHARMACEUTIQUE
+ Poudre pour solution à diluer pour solution injectable ou pour perfusion .
+ Poudre lyophilisée blanche à blanc cassé .
+ DONNEES CLINIQUES
+ Indications thérapeutiques
+ Traitement des patients atteints d' un syndrome coronarien aigu ( angor instable / infarctus du myocarde sans sus décalage du segment ST ( AI / IDM ST- ) ) devant bénéficier d' une intervention urgente ou précoce .
+ Angiox doit être administré avec de l' aspirine et du clopidogrel .
+ Anticoagulant chez les patients subissant une intervention coronaire percutanée ( ICP ) .
+ Posologie et mode d' administration
+ Angiox est destiné à la voie intraveineuse ( IV ) .
+ Angiox doit être administré par un médecin spécialisé soit dans le traitement du syndrome coronarien aigu , soit dans les procédures d' intervention coronaire .
+ Adultes / Sujets âgés
+ Syndrome coronarien aigu ( SCA )
+ Pour les patients atteints d' un SCA , la dose initiale recommandée est un bolus intraveineux de 0,1 mg / kg suivi d' une perfusion de 0,25 mg / kg / h .
+ Les patients faisant l' objet d' un traitement conservateur médical peuvent continuer la perfusion de 0,25 mg / kg / h pendant 72 heures .
+ Si le patient doit bénéficier d' une ICP , un bolus additionnel de 0,5 mg / kg doit être administré et la perfusion augmentée à 1,75 mg / kg / h durant l' intervention .
+ Après l' ICP , la perfusion , ramenée à 0,25 mg / kg / h peut être maintenue pendant 4 à 12 heures si cela se justifie d' un point de vue clinique .
+ Pour les patients bénéficiant d' un pontage aorto- coronaire sans CEC , la perfusion de bivalirudine doit être maintenue jusqu' à l' intervention .
+ Juste avant l' opération , un bolus intraveineux de 0.5 mg / kg doit être administré suivi d' une perfusion de 1.75 mg / kg / h durant l' intervention .
+ Pour les patients bénéficiant d' un pontage aorto- coronaire avec CEC , la perfusion de bivalirudine devra être maintenue jusqu' à 1 heure avant l' opération , après quoi la perfusion devra être arrêtée et le patient traité avec de l' héparine non fractionnée .
+ ICP
+ La dose recommandée d' Angiox , pour les patients bénéficiant d' une ICP , est un bolus intraveineux de 0,75 mg / kg de poids corporel immédiatement suivi d' une perfusion intraveineuse à raison de 1,75 mg / kg / heure pendant au moins la durée de l' intervention .
+ La perfusion peut se poursuivre jusqu' à 4 heures après l' ICP si cela se justifie d' un point de vue clinique .
+ La sécurité et l' efficacité d' un bolus unique d' Angiox n' ont pas été évaluées .
+ Par conséquent , il n' est pas recommandé d' administrer un bolus unique d' Angiox , même dans le cadre d' une ICP courte .
+ Une adaptation de la dose n' est pas nécessaire si la fonction rénale est normale .
+ En cas d' insuffisance rénale , la dose et la vitesse de perfusion doivent être ajustées .
+ La prudence s' impose chez les sujets âgés en raison d' une diminution de la fonction rénale liée à l' âge .
+ Le temps de coagulation activée ( ACT ) peut être utilisé pour évaluer l' activité de la bivalirudine .
+ Les valeurs ACT 5 minutes après le bolus de bivalirudine atteignent en moyenne 365 +/- 100 secondes .
+ Si l' ACT est inférieur à 225 secondes , un second bolus de 0,3 mg / kg doit être administré .
+ Afin de diminuer le risque de faibles valeurs d' ACT , le produit reconstitué et dilué doit être bien mélangé puis doit être administré en bolus par poussée intraveineuse rapide .
+ Une fois que la valeur ACT est supérieure à 225 secondes , des contrôles supplémentaires ne sont pas nécessaires , à condition que la dose de perfusion de 1,75 mg / kg soit donnée correctement .
+ L' introducteur artériel peut être retiré deux heures après l' arrêt de la perfusion de bivalirudine sans contrôle supplémentaire de l' ACT .
+ Insuffisance rénale
+ Chez les patients atteints d' insuffisance rénale , il n' est pas nécessaire d' adapter la dose SCA ( bolus de 0.1 mg / kg ; perfusion de 0.25 mg / kg / h ) .
+ Chez les patients atteints d' insuffisance rénale modérée ( TFG 30-59 ml / min ) bénéficiant d' une ICP ( qu' ils soient traités avec la bivalirudine pour SCA ou non ) la vitesse de perfusion doit être abaissée à 1.4 mg / kg / h .
+ Le bolus administré devra être conforme à la posologie SCA ou ICP décrite ci-dessous .
+ Le contrôle du temps de coagulation est recommandé durant l' ICP chez les patients insuffisants rénaux .
+ L' ACT doit être contrôlé 5 minutes après le bolus .
+ Si l' ACT est inférieur à 225 secondes , un second bolus de 0,3 mg / kg doit être administré et l' ACT doit être contrôlé 5 minutes après l' administration du second bolus .
+ Chez les patients atteints d' insuffisance rénale modérée inclus dans l' étude pivot de phase III sur l' angioplastie ( REPLACE-2 ) , les valeurs ACT mesurées 5 minutes après un bolus de bivalirudine étaient en moyenne de 366 +/- 89 secondes sans ajustement de dose .
+ à la fin de la procédure ICP , chez ces même patients , les valeurs ACT étaient en moyenne de 355 +/- 81 secondes .
+ Angiox est contre-indiqué chez les patients atteints d' insuffisance rénale sévère ( TFG < 30 ml / min ) ainsi que chez les patients sous dialyse ( voir rubrique 4.3 ) .
+ Insuffisance hépatique
+ Aucune adaptation de la dose n' est nécessaire .
+ Les études pharmacocinétiques montrent que le métabolisme hépatique de la bivalirudine est limité ;
+ dès lors , la sécurité et l' efficacité de la bivalirudine n' ont pas été étudiées de manière spécifique chez des patients atteints d' insuffisance hépatique .
+ Enfants et adolescents
+ Il n' existe pas de données pertinentes concernant l' utilisation d' Angiox chez l' enfant
+ Utilisation avec de l' héparine non fractionnée et de l' héparine de bas poids moléculaire
+ Les patients peuvent être mis sous Angiox 30 minutes après l' arrêt de l' héparine non fractionnée , administrée par voie intraveineuse ou 8 heures après l' arrêt d' une héparine de bas poids moléculaire administrée par voie sous-cutanée .
+ Utilisation avec des inhibiteurs de la GP IIb/IIIa
+ Angiox peut être utilisé en même temps qu' un inhibiteur de la GP IIb/IIIa .
+ Voir la section 5.1 pour plus d' informations concernant l' utilisation de la bivalirudine avec ou sans inhibiteur de la GPIIb/IIIa .
+ Contre-indications
+ Angiox est contre-indiqué chez les patients :
+ présentant une hypersensibilité connue à la bivalirudine ou à l' un des excipients du produit , ou aux hirudines ;
+ présentant un saignement actif ou un risque accru de saignement en raison de troubles de l' hémostase et / ou de troubles irréversibles de la coagulation ;
+ présentant une hypertension sévère non contrôlée et / ou une endocardite bactérienne subaiguë .
+ atteints d' insuffisance rénale sévère ( TFG < 30 ml / min ) ainsi que chez les patients sous dialyse .
+ Mises en garde spéciales et précautions particulières d' emploi
+ Angiox n' est pas destiné à l' utilisation intramusculaire .
+ Ne pas l' administrer par voie intramusculaire .
+ Hémorragie :
+ Il convient de surveiller attentivement que les patients ne présentent pas de symptômes et de signes de saignement pendant le traitement , notamment si la bivalirudine est combinée à un autre anticoagulant ( voir Section 4.5 ) .
+ Bien que la plupart des saignements associés à la bivalirudine se produisent au site d' accès artériel chez les patients qui subissent une ICP , une hémorragie peut se produire à n' importe quel endroit pendant le traitement .
+ Des diminutions inexpliquées de l' hématocrite , de l' hémoglobine ou de la pression artérielle peuvent indiquer une hémorragie .
+ Le traitement doit être arrêté si on observe ou si on soupçonne un saignement .
+ Il n' existe pas d' antidote connu pour la bivalirudine , mais son effet disparaît rapidement ( T½ 35 à 40 minutes ) .
+ L' administration concomitante de bivalirudine avec les inhibiteurs plaquettaires ou les anticoagulants peut entrainer une augmentation du risque de saignement ( voir Section 4.5 ) .
+ Dans cette situation , les paramètres cliniques et biologiques de l' hémostase doivent être régulièrement surveillés .
+ Chez les patients sous warfarine traités par bivalirudine , un suivi de l' INR doit être effectué , après l' arrêt du traitement par bivalirudine , afin de s' assurer du retour de l' INR aux niveaux observés avant le traitement .
+ Hypersensibilité :
+ des réactions d' hypersensibilité de type allergique ont été peu fréquemment rapportées dans les études cliniques .
+ Les mesures nécessaires doivent être mises en place pour faire face à cette éventualité .
+ Les patients doivent être informés des signes précoces des réactions d' hypersensibilité qui comportent des réactions urticariennes , une urticaire généralisée , une sensation d' oppression dans la poitrine , une respiration sifflante , de l' hypotension et une anaphylaxie .
+ En cas de choc , il faut appliquer les normes médicales actuelles pour le traitement du choc .
+ Des réactions anaphylactiques , y compris un choc anaphylactique fatal , ont été rapportées très rarement dans l' expérience post-commercialisation ( voir rubrique 4.8 ) .
+ Les anticorps positifs à la bivalirudine qui apparaissent en cours de traitement sont rares et n' ont pas été associés à des signes cliniques de réactions allergiques ou anaphylactiques .
+ La prudence est de rigueur chez les patients précédemment traités par lépirudine qui ont développé des anticorps anti- lépirudine .
+ La formation intra-procédurale de thrombus a été observée pendant les procédures de brachythérapie gamma avec Angiox .
+ Angiox doit être utilisé avec prudence pendant les procédures de brachythérapie bêta .
+ Interactions avec d' autres médicaments et autres formes d' interaction
+ Des études d' interactions médicamenteuses ont été réalisées avec des inhibiteurs plaquettaires , notamment l' acide acétylsalicylique , la ticlopidine , le clopidogrel , l' abciximab , l' eptifibatide ou le tirofiban .
+ Les résultats de ces études ne permettent pas de penser qu' il se produise d' interactions pharmacodynamiques avec ces médicaments .
+ Du fait de leur mécanisme d' action , on peut s' attendre à ce que l' utilisation combinée de médicaments anticoagulants ( héparine , warfarine , antithrombotiques ou agents antiplaquettaires ) augmente le risque de saignement .
+ Dans tous les cas , lorsque la bivalirudine est associée à un inhibiteur plaquettaire ou à un anticoagulant , les paramètres cliniques et biologiques de l' hémostase doivent être régulièrement surveillés .
+ Grossesse et allaitement
+ Il n' existe pas de données suffisamment pertinentes concernant l' utilisation de la bivalirudine chez la femme enceinte .
+ Les études animales ne sont pas concluantes pour ce qui est des effets délétères sur la gestation , le développement embryonnaire ou foetal , l' accouchement ou le développement post-natal ( voir rubrique 5.3 ) .
+ Le risque potentiel chez l' être humain n' est pas connu .
+ ANGIOX ne doit pas être utilisé chez la femme enceinte à moins d' une nécessité absolue .
+ Il n' existe pas de données concernant un éventuel passage de la bivalirudine dans le lait maternel .
+ Angiox doit être administré avec prudence chez les mères qui allaitent .
+ Effets sur l' aptitude à conduire des véhicules et à utiliser des machines
+ Les effets sur l' aptitude à conduire des véhicules et à utiliser des machines n' ont pas été étudiés .
+ Effets indésirables
+ L' étude clinique ACUITY ( SCA )
+ Les données suivantes relatives aux réactions indésirables sont basées sur une étude clinique menée avec la bivalirudine chez 13.819 patients atteints de SCA ;
+ 4612 ont été traités par la bivalirudine seule , 4604 ont été traités par la bivalirudine plus un inhibiteur de la GP IIb/IIIa et 4603 ont été traités avec de l' héparine non fractionnée ou avec de l' enoxaparine plus un inhibiteur de la GPIIb/IIIa .
+ Les effets indésirables ont été plus fréquents chez les femmes et chez les patients âgés de plus de 65 ans que chez les sujets de sexe masculin ou les patients plus jeunes dans les deux groupes bivalirudine et le groupe comparateur héparine .
+ Environ 23,3 % des patients recevant de la bivalirudine ont présenté au moins un évènement indésirable et 2,1 % ont présenté une réaction indésirable au médicament .
+ Les évènements indésirables sont listés par classe de système d' organes dans le tableau 1 .
+ Plaquettes , saignement et coagulation
+ Dans ACUITY , les données relatives aux saignements ont été recueillies séparément de celles concernant les événements indésirables .
+ Les saignements majeurs ont été définis selon les critères ACUITY et TIMI décrits en notes en bas du tableau 2 .
+ Les saignements mineurs ont été définis comme étant tous événements hémorragiques observés qui ne répondaient pas aux critères des saignements majeurs .
+ Des saignements mineurs ont été rapportés de façon très fréquente ( 1/10 ) et les saignements majeurs de façon fréquente ( 1/100 et < 1/10 ) .
+ Des diminutions significatives de la fréquence des saignements majeurs et mineurs ont été constatées chez les patients du groupe Bivalidurine seule comparativement aux patients du groupe héparine plus inhibiteur de la GP IIb/IIIa et Bivalidurine plus inhibiteur de la GP IIb/IIIa ( voir table 2 ) .
+ Des diminutions similaires ont été observées sur la fréquence des saignements chez les patients du groupe Bivalidurine seule ayant reçu de l' héparine avant la randomisation ( n = 2078 ) .
+ Tableau 1 :
+ Effets indésirables survenus au cours de l' étude ACUITY
+ Classes de systèmes d' organes
+ Troubles de la circulation sanguine et lymphatique
+ Très fréquent ( 1/10 )
+ Fréquent ( 1/100 à < 1/10 )
+ Rare ( 1/10000 à 1/1000 )
+ Troubles du système immunitaire
+ Hypersensibilité
+ Troubles du système nerveux
+ Troubles cardiaques
+ bradycardie
+ Troubles vasculaires
+ Saignements mineurs
+ Saignements majeurs
+ Hématomes , hypotension ,
+ Hémorragie , pseudoanévrisme vasculaire
+ Troubles gastro- intestinaux
+ Nausées , vomissements
+ Rash , urticaire
+ Troubles musculo squelettiques , du tissu conjonctif et des os
+ Troubles généraux et accidents liés aux sites d' administration
+ Douleur dorsale , douleur thoracique , douleur à l' aine
+ douleur au site d' injection
+ Les saignements majeurs d' ACUITY ont été définis comme étant la survenue de l' un des éléments suivants : hémorragie intracrânienne , hémorragie rétropéritonéale , hémorragie intraoculaire , hémorragie exigeant une intervention radiologique ou chirurgicale pour accéder au site , hématome à 5 cm au site de ponction , chute de la concentration en hémoglobine 4 g / dL sans source manifeste de saignement , chute de la concentration en hémoglobine 3 g / dL avec source manifeste de saignement , ré-intervention pour saignement , saignement nécessitant la transfusion de sang ou produit sanguin .
+ Les saignements majeurs basés sur les critères TIMI sont définis comme étant les saignements intracrâniens ou la chute de la concentration en hémoglobine 5 g / dL .
+ Les saignements majeurs se sont produits le plus fréquemment au site de ponction ( voir Tableau 3 ) .
+ Les autres sites de saignements moins fréquemment observés , mais avec plus de 0,1 % de saignements ( peu fréquents ) , étaient les suivants : " autre " site de ponction , site rétropéritonéal , gastro- intestinal , oreille , nez ou gorge .
+ Dans l' étude ACUITY , des cas de thrombocytopénie ont été rapportés chez 10 patients traités à la bivalirudine ( 0,1 % ) .
+ La majorité de ces sujets avaient un traitement concomitant d' acide acétylsalicylique et de clopidogrel , et 6 d' entre eux recevaient également des inhibiteurs de la GP IIb/IIIa .
+ Le taux de mortalité dans ce groupe est nul .
+ L' étude clinique REPLACE-2 ( ICP )
+ Les données suivantes relatives aux réactions indésirables sont basées sur une étude clinique ( REPLACE 2 ) menée avec la bivalirudine chez 6000 patients subissant une ICP , dont la moitié ont été traités par bivalirudine .
+ Les événements indésirables ont été plus fréquents chez les femmes et chez les patients âgés de plus de 65 ans que chez les sujets de sexe masculin ou les patients plus jeunes dans les deux groupes bivalirudine et héparine .
+ Environ 30 % des patients recevant de la bivalirudine ont présenté au moins un événement indésirable et 3 % ont présenté une réaction indésirable au médicament .
+ Les évènements indésirables sont listés par classe de système d' organes dans le tableau 4 .
+ Tableau 4 :
+ Effets indésirables survenus au cours de l' étude REPLACE 2
+ Peu fréquent ( 1/1000 à 1/100 )
+ Thrombocytopénie , anémie
+ Réactions allergiques
+ Maux de tête
+ Tachycardie ventriculaire , angine de poitrine , bradycardie
+ Thrombose , hypotension , hémorragie , trouble et anomalie vasculaires
+ Troubles respiratoires , thoraciques et médiastinaux
+ Dyspnée
+ Troubles cutanés et des tissus sous-cutanés
+ Rash
+ Douleur dorsale
+ Hémorragie au site d' injection , douleur au site d' injection douleur thoracique
+ Plaquettes , saignement et coagulation
+ Dans REPLACE 2 , les données relatives aux saignements ont été recueillies séparément de celles concernant les événements indésirables .
+ Un saignement majeur a été défini comme étant la survenue de l' un des éléments suivants : hémorragie intracrânienne , hémorragie rétropéritonéale , perte de sang nécessitant la transfusion d' au moins deux unités de sang complet ou d' hématies concentrées , ou saignement se traduisant par une chute de l' hémoglobine de plus de 3 g / dl ou une chute de l' hémoglobine supérieure à 4 g / dl ( ou 12 % de l' hématocrite ) sans site de saignement identifié .
+ Un saignement mineur a été défini comme étant tout événement hémorragique observé qui ne répondait pas aux critères de saignement majeur .
+ Des saignements mineurs ont été rapportés de façon très fréquente ( 1/10 ) et les saignements majeurs de façon fréquente ( 1/100 et < 1/10 ) .
+ Tant les saignements mineurs que majeurs ont été significativement moins fréquents avec la bivalirudine par rapport au groupe de comparaison héparine plus inhibiteur de la GP IIb/IIIa .
+ Les saignements majeurs se sont produits le plus fréquemment au site de ponction ( voir Tableau 5 ) .
+ Les autres sites de saignements moins fréquemment observés mais avec une fréquence de plus de 0,1 % de saignements ( peu fréquents ) étaient les suivants : " autre " site de ponction , site rétropéritonéal , gastro- intestinal , ou au niveau de l' oreille , du nez ou de la gorge .
+ Tableau 5 :
+ Données relatives à la fréquence des sites hémorragiques dans l' étude REPLACE 2 ( bivalirudine comparée à héparine + inhibiteur de la GP IIb/IIIa ) .
+ héparine + inhibiteur de la bivalirudine
+ Site hémorragique
+ GP IIb/IIIa
+ Site de ponction
+ Autre site de ponction
+ Rétropéritonéal
+ Gastro- intestinal
+ Oreille , nez , ou gorge
+ Uro- génital
+ Intracrânien
+ Cardio- pulmonaire
+ Autre
+ Expérience post-commercialisation
+ Les réactions indésirables qui ont été rapportées à partir d' une importante expérience post-commercialisation et qui n' ont pas été mentionnées ci-dessus sont résumées par classes des systèmes d' organes dans le tableau 6 .
+ Des saignements graves , pouvant être fatals , ont été rapportés au cours de l' expérience post-commercialisation de la bivalirudine .
+ Table 6 :
+ Effets indésirables post-commercialisation rapportées avec la bivalirudine
+ Classes des systèmes d' organes
+ Fréquence inconnue
+ Réaction anaphylactique , choc anaphylactique incluant un choc fatal , hypersensibilité , urticaire
+ Thrombus incluant un thrombus fatal , hématome
+ Hémorragie intracrânienne
+ Surdosage
+ Des cas de surdosage correspondants à 10 fois la dose recommandée ont été rapportés dans les études cliniques , Des bolus de bivalirudine , allant jusqu' à 7,5 mg / kg , ont également été administrés sans qu' il ne soit rapporté de saignement associé ni d' autres événements indésirables .
+ En cas de surdosage , le traitement par la bivalirudine doit être immédiatement arrêté et le patient doit être étroitement surveillé afin de détecter tout signe de saignement .
+ En cas de saignement majeur , le traitement par bivalirudine doit être arrêté immédiatement .
+ Il n' existe pas d' antidote connu pour la bivalirudine ;
+ cependant , la bivalirudine est hémodialysable .
+ PROPRIETES PHARMACOLOGIQUES
+ Propriétés pharmacodynamiques
+ Classe pharmacothérapeutique : inhibiteur direct de la thrombine , code ATC : B01AE06 .
+ Angiox contient de la bivalirudine , un inhibiteur direct et spécifique de la thrombine , qui se lie à la fois au site catalytique et à l' exosite de liaison des anions de la thrombine en phase liquide et liée aux caillots .
+ La thrombine joue un rôle central dans le processus thrombotique , scindant le fibrinogène en monomères de fibrine et activant le Facteur XIII en Facteur XIIIa , ce qui permet à la fibrine de développer un réseau de liaisons croisées covalentes qui stabilise le thrombus .
+ La thrombine active également les facteurs V et VIII , ce qui entraîne une plus grande production de thrombine et active les plaquettes , stimulant leur agrégation et la libération des granules .
+ La bivalirudine inhibe chacun des effets de la thrombine .
+ La liaison de la bivalirudine à la thrombine , et par conséquent son activité , est réversible , dans la mesure où la thrombine clive lentement la liaison Arg3-Pro4 de la bivalirudine , ce qui se traduit par un rétablissement de la fonction du site actif de la thrombine .
+ Ainsi , la bivalirudine commence par agir à la manière d' un inhibiteur non compétitif complet de la thrombine , puis , évolue avec le temps pour devenir un inhibiteur compétitif permettant aux molécules de thrombine initialement inhibées d' interagir avec d' autres substrats de la coagulation et d' induire une coagulation si nécessaire .
+ Des études in vitro ont montré que la bivalirudine inhibe à la fois la thrombine soluble ( libre ) et la thrombine liée aux caillots .
+ La bivalirudine reste active et n' est pas neutralisée par des produits dérivés de la réaction de libération plaquettaire .
+ Des études in vitro ont également montré que la bivalirudine allonge de manière concentration - dépendante le temps de thromboplastine partielle activée ( aPTT ) , le temps de thrombine ( TT ) et le taux de prothrombine ( TP ) d' un plasma humain normal , et qu' elle n' induit pas d' agrégation plaquettaire en réponse à des sérums de patients avec antécédents de syndrome de thrombocytopénie induite par l' héparine avec thrombose ( TIH / STIHT ) .
+ Chez les volontaires sains et chez les patients , la bivalirudine présente une activité anticoagulante dépendante de la dose et de la concentration , comme le prouve l' allongement de l' ACT , de l' aPTT , du PT , de l' INR et du TT .
+ L' administration intraveineuse de bivalirudine induit une anticoagulation mesurable en l' espace de quelques minutes .
+ Les effets pharmacodynamiques de la bivalirudine peuvent être évalués en utilisant des mesures de l' anticoagulation , notamment l' ACT .
+ La valeur ACT présente une corrélation positive avec la dose et la concentration plasmatique de la bivalirudine .
+ Des données relatives à 366 patients indiquent que l' ACT n' est pas influencé par un traitement concomitant par inhibiteur de la GP IIb/IIIa .
+ Des études cliniques ont montré que la bivalirudine procure une anticoagulation adéquate pendant les procédures d' ICP .
+ Etude ACUITY
+ ACUITY est une étude prospective , randomisée , en ouvert , destinée à comparer la bivalirudine associée ou non à un inhibiteur de la GP IIb/IIIa ( respectivement bras B et C ) et l' enoxaparine ou l' héparine non fractionnée ( HNF ) associée à un inhibiteur de la GP IIb/IIIa ( bras A ) , chez plus de 13.819 patients atteints d' un syndrome coronarien aigu ( SCA ) et considérés à haut risque .
+ La dose recommandée de bivalirudine dans l' étude ACUITY ( bras B et C ) est un bolus initial , postérieur à la randomisation , de 0.1 mg / kg suivi d' une perfusion de 0.25 mg / kg / h durant l' angiographie ou si cela se justifie d' un point de vue clinique .
+ Pour les patients devant bénéficier d' une ICP , un bolus additionnel de 0,5 mg / kg est administré et la perfusion est augmentée à 1,75 mg / kg / h durant l' intervention .
+ Dans le bras A de l' étude ACUITY , l' HNF ou l' enoxaparine est administrée selon les recommandations applicables au traitement du SCA chez les patients avec angor instable ou IDM ST- .
+ Les patients des bras A et B étaient aussi randomisés pour recevoir un inhibiteur de la GPIIb/IIIa soit avant l' angiographie soit durant l' angioplastie .
+ Au total 356 ( 7,7 % ) patients randomisés dans le bras C ont également reçu un inhibiteur de la GPIIb/IIIa .
+ En ce qui concerne les caractéristiques de la population d' ACUITY , à savoir des patients à haut risque nécessitant une angiographie dans les 72 h , la répartition est homogène dans les 3 bras de traitement .
+ Environ 77 % d' entre eux présentent une ischémie récurrente , environ 70 % ont des changements dynamiques de l' ECG ou des bio marqueurs cardiaques élevés , 28 % sont diabétiques et environ 99 % subissent une angiographie dans les 72 h .
+ Après angiographie , les patients sont soit pris en charge médicalement ( 33 % ) soit bénéficient d' une angioplastie ( 56 % ) ou d' un pontage aorto- coronaire ( 11 % ) .
+ Les traitements anti- aggrégants plaquettaires additionnels utilisés dans l' étude comprennent l' aspirine et le clopidogrel .
+ Les résultats principaux de l' étude ACUITY à 30 jours et à 1 an pour l' ensemble de la population 11 ( ITT ) et pour les patients ayant reçu de l' aspirine et du clopidogrel avant angiographie ou avant ICP ( per protocole ) sont présentés dans les tables 7 et 8 .
+ Les résultats sur les saignements à 30 jours selon les critères ACUITY et TIMI pour la population totale ( ITT ) et les patients ayant reçus de l' aspirine et du clopidogrel per protocol sont présentés dans la table 9 .
+ Les saignements majeurs d' ACUITY ont été définis comme étant la survenue de l' un des éléments suivants : hémorragie intracrânienne , hémorragie rétropéritonéale , hémorragie intraoculaire , hémorragie exigeant une intervention radiologique ou chirurgicale pour accéder au site , hématome à 5 cm au site de ponction , chute de la concentration en hémoglobine 4 g / dL sans source manifeste de saignement , chute de la concentration en hémoglobine 3 g / dL avec source manifeste de saignement , nouvelle opération pour saignement , saignement nécessitant la transfusion de sang ou de produit sanguin .
+ L' avantage sur la réduction des saignements par rapport au comparateur HNF / enoxaparine associée à un inhibiteur GPIIB/IIIA a seulement été observé dans le bras bivalirudine seule .
+ Les résultats à 30 jours , basés sur les critères d' évaluation quadruple et triple d' une étude randomisée en double aveugle portant sur plus de 6.000 patients subissant une ICP ( REPLACE-2 ) , sont présentés dans le tableau 8 .
+ Le critère saignement majeur dans l' étude REPLACE-2 n' est pas défini par des critères TIMI
+ Propriétés pharmacocinétiques
+ Les propriétés pharmacocinétiques de la bivalirudine ont été évaluées et se sont avérées être linéaires chez les patients subissant une intervention coronaire percutanée et les patients présentant un SCA .
+ Absorption :
+ La biodisponibilité de la bivalirudine par voie intraveineuse est complète et immédiate .
+ La concentration moyenne de la bivalirudine à l' état d' équilibre après perfusion intraveineuse constante de 2,5 mg / kg / h est de 12,4 µg / ml .
+ Distribution :
+ La bivalirudine est rapidement distribuée entre le plasma et le liquide extracellulaire .
+ Le volume de distribution à l' état d' équilibre est de 0,1 litre / kg .
+ La bivalirudine ne se lie pas aux protéines plasmatiques ( autres que la thrombine ) ni aux globules rouges .
+ Biotransformation :
+ En tant que peptide , la bivalirudine est logiquement catabolisée en ses acides aminés constitutifs , avec recyclage ultérieur des acides aminés dans le pool de l' organisme .
+ La bivalirudine est métabolisée par des protéases , notamment la thrombine .
+ Le principal métabolite résultant du clivage de la liaison Arg3-Pro4 de la séquence N-terminale par la thrombine n' est pas actif en raison de la perte d' affinité pour le site catalytique actif de la thrombine .
+ Environ 20 % de la bivalirudine sont excrétés sous forme inchangée dans les urines .
+ Elimination :
+ Le profil de la concentration en fonction du temps après administration intraveineuse est bien décrit par un modèle à deux compartiments .
+ L' élimination suit un processus de premier ordre avec une demi-vie terminale de 25 ± 12 minutes chez les patients à fonction rénale normale .
+ La clairance correspondante est d' environ 3,4 ± 0,5 ml / min / kg .
+ Insuffisance hépatique :
+ La pharmacocinétique de la bivalirudine n' a pas été étudiée chez les patients atteints d' insuffisance hépatique , mais on ne s' attend pas à ce qu' elle soit modifiée , car la bivalirudine n' est pas métabolisée par les enzymes hépatiques telles que les isoenzymes du cytochrome P-450 .
+ Insuffisance rénale :
+ La clairance systémique de la bivalirudine diminue avec le taux de filtration glomérulaire ( TFG ) .
+ La clairance de la bivalirudine est similaire chez les patients à fonction rénale normale et chez les patients présentant une légère insuffisance rénale .
+ Elle est réduite d' environ 20 % chez les patients atteints d' insuffisance rénale modérée ou sévère et de 80 % chez les patients dépendants de la dialyse ( Tableau 11 ) .
+ Chez les patients atteints d' insuffisance rénale , les paramètres de la coagulation tels que l' ACT peuvent être monitorés pendant un traitement par Angiox .
+ Sujets âgés :
+ La pharmacocinétique a été évaluée chez des patients âgés dans le cadre de l' étude de pharmacocinétique rénale .
+ Les adaptations de la dose dans cette catégorie d' âge doivent être basées sur la fonction rénale , voir rubrique 4.2 .
+ Sexe :
+ Il n' y a pas d' effets du sexe sur la pharmacocinétique de la bivalirudine .
+ Poids :
+ La dose de bivalirudine est adaptée en fonction du poids corporel en mg / kg .
+ Les données non cliniques , basées sur des études conventionnelles de sécurité , de pharmacologie , de toxicité à doses répétées , de génotoxicité , ou de toxicité pour la reproduction , n' indiquent aucun risque particulier pour l' être humain .
+ La toxicité chez l' animal lors d' expositions répétées ou continues ( 1 jour à 4 semaines à des niveaux d' exposition allant jusqu' à 10 fois la concentration plasmatique clinique à l' état d' équilibre ) s' est limitée à des effets pharmacologiques exagérés .
+ Une comparaison des études à dose unique et à doses répétées a révélé que la toxicité était principalement liée à la durée d' exposition .
+ Tous les effets indésirables , primaires et secondaires , résultant d' une activité pharmacologique excessive ont été réversibles .
+ Après une brève exposition comparable à celle qui prévaut lors d' une utilisation clinique , et même après une exposition à des doses bien plus élevées , il n' a pas été observé d' effet indésirable résultant d' un stress physiologique prolongé en réponse à un état de coagulation non homéostasique .
+ La bivalirudine étant destinée à une administration de courte durée , on ne dispose d' aucune donnée concernant son potentiel carcinogène à long terme .
+ Néanmoins , la bivalirudine ne s' est pas avérée mutagène ni clastogène dans les tests standards .
+ DONNEES PHARMACEUTIQUES
+ Liste des excipients
+ Mannitol
+ Solution d' hydroxyde de sodium 2 % ( pour l' ajustement du pH ) .
+ Incompatibilités
+ Les médicaments suivants ne doivent pas être administrés dans la même perfusion intraveineuse que la bivalirudine , parce que cela peut se traduire par la formation d' un trouble , la formation de microparticules ou une précipitation importante : altéplase , chlorhydrate d' amiodarone , amphotéricine B , chlorhydrate de chlorpromazine , diazépam , édisylate de prochlorpérazine , rétéplase , streptokinase et chlorhydrate de vancomycine .
+ Durée de conservation
+ 4 ans
+ Solution reconstituée :
+ La stabilité physicochimique du produit reconstitué a été démontrée pendant 24 heures entre 2 °C - 8 °C .
+ Solution diluée :
+ La stabilité physicochimique de la solution a été démontrée pendant 24 heures à 25 °C .
+ Du point de vue microbiologique , le produit doit être utilisé immédiatement .
+ En cas d' utilisation non immédiate , les durées et conditions de conservation après reconstitution et avant utilisation relèvent de la seule responsabilité de l' utilisateur et ne doivent pas dépasser 24 heures entre 2 °C - 8 °C , sauf en cas de reconstitution / dilution réalisée en conditions d' aseptie dûment contrôlées et validées .
+ Précautions particulières de conservation
+ Poudre lyophilisée :
+ à conserver à une température ne dépassant pas 25 °C .
+ à conserver au réfrigérateur ( entre 2 °C et 8 °C ) .
+ Ne pas congeler .
+ Nature et contenu de l' emballage extérieur
+ Angiox est présenté sous forme de poudre lyophilisée en flacons en verre ( Type 1 ) de 10 ml à usage unique fermés par un bouchon en caoutchouc butylique et scellés par un sceau d' aluminium gaufré .
+ Angiox est disponible en boîtes de 2 et 10 flacons .
+ Toutes les présentations peuvent ne pas être commercialisées .
+ Précautions particulières d' élimination et manipulation
+ Instructions pour administration
+ La préparation et l' administration d' Angiox doivent suivre des procédures aseptiques .
+ Ajouter 5 ml d' eau pour préparations injectables dans un flacon d' Angiox et mélanger doucement jusqu' à ce que la poudre soit complètement dissoute et que la solution soit claire .
+ Prélever 5 ml de la solution obtenue dans le flacon puis les diluer dans un volume total de 50 ml de solution glucosée à 5 % ou de solution de chlorure de sodium à 9 mg / ml ( 0,9 % ) pour injection , afin d' obtenir une concentration finale de bivalirudine de 5 mg / ml .
+ Tout produit non utilisé ou déchet doit être éliminé conformément à la réglementation en vigueur localement .
+ La solution reconstituée / diluée doit être vérifiée qu' elle ne contient pas de particules et qu' elle ne présente pas de décoloration .
+ Les solutions contenant des particules ne doivent pas être utilisées .
+ La solution reconstituée / diluée sera une solution limpide à légèrement opalescente , incolore à légèrement jaune .
+ TITULAIRE DE L' AUTORISATION DE MISE SUR LE MARCHE
+ The Medicines Company UK Ltd 115L Milton Park Abingdon Oxfordshire OX14 4SA ROYAUME-UNI
+ NUMERO(S) D' AUTORISATION DE MISE SUR LE MARCHE
+ DATE DE PREMIERE AUTORISATION / DE RENOUVELLEMENT DE L' AUTORISATION
+ DATE DE MISE A JOUR DU TEXTE
+ ANNEXE II
+ TITULAIRE DE L' AUTORISATION DE FABRICATION RESPONSABLE DE LA LIBERATION DES LOTS
+ CONDITIONS RELATIVES A L' AUTORISATION DE MISE SUR LE MARCHE
+ Nom et adresse du fabricant responsable de la libération des lots
+ Hälsa Pharma GmbH , Immermannstraße 9 , 33619 Bielefeld , Allemagne
+ CONDITIONS OU RESTRICTIONS DE DELIVRANCE ET D' UTILISATION IMPOSÉES AU TITULAIRE DE L' AUTORISATION DE MISE SUR LE MARCHE
+ Médicament soumis à prescription médicale restreinte ( voir Annexe I : Résumé des Caractéristiques du Produit , 4.2 ) .
+ AUTRES CONDITIONS
+ Plan de gestion des risques
+ Le titulaire de l' AMM s' engage à fournir des études et des données de pharmacovigilance supplémentaires détaillées dans le Plan de Pharmacovigilance , comme convenu dans la version 4 du Plan de Gestion des risques ( PGR ) présenté dans le Module 1.8.2. de l' autorisation de mise sur le marché et toutes mises à jour du PGR autorisées par le CHMP .
+ Selon la ligne directrice CHMP sur les Systèmes de Gestion des risques pour les médicaments à usage humain , le PGR mis à jour devra être soumis en même temps que le PSUR .
+ De plus , une mise à jour du PGR devra être soumise :
+ Quand de nouvelles informations reçues peuvent avoir un impact sur le profil de sécurité , le plan de pharmacovigilance ou les activités de minimisation du risque .
+ Dans les 60 jours suivant une importante étape ( pharmacovigilance ou minimisation du risque ) Selon la réglementation en vigueur de l' EMEA .
+ ANNEXE III
+ ETIQUETAGE ET NOTICE
+ Angiox 250 mg poudre pour solution à diluer pour solution injectable ou pour perfusion Bivalirudine
+ COMPOSITION EN SUBSTANCE(S) ACTIVE(S)
+ 1 flacon contient 250 mg de bivalirudine .
+ Après reconstitution 1 ml contient 50 mg de bivalirudine .
+ Après dilution 1 ml contient 5 mg de bivalirudine .
+ LISTE DES EXCIPIENTS
+ Mannitol , hydroxyde de sodium 2 % .
+ FORME PHARMACEUTIQUE ET CONTENU
+ 2 flacons .
+ MODE ET VOIE(S) D' ADMINISTRATION
+ Voie intraveineuse .
+ Lire la notice avant usage .
+ MISE EN GARDE SPECIALE INDIQUANT QUE LE MEDICAMENT DOIT ETRE CONSERVE HORS DE PORTEE ET DE VUE DES ENFANTS
+ Tenir hors de la portée et de la vue des enfants .
+ AUTRE(S) MISE(S) EN GARDE SPECIALE(S) , SI NECESSAIRE
+ DATE DE PEREMPTION
+ PRECAUTIONS PARTICULIERES DE CONSERVATION
+ à conserver au réfrigérateur ( 2-8 °C ) .
+ PRECAUTIONS PARTICULIERES D' ELIMINATION DES MEDICAMENTS NON UTILISES OU DES DECHETS PROVENANT DE CES MEDICAMENTS S' IL Y A LIEU
+ Toute solution non utilisée doit être éliminée .
+ NOM ET ADRESSE DU TITULAIRE DE L' AUTORISATION DE MISE SUR LE MARCHE
+ NUMERO DU LOT
+ CONDITIONS DE PRESCRIPTION ET DE DELIVRANCE
+ Médicament soumis à prescription médicale .
+ INDICATIONS D' UTILISATION
+ INDICATIONS EN BRAILLE
+ La justification pour ne pas inclure du braille a été acceptée .
+ MENTIONS DEVANT FIGURER SUR L' EMBALLAGE EXTERIEUR
+ Emballage extérieur ( emballage de 10 flacons )
+ Angiox 250 mg poudre pour solution à diluer pour solution injectable ou pour perfusion Bivalirudine
+ 10 flacons .
+ MISE EN GARDE SPECIALE INDIQUANT QUE LE MEDICAMENT DOIT ETRE CONSERVE HORS DE PORTEE ET DE VUE DES ENFANTS
+ AUTRE(S) MISE(S) EN GARDE SPECIALE(S) , SI NECESSAIRE
+ Ne pas congeler .
+ La justification pour ne pas inclure du braille a été acceptée .
+ MENTIONS MINIMALES DEVANT FIGURER SUR LES PETITS CONDITIONNEMENTS PRIMAIRES
+ Flacon
+ DENOMINATION DU MEDICAMENT ET VOIE(S) D' ADMINISTRATION
+ Angiox 250 mg poudre pour solution à diluer pour solution injectable ou pour perfusion Voie intraveineuse Bivalirudine
+ MODE D' ADMINISTRATION
+ CONTENU EN POIDS , VOLUME OU UNITE
+ AUTRES
+ NOTICE
+ NOTICE :
+ INFORMATIONS DE L' UTILISATEUR Angiox 250 mg Poudre pour solution à diluer pour solution injectable ou pour perfusion ( Bivalirudine )
+ Veuillez lire attentivement l' intégralité de cette notice avant d' utiliser ce médicament .
+ - Gardez cette notice , vous pourriez avoir besoin de la relire .
+ - Si vous avez d' autres questions , si vous avez un doute , demandez plus d' informations à votre pharmacien
+ - Si l' un des effets indésirables devient sérieux ou si vous remarquez des effets indésirables non mentionnés dans cette notice , veuillez en informer votre médecin .
+ Dans cette notice :
+ Qu' est -ce que Angiox et dans quel cas est -il utilisé 2 .
+ Quelles sont les informations à connaître avant d' utiliser Angiox 3 .
+ Comment utiliser Angiox 4 .
+ Quels sont les effets indésirables éventuels 5 .
+ Comment conserver Angiox 6 .
+ Informations supplémentaires
+ QU' EST -CE QUE ANGIOX ET DANS QUEL CAS EST -IL UTILISE
+ Angiox est un médicament antithrombotique .
+ Les antithrombotiques sont des médicaments qui empêchent la formation de caillots sanguins ( thrombose ) .
+ Angiox est utilisé - Chez les patients souffrant de douleurs thoraciques dues à une affection cardiaque ( syndromes coronariens aigus SCA )
+ - Chez les patients qui bénéficient d' une intervention chirurgicale destinée à traiter des obstructions
+ QUELLES SONT LES INFORMATIONS À CONNAITRE AVANT D' UTILISER ANGIOX
+ N' utilisez jamais Angiox :
+ - si vous êtes hypersensible ( allergique ) à la bivalirudine ou à l' un des autres composants contenus dans Angiox ( voir liste rubrique 6 ) .
+ - si vous présentez ou avez récemment présenté un saignement au niveau de l' estomac , des intestins , de la vessie ou d' autres organes , par exemple si vous avez du sang anormal dans vos selles ou vos urines ( excepté un saignement menstruel ) .
+ - si vous avez présenté des troubles de la coagulation sanguine ou un faible nombre de plaquettes
+ - si vous avez ou avez eu une hypertension ( tension artérielle élevée ) sévère non contrôlée .
+ - si vous avez ou avez eu une infection du tissu cardiaque .
+ Prise d' autres médicaments :
+ Veuillez informer votre médecin :
+ - si vous prenez ou avez pris récemment un autre médicament , même s' il s' agit d' un médicament obtenu sans ordonnance .
+ - si vous avez été traité par des produits similaires à Angiox ( par exemple lépirudine )
+ En effet , ces médicaments peuvent augmenter le risque de saignement s' ils sont administrés en même temps qu' Angiox .
+ Grossesse et allaitement
+ Vous devez prévenir votre médecin :
+ - Si vous êtes enceinte ou pensez l' être
+ L' utilisation d' Angiox n' est recommandée en cas de grossesse qu' en cas de nécessité absolue .
+ Votre médecin évaluera si ce traitement est ou non approprié pour vous .
+ Si vous allaitez , votre médecin déterminera si Angiox peut être utilisé .
+ Effets sur l' aptitude à conduire des véhicules et à utiliser des machines
+ Les effets sur l' aptitude à conduire des véhicules et à utiliser des machines n' ont pas été étudiés , toutefois les effets sont connus pour être de courte durée .
+ Angiox est uniquement administré à l' hôpital .
+ Il est donc peu susceptible d' affecter votre capacité à conduire des véhicules ou à utiliser des machines .
+ COMMENT UTILISER ANGIOX
+ Votre traitement sera surveillé par un médecin .
+ Votre médecin déterminera quelle quantité d' Angiox vous sera administrée et la préparera .
+ - Pendant la procédure , votre médecin vous examinera pour contrôler tout signe de saignement .
+ Si un saignement se produit , le traitement sera arrêté .
+ - Avant le début de la procédure , votre médecin vous informera sur les signes de réaction allergique ( hypersensibilité ) .
+ Ces réactions se produisent rarement ( environ 1 pour 1000 patients traités ) .
+ - Si vous suivez une procédure de type brachythérapie bêta ou gamma , votre médecin vous contrôlera encore plus soigneusement .
+ - La dose administrée dépend de votre poids et du traitement qui vous a été prescrit .
+ Dosage
+ Pour les patients atteints d' un SCA , la dose initiale recommandée est :
+ Un bolus intraveineux de 0,1 mg / kg suivi d' une perfusion de 0,25 mg / kg / h .
+ ( 0.1 mg / kg signifie un dixième d' un milligramme du médicament pour chaque kilogramme de poids corporel ;
+ 0.25 mg / kg / h signifie un quart d' un milligramme pour chaque kilogramme de poids corporel , par heure )
+ Si , après cela , vous devez bénéficier d' une intervention coronaire percutanée ( ICP ) , il vous sera administré :
+ - Un bolus additionnel de 0,5 mg / kg et la perfusion sera augmentée à 1,75 mg / kg / h .
+ - Après l' intervention , la perfusion sera ramenée à 0,25 mg / kg / h .
+ Pour les patients bénéficiant d' une intervention coronaire percutanée ( ICP ) , la dose recommandée est :
+ - Un bolus intraveineux de 0,75 mg / kg , suivi d' une perfusion ( solution en goutte à goutte ) de 1,75 mg / kg / heure ( la perfusion peut être poursuivie pendant une période allant jusqu' à 4 heures ) .
+ La dose d' Angiox sera réduite si vous avez des problèmes rénaux modérés .
+ Votre médecin déterminera la durée de votre traitement .
+ Symptômes et instructions en cas de surdosage
+ Les doses étant minutieusement vérifiées par le médecin , un surdosage est très peu probable .
+ Instructions en cas d' omission d' une ou de plusieurs doses
+ Le médecin administrant et surveillant le traitement , une omission est très peu probable .
+ Pour toutes questions supplémentaires quant à l' utilisation de ce produit , contacter votre médecin .
+ QUELS SONT LES EFFETS INDESIRABLES EVENTUELS
+ Comme tous les médicaments , Angiox est susceptible d' avoir des effets indésirables .
+ S' il se produit des effets indésirables , ceux-ci peuvent nécessiter des soins médicaux .
+ L' effet indésirable le plus fréquemment observé avec un traitement par Angiox est un saignement .
+ Dans de très rares cas , ils peuvent entraîner la mort ( moins de 1 patient sur 10.000 ) .
+ Un saignement est plus susceptible d' avoir lieu lorsque Angiox est combiné à un autre anticoagulant ou antithrombotique ( voir section 2 " Prise d' autres médicaments " ) .
+ Si vous remarquez un des effets indésirables , potentiellement sévères , suivants :
+ Lorsque vous êtes à l' hôpital : prévenez immédiatement votre médecin ou votre infirmière .
+ Après votre sortie de l' hôpital : dirigez vous immédiatement au service des urgences de l' hôpital le plus proche
+ - Des saignements , effet indésirable fréquent ( moins de 1 pour 10 patients traités ) .
+ Il peut en résulter des complications de type anémie ( un déficit en globules rouges ) ou hématome ( hémorragie )
+ - Des réactions allergiques ou d' hypersensibilité à Angiox , telles que des réactions urticariennes ,
+ des démangeaisons généralisées ( urticaire ) , une sensation d' oppression dans la poitrine .
+ Ces réactions sont peu fréquentes ( moins de 1 pour 100 patients traités ) .
+ - Des thromboses ( caillots sanguins ) qui peuvent entraîner des complications sévères comme une crise cardiaque .
+ Ce sont des effets indésirables peu fréquents ( moins de 1 pour 100 patients traités ) .
+ - Des douleurs , saignements et hémorragies au site de ponction sont des effets indésirables rares ( moins de 1 pour 1000 patients traités )
+ Si vous remarquez un des effets iindésirables , potentiellement moins sévères , suivants :
+ - Hémorragie grave ( ce qui peut être due à une réduction de votre nombre de plaquettes et empêche la coagulation nécessaire de votre sang )
+ - Maux de tête
+ - Variation de la pression sanguine
+ - Modification de la fréquence cardiaque
+ - Nausées et / ou vomissements
+ - Douleur dorsale
+ - Douleur thoracique
+ - Essoufflements
+ - Eruption cutanée
+ Ces effets indésirables sont peu fréquents ( moins de 1 pour 100 patients traités )
+ Si vous remarquez des effets indésirables non mentionnés dans cette notice , ou si certains effets indésirables deviennent graves , veuillez en informer votre médecin .
+ COMMENT CONSERVER ANGIOX
+ Conserver hors de la portée et de la vue des enfants .
+ Angiox ne doit pas être utilisé après la date d' expiration indiquée sur l' étiquette et le carton après le " EXP " .
+ La date d' expiration se rapporte au dernier jour de ce mois .
+ à conserver au réfrigérateur ( entre 2 °C et 8 °C ) .
+ La solution doit être claire à légèrement opalescente , incolore à légèrement
+ Le docteur vérifiera la solution et la jettera , si elle contient des particules ou est décolorée .
+ INFORMATIONS SUPPLEMENTAIRES
+ Que contient l' Angiox
+ La substance active est la bivalirudine .
+ Les autres composants sont le mannitol et l' hydroxyde de sodium .
+ à quoi ressemble l' Angiox 33
+ Angiox est une poudre blanche à blanc cassé conservée dans un flacon en verre .
+ Angiox est disponible en boîtes en carton de 2 et 10 flacons .
+ Toutes les présentations peuvent ne pas être commercialisées .
+ Titulaire de l' Autorisation de mise sur le marché
+ The Medicines Company UK Limited 115L Milton Park Abingdon Oxfordshire OX14 4SA ROYAUME-UNI
+ Fabricant
+ Hälsa Pharma GmbH Immermannstraße 9.33619 Bielefeld Allemagne
+ Pour toute information complémentaire concernant ce médicament , veuillez prendre contact avec le représentant local du titulaire de l' autorisation de mise sur le marché .
