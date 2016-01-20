@@ -15,7 +15,10 @@ translate_form(dl(1,dl(0,np,s),dl(0,np,s)), dl(1,dl(0,lit(np(nom,A,B)),lit(s(C))
 translate_form(dr(0,dr(0,dl(0,np,s),dl(0,np,s)),dr(0,dl(0,np,s),dl(0,np,s))),
 	       dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(C))),dl(0,lit(np(nom,D,E)),lit(s(F)))),dr(0,dl(0,lit(np(nom,A,B)),lit(s(C))),dl(0,lit(np(nom,D,E)),lit(s(F)))))).
 translate_form(dr(0,dl(0,s,s),dl(0,s,s)), dr(0,dl(0,lit(s(X)),lit(s(Y))),dl(0,lit(s(X)),lit(s(Y))))).
-
+translate_form(dr(0,dl(0,np,dl(0,dr(0,s,np),s)),dl(0,np,dl(0,dr(0,s,np),s))),
+	       dr(0,dl(0,lit(np(A,B,C)),dl(0,dr(0,lit(s(D)),lit(np(A,B,C))),lit(s(D)))),dl(0,lit(np(A,B,C)),dl(0,dr(0,lit(s(D)),lit(np(A,B,C))),lit(s(D)))))).
+translate_form(dr(0,dl(0,np,dl(0,dr(0,s,np),s)),dl(0,np,s_ppres)),
+	       dr(0,dl(0,lit(np(nom,B,C)),dl(0,dr(0,lit(s(D)),lit(np(nom,B,C))),lit(s(D)))),dl(0,lit(np(nom,B,C)),lit(s(ppres))))).
 % vp with infinitive subject
 translate_form(dr(0,dl(0,dl(0,np,s),s),dl(0,dl(0,np,s),s)),
 	       dr(0,dl(0,dl(0,lit(np(nom,A,B)),lit(s(C))),lit(s(D))),dl(0,dl(0,lit(np(nom,A,B)),lit(s(C))),lit(s(D))))).
