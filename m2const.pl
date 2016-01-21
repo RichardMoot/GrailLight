@@ -55,7 +55,7 @@ xml_files(File) :-
 % xml_files('flmf7ao1ep.xml', ao1).
 % xml_files('flmf7ao2ep.xml', ao2).
 % xml_files('flmf7ap1ep.af.cat.xml', ap1).
-xml_files('flmf7aq2ep.xd.cat.xml', aq2).
+% xml_files('flmf7aq2ep.xd.cat.xml', aq2).
 % xml_files('flmf7as2ep.af.cat.xml', as2).
 % xml_files('flmf7atep.cat.xml', at).
 %
@@ -64,7 +64,7 @@ xml_files('flmf7aq2ep.xd.cat.xml', aq2).
 %
 % xml_files('annodis.er.xml', annodis).
 % xml_files('frwiki1.xml', frwiki1).
-% xml_files('frwiki2.xml', frwiki2).
+xml_files('frwiki2.xml', frwiki2).
 % xml_files('Europar.550.xml', europar).
 % xml_files('emea-fr-dev.xml', emea_d).
 % xml_files('emea-fr-test.xml', emea_t).
