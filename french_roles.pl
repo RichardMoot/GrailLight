@@ -743,3 +743,6 @@ get_roles1(classer, [np, cl_r, adj], [patient, null, theme]).
 get_roles1(confesser, [np, cl_r, adj], [agent, null, theme]).
 
 get_roles1(révéler, [np, cl_r, adj], [patient, null, theme]).
+
+get_roles1(élever, [np, cl_r, pp(à)], [patient, null, theme]).
+get_roles1(élever, [np, cl_r, pp(contre)], [agent, null, theme]).
