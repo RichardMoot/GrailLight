@@ -8,6 +8,7 @@ autom4te.cache/*
 # XML files
 *.xml
 # automatically generated Prolog files
+*head.pl
 itipy*
 aa*.pl
 ab*.pl
