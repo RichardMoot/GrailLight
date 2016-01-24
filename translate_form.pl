@@ -308,6 +308,8 @@ translate_form(dr(0,dl(0,pp,dr(0,s,dr(0,s,dia(1,box(1,pp))))),pp),
 translate_form(dr(0,dl(0,pp,dl(1,s,s)),dr(0,s,dia(1,box(1,pp)))),
 	       dr(0,dl(0,lit(pp(A)),dl(1,lit(s(B)),lit(s(B)))),dr(0,lit(s(_)),dia(1,box(1,lit(pp(A))))))).
 % gapping
+translate_form(dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,s,pp)))),dr(0,s,box(1,dia(1,dr(0,s,pp))))),dr(0,s,dia(1,box(1,dr(0,s,pp))))),
+	       dr(0,dl(0,dr(0,lit(s(A)),dia(1,box(1,dr(0,lit(s(B)),lit(pp(C)))))),dr(0,lit(s(A)),box(1,dia(1,dr(0,lit(s(B)),lit(pp(C))))))),dr(0,lit(s(_)),dia(1,box(1,dr(0,lit(s(_)),lit(pp(_)))))))).
 translate_form(dr(0,dl(0,dr(0,dr(0,s,np),dia(0,box(0,pp))),dr(0,dr(0,s,np),pp)),dr(0,dr(0,s,np),dia(0,box(0,pp)))),
 	       dr(0,dl(0,dr(0,dr(0,lit(s(A)),lit(np(B,C,D))),dia(0,box(0,lit(pp(E))))),dr(0,dr(0,lit(s(A)),lit(np(B,C,D))),lit(pp(E)))),dr(0,dr(0,lit(s(_)),lit(np(_,_,_))),dia(0,box(0,lit(pp(_))))))).
 translate_form(dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),dl(0,np,s))))),dr(0,s,box(1,dia(1,dr(0,dl(0,np,s),dl(0,np,s)))))),dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),dl(0,np,s)))))),
