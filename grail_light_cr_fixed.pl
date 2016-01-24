@@ -609,7 +609,7 @@ create_item(F0, P, W, Pos, Lemma, N0, N1, IN, [word(IN)-t(W,PosTT,Lemma,F)|Ss], 
 	macro_expand(F0, F1),
 	get_pos_tt(Pos, PosTT),
 	enrich_formula(Lemma, PosTT, F1),
-	correct_formula(PosTT, F1, F),
+	correct_formula(Lemma, PosTT, F1, F),
 	create_data(W, F, Lemma, word(IN), P, N0, N1, Data).
 
 % = get_semantics(+ChartItem, ?Semantics)
@@ -732,6 +732,8 @@ enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(n))) :-
 	!.
+enrich_formula(pour, _, dr(0,lit(pp(pour)),lit(s(q)))) :-
+	!.
 enrich_formula(contre, _, dr(0,lit(pp(contre)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(contre, _, dr(0,lit(pp(contre)),lit(n))) :-
@@ -760,28 +762,86 @@ enrich_formula(L, _, dr(0,lit(pp(L)),lit(np(acc,_,_)))) :-
 	!.
 enrich_formula(L, _, dr(0,lit(pp(L)),lit(n))) :-
 	!.
+% preposed prepositions
+enrich_formula(L, _, dr(0, dr(0, lit(s(S)), dr(0, lit(s(S)), dia(1, box(1, lit(pp(L)))))), lit(np(acc,_,_)))) :-
+	!.
+enrich_formula(L, _, dr(0, dr(0, lit(s(S)), dr(0, lit(s(S)), dia(1, box(1, lit(pp(L)))))), lit(n))) :-
+	!.
+% = quoted speech (note that only sentence-modifier, as used here, works correctly for the entire corpus)
+enrich_formula(_, ver:futu, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
+	!.
+enrich_formula(_, ver:pres, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
+	!.
+enrich_formula(_, ver:impf, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(nom,_,_)))) :-
+	!.
+enrich_formula(_, ver:impe, lit(s(impe))) :-
+	!.
+enrich_formula(_, ver:_, lit(s(main))) :-
+	!.
+enrich_formula(_, int, lit(s(main))) :-
+	!.
+enrich_formula(_, adv, lit(s(main))) :-
+	!.
+enrich_formula(_, ver:impe, dr(0, lit(s(impe)), lit(s(q)))) :-
+	!.
+enrich_formula(_, ver:_, dr(0, lit(s(main)), lit(s(q)))) :-
+	!.
+enrich_formula(_, ver:impe, dr(0, lit(s(impe)), lit(cl_r))) :-
+	!.
+enrich_formula(_, ver:impe, dr(0,lit(s(impe)),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))) :-
+	!.
+enrich_formula(_, ver:_, dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))) :-
+	!.
+enrich_formula(_, prp, dr(0, dl(1, lit(s(S)), lit(s(S))), lit(np(acc,_,_)))) :-
+	!.
+enrich_formula(_, prp, dr(0, dr(0, lit(s(S)), lit(s(S))), lit(np(acc,_,_)))) :-
+	!.
+enrich_formula(_, pun, dr(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
+	!.
+enrich_formula(_, pun, dl(0, dl(0, dl(0, lit(np(_,_,_)), lit(s(_))), lit(s(S))), lit(s(S)))) :-
+	!.
+enrich_formula(_, kon, dl(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
+	!.
+enrich_formula(_, ver:_, dr(0,dr(0,lit(s(main)),dl(1,lit(s(S)),lit(s(S)))),lit(np(nom,_,_)))) :-
+	!.
 enrich_formula(_, _, _).
 
-% = correct_formula(+TTPostag, +Formula, -CorrectedFormula)
+% = correct_formula(+Lemma, +TTPostag, +Formula, -CorrectedFormula)
 %
 % sometimes, the correct formula translation is decided in part by the POS-tag (eg. for an imperative, the argument np is an
 % accusative instead of a nominative); this predicate corrects the formula based on the POS-tag information; defaults to
 % leaving the formula as is
 
-correct_formula(pro:rel, dl(0, dr(0, dl(0, lit(np(A,B,C)), lit(s(main))), lit(np(D,E,F))), lit(s(whq))),
+correct_formula(_, pro:rel, dl(0, dr(0, dl(0, lit(np(A,B,C)), lit(s(main))), lit(np(D,E,F))), lit(s(whq))),
 		         dl(0, dr(0, dl(0, lit(np(A,B,C)), lit(s(_))), lit(np(D,E,F))), lit(s(whq)))) :-
 	!.
-correct_formula(adv, dr(0, dl(0, lit(np(nom, A, B)), lit(s(main))), lit(s(q))), dr(0, dl(0,lit(np(nom,A,B)), lit(s(_))), lit(s(q)))) :-
+correct_formula(_, adv, dr(0, dl(0, lit(np(nom, A, B)), lit(s(main))), lit(s(q))), dr(0, dl(0,lit(np(nom,A,B)), lit(s(_))), lit(s(q)))) :-
 	!.
-correct_formula(ver:impe, dr(0, lit(s(S)),lit(np(nom,A,B))), dr(0, lit(s(S)), lit(np(acc,A,B)))) :-
+correct_formula(_, ver:impe, dr(0, lit(s(_)),lit(np(nom,A,B))), dr(0, lit(s(impe)), lit(np(acc,A,B)))) :-
 	!.
-correct_formula(ver:impe, dr(0, dr(0, lit(s(S)),lit(np(nom,A,B))), lit(pp(P))), dr(0, dr(0, lit(s(S)), lit(np(acc,A,B))), lit(pp(P)))) :-
+correct_formula(_, ver:impe, dr(0, dr(0, lit(s(_)),lit(np(nom,A,B))), lit(pp(P))), dr(0, dr(0, lit(s(impe)), lit(np(acc,A,B))), lit(pp(P)))) :-
 	!.
-correct_formula(ver:impe, dr(0, dr(0, lit(s(S)), lit(pp(P))),lit(np(nom,A,B))), dr(0, dr(0, lit(s(S)), lit(pp(P))), lit(np(acc,A,B)))) :-
+correct_formula(_, ver:impe, dr(0, dr(0, lit(s(_)), lit(pp(P))),lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(pp(P))), lit(np(acc,A,B)))) :-
 	!.
-correct_formula(ver:impe, dr(0, dr(0, lit(s(S)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(S)), lit(s(Q))), lit(np(acc,A,B)))) :-
+correct_formula(_, ver:impe, dr(0, dr(0, lit(s(_)), lit(s(Q))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(impe)), lit(s(Q))), lit(np(acc,A,B)))) :-
 	!.
-correct_formula(_, F, F).
+correct_formula(_, ver:impe, dr(0, dr(0, lit(s(_)), dl(0, lit(n), lit(n))), lit(np(nom,A,B))), dr(0, dr(0, lit(s(_)), dl(0, lit(n), lit(n))), lit(np(acc,A,B)))) :-
+	!.
+correct_formula(_, ver:impe, dr(0, dr(0, lit(s(_)), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))), lit(cl_r)),
+		             dr(0, dr(0, lit(s(impe)), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))), lit(cl_r))) :-
+	!.
+correct_formula(_, ver:infi, dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(_)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))),
+		             dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(base)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C)))))) :-
+	!.
+% "faire echo/allusion" 
+correct_formula(faire, ver:_, dr(0,dr(0,dr(0,lit(s(A)),lit(np(acc,B,C))),lit(pp(D))),lit(np(nom,E,F))),
+		              dr(0,dr(0,dr(0,lit(s(A)),lit(np(nom,B,C))),lit(pp(D))),lit(np(acc,E,F)))).
+% "donner lieu"
+correct_formula(donner, ver:_, dr(0,dr(0,dr(0,lit(s(A)),lit(np(acc,B,C))),lit(pp(D))),lit(np(nom,E,F))),
+		               dr(0,dr(0,dr(0,lit(s(A)),lit(np(nom,B,C))),lit(pp(D))),lit(np(acc,E,F)))).
+
+%correct_formula(ver:_, dr(0, dl(1, lit(s(_)), lit(s(S2))), lit(np(_,A,B))), dr(0, dl(1, lit(s(S1)), lit(s(S2))), lit(np(nom,A,B)))
+correct_formula(_, _, F, F).
 
 
 get_pos_tt(Pos, PosTT) :-
@@ -1842,14 +1902,14 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 		  item(X, I, J, Data1),
 		  item(lit(s(S)), I0, K0, Data2)],
 	          item(lit(s(S)),I0, K, Data),
-	         [I=49,J=51,S=main,I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
+	         [I=5,J=8,S=main,I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
 % FIXED: S
 inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
-	  [J=51,J=<K,S=main,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
+	  [J=8,J=<K,S=main,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
 % require empty stacks for gap_e to avoid strange scopings
 % FIXED: S
 inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
@@ -2138,27 +2198,38 @@ check_wrap(lit(s(S)), _, _, data(_,_,_,_,As,Bs,_,_)) :-
     ;
         Bs = []
     ).
-%check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
-%	S == main,
-%	!,
-%	Bs = [].
-%check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-%	S == ppart,
-%	!,
-%	As = [],
-%	Bs = [].
-check_wrap(dl(0,lit(np(_,_,_)),lit(s(_))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
+% check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
+% 	S == main,
+% 	!,
+% 	Bs = [].
+% check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == ppart,
+% 	!,
+% 	As = [],
+% 	Bs = [].
+% check_wrap(dl(0,lit(np(_,_,_)),lit(s(S))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == pass,
+% 	!,
+% 	As = [],
+% 	Bs = [].
+check_wrap(dl(0,lit(np(_,_,_)),lit(s(_))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
 	!,
+	As = [],
 	Bs = [].
-check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))), _, _, data(_,_,_,_,_,Bs,_,_)) :-
-%	S == ppart,
+check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
 	!,
+	As = [],
 	Bs = [].
-%check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
-%	S == pass,
-%	!,
-%	As = [],
-%	Bs = [].
+% check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == ppart,
+% 	!,
+% 	As = [],
+% 	Bs = [].
+% check_wrap(dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(S)))), _, _, data(_,_,_,_,As,Bs,_,_)) :-
+% 	S == pass,
+% 	!,
+% 	As = [],
+% 	Bs = [].
 check_wrap(_, _, _, _).
 
 
