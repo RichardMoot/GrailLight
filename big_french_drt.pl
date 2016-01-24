@@ -110,6 +110,8 @@ custom_first_order(dia(0,box(0,A0)), dia(0,box(0,A)), P, [X,Y]) :-
 % coordination
 
 
+macro(dr(0,dr(0,s,np),dr(0,s,np)), dr(0,dr(0,lit(s(X)),lit(np(U,V,W))),dr(0,lit(s(X)),lit(np(U,V,W))))).
+macro(dl(0,dr(0,s,np),dr(0,s,np)), dl(0,dr(0,lit(s(X)),lit(np(U,V,W))),dr(0,lit(s(X)),lit(np(U,V,W))))).
 macro(dr(0,dl(0,np,s),dl(0,np,s)), dr(0,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
 macro(dl(0,dl(0,np,s),dl(0,np,s)), dl(0,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
 macro(dl(1,dl(0,np,s),dl(0,np,s)), dl(1,dl(0,lit(np(U,V,W)),lit(s(X))),dl(0,lit(np(U,V,W)),lit(s(X))))).
