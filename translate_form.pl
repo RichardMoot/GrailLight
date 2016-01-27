@@ -254,6 +254,10 @@ translate_form(dr(0,dr(0,dl(0,np,s_inf),pp_a),dl(0,n,n)),dr(0,dr(0,dl(0,lit(np(n
 translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),pp),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s_inf)),s_q),np),dr(0,dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(inf(base))))),lit(s(q))),lit(np(acc,_,_)))).
 translate_form(dl(0,np,dl(0,np,s_inf)),dl(0,lit(np(acc,_,_)),dl(0,lit(np(nom,_,_)),lit(s(inf(base)))))).
+translate_form(dr(0,dr(0,dl(0,cl_r,s),dl(0,cl_r,dl(0,np,s_ppart))),np),
+	       dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(ppart))))),lit(np(nom,A,B)))).
+translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,np,s_inf)),np),
+	       dr(0,dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(np(acc,_,_)))).
 
 % clitics
 translate_form(dr(0,dl(0,np,s),dr(0,dl(0,np,s),dia(1,box(1,np)))), dr(0,dl(0,lit(np(U,V,W)),lit(s(X))),dr(0,dl(0,lit(np(U,V,W)),lit(s(X))),dia(1,box(1,lit(np(acc,_,_))))))).
