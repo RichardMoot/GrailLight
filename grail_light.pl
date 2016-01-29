@@ -808,6 +808,14 @@ enrich_formula(_, kon, dl(0, dl(0, lit(np(_,_,_)), lit(s(S))), lit(s(S)))) :-
 	!.
 enrich_formula(_, ver:_, dr(0,dr(0,lit(s(main)),dl(1,lit(s(S)),lit(s(S)))),lit(np(nom,_,_)))) :-
 	!.
+enrich_formula(le,    pro:per, dr(0, _, dr(0, _, dia(1, box(1, lit(np(acc,_,3-s))))))) :-
+	!.
+enrich_formula('l\'', pro:per, dr(0, _, dr(0, _, dia(1, box(1, lit(np(acc,_,3-s))))))) :-
+	!.
+enrich_formula(la,    pro:per, dr(0, _, dr(0, _, dia(1, box(1, lit(np(acc,_,3-s))))))) :-
+	!.
+enrich_formula(les,   pro:per, dr(0, _, dr(0, _, dia(1, box(1, lit(np(acc,_,3-p))))))) :-
+	!.
 enrich_formula(_, _, _).
 
 % = correct_formula(+Lemma, +TTPostag, +Formula, -CorrectedFormula)
@@ -837,7 +845,7 @@ correct_formula(_, ver:impe, dr(0, dr(0, lit(s(_)), dl(0,lit(np(nom,A,B)), lit(s
 correct_formula(_, ver:infi, dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(_)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C))))),
 		             dr(0, dl(0, lit(np(nom,A,B)), lit(s(inf(base)))), dl(0,lit(np(nom,A,B)), lit(s(inf(C)))))) :-
 	!.
-% "faire echo/allusion" 
+% "faire echo/allusion/partie" 
 correct_formula(faire, ver:_, dr(0,dr(0,dr(0,lit(s(A)),lit(np(acc,B,C))),lit(pp(D))),lit(np(nom,E,F))),
 		              dr(0,dr(0,dr(0,lit(s(A)),lit(np(nom,B,C))),lit(pp(D))),lit(np(acc,E,F)))).
 % "donner lieu"
@@ -1787,7 +1795,7 @@ inference(se_dit, [item(dl(1,Y,dl(0,lit(cl_r),X)), J, K, Data2),
 inference(e_start, [item(dr(0,_,dr(0,_,dia(Ind,box(Ind,Y)))), K0, K, _),
 		    item(dr(0,X,Y), I, J, Data0)],
 		    item(X, I, J, Data),
-		   [K=<I,no_island_violation(Ind,X,Y),start_extraction(Y, J, K0, K, Data0, Data)]).
+		   [K=<I,no_island_violation(Ind,I,X,Y),start_extraction(Y, J, K0, K, Data0, Data)]).
 inference(e_end, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 		  item(Y, J, K, Data1)],
 	          item(X, I, K, Data),
@@ -1802,7 +1810,7 @@ inference(e_endd, [item(dr(0,X,dr(0,Y,dia(Ind,box(Ind,Z)))), I, J, Data0),
 inference(e_start_l, [item(dl(0,dr(0,_,dia(0,box(0,Y))),_),K,L,data(_,_,Prob0,_,[],[],[],[])),
 		      item(dr(0,X,Y), I, J, Data0)],
 		      item(X, I, J, Data),
-		     [J=<K,no_island_violation(0,X,Y),start_extraction_l(Y, J, K, L, Prob0, Data0, Data)]).
+		     [J=<K,no_island_violation(0,I,X,Y),start_extraction_l(Y, J, K, L, Prob0, Data0, Data)]).
 inference(e_end_l, [item(dl(0,dr(0,Y,dia(0,box(0,Z))),X), J, K, Data0),
 		    item(Y, I, J, Data1)],
 	            item(X, I, K, Data),
@@ -2126,25 +2134,27 @@ wrappable(dr(0,X,dl(0,lit(np(_,_,_)),lit(s(inf(_))))), Y) :-
 %
 % true if Formula/Gap is a valid point for extraction of Gap
 
-no_island_violation(1, Formula, Gap) :-
-	island_violation(Formula, Gap),
+no_island_violation(1, I, Formula, Gap) :-
+	island_violation(Formula, I, Gap),
 	!,
 	fail.
-no_island_violation(_, _, _).
+no_island_violation(_, _, _, _).
 
 % = island_violation(+Formula, +Gap)
 %
 % true if Gap cannot be extracted from Formula/Gap
 
 % this is right for adjectivally used prepositional phrases, but maybe not for eg. passives: VERIFY!
-island_violation(dl(0,lit(n),lit(n)), lit(np(_,_,_))).
-island_violation(dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lit(np(_,_,_))).
-island_violation(lit(np(_,_,_)), lit(np(_,_,_))).
-island_violation(lit(pp(_)), lit(np(_,_,_))).
-island_violation(dl(1,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
+island_violation(dl(0,lit(n),lit(n)), I, lit(np(_,_,_))) :-
+        /* do not count an adjectively used partciple as an island violation */
+	\+ vp_left(I).
+island_violation(dl(0,lit(np(_,_,_)),lit(np(_,_,_))), _, lit(np(_,_,_))).
+island_violation(lit(np(_,_,_)), _, lit(np(_,_,_))).
+island_violation(lit(pp(_)), _, lit(np(_,_,_))).
+island_violation(dl(1,lit(s(_)),lit(s(_))), _, lit(np(_,_,_))).
 % "il y a"
-island_violation(dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),dl(1,lit(s(_)),lit(s(_))))), lit(np(_,_,_))).
-island_violation(dr(0,lit(s(_)),lit(s(_))), lit(np(_,_,_))).
+island_violation(dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),dl(1,lit(s(_)),lit(s(_))))), _, lit(np(_,_,_))).
+island_violation(dr(0,lit(s(_)),lit(s(_))), _, lit(np(_,_,_))).
 
 check_extraction(0, K, K).
 check_extraction(1, _, _).
