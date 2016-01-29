@@ -189,7 +189,7 @@ macro(s_whq, lit(s(whq))).
 macro(s_top, lit(s(_))).
 macro(s, lit(s(_))).
 
-macro(dia(1,box(1,np)), dia(1,box(1,lit(np(acc,_,3-s))))).
+macro(dia(1,box(1,np)), dia(1,box(1,lit(np(acc,_,_))))).
 
 % =
 
@@ -3227,7 +3227,7 @@ lex('D\'', dr(0,lit(np(_,_,3-_)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
 lex('Du', dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
-lex(des, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
+lex(des, dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
 lex(du, dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
