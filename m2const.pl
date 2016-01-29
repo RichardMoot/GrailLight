@@ -1,6 +1,7 @@
 
 :- module(m2const, [start/0,
 		    start/1,
+		    update_all/0,
 		    export_all/0,
 		    export/1,
 		    export_text/1,
@@ -33,37 +34,37 @@ verbose(false).
 xml_files(File) :-
 	xml_files(File, _).
 
-% xml_files('flmf7aa1ep.cat.xml', aa1).
-% xml_files('flmf7aa2ep.cat.xml', aa2).
-% xml_files('flmf7ab2ep.xml', ab2).
-% xml_files('flmf7ae1ep.cat.xml', ae1).
-% xml_files('flmf7af2ep.cat.xml', af2).
-% xml_files('flmf7ag1exp.cat.xml', ag1).
-% xml_files('flmf7ag2ep.cat.xml', ag2).
-% xml_files('flmf7ah1ep.aa.xml', ah1).
-% xml_files('flmf7ah2ep.aa.xml', ah2).
-% xml_files('flmf7ai1exp.cat.xml', ai1).
-% xml_files('flmf7ai2ep.aa.cat.xml', ai2).
-% xml_files('flmf7aj1ep.indent.xml', aj1).
-% xml_files('flmf7ak1ep.indent.xml', ak1).
-% xml_files('flmf7ak2ep.xd.cat.xml', ak2).
-% xml_files('flmf7al1ep.cat.xml', al1).
-% xml_files('flmf7am1ep.xd.cat.xml', am1).
-% xml_files('flmf7am2ep.xd.cat.xml', am2).
-% xml_files('flmf7an1ep.xml', an1).
-% xml_files('flmf7an2co.af.cat.xml', an2).
-% xml_files('flmf7ao1ep.xml', ao1).
-% xml_files('flmf7ao2ep.xml', ao2).
-% xml_files('flmf7ap1ep.af.cat.xml', ap1).
-% xml_files('flmf7aq2ep.xd.cat.xml', aq2).
-% xml_files('flmf7as2ep.af.cat.xml', as2).
-% xml_files('flmf7atep.cat.xml', at).
-%
-% xml_files('flmf300_13000ep.cat.xml', '300').
-% xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
-%
-% xml_files('annodis.er.xml', annodis).
-% xml_files('frwiki1.xml', frwiki1).
+xml_files('flmf7aa1ep.cat.xml', aa1).
+xml_files('flmf7aa2ep.cat.xml', aa2).
+xml_files('flmf7ab2ep.xml', ab2).
+xml_files('flmf7ae1ep.cat.xml', ae1).
+xml_files('flmf7af2ep.cat.xml', af2).
+xml_files('flmf7ag1exp.cat.xml', ag1).
+xml_files('flmf7ag2ep.cat.xml', ag2).
+xml_files('flmf7ah1ep.aa.xml', ah1).
+xml_files('flmf7ah2ep.aa.xml', ah2).
+xml_files('flmf7ai1exp.cat.xml', ai1).
+xml_files('flmf7ai2ep.aa.cat.xml', ai2).
+xml_files('flmf7aj1ep.indent.xml', aj1).
+xml_files('flmf7ak1ep.indent.xml', ak1).
+xml_files('flmf7ak2ep.xd.cat.xml', ak2).
+xml_files('flmf7al1ep.cat.xml', al1).
+xml_files('flmf7am1ep.xd.cat.xml', am1).
+xml_files('flmf7am2ep.xd.cat.xml', am2).
+xml_files('flmf7an1ep.xml', an1).
+xml_files('flmf7an2co.af.cat.xml', an2).
+xml_files('flmf7ao1ep.xml', ao1).
+xml_files('flmf7ao2ep.xml', ao2).
+xml_files('flmf7ap1ep.af.cat.xml', ap1).
+xml_files('flmf7aq2ep.xd.cat.xml', aq2).
+xml_files('flmf7as2ep.af.cat.xml', as2).
+xml_files('flmf7atep.cat.xml', at).
+
+xml_files('flmf300_13000ep.cat.xml', '300').
+xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
+
+xml_files('annodis.er.xml', annodis).
+xml_files('frwiki1.xml', frwiki1).
 xml_files('frwiki2.xml', frwiki2).
 % xml_files('Europar.550.xml', europar).
 % xml_files('emea-fr-dev.xml', emea_d).
@@ -103,6 +104,69 @@ start(XMLFile) :-
 	load_structure(XMLFile, L0, [dialect(xml), space(default)]),
 	delete_all_spaces(L0, L),
 	xml_to_const(L, 0, _, 0, _).
+
+update_all :-
+	user:abolish(word/4),
+	user:retractall(lemma(_,_,_,_)),
+	user:retractall(word(_,_,_,_)),
+	user:retractall(constituent(_,_,_,_)),
+	findall(F, xml_files(F), Files0),
+	update_files(Files0, Files, Warn),
+	nl(user_error),
+	export_all(Files),
+	format('~n= Update done!=~2n', []),
+	format('Exported: ~@', [print_flat_list(Files)]),
+	format('Warning : ~@', [print_flat_list(Warn)]).
+
+% = update_files(+AllFiles, -UpdatedFiles, -Changed)
+%
+% 
+
+update_files([], [], []).
+update_files([XMLFile|Fs0], Fs, Ws) :-
+	xml_files(XMLFile, FileRoot),
+	atom_concat(FileRoot, 'head.pl', HeadFile),
+	check_exists(HeadFile),
+	atom_concat('head/', HeadFile, HHeadFile),
+	check_exists(HHeadFile),
+	atom_concat(FileRoot, '.pl', TargetFile),
+	time_file(HeadFile, Time),
+	time_file(HHeadFile, Time1),
+        time_file(TargetFile, Time2),
+	time_file(XMLFile, TimeX),
+	atomic_list_concat(['diff ', HHeadFile, ' ', HeadFile, '> /dev/null'], Cmd),
+  (
+        /* check if corresponding file extracted from treebank is newer and different */
+	/* warn if it is */
+	Time1 > Time,
+	\+ shell(Cmd)  
+  ->
+        format(user_error, '{Warning: file "~p" has been updated}~n', [HHeadFile]),
+        Ws = [FileRoot|Ws1]
+  ;
+        Ws = Ws1
+  ),	   
+  (
+	/* schedule file only if either the xml or the head file has changed */  
+        Time2 > max(Time,TimeX)
+  ->
+        format(user_error, '(~p) ', [FileRoot]),
+        Fs = Fs1
+  ;
+        format(user_error, '~p ', [FileRoot]),
+        Fs = [FileRoot|Fs1]
+  ),
+        update_files(Fs0, Fs1, Ws1).
+
+print_flat_list([]) :-
+	format('none!~n', []).
+print_flat_list([X|Xs]) :-
+	print_flat_list(Xs, X).
+print_flat_list([], X) :-
+	format('~p~n', [X]).
+print_flat_list([X|Xs], Y) :-
+	format('~p, ', [Y]),
+	print_flat_list(Xs, X).
 
 export_all :-
 	findall(FileRoot, xml_files(_, FileRoot), List),
