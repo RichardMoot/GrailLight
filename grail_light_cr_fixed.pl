@@ -1902,14 +1902,14 @@ inference(gap_i, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),b
 		  item(X, I, J, Data1),
 		  item(lit(s(S)), I0, K0, Data2)],
 	          item(lit(s(S)),I0, K, Data),
-	         [I=5,J=8,S=main,I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
+	         [I=2,J=3,S=main,I0=<I,J=<K0,combine_gap(I0,K,Data1,Data2,Data0,Data)]).
 % complex gap:
 % (start extraction from licensor at position 0)
 % FIXED: S
 inference(gap_c, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
 		  item(dr(0,Z,Y), I, J, Data0)],
 	          item(Z, I, J, Data),
-	  [J=8,J=<K,S=main,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
+	  [J=999,J=<K,S=main,start_extraction_l0(Y, J, K, L, Prob0, Data0, Data)]).
 % require empty stacks for gap_e to avoid strange scopings
 % FIXED: S
 inference(gap_e, [item(dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,dr(0,X,Y)))),dr(0,lit(s(S)),box(Ind,dia(Ind,dr(0,X,Y))))), K, L, data(_,_,Prob0,_,[],[],[],[])),
