@@ -262,6 +262,29 @@ transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
 	rule_conclusion(ProofC1, ProsC1, _, _),
 	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
 	!.
+transform_proof(rule(gap_i, GoalPros, D-Sem, [Proof3, Proof2, Proof1]), N0, N,
+		rule(dr, GoalPros, D-Sem,
+		     [rule(dl, p(0,ProsC2,Pros1), dr(0,Y,box(I,dia(I,dl(0,Z,V))))-appl(Term2,lambda(Var,TermX)),
+			   [rule(drdiaboxi(I,N0), ProsC2, X-lambda(Var,TermX), [ProofC1]),
+			    Proof1
+			   ]),
+		      Proof2
+		     ])) :-
+	N1 is N0 + 1,
+	Sem = appl(appl(Term2,lambda(Var,TermX)),_Term0),
+	rule_conclusion(Proof1, Pros1, ExtrForm, _),
+	/* special case for vp gapping */
+	rule_conclusion(Proof2, Pros2, dl(0,Z,V), _),
+	/* do a recursive transformation before replace_proof_bag which may otherwise erase information */
+	transform_proof1(Proof3, N1, N, Proof4), 
+	rule_conclusion(Proof4, _Pros3, _, _),
+	ExtrForm = dl(0,X,dr(0,Y,box(I,dia(I,dl(0,Z,V))))),
+	bag_of_words(Pros2, Bag),
+	replace_proof_bag(Proof4, Bag, '$VAR'(N0), rule(hyp(N0), '$VAR'(N0), dl(0,Z,V)-Var, []), ProofC1),
+	/* TODO: globally replace Sem by Var in all of ProofC0 */
+	rule_conclusion(ProofC1, ProsC1, _, _),
+	replace_pros(ProsC1, '$VAR'(N0), '$TRACE'(N0), ProsC2),
+	!.
 
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 		rule(dr, GoalPros, D-Sem,
@@ -276,6 +299,21 @@ transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 	/* Pros = (prosody of) argument B */ 
 	find_e_start(Proof2, ef_start, X, ExtrForm, dr(0,A,B), N0, Pros, Proof3),
 	global_replace_pros(Proof3, Pros, p(0,'$VAR'(N0), Pros), N0, Proof4),
+	N is N0 + 1,
+	!.
+transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
+		rule(dr, GoalPros, D-Sem,
+		     [Proof1,
+		      rule(drdiaboxi(I,N0), YZ, dr(0,C,dia(I,box(I,dl(0,A,B))))-true,
+			   [Proof4])
+		     ])) :-
+        /* X = "et", YZ = sentence with extracted verb */
+	GoalPros = p(_,X,YZ),
+	ExtrForm = dr(0,D,dr(0,C,dia(I,box(I,dl(0,A,B))))),
+	rule_conclusion(Proof1, X, ExtrForm, _),
+	/* Pros = (prosody of) argument A */ 
+	find_e_start(Proof2, ef_start_iv, X, ExtrForm, dl(0,A,B), N0, Pros, Proof3),
+	global_replace_pros(Proof3, Pros, p(0, Pros, '$VAR'(N0)), N0, Proof4),
 	N is N0 + 1,
 	!.
 transform_proof(rule(e_end, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
@@ -821,6 +859,12 @@ find_e_start(rule(gap_c, Pros, A-Sem, [Proof,rule(_, Y, EF-_,_)]),
 find_e_start(rule(ef_start, Pros, A-Sem, [rule(_, Y, EF-_, _), Proof]),
 	     ef_start, X, EF, dr(0,A,B), N, Pros,
 	     rule(dr, Pros, A-Sem, [rule(hyp(N),'$VAR'(N),dr(0,A,B)-Var0,[]),Proof])) :-
+	Sem = appl(Var0, _),
+	match_pros_i(X, Y),
+	!.
+find_e_start(rule(ef_start_iv, Pros, B-Sem, [rule(_, Y, EF-_, _), Proof]),
+	     ef_start_iv, X, EF, dl(0,A,B), N, Pros,
+	     rule(dl, Pros, A-Sem, [Proof,rule(hyp(N),'$VAR'(N),dl(0,A,B)-Var0,[])])) :-
 	Sem = appl(Var0, _),
 	match_pros_i(X, Y),
 	!.
