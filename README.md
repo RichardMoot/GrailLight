@@ -56,7 +56,7 @@ The file `annodis.pl` has been extracted from the
 
 # References
 
-Marie Candito and Djam&eacute; Seddah, (2012) _Le corpus Sequoia : annotation
+Marie Candito and Djam&eacute; Seddah (2012) _Le corpus Sequoia : annotation
 syntaxique et exploitation pour l’adaptation d’analyseur par pont
 lexical_, Proceedings TALN'2012, Grenoble, France.
 
