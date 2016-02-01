@@ -42,9 +42,9 @@ file [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/
 
 # Acknowledgments
 
-This chart parser has been developed on the basis of original code by
-Shieber e.a. (1995), though with a set of inference rules
-which I specifically tailored for multimodal type-logical grammars.
+This chart parser has been developed starting from source code
+originally developed by Shieber e.a. (1995), though with a set of
+inference rules and a number of improvements which I specifically tailored for multimodal type-logical grammars.
 
 The Prolog file `lefff.pl` has been automatically extracted from the
 [Lefff lexicon](http://alpage.inria.fr/~sagot/lefff.html) (Sagot 2010).
