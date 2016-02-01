@@ -39,3 +39,34 @@ following (in a shell terminal).
 
 The file [`readme.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/readme.pdf) contains more detailed instructions whereas the
 file [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/chart_parser.pdf) describes the strategy used by the chart parser.
+
+# Acknowledgments
+
+This chart parser has been developed on the basis of original code by
+Shieber .e.a. (1995), though with a set of inference rules
+which I specifically tailored for multimodal type-logical grammars.
+
+The Prolog file `lefff.pl` has been automatically extracted from the
+[Lefff lexicon](http://alpage.inria.fr/~sagot/lefff.html) (Sagot 2010).
+
+The file `annodis.pl` has been extracted from the
+[Sequoia corpus](http://deep-sequoia.inria.fr) (Candito and Seddah,
+2012) and is part of the [TLGbank](http:richardmoot.github.io/TLGbank)
+(Moot 2015).
+
+# References
+
+Marie Candito and Djam&eacute; Seddah, (2012) _Le corpus Sequoia : annotation
+syntaxique et exploitation pour l’adaptation d’analyseur par pont
+lexical_, Proceedings TALN'2012, Grenoble, France.
+
+
+Richard Moot (2015) _A Type-Logical Treebank for French_, Journal of
+Language Modelling **3(1)**, pp. 229-265.
+
+Beno&icirc;t Sagot (2010). _The_ Lefff, _a freely available and large-coverage morphological and syntactic lexicon for French_. In Proceedings of the 7th international conference on Language Resources and Evaluation (LREC 2010), Istanbul, Turkey
+
+Stuart M. Shieber, Yves Schabes and Fernando C. N. Pereira (1995)
+ _Principles and Implementation of Deductive Parsing_, Journal of
+ Logic Programming **24(1-2)**, pp. 3-36.
+
