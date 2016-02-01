@@ -43,7 +43,7 @@ file [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/
 # Acknowledgments
 
 This chart parser has been developed on the basis of original code by
-Shieber .e.a. (1995), though with a set of inference rules
+Shieber e.a. (1995), though with a set of inference rules
 which I specifically tailored for multimodal type-logical grammars.
 
 The Prolog file `lefff.pl` has been automatically extracted from the
@@ -59,7 +59,6 @@ The file `annodis.pl` has been extracted from the
 Marie Candito and Djam&eacute; Seddah, (2012) _Le corpus Sequoia : annotation
 syntaxique et exploitation pour l’adaptation d’analyseur par pont
 lexical_, Proceedings TALN'2012, Grenoble, France.
-
 
 Richard Moot (2015) _A Type-Logical Treebank for French_, Journal of
 Language Modelling **3(1)**, pp. 229-265.
