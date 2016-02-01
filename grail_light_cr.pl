@@ -816,6 +816,24 @@ enrich_formula(la,    pro:per, dr(0, _, dr(0, _, dia(1, box(1, lit(np(acc,_,3-s)
 	!.
 enrich_formula(les,   pro:per, dr(0, _, dr(0, _, dia(1, box(1, lit(np(acc,_,3-p))))))) :-
 	!.
+enrich_formula(il,      pro:per, lit(np(nom,il,3-s))) :-
+	!.
+enrich_formula('Il',    pro:per, lit(np(nom,il,3-s))) :-
+	!.
+enrich_formula('-il',   pro:per, lit(np(nom,il,3-s))) :-
+	!.
+enrich_formula('-t-il', pro:per, lit(np(nom,il,3-s))) :-
+	!.
+enrich_formula(ce,      pro:per, lit(np(nom,ce,3-s))) :-
+	!.
+enrich_formula('c\'',   pro:per, lit(np(nom,ce,3-s))) :-
+	!.
+enrich_formula('-ce',   pro:per, lit(np(nom,ce,3-s))) :-
+	!.
+enrich_formula('Ce',    pro:per, lit(np(nom,ce,3-s))) :-
+	!.
+enrich_formula('C\'',   pro:per, lit(np(nom,ce,3-s))) :-
+	!.
 enrich_formula(_, _, _).
 
 % = correct_formula(+Lemma, +TTPostag, +Formula, -CorrectedFormula)
