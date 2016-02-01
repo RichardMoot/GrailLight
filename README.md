@@ -47,12 +47,12 @@ originally developed by Shieber e.a. (1995), though with a set of
 inference rules and a number of improvements which I specifically tailored for multimodal type-logical grammars.
 
 The Prolog file `lefff.pl` has been automatically extracted from the
-[Lefff lexicon](http://alpage.inria.fr/~sagot/lefff.html) (Sagot 2010).
+[Lefff lexicon](http://alpage.inria.fr/~sagot/lefff.html) (Sagot, 2010).
 
 The file `annodis.pl` has been extracted from the
 [Sequoia corpus](http://deep-sequoia.inria.fr) (Candito and Seddah,
 2012) and is part of the [TLGbank](http:richardmoot.github.io/TLGbank)
-(Moot 2015).
+(Moot, 2015).
 
 # References
 
