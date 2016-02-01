@@ -63,7 +63,7 @@ lexical_, Proceedings TALN'2012, Grenoble, France.
 Richard Moot (2015) _A Type-Logical Treebank for French_, Journal of
 Language Modelling **3(1)**, pp. 229-265.
 
-Beno&icirc;t Sagot (2010). _The_ Lefff, _a freely available and large-coverage morphological and syntactic lexicon for French_. In Proceedings of the 7th international conference on Language Resources and Evaluation (LREC 2010), Istanbul, Turkey
+Beno&icirc;t Sagot (2010) _The_ Lefff, _a freely available and large-coverage morphological and syntactic lexicon for French_. In Proceedings of the 7th international conference on Language Resources and Evaluation (LREC 2010), Istanbul, Turkey
 
 Stuart M. Shieber, Yves Schabes and Fernando C. N. Pereira (1995)
  _Principles and Implementation of Deductive Parsing_, Journal of
