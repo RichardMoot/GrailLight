@@ -372,171 +372,6 @@ clitic_y_word(retrouver, retrouver_à, arg) :-
 	!.
 clitic_y_word(X, X, mod).
 
-% = roles for verbs taking a single argument
-
-role_lexicon(naître, patient) :-
-	!.
-role_lexicon(tomber, patient) :-
-	!.
-role_lexicon(dormir, patient) :-
-	!.
-role_lexicon(_, agent).
-
-% = roles for verbs taking two arguments
-% if it is the subject which moves along the path and the movement is not necessarily agentive, it has the theme role.
-role_lexicon(aller, theme, destination) :-
-	!.
-role_lexicon(aller_à, theme, destination) :-
-	!.
-role_lexicon(venir_de, theme, source) :-
-	!.
-role_lexicon(arriver_à, theme, destination) :-
-	!.
-role_lexicon(parvenir_à, theme, destination) :-
-	!.
-role_lexicon(revenir_à, theme, destination) :-
-	!.
-role_lexicon(venir_à, theme, destination) :-
-	!.
-role_lexicon(arriver, theme, destination) :-
-	!.
-role_lexicon(partir_de, theme, source) :-
-	!.
-role_lexicon(partir, theme, source) :-
-	!.
-role_lexicon(passer, agent, durée) :-
-	!.
-% object = theme
-role_lexicon(affirmer, agent, theme) :-
-	!.
-role_lexicon(assurer, agent, theme) :-
-	!.
-role_lexicon(connaître, agent, theme) :-
-	!.
-role_lexicon(contrôler, agent, theme) :-
-	!.
-role_lexicon(critiquer, agent, theme) :-
-	!.
-role_lexicon(croire, agent, theme) :-
-	!.
-role_lexicon(déduire, agent, theme) :-
-	!.
-role_lexicon(définir, agent, theme) :-
-	!.
-role_lexicon(démontrer, agent, theme) :-
-	!.
-role_lexicon(déplorer, agent, theme) :-
-	!.
-role_lexicon(desirer, agent, theme) :-
-	!.
-role_lexicon(dire, agent, theme) :-
-	!.
-role_lexicon(entendre, agent, theme) :-
-	!.
-role_lexicon(entreprendre, agent, theme) :-
-	!.
-role_lexicon(être, agent, theme) :-
-	!.
-role_lexicon(expliquer, agent, theme) :-
-	!.
-role_lexicon(faire, agent, theme) :-
-	!.
-role_lexicon(fasciner, agent, theme) :-
-	!.
-role_lexicon(filmer, agent, theme) :-
-	!.
-role_lexicon(honorer, agent, theme) :-
-	!.
-role_lexicon(imaginer, agent, theme) :-
-	!.
-role_lexicon(indiquer, agent, theme) :-
-	!.
-role_lexicon(interdire, agent, theme) :-
-	!.
-role_lexicon(monopoliser, agent, theme) :-
-	!.
-role_lexicon(nier, agent, theme) :-
-	!.
-role_lexicon(penser, agent, theme) :-
-	!.
-role_lexicon(pouvoir, agent, theme) :-
-	!.
-role_lexicon(pratiquer, agent, theme) :-
-	!.
-role_lexicon(prouver, agent, theme) :-
-	!.
-role_lexicon(reconnaître, agent, theme) :-
-	!.
-role_lexicon(redouter, agent, theme) :-
-	!.
-role_lexicon(refuser, agent, theme) :-
-	!.
-role_lexicon(regarder, agent, theme) :-
-	!.
-role_lexicon(regretter, agent, theme) :-
-	!.
-role_lexicon(réglementer, agent, theme) :-
-	!.
-role_lexicon(résoudre, agent, theme) :-
-	!.
-role_lexicon(redouter, agent, theme) :-
-	!.
-role_lexicon(savoir, agent, theme) :-
-	!.
-role_lexicon(souhaiter, agent, theme) :-
-	!.
-role_lexicon(suggérer, agent, theme) :-
-	!.
-role_lexicon(longer, agent, lieu) :-
-	!.
-role_lexicon(_, agent, patient).
-
-% = roles for verbs taking three arguments
-
-role_lexicon(amener_à, agent, patient, destination) :-
-	!.
-role_lexicon(donner_à, agent, patient, destination) :-
-	!.
-role_lexicon(offrir_à, agent, patient, destination) :-
-	!.
-role_lexicon(rendre_à, agent, patient, destination) :-
-	!.
-role_lexicon(demander_à, agent, patient, source) :-
-	!.
-role_lexicon(prendre_de, agent, patient, source) :-
-	!.
-role_lexicon(prendre_à, agent, patient, source) :-
-	!.
-role_lexicon(mettre, agent, patient, destination) :-
-	!.
-role_lexicon(_, agent, patient, theme).
-
-role_lexicon_np_adj(_, agent, theme).
-role_lexicon_np_np_adj(_, agent, patient, theme).
-
-role_lexicon_np_loc(entrer, agent, destination) :-
-	!.
-role_lexicon_np_loc(aller, agent, destination) :-
-	!.
-role_lexicon_np_loc(être, agent, lieu) :-
-	!.
-role_lexicon_np_loc(figurer, agent, lieu) :-
-	!.
-role_lexicon_np_loc(habiter, agent, lieu) :-
-	!.
-role_lexicon_np_loc(résider, agent, lieu) :-
-	!.
-role_lexicon_np_loc(_, agent, lieu).
-
-role_lexicon_np_np_loc(mettre, agent, patient, destination) :-
-	!.
-role_lexicon_np_np_loc(placer, agent, patient, destination) :-
-	!.
-role_lexicon_np_np_loc(envoyer, agent, patient, destination) :-
-	!.
-role_lexicon_np_np_loc(renvoyer, agent, patient, destination) :-
-	!.
-role_lexicon_np_np_loc(_, agent, patient, lieu).
 
 combine_se(Word, SeWord) :-
     (
@@ -1590,102 +1425,78 @@ default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s
 % passive (tagged as past participle, should correct some POS-tag errors)
 
 default_semantics(Word, ver:pper, dr(0,dl(0,lit(np(_,_,_)),lit(s(ppart))),lit(pp(par))), lambda(SUJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUJ,lambda(X,drs([],Conds))))))))) :-
-	role_lexicon(Word, Role1, Role2),
+	get_roles(Word, [np,np], [Role1, Role2]),
 	add_roles([Role1-X,Role2-Y], Word, E, Conds, []).
+%
+%get_roles(Word, [np], [SRole]),
+%	add_roles([SRole-X], Word, E, Conds, Time),
 
 
 % = "être + passive"
 % "être" only provide tense information, the passive itself takes care of role information
 
-default_semantics(être, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(PASS)))), lambda(VP,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
-	PASS == pass,
+default_semantics(être, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(pass)))), lambda(VP,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
 	pos_time(ver:TIME, [], Es, E-Cs).
 
 
-default_semantics(V, _POS, dl(0,lit(np(_,_,_)),lit(s(PASS))), lambda(OBJ,lambda(E,appl(OBJ,lambda(Y, drs([variable(X)],[bool(X,=,'context?')|Conds])))))) :-
-	PASS == pass,
-	role_lexicon(V, SubjRole, ObjRole),
+default_semantics(V, _POS, dl(0,lit(np(_,_,_)),lit(s(pass))), lambda(OBJ,lambda(E,appl(OBJ,lambda(Y, drs([variable(X)],[bool(X,=,'context?')|Conds])))))) :-
+	get_roles(V, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], V, E, Conds, []).
 % some verbs with par-complements which are not the subject (normally these should not get the passive supertag)
-default_semantics(multiplier, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(PAR))), lambda(PP,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
-	PASS == pass,
-	PAR == par,
-	role_lexicon(multiplier_par, Arg1, Arg2, Arg3),
-	add_roles([Arg1-X,Arg2-Y,Arg3-Z], multiplier_par, E, Conds, []).
-default_semantics(passer, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(par))), lambda(PP,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(PP,lambda(Y,drs([variable(P)],Conds))))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))), lambda(PP,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
+	get_roles(V, [np, np, pp(par)], [Arg1, Arg2, Arg3]),
+	!,
+	add_roles([Arg1-X,Arg2-Y,Arg3-Z], V, E, Conds, []).
+default_semantics(passer, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))), lambda(PP,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(PP,lambda(Y,drs([variable(P)],Conds))))))))) :-
 	add_roles([theme-X,path-P], travel, E, Conds, [appl(path,P),appl(moving,X),appl(appl(cross,Y),P)]).
 % passive with par-complement subjet
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(PAR))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
-	PASS == pass,
-	PAR == par,
-	role_lexicon(V, SubjRole, ObjRole),
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
+	get_roles(V, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], V, E, Conds, []).
 % passive with de-complement subjet
-default_semantics(suivre, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(DE))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
-	PASS == pass,
-	DE == de,
-	role_lexicon(suivre, SubjRole, ObjRole),
+default_semantics(suivre, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(de))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
+	get_roles(suivre, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], suivre, E, Conds, []).
-default_semantics(aimer, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(DE))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
-	PASS == pass,
-	DE == de,
-	role_lexicon(aimer, SubjRole, ObjRole),
+default_semantics(aimer, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(de))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
+	get_roles(aimer, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], aimer, E, Conds, []).
-default_semantics(accompagner, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(DE))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
-	PASS == pass,
-	DE == de,
-	role_lexicon(accompagner, SubjRole, ObjRole),
+default_semantics(accompagner, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(de))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
+	get_roles(accompagner, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], accompagner, E, Conds, []).
-default_semantics(apprécier, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(DE))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
-	PASS == pass,
-	DE == de,
-	role_lexicon(apprécier, SubjRole, ObjRole),
+default_semantics(apprécier, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(de))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
+	get_roles(apprécier, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], apprécier, E, Conds, []).
-default_semantics(respecter, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(DE))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
-	PASS == pass,
-	DE == de,
-	role_lexicon(respecter, SubjRole, ObjRole),
+default_semantics(respecter, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(de))), lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds))))))))) :-
+	get_roles(respecter, SubjRole, ObjRole),
 	add_roles([SubjRole-X,ObjRole-Y], respecter, E, Conds, []).
 % other prepositions
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(PP))), lambda(PP,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(PP))), lambda(PP,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
 	combine_prep_word(PP, V, PW),
-	role_lexicon(PW, Arg1, Arg2, Arg3),
+	get_roles(V, [np, np, pp(PP)], [Arg1, Arg2, Arg3]),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], PW, E, Conds, []).
-default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(PAR))),lit(pp(PP))), lambda(PP,lambda(SUBJ,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))))) :-
-	PASS == pass,
-	PAR == par,
+default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))),lit(pp(PP))), lambda(PP,lambda(SUBJ,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))))) :-
 	combine_prep_word(PP, V, PW),
-	role_lexicon(PW, Arg1, Arg2, Arg3),
+	get_roles(V, [np, np, pp(PP)], [Arg1, Arg2, Arg3]),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], PW, E, Conds, []).
 % "était nommé NP"
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(np(_,_,_))), lambda(OBJ2,lambda(OBJ1,lambda(E,appl(OBJ1,lambda(Y,appl(OBJ2,lambda(Z,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
-	PASS == pass,
-	role_lexicon(V, Arg1, Arg2, Arg3),
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(np(_,_,_))), lambda(OBJ2,lambda(OBJ1,lambda(E,appl(OBJ1,lambda(Y,appl(OBJ2,lambda(Z,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
+	get_roles(V, [np, np, np], [Arg1, Arg2, Arg3]),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], V, E, Conds, []).
 % passive+control verb, object control only (TODO: verify!)
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))), lambda(DEINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))), lambda(DEINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	combine_prep_word(de, V, PW),	
 	add_roles([agent-X,patient-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))]).
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	combine_prep_word(à, V, PW),	
 	add_roles([agent-X,patient-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(AINF,lambda(P,appl(P,Y))),F)))]).
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]).
 % passive+adjectival argument
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))]).
-default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),lit(pp(par))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))) :-
-	PASS == pass,
+default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(SUBJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))]).
-default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(PASS))),dl(0,lit(n),lit(n))),lit(pp(PAR))), lambda(SUBJ,lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))) :-
-	PASS == pass,
-	PAR == par,
+default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(n),lit(n))),lit(pp(par))), lambda(SUBJ,lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))]).
 
 
@@ -1918,21 +1729,6 @@ default_semantics(avoir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,
 default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
 	auxiliary_verb_avoir(POS, [], Sem).	
 
-% = verbs with a "locative" argument
-% that is, the verb takes an argument which is a preposition, but without specifying its type.
-
-default_semantics(Word, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(Prep))), lambda(P, lambda(Q,lambda(E,appl(P,lambda(V,appl(Q,lambda(X,drs(EVs, [appl(event,E)|L0]))))))))) :-
-	var(Prep),
-	!,
-	role_lexicon_np_loc(Word, Role1, Role2),
-	add_roles([Role1-X,Role2-V], Word, E, L0, Time),
-	pos_time(POS, [], EVs, E-Time).
-default_semantics(Word, POS, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(Prep))),lit(np(_,_,_))), lambda(P, lambda(Q,lambda(R, lambda(E,appl(P,lambda(V,appl(Q,lambda(X,appl(R,lambda(Y,drs(EVs, L0)))))))))))) :-
-	var(Prep),
-	role_lexicon_np_np_loc(Word, Role1, Role2, Role3),
-	add_roles([Role1-Y,Role2-V,Role3-X], Word, E, L0, Time),
-	!,
-	pos_time(POS, [], EVs, E-Time).
 
 % = verbs with a preposition argument
 % contrary to the previous case, this time Prep is not a variable, but a preposition which is explicitly
@@ -2295,16 +2091,13 @@ default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(_)))
 	add_roles([agent-X,theme-F], Word, E, Conds, List),
 	pos_time(ver:TIME, [], EVs, E-List).
 
-default_semantics(souvenir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(s(QQ))), lambda(SQ,lambda(_,lambda(NP,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),appl(NP,lambda(X,drs(EVs, Conds))))))))) :-
-	QQ == q,
+default_semantics(souvenir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(s(q))), lambda(SQ,lambda(_,lambda(NP,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),appl(NP,lambda(X,drs(EVs, Conds))))))))) :-
 	add_roles([agent-X,theme-L], se_souvenir, E, Conds, [bool(appl(temps,F),<,appl(temps,E)),drs([],[drs_label(L,appl(SQ,F))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
-default_semantics(pouvoir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(s(QQ))), lambda(SQ,lambda(_CLR,lambda(_SU,lambda(E,drs(EVs, Conds)))))) :-
-	QQ == q,
+default_semantics(pouvoir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(s(q))), lambda(SQ,lambda(_CLR,lambda(_SU,lambda(E,drs(EVs, Conds)))))) :-
 	add_roles([theme-L], se_pouvoir, E, Conds, [drs([event(F)],[drs_label(L,appl(SQ,F))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
-default_semantics(trouver, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(s(QQ))), lambda(SQ,lambda(_CLR,lambda(_SU,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),drs(EVs,Conds))))))) :-
-	QQ = q,
+default_semantics(trouver, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(s(q))), lambda(SQ,lambda(_CLR,lambda(_SU,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),drs(EVs,Conds))))))) :-
 	add_roles([theme-L], se_trouver, E, Conds, [drs([],[drs_label(L,appl(SQ,F))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 default_semantics(souvenir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))), lambda(DEINF,lambda(_REFL,lambda(NP,lambda(E,appl(NP,lambda(X,presup(merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Pr,appl(Pr,X))),F)),drs(EVs, Conds))))))))) :-
@@ -2313,9 +2106,9 @@ default_semantics(souvenir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),li
 
 % = transitive - sentential complement (raising: "il semble que ..." etc.)
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(QQ))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,[appl(event,E)|Conds]))))) :-
-	QQ == q,
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,[appl(event,E)|Conds]))))) :-
 	raising_verb(Word),
+	!,
 	add_roles([theme-L], Word, E, Conds, [drs_label(L,appl(SQ,F))|List]),
 	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
 default_semantics(falloir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,Conds))))) :-
@@ -2327,12 +2120,10 @@ default_semantics(faillir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q
 
 % = transitive - sentential complement (non-factive verbs, non-raising verbs, such as "croire")
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(QQ))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|Conds]))))))) :-
-	QQ == q,
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|Conds]))))))) :-
 	add_roles([agent-X,theme-L], Word, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
-default_semantics(dire, ver:TIME, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(s(QQ))), lambda(SQ,lambda(_,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|Conds])))))))) :-
-	QQ == q,
+default_semantics(dire, ver:TIME, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(s(q))), lambda(SQ,lambda(_,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|Conds])))))))) :-
 	add_roles([agent-X,theme-L], se_dire, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,Conds))))))) :-
@@ -2395,7 +2186,7 @@ default_semantics(être, ver:TIME, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), lit
 default_semantics(être, ver:TIME, dr(_,dl(0,dl(0,lit(n),lit(n)),lit(s(_))), lit(np(nom,_,_))), lambda(NP,lambda(Adj,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Pres),merge(drs([variable(Y)],[bool(X,is_at(E),Y)]),appl(appl(Adj,lambda(_,drs([],[]))),Y))))))))) :-
 	pos_time(ver:TIME, [], EVs, E-Pres).
 default_semantics(Word, ver:TIME, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), lit(np(nom,_,_))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|List]))))))) :-
-	role_lexicon_np_adj(Word, SRole, ARole),
+	get_roles(Word, [np, adj], [SRole, ARole]),
 	add_roles([SRole-X,ARole-L], Word, E,  List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))|Tm]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Tm).
 
@@ -2407,53 +2198,47 @@ default_semantics(être, ver:TNS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n
 
 % "Jean est content que Marie dort."
 
-default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(SQ))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(S,lambda(NP,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Time),merge(merge(drs([event(F)],[]),appl(S,F)),appl(appl(Adj,lambda(_,drs([],[]))),sub(X,E))))))))))) :-
-	SQ == q,
+default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(S,lambda(NP,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Time),merge(merge(drs([event(F)],[]),appl(S,F)),appl(appl(Adj,lambda(_,drs([],[]))),sub(X,E))))))))))) :-
 	pos_time(ver:TNS, [], EVs, E-Time).	
 
 % "il est vrai/probable que"
 % TODO: distinguish from "il est content que Marie dort." (above) etc. for this we need
 % to distinguish anaphoric "il" from expletive pseudo-il
 
-default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_IL,_)),lit(s(_))),lit(s(SQ))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(S,lambda(_NP,lambda(E,presup(drs(EVs,Time),merge(merge(drs([event(F)],[]),appl(S,F)),appl(appl(Adj,lambda(_,drs([],[]))),sub(F,E))))))))) :-
-%	IL == il,
-	SQ == q,
+default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_IL,_)),lit(s(_))),lit(s(q))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(S,lambda(_NP,lambda(E,presup(drs(EVs,Time),merge(merge(drs([event(F)],[]),appl(S,F)),appl(appl(Adj,lambda(_,drs([],[]))),sub(F,E))))))))) :-
 	pos_time(ver:TNS, [], EVs, E-Time).	
 
 default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|List]))))))) :-
-	role_lexicon_np_adj(Word, SRole, ARole),
+	get_roles(Word, [np, adj], [SRole, ARole]),
 	add_roles([SRole-X,ARole-L], Word, E,  List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))|Tm]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Tm).
 
 % = verbs taking adjective + np
 
 default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(OBJ,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs(EVs,[appl(event,E)|Conds])))))))))) :-
-	role_lexicon_np_np_adj(Word, SRole, ORole, ARole),
+	get_roles(Word, [np, np, adj], [SRole, ORole, ARole]),
 	add_roles([SRole-X,ORole-Y,ARole-L], Word, E, Conds, [drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 
 default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))),lit(np(_,_,_))), lambda(OBJ,lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs(EVs,[appl(event,E)|Conds])))))))))) :-
-	role_lexicon_np_np_adj(Word, SRole, ORole, ARole),
+	get_roles(Word, [np, np, adj], [SRole, ORole, ARole]),
 	add_roles([SRole-X,ORole-Y,ARole-L], Word, E, Conds, [drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 
 % = past and present participles used as adjectives
 
 default_semantics(W, ver:pper, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([event(E),variable(X)],[appl(event,E)|Conds]),appl(P,V))))) :-
-	role_lexicon(W, SubjectRole, ObjectRole),
+	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
 	add_roles([SubjectRole-X,ObjectRole-V], W, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(par))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E)],[appl(event,E)|Conds]))),appl(P,V)))))) :-
-	role_lexicon(W, SubjectRole, ObjectRole),
+	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
 	add_roles([SubjectRole-Z,ObjectRole-V], W, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(event,E),appl(generic,X)|Conds]))),appl(P,V)))))) :-
+	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
-	role_lexicon(PW, ArgRole1, ArgRole2, ArgRole3),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
-default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(event,E)|Conds]))),appl(P,V)))))) :-
-	role_lexicon(W, SubjectRole, ObjectRole, Arg),
-	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(event,E),appl(generic,X)|Conds]))),appl(P,V)))))) :-
-	role_lexicon(W, SubjectRole, ObjectRole, Arg),
+	get_roles(W, [np, np, np], [SubjectRole, ObjectRole, Arg]),
 	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
 
 % = prepositions - arguments
@@ -2882,17 +2667,21 @@ default_semantics(à, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))
 
 % = copula  - verb initial
 
-default_semantics(Word, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), np), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,merge(drs([event(E),event(L)],[appl(event,E),appl(Word,E),appl(appl(SRole,X),E)]),appl(appl(ARole,L),E),drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))])))))))) :-
-		  role_lexicon_np_adj(Word, SRole, ARole).
+default_semantics(Word, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), np), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs([event(L)],List))))))) :-
+	get_roles(Word, [np, adj], [SRole, ARole]),
+	add_roles([SRole-X,ARole-L], Word, E, List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))]).
 		  
 % = copula  - verb second
 
-default_semantics(Word, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,merge(drs([event(E)],[appl(event,E),appl(Word,E),appl(appl(SRole,X),E),appl(appl(ARole,L),E)]),drs([event(L)],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))])))))))) :-
-		  role_lexicon_np_adj(Word, SRole, ARole).
-default_semantics(Word, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(OBJ,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,merge(drs([event(E),event(L)],[appl(event,E),appl(Word,E),appl(appl(SRole,X),E),appl(appl(ORole,Y),E),appl(appl(ARole,L),E)]),drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))]))))))))))) :-
-		  role_lexicon_np_np_adj(Word, SRole, ORole, ARole).
-default_semantics(Word, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))),lit(np(_,_,_))), lambda(OBJ,lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,merge(drs([event(E),event(L)],[appl(event,E),appl(Word,E),appl(appl(SRole,X),E),appl(appl(ORole,Y),E),appl(appl(ARole,L),E)]),drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))]))))))))))) :-
-		  role_lexicon_np_np_adj(Word, SRole, ORole, ARole).
+default_semantics(Word, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs([event(L)],List))))))) :-
+	get_roles(Word, [np, adj], [SRole, ARole]),
+	add_roles([SRole-X,ARole-L], Word, E, List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))]).
+default_semantics(Word, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(OBJ,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs([event(L)],List)))))))))) :-
+	get_roles(Word, [np, np, adj], [SRole, ORole, ARole]),
+	add_roles([SRole-X,ORole-Y,ARole-L], Word, E, List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))]).
+default_semantics(Word, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))),lit(np(_,_,_))), lambda(OBJ,lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs([event(L)],List)))))))))) :-
+	get_roles(Word, [np, np, adj], [SRole, ORole, ARole]),
+	add_roles([SRole-X,ORole-Y,ARole-L], Word, E, List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))]).
 
 default_semantics(de, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([event(L)],[appl(appl(de,L),X),drs_label(L,appl(appl(VP,lambda(P,appl(P,_))),_))])))))))).
 default_semantics('d\'', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([event(L)],[appl(appl(de,L),X),drs_label(L,appl(appl(VP,lambda(P,appl(P,_))),_))])))))))). 
@@ -3248,10 +3037,10 @@ lex(une, lit(np(_,_,3-s)), lambda(P1,presup(drs([Y],[bool(Y,=,?),bool(num(Y),>,1
 % note that "certains" is not treated as an anaphor but as an indefinite.
 % eg. "Certains disent que ..."
 
-lex('Certains', lit(np(_,_,3-p)), lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X))))).
-lex(certains, lit(np(_,_,3-p)), lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X))))).
-lex('Plusieurs', lit(np(_,_,3-p)), lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X))))).
-lex(plusieurs, lit(np(_,_,3-p)), lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X))))).
+lex('Certains', lit(np(_,_,3-p)), lambda(Q,merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X)))).
+lex(certains, lit(np(_,_,3-p)), lambda(Q,merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X)))).
+lex('Plusieurs', lit(np(_,_,3-p)), lambda(Q,merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X)))).
+lex(plusieurs, lit(np(_,_,3-p)), lambda(Q,merge(drs([variable(X)],[bool(num(X),>,1)]),appl(Q,X)))).
 
 % TODO: add other indefinites (celui, celle, celles, ceux, ce)
 
