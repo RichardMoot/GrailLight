@@ -9,6 +9,7 @@ get_roles1(coaguler, [np], [patient]). % unaccusative
 get_roles1(cristalliser, [np], [patient]). % unaccusative
 get_roles1(convenir, [np], [theme]). % unaccusative
 get_roles1(descendre, [np], [patient]). % unaccusative
+get_roles1(dormir, [np], [patient]). % unaccusative
 get_roles1(entrer, [np], [patient]). % unaccusative
 get_roles1(monter, [np], [patient]). % unaccusative
 get_roles1(mourir, [np], [patient]). % unaccusative
@@ -22,6 +23,8 @@ get_roles1(sortir, [np], [patient]). % unaccusative
 get_roles1(tomber, [np], [patient]).  % unaccusative
 get_roles1(venir, [np], [patient]).  % unaccusative
 
+
+get_roles1(aller,   [np, pp(à)], [patient, destination]). % unaccusative
 get_roles1(arriver, [np, pp(à)], [patient, destination]). % unaccusative
 get_roles1(convenir, [np, pp(à)], [theme, patient]). % unaccusative
 get_roles1(dégorger, [np, pp(dans)], [patient, destination]). % unaccusative
@@ -678,6 +681,8 @@ get_roles1(intéresser, [np, cl_r, pp(à)], [patient, null, theme]). % unaccusat
 
 get_roles1(maintenir, [np, cl_r, pp(à)], [patient, null, theme]).
 get_roles1(maintenir, [np, cl_r, np], [patient, null, theme]).
+
+get_roles1(multiplier, [np, np, pp(par)], [agent, patient, amount]).
 
 get_roles1(moquer, [np, cl_r, pp(de)], [patient, null, theme]).
 
