@@ -2257,8 +2257,8 @@ default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(
 
 
 % = inversed verb forms
-
-default_semantics(Word, ver:TIME, dr(0, dr(0,lit(s(S1)), lit(np(A,B,C))), dl(0,lit(np(D,E,F)),s(S2))), Sem) :-
+ 
+default_semantics(Word, ver:TIME, dr(0, dr(0,lit(s(S1)), lit(np(A,B,C))), dl(0,lit(np(D,E,F)), lit(s(S2)))), Sem) :-
 	default_semantics(Word, ver:TIME, dr(0, dl(0, lit(np(A,B,C)), lit(s(S1))), dl(0, lit(np(D,E,F)), lit(s(S2)))), Sem).
 
 
