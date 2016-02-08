@@ -3405,6 +3405,7 @@ lex(plus, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(F,merg
 lex('Parce', dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(parce, dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(parce, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+lex(parce, dr(0,s,s_q), lambda(Q,lambda(E,merge(drs([event(F)],[bool(F,=,?),appl(appl(explanation,F),E)]),appl(Q,E))))).
 
 lex(donc, dl(1,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(result,E),F),bool(F,=,?)]),appl(S,E))))).
 lex(donc, dr(0,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(result,E),F),bool(F,=,?)]),appl(S,E))))).
