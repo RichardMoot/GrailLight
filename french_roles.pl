@@ -739,6 +739,7 @@ get_roles1(classer, [np, cl_r, np], [patient, null, theme]).
 get_roles1(coltiner, [np, cl_r, np], [agent, null, patient]).
 get_roles1(concilier, [np, cl_r, np], [agent, null, patient]).
 get_roles1(confesser, [np, cl_r, np], [agent, null, theme]).
+get_roles1(vouloir, [np, cl_r, np], [agent, null, theme]).
 
 get_roles1(affirmer, [np, cl_r, adj], [patient, null, patient_attr]). % unaccusative
 get_roles1(annoncer, [np, cl_r, adj], [patient, null, patient_attr]). % unaccusative
