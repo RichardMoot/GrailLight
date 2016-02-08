@@ -2082,7 +2082,6 @@ default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(n
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 
-
 %  transitive - sentential complement (factive verbs)
 
 default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(SQ,lambda(NP,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),appl(NP,lambda(X,drs(EVs, [appl(event,E)|Conds])))))))) :-
@@ -2106,10 +2105,26 @@ default_semantics(souvenir, ver:TIME, dr(0,dl(_,lit(cl_r),dl(_,lit(np(_,_,_)),li
 
 % = transitive - sentential complement (raising: "il semble que ..." etc.)
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,[appl(event,E)|Conds]))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,Conds))))) :-
 	raising_verb(Word),
 	!,
 	add_roles([theme-L], Word, E, Conds, [drs_label(L,appl(SQ,F))|List]),
+	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
+default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,drs(EVs,Conds)))))))) :-
+	factive(Word),
+	!,
+	combine_prep_word(à, Word, PW),
+	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
+	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
+default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,presup(merge(drs([event(F)],[]),appl(SQ,F)),drs(EVs,Conds))))))))) :-
+	raising_verb(Word),
+	!,
+	combine_prep_word(à, Word, PW),
+	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
+	pos_time(ver:TIME, [event(L)], EVs, E-List).
+default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,drs(EVs,Conds)))))))) :-
+	combine_prep_word(à, Word, PW),
+	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
 	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
 default_semantics(falloir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,Conds))))) :-
 	add_roles([theme-L], il_faut, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),	
@@ -2195,7 +2210,6 @@ default_semantics(Word, ver:TIME, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), lit(
 default_semantics(être, ver:TNS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Time),appl(appl(Adj,lambda(_,drs([],[]))),sub(X,E))))))))) :-
 	pos_time(ver:TNS, [], EVs, E-Time).	
 
-
 % "Jean est content que Marie dort."
 
 default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(S,lambda(NP,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Time),merge(merge(drs([event(F)],[]),appl(S,F)),appl(appl(Adj,lambda(_,drs([],[]))),sub(X,E))))))))))) :-
@@ -2240,6 +2254,13 @@ default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(event,E),appl(generic,X)|Conds]))),appl(P,V)))))) :-
 	get_roles(W, [np, np, np], [SubjectRole, ObjectRole, Arg]),
 	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
+
+
+% = inversed verb forms
+
+default_semantics(Word, ver:TIME, dr(0, dr(0,lit(s(S1)), lit(np(A,B,C))), dl(0,lit(np(D,E,F)),s(S2))), Sem) :-
+	default_semantics(Word, ver:TIME, dr(0, dl(0, lit(np(A,B,C)), lit(s(S1))), dl(0, lit(np(D,E,F)), lit(s(S2)))), Sem).
+
 
 % = prepositions - arguments
 
