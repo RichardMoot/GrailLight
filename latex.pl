@@ -206,7 +206,7 @@ latex_print_sentence(parse, String, Dash, Goal, Stream) :-
 latex_print_sentence(prove, String, Dash, Goal, Stream) :-
 	latex_print_sentence(String, Dash, Goal, Stream).
 latex_print_sentence(comment, String, _, _, Stream) :-
-        format(Stream, '\\\\~n\\quad\\textbf{~s} \\\\~n\\\\~n', [String]).
+        format(Stream, '\\\\~n\\quad\\textrm{~s} \\\\~n\\\\~n', [String]).
  
 latex_print_sentence(String0, Dash, Goal, Stream) :-
         example_trim_underscores(String0, String),
@@ -712,6 +712,9 @@ latex_semantics(appl(F,X), _, Tr, Stream) :-
         !
     ).
 
+latex_semantics(atom(X), _, Tr, Stream) :-
+	!,
+	latex_semantics(X, _, Tr, Stream).
 latex_semantics(appl(X,Y), _, Tr, Stream) :-
         !,
         write(Stream, '('),
@@ -859,7 +862,7 @@ latex_semantics(Const, _, _, Stream) :-
 	latex_sem_constant(Const, Stream).
 
 latex_sem_constant(Const, Stream) :-
-        write(Stream, '\\textbf{'),
+        write(Stream, '\\textrm{'),
     (
 	atomic(Const) 
     ->
@@ -1054,18 +1057,17 @@ write_list_of_referents(Refs0, Tr, Stream) :-
 	write_list_of_referents1(Refs, Tr, Stream).
 
 write_list_of_referents1([], _, Stream) :- 
-        write(Stream, '$ \\ $').
+        write(Stream, ' \\ ').
 write_list_of_referents1([V|Vs], Tr, Stream) :-
+        write(Stream, '$'),
         write_list_of_referents1(Vs, V, Tr, Stream).
 
 write_list_of_referents1([], V, Tr, Stream) :-
-        write(Stream, '$'),
         latex_semantics(V, 1, Tr, Stream),
         write(Stream, '$').
 write_list_of_referents1([V|Vs], V0, Tr, Stream) :-
-        write(Stream, '$'),
         latex_semantics(V0, 1, Tr, Stream),
-        write(Stream, '\\ $'),
+        write(Stream, '\\ '),
         write_list_of_referents1(Vs, V, Tr, Stream).
 
 % =
