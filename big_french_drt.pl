@@ -3372,7 +3372,7 @@ lex('qu\'', dr(0,lit(s(q)),lit(s(main))), lambda(X,X)).
 
 lex(qui, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))), Sem) :-
 	wh_rel_semantics(Sem).
-lex(qui, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))), lambda(VP,lambda(NP,lambda(P,merge(appl(NP,P),appl(appl(VP,NP),_)))))).
+lex(qui, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))), lambda(VP,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[]),appl(appl(VP,lambda(P1,appl(P1,X))),E))))))))).
 lex(que, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(0,box(0,lit(np(_,_,_)))))), Sem) :-
 	wh_rel_semantics(Sem).
 lex(que, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(1,box(1,lit(np(_,_,_)))))), Sem) :-
