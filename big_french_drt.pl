@@ -2303,16 +2303,16 @@ default_semantics(_, pun, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lamb
 default_semantics(_, pun, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(_, pun, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(N,lambda(E,merge(merge(drs([],[]),appl(appl(Q,N),E)),appl(appl(P,N),_))))))).
 default_semantics(_, pun, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,merge(appl(P,X),appl(Q,X)))))).
-default_semantics(_, pun, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP2,P),appl(NP1,P)))))).
-default_semantics(_, pun, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP1,P),appl(NP2,P)))))).
+default_semantics(_, pun, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,appl(NP2,lambda(X,appl(NP1,lambda(Y,merge(appl(P,X),appl(P,Y)))))))))).
+default_semantics(_, pun, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,appl(NP2,lambda(X,appl(NP1,lambda(Y,merge(appl(P,X),appl(P,Y)))))))))).
 
 default_semantics(_, pun:cit, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,appl(appl(P,appl(Q,R)),X)))))).
 default_semantics(_, pun:cit, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),appl(N,X)))))))).
 default_semantics(_, pun:cit, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(_, pun:cit, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(N,lambda(E,merge(merge(drs([],[]),appl(appl(Q,N),E)),appl(appl(P,N),_))))))).
 default_semantics(_, pun:cit, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,merge(appl(P,X),appl(Q,X)))))).
-default_semantics(_, pun:cit, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP2,P),appl(NP1,P)))))).
-default_semantics(_, pun:cit, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP1,P),appl(NP2,P)))))).
+default_semantics(_, pun:cit, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,appl(NP2,lambda(X,appl(NP1,lambda(Y,merge(appl(P,X),appl(P,Y)))))))))).
+default_semantics(_, pun:cit, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,appl(NP2,lambda(X,appl(NP1,lambda(Y,merge(appl(P,X),appl(P,Y)))))))))).
 
 
 % = adjective
