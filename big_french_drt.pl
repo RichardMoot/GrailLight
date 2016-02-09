@@ -2566,9 +2566,9 @@ default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)),lambda(P,l
 % = prepositions - noun modifiers having preposition as argument (eg. "deux d'entre nous")
 
 default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(pp(Prp))), lambda(NP, lambda(N, lambda(X, merge(appl(NP,lambda(Y,drs([],[appl(appl(Functor,Y),X)]))),appl(N,X)))))) :-
-	combine_prep_word(W, Prp, Functor).	
+	combine_prep_word(Prp, W, Functor).	
 default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(pp(Prp))),lambda(P,lambda(Q,lambda(Z,merge(appl(P,lambda(X,appl(Q,lambda(Y,drs([],[appl(appl(Functor,X),Y)]))))),appl(Z,X)))))) :-
-	combine_prep_word(W, Prp, Functor).
+	combine_prep_word(Prp, W, Functor).
 
 % idiom: "à travers"
 % TODO: this is a bit of a hack, change this to a true multi-word expression
@@ -3297,7 +3297,8 @@ lex(ou, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambd
 lex(ou, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(NP,lambda(E,appl(NP,lambda(X,bool(appl(appl(Q,lambda(X1,appl(X1,X))),E),\/,merge(drs([event(F)],[]),appl(appl(P,lambda(X1,appl(X1,X))),F)))))))))).
 lex(ou, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,bool(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),\/,merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(ou, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,drs([],[bool(appl(NP1,P),\/,appl(NP2,P))]))))).
-lex(ou, dr(0,dl(0,np,np),n), lambda(N,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(N,Y)),\/,merge(appl(NP,P)))]))))).
+lex(ou, dr(0,dl(0,np,np),n), lambda(N,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(N,Y)),\/,appl(NP,P))]))))).
+lex(ou, dr(0,dl(0,np,np),dl(0,n,n)), lambda(NN,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(appl(NN,lambda(_,drs([],[]))),Y)),\/,appl(NP,P))]))))).
 
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,?)]),appl(S,E))))).
 lex(mais, dl(0,lit(s(Z)),dr(0,lit(s(Z)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
@@ -3305,7 +3306,7 @@ lex(mais, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))
 lex(mais, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(Q,lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[appl(appl(contrast,F),E)]),appl(appl(P,lambda(X1,appl(X1,X))),F)))))))))).
 
 lex(puis, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(SMODR,lambda(SMODL,lambda(S,lambda(E,merge(appl(S,E),drs([event(L1),event(L2)],[drs_label(L1,appl(appl(SMODL,lambda(_,drs([],[]))),E)),drs_label(L2,appl(appl(SMODR,lambda(_,drs([],[]))),E)),bool(appl(temps,L1),<,appl(temps,L2))]))))))).
-lex(puis, dr(0,lit(s(_)),dl(0,lit(s(_)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(appl(temps,E),'<',appl(temps,F))]),merge(appl(P,E),appl(Q,F))))))).
+lex(puis, dr(0,dl(0,s,s),s), lambda(Q,lambda(P,lambda(F,merge(drs([event(E)],[bool(appl(temps,E),'<',appl(temps,F))]),merge(appl(P,E),appl(Q,F))))))).
 lex(puis, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(N,lambda(E,merge(merge(drs([event(F)],[bool(appl(temps,E),'<',appl(temps,F))]),appl(appl(Q,N),E)),appl(appl(P,N),F))))))).
 % P,Q ((e->t)->t)->s->t
 % N (e->t)->t
