@@ -1445,9 +1445,11 @@ default_semantics(V, _POS, dl(0,lit(np(_,_,_)),lit(s(pass))), lambda(OBJ,lambda(
 	add_roles([SubjRole-X,ObjRole-Y], V, E, Conds, []).
 % some verbs with par-complements which are not the subject (normally these should not get the passive supertag)
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))), lambda(PP,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,drs([variable(X)],[bool(X,=,'context?')|Conds]))))))))) :-
-	get_roles(V, [np, np, pp(par)], [Arg1, Arg2, Arg3]),
+	/* use get_roles1 instead of get_roles to avoid defaults */
+	get_roles1(V, [np, np, pp(par)], [Arg1, Arg2, Arg3]),
 	!,
-	add_roles([Arg1-X,Arg2-Y,Arg3-Z], V, E, Conds, []).
+	combine_prep_word(par, V, VPar),
+	add_roles([Arg1-X,Arg2-Y,Arg3-Z], VPar, E, Conds, []).
 default_semantics(passer, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))), lambda(PP,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(PP,lambda(Y,drs([variable(P)],Conds))))))))) :-
 	add_roles([theme-X,path-P], travel, E, Conds, [appl(path,P),appl(moving,X),appl(appl(cross,Y),P)]).
 % passive with par-complement subjet
