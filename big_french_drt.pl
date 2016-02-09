@@ -2559,7 +2559,7 @@ default_semantics(laisser, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_
 
 default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(N1, lambda(N2, lambda(X, merge(appl(N2,X),merge(drs([variable(Y)],[appl(appl(W,Y),X)]),appl(N1,Y))))))).
 default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),appl(NP,lambda(Y,drs([],[appl(appl(W,Y),X)])))))))).
-default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),lambda(P,lambda(Q,lambda(Z,merge(appl(Q,lambda(Y,appl(P,lambda(X,drs([],[appl(appl(W,X),Y)]))))),appl(Z,X)))))).
+default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),lambda(P,lambda(Q,lambda(Z,appl(Q,lambda(Y,appl(P,lambda(X,merge(drs([],[appl(appl(W,X),Y)]),appl(Z,Y)))))))))).
 
 default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)),lambda(P,lambda(NP,lambda(Q,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(W,X),Y)]),merge(appl(Q,X),appl(P,X))))))))).
 
