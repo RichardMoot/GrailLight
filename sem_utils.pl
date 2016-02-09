@@ -254,7 +254,6 @@ reduce_lambda(Term0, Term) :-
 
 reduce_lambda(Term0, Term, Max0, Max) :-
 	reduce_lambda1(Term0, Term1, Max0, Max1),
-	format('~N ~p~n',[Term1]),
 	!,
 	reduce_lambda(Term1, Term, Max1, Max).
 
