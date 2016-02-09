@@ -1,6 +1,7 @@
 % -*- Mode: Prolog -*-
 
 :- module(sem_utils,  [reduce_sem/2,
+		       reduce_lambda/2,
 		       substitute_sem/3,
 		       replace_sem/4,
 		       sem_to_prolog/3,
@@ -38,6 +39,8 @@
 :- use_module(latex,   [latex_list/2]).
 :- use_module(lexicon, [macro_expand/2]).
 
+:- dynamic user:solution_semantics_hook/2.
+
 % no Curry-Howard semantics for the unary connectives Diamond and Box
 % change this line to
 %
@@ -52,6 +55,13 @@ reduce_quine(active).
 reduce_eta(active).
 
 semantic_set_type(E, _T, E).
+
+% WARNING: though "sloppy" produces simpler structures (less duplication of DRSs), it may be subject to accidental capture
+% "sloppy" bindings treats all DRS variable names as having global scope (which is likely to be incorrect, but has the
+% advantage of not producing many doubled structures for sentences like "Jean et Marie aiment Pierre et Anne"
+
+drs_binding(sloppy).
+
 % semantic_set_type(E, T, E->T).
 
 % reduce_solution_semantics(+InputSemantics, -OutputSemantics)
@@ -65,56 +75,165 @@ semantic_set_type(E, _T, E).
 % in case no such predicate is specified, basic beta-reduction
 % is applied.
 
-reduce_solution_semantics(SemIn, SemOut) :-
+reduce_sem(SemIn, SemOut) :-
 	/* lambda calculus normalization */
-	reduce_sem(SemIn, SemMid),
+	reduce_lambda(SemIn, SemMid),
+	reduce_quine(SemMid, SemQ),
 	/* default DRS treatment (if applicable) */
-	reduce_drs(SemMid, SemDRS),
+	reduce_drs(SemQ, SemDRS),
 	/* user-defined semantic treatment */
 	reduce_user(SemDRS, SemOut).
 
+% = DRS merge; simply appends contexts and conditions
 
-reduce_drs(drs(V,Cs0), drs(V,Cs)) :-
+reduce_drs(D0, D) :-
+	reduce_drs1(D0, D1),
+	D0 \=@= D1,
+	!,
+	reduce_drs(D1, D).
+reduce_drs(D, D).
+
+reduce_drs1(merge(drs(X,C),drs(Y,D)), drs(Z,F)) :-
+	merge_lists(X, Y, Z),
+	merge_lists(C, D, F).
+
+% = DRS presuppositions; move the preposition to the top level
+
+%% reduce_drs1(presup(X,Y), presupp(X,Y), Max, Max) :-
+%% 	free_vars(X, FV),
+%% 	bound_variables(Y, BV),
+%% 	ord_intersect(BV, FV, [_|_]),
+%% 	!.	     % "freeze" a presuppositions at the current level
+% Quick'n'dirty solution to get complex proper names into a single DRS
+reduce_drs1(merge(presup(X,Y),drs(Z,V)), presup(X,merge(Y,drs(Z,V)))).
+reduce_drs1(merge(drs(Z,V),presup(X,Y)), presup(X,merge(drs(Z,V),Y))).
+
+reduce_drs1(presup(presup(X,Y),Z), presup(merge(X,Y),Z)).
+reduce_drs1(presup(P1,presup(P2,X)), presup(merge(P1,P2),X)).
+reduce_drs1(merge(presup(P1,X),presup(P2,Y)), presup(merge(P1,P2),merge(X,Y))).
+
+reduce_drs1(not(presup(P,Q)),presup(P,not(Q))).
+reduce_drs1(bool(presup(P,Q),->,R), Red) :-
+	free_vars(P, FV),
+	bound_variables(Q, BV),
+	ord_intersect(FV, BV, Int),
+	/* fails if bound variables were to become free */
+   (
+        Int = []
+   ->
+        Red = presup(P,bool(Q,->,R))
+   ).
+reduce_drs1(bool(P,->,presup(Q,R)), Red) :-
+	free_vars(Q, FV),
+	bound_variables(R, BV),
+	ord_intersect(FV, BV, Int),
+	/* fails if bound variables were to become free */
+    (
+        Int = []
+    ->
+        Red = bool(presup(Q,P),->,R)
+    ).
+reduce_drs1(drs(V,L0), drs(V, [drs_label(X,merge(Q1,Q2))|L])) :-
+	select(drs_label(X,Q1), L0, L1),
+	select(drs_label(X,Q2), L1, L).
+reduce_drs1(drs(V,L0), presup(P, drs(V,[Q|L]))) :-
+	select(presup(P, Q), L0, L).
+reduce_drs1(drs(V,L0), presup(P, drs(V,[drs_label(X,Q)|L]))) :-
+	select(drs_label(X,presup(P, Q)), L0, L).
+
+% recursive cases
+
+reduce_drs1(merge(D0,D1), merge(D2,D3)) :-
+	reduce_drs1(D0, D2),
+	reduce_drs1(D1, D3).
+reduce_drs1(presup(D0,D1), presup(D2,D3)) :-
+	reduce_drs1(D0, D2),
+	reduce_drs1(D1, D3).
+reduce_drs1(drs(V,Cs0), drs(V,Cs)) :-
 	!,
 	reduce_conditions(Cs0, Cs).
-reduce_drs(merge(D0,D1), drs(V,Cs)) :-
-	reduce_drs(D0, drs(V0,Cs0)),
-	reduce_drs(D1, drs(V1,Cs1)),
-	!,
-	append(V0, V1, V),
-	append(Cs0, Cs1, Cs).
-reduce_drs(X, X).
+reduce_drs1(DRS, DRS).
 
 reduce_conditions([], []).
 reduce_conditions([C|Cs], [D|Ds]) :-
 	reduce_condition(C, D),
 	reduce_conditions(Cs, Ds).
 
-reduce_condition(bool(D0,C,D1), R) :-
-	complex_drs_connective(C, D2, D, R),
+reduce_condition(bool(D0,C,D1), bool(D2,C,D3)) :-
+	drs_bool(C),
 	!,
-	reduce_drs(D0, D2),
-	reduce_drs(D1, D).
+	reduce_drs1(D0, D2),
+	reduce_drs1(D1, D3).
 reduce_condition(bool(A,B,C), bool(A,B,C)) :-
 	!.
 reduce_condition(not(D0), not(D)) :-
 	!,
-	reduce_drs(D0, D).
-reduce_condition(appl(F0,A), atom(T)) :-
-	reduce_application(F0, F, L, []),
+	reduce_drs1(D0, D).
+reduce_condition(drs_label(L,DRS0), drs_label(L,DRS)) :-
 	!,
-	T =.. [F,A|L].
-
-reduce_application(F, F) -->
-	{atom(F)},
+	reduce_drs1(DRS0, DRS).
+reduce_condition(appl(F0,A0), appl(F,A)) :-
 	!,
-	[].
-reduce_application(appl(F0,T), F) -->
-	[T],
-	reduce_application(F0, F).
+	reduce_condition(F0, F),
+	reduce_condition(A0, A).
+reduce_condition(C, C).
 
-complex_drs_connective(->, D0, D1, impl(D0,D1)).
-complex_drs_connective(\/, D0, D1, or(D0,D1)).
+drs_bool(->).
+drs_bool(\/).
+
+merge_lists([], Ls2, Ls2).
+merge_lists([L1|Ls1], Ls2, [L1|Ls]) :-
+	strict_removeall(L1, Ls2, Ls3),
+	merge_lists(Ls1, Ls3, Ls).
+
+strict_removeall(_,  [], []).
+strict_removeall(E1, [E2|Ls0], Ls) :-
+	E1 == E2,
+	!,
+	strict_removeall(E1, Ls0, Ls).
+strict_removeall(E, [L|Ls0], [L|Ls]) :-
+	strict_removeall(E, Ls0, Ls).
+
+
+% = Quine's reductions
+
+reduce_quine(Sem0, Sem) :-
+	reduce_quine(active),
+	!,
+	reduce_quine0(Sem0, Sem).
+reduce_quine(Sem, Sem).
+
+reduce_quine0(Sem0, Sem) :-
+	reduce_quine1(Sem0, Sem1),
+	!,
+	reduce_quine0(Sem1, Sem).
+reduce_quine0(Sem, Sem).
+
+reduce_quine1(bool(true,&,X), X).
+reduce_quine1(bool(X,&,true), X).
+reduce_quine1(bool(false,&,_), false).
+reduce_quine1(bool(_,&,false), false).
+
+reduce_quine1(bool(true,\/,_), true).
+reduce_quine1(bool(_,\/,true), true).
+reduce_quine1(bool(false,\/,X), X).
+reduce_quine1(bool(X,\/,false), X).
+
+reduce_quine1(bool(true,->,X), X).
+reduce_quine1(bool(_,->,true), true).
+reduce_quine1(bool(false,->,_), true).
+reduce_quine1(bool(X,->,false), not(X)).
+
+reduce_quine1(T, U, Max0, Max) :-
+	T =.. [F|Ts],
+	reduce_quine_list(Ts, Us, Max0, Max),
+	U =.. [F|Us].
+
+reduce_quine_list([T|Ts], [U|Ts], Max0, Max) :-
+	reduce_quine1(T, U, Max0, Max).
+reduce_quine_list([T|Ts], [T|Us], Max0, Max) :-
+	reduce_quine_list(Ts, Us, Max0, Max).
+
 
 reduce_user(SemIn, SemOut) :-
 	user:solution_semantics_hook(_,_),
@@ -122,56 +241,56 @@ reduce_user(SemIn, SemOut) :-
 	user:solution_semantics_hook(SemIn, SemOut).
 reduce_user(Sem, Sem).
 
-% reduce_sem(+LambdaTerm, -BetaEtaReducedLambdaTerm)
+% reduce_lambda(+LambdaTerm, -BetaEtaReducedLambdaTerm)
 %
 % true if BetaEtaReducedLambdaTerm is the beta-eta normal form of
 % Lambda Term. Works using a simply repeat loop reducing one redex
 % at each step.
 
-reduce_sem(Term0, Term) :-
-	get_max_variable_number(Term0, Max),
-	reduce_sem(Term0, Term1, Max, _),
+reduce_lambda(Term0, Term) :-
+	get_fresh_variable_number(Term0, Max),
+	reduce_lambda(Term0, Term1, Max, _),
 	relabel_sem_vars(Term1, Term).
 
-reduce_sem(Term0, Term, Max0, Max) :-
-	reduce_sem1(Term0, Term1, Max0, Max1),
+reduce_lambda(Term0, Term, Max0, Max) :-
+	reduce_lambda1(Term0, Term1, Max0, Max1),
+	format('~N ~p~n',[Term1]),
 	!,
-	reduce_sem(Term1, Term, Max1, Max).
+	reduce_lambda(Term1, Term, Max1, Max).
 
-reduce_sem(Term, Term, Max, Max).
+reduce_lambda(Term, Term, Max, Max).
 
-
-% reduce_sem1(+Redex, -Contractum).
+% reduce_lambda1(+Redex, -Contractum).
 %
 % true if Redex reduces to Contractum in a single beta or eta
 % reduction.
 
-reduce_sem1(appl(lambda(X0,T0),Y), T, Max0, Max) :-
+reduce_lambda1(appl(lambda(X0,T0),Y), T, Max0, Max) :-
 	alpha_conversion(lambda(X0,T0),lambda(X,T1), Max0, Max),
 	replace_sem(T1, X, Y, T).
-reduce_sem1(lambda(X,appl(F,X)), F, Max, Max) :-
+reduce_lambda1(lambda(X,appl(F,X)), F, Max, Max) :-
 	reduce_eta(active),
 	\+ subterm(F, X).
-reduce_sem1(pi1(pair(T,_)), T, Max, Max).
-reduce_sem1(pi2(pair(_,T)), T, Max, Max).
-reduce_sem1(pair(pi1(T),pi2(T)), T, Max, Max) :-
+reduce_lambda1(pi1(pair(T,_)), T, Max, Max).
+reduce_lambda1(pi2(pair(_,T)), T, Max, Max).
+reduce_lambda1(pair(pi1(T),pi2(T)), T, Max, Max) :-
 	reduce_eta(active).
-reduce_sem1(condia(dedia(T)), T, Max, Max).
-reduce_sem1(dedia(condia(T)), T, Max, Max).
-reduce_sem1(conbox(debox(T)), T, Max, Max).
-reduce_sem1(debox(conbox(T)), T, Max, Max).
-reduce_sem1(condia(T), T, Max, Max) :- 
+reduce_lambda1(condia(dedia(T)), T, Max, Max).
+reduce_lambda1(dedia(condia(T)), T, Max, Max).
+reduce_lambda1(conbox(debox(T)), T, Max, Max).
+reduce_lambda1(debox(conbox(T)), T, Max, Max).
+reduce_lambda1(condia(T), T, Max, Max) :- 
 	unary_semantics(inactive).
-reduce_sem1(dedia(T), T, Max, Max) :- 
+reduce_lambda1(dedia(T), T, Max, Max) :- 
 	unary_semantics(inactive).
-reduce_sem1(conbox(T), T, Max, Max) :- 
+reduce_lambda1(conbox(T), T, Max, Max) :- 
 	unary_semantics(inactive).
-reduce_sem1(debox(T), T, Max, Max) :- 
+reduce_lambda1(debox(T), T, Max, Max) :- 
 	unary_semantics(inactive).
 
 % ad hoc additions 
 
-reduce_sem1(if_var_else(X, T1, T2), T, Max, Max) :-
+reduce_lambda1(if_var_else(X, T1, T2), T, Max, Max) :-
     (
          var(X)
     ->
@@ -179,7 +298,7 @@ reduce_sem1(if_var_else(X, T1, T2), T, Max, Max) :-
     ;
         T = T2
     ).
-reduce_sem1(if_unify_else(X, Y, T1, T2), T, Max, Max) :-
+reduce_lambda1(if_unify_else(X, Y, T1, T2), T, Max, Max) :-
     (
          X \= Y
     ->
@@ -187,7 +306,7 @@ reduce_sem1(if_unify_else(X, Y, T1, T2), T, Max, Max) :-
     ;
         T = T1
     ).
-reduce_sem1(if_equals_else(X, Y, T1, T2), T, Max, Max) :-
+reduce_lambda1(if_equals_else(X, Y, T1, T2), T, Max, Max) :-
     (
          X \== Y
     ->
@@ -196,136 +315,17 @@ reduce_sem1(if_equals_else(X, Y, T1, T2), T, Max, Max) :-
         T = T1
     ).
 
-
-% = Quine's reductions
-
-reduce_sem1(bool(true,&,X), X, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(X,&,true), X, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(false,&,_), false, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(_,&,false), false, Max, Max) :-
-	reduce_quine(active).
-
-reduce_sem1(bool(true,\/,_), true, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(_,\/,true), true, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(false,\/,X), X, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(X,\/,false), X, Max, Max) :-
-	reduce_quine(active).
-
-reduce_sem1(bool(true,->,X), X, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(_,->,true), true, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(false,->,_), true, Max, Max) :-
-	reduce_quine(active).
-reduce_sem1(bool(X,->,false), not(X), Max, Max) :-
-	reduce_quine(active).
-
-% = qualia structures
-%
-% in principle, these could be implemented in the standard semantics
-% as pairs of pairs, but to make things slightly easier (and to allow
-% the pretty-printer to portray qualia in a configurable way) I've
-% added an implementation in the form of 4-tuples.
-
-reduce_sem1(   const(qualia(C,_,_,_)), C, Max, Max).
-reduce_sem1(  formal(qualia(_,F,_,_)), F, Max, Max).
-reduce_sem1(   telic(qualia(_,_,T,_)), T, Max, Max).
-reduce_sem1(agentive(qualia(_,_,_,A)), A, Max, Max).
-reduce_sem1(qualia(const(Q),formal(Q),telic(Q),agentive(Q)), Q, Max, Max) :-
-	reduce_eta(active).
-
-% = DRS merge; simply appends contexts and conditions
-
-reduce_sem1(merge(drs(X,C),drs(Y,D)), drs(Z,F), Max, Max) :-
-	append(X, Y, Z0),
-	sort(Z0, Z),
-	sort(C, CS),
-	sort(D, DS),
-	ord_intersect(CS, DS, Doubles),
-	delete_all(Doubles, D, E),
-	append(C, E, F).
-
-% = DRS presuppositions; move the preposition to the top level
-
-reduce_sem1(presup(X,Y), presupp(X,Y), Max, Max) :-
-	free_vars(X, FV),
-	bound_variables(Y, BV),
-	ord_intersect(BV, FV, [_|_]),
-	!.	     % "freeze" a presuppositions at the current level
-% Quick'n'dirty solution to get complex proper names into a single DRS
-reduce_sem1(presup(presup(X,Y),Z), presup(merge(X,Y),Z), Max, Max) :-
-	free_vars(Y, FV),
-	FV \== [],
-	bound_variables(X, BV),
-	ord_subset(FV, BV),
-	!.
-reduce_sem1(presup(presupp(X,Y),Z), presup(merge(X,Y),Z), Max, Max) :-
-	free_vars(X, FVX),
-	free_vars(Y, FVY),
-	bound_variables(X, BVX),
-	bound_variables(Y, BVY),
-    (
-	FVX \== [],
-	ord_subset(FVX, BVY),
-	!
-    ;
-        FVY \== [],
-        ord_subset(FVY, BVX)
-    ).
-reduce_sem1(merge(presup(X,Y),drs(Z,V)), presup(X,merge(Y,drs(Z,V))), Max, Max).
-reduce_sem1(merge(presupp(X,Y),drs(Z,V)), presupp(X,merge(Y,drs(Z,V))), Max, Max).
-
-reduce_sem1(merge(drs(Z,V),presup(X,Y)), presup(X,merge(drs(Z,V),Y)), Max, Max).
-reduce_sem1(merge(drs(Z,V),presupp(X,Y)), presupp(X,merge(drs(Z,V),Y)), Max, Max).
-
-reduce_sem1(merge(presup(P1,X),presup(P2,Y)), presup(P1,presup(P2,merge(X,Y))), Max, Max).
-reduce_sem1(merge(presupp(P1,X),presup(P2,Y)), presupp(P1,presup(P2,merge(X,Y))), Max, Max).
-
-reduce_sem1(not(presup(P,Q)),presup(P,not(Q)), Max, Max).
-reduce_sem1(bool(presup(P,Q),->,R),Red, Max, Max) :-
-	free_vars(P, FV),
-	bound_variables(Q, BV),
-	ord_intersect(FV, BV, Int),
-   (
-        Int = []
-   ->
-        Red = presup(P,bool(Q,->,R))
-   ;
-        Red = bool(presupp(P,Q),->,R)
-   ).
-reduce_sem1(bool(P,->,presup(Q,R)),Red, Max, Max) :-
-	free_vars(Q, FV),
-	bound_variables(R, BV),
-	ord_intersect(FV, BV, Int),
-    (
-        Int = []
-    ->
-        Red = bool(presup(Q,P),->,R)
-    ;
-        Red = bool(P,->,presupp(Q,R))
-    ).
-reduce_sem1(drs(V,L0), presup(P, drs(V,[Q|L])), Max, Max) :-
-	select(presup(P, Q), L0, L).
-reduce_sem1(drs(V,L0), presup(P, drs(V,[drs_label(X,Q)|L])), Max, Max) :-
-	select(drs_label(X,presup(P, Q)), L0, L).
-
 % = recursive case
 
-reduce_sem1(T, U, Max0, Max) :-
+reduce_lambda1(T, U, Max0, Max) :-
 	T =.. [F|Ts],
-	reduce_list(Ts, Us, Max0, Max),
+	reduce_lambda_list(Ts, Us, Max0, Max),
 	U =.. [F|Us].
 
-reduce_list([T|Ts], [U|Ts], Max0, Max) :-
-	reduce_sem1(T, U, Max0, Max).
-reduce_list([T|Ts], [T|Us], Max0, Max) :-
-	reduce_list(Ts, Us, Max0, Max).
+reduce_lambda_list([T|Ts], [U|Ts], Max0, Max) :-
+	reduce_lambda1(T, U, Max0, Max).
+reduce_lambda_list([T|Ts], [T|Us], Max0, Max) :-
+	reduce_lambda_list(Ts, Us, Max0, Max).
 
 % subterm(+Term, +SubTerm)
 %
@@ -397,8 +397,7 @@ subterm_with_unify(N0, X, Y) :-
 
 alpha_conversion(Term0, Term, Max0, Max) :-
 	melt_bound_variables(Term0, Term),
-	numbervars(Term, Max0, Max1),
-	Max is Max1 + 1.
+	numbervars(Term, Max0, Max).
 
 % = replace_sem(+InTerm, +Term1, +Term2, -OutTerm)
 %
@@ -546,9 +545,16 @@ bound_variables(merge(A,B), BVs) :-
 	ord_union(BVsA, BVsB, BVs).
 bound_variables(drs(V, L), BVs) :-
 	!,
-	drs_variable_numbers(V, BVs0),
+   (
+	drs_binding(sloppy)
+   ->
+	bound_variables_conditions(L, BVs)
+   ;	  
+        /* WARNING: this may lead to accidental capture of DRS variables */
+        drs_variable_numbers(V, BVs0),
 	bound_variables_conditions(L, BVs1),
-	ord_union(BVs0, BVs1, BVs).
+	ord_union(BVs0, BVs1, BVs)
+   ).
 bound_variables(lambda(X, Y), BVs) :-
 	 !,
     (
@@ -725,7 +731,6 @@ melt_bound_variables(X, X, _Tree) :-
 	var(X),
 	!.
 melt_bound_variables('$VAR'(I), Var, Tree) :-
-	!,
     (
          btree_get(Tree, I, Var)
     ->
@@ -735,7 +740,19 @@ melt_bound_variables('$VAR'(I), Var, Tree) :-
     ).
 melt_bound_variables(drs(Vars0,Conds0), drs(Vars,Conds), Tree) :-
 	!,
-	melt_drs_variables(Vars0, Vars, Tree),
+    (
+	drs_binding(sloppy)
+    ->
+	/* WARNING: we allow "accidental capture" of variables bound by DRS boxes here ! */
+	/* this avoids duplication of referents under different names, eg. */
+        /* "John and Peter love Sue" will not have two different variables both named */
+        /* "Sue"; this is a pragmatic choice and care must be taken! */
+	/* uncomment line below (while commenting the line "Vars0 = Vars" to */
+	/* obtain correct solution */
+	Vars0 = Vars
+     ;		    
+        melt_drs_variables(Vars0, Vars, Tree)
+     ),		       
 	melt_bound_variables(Conds0, Conds, Tree).
 melt_bound_variables(Term0, Term, Tree) :-
 	functor(Term0, F, A),
@@ -822,9 +839,8 @@ renumbervars(Term) :-
 	renumbervars(Term, _).
 
 renumbervars(Term0, MaxVar) :-
-	get_max_variable_number(Term0, MaxVar0),
-	MaxVar1 is MaxVar0 + 1,
-	numbervars(Term0, MaxVar1, MaxVar).
+	get_fresh_variable_number(Term0, MaxVar0),
+	numbervars(Term0, MaxVar0, MaxVar).
 
 
 % = get_fresh_variable_number(+LambdaTerm, ?FreshVar)
