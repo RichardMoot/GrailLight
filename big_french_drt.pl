@@ -843,8 +843,8 @@ add_info('Val', X, [appl(lieu,X)|L], L) :-
 add_info(_, _, L, L).
 
 
-convert_quantifier(nul, lambda(P,lambda(Q,drs([],[bool(merge(drs([variable(X)],[]),appl(P,X)),->,not(appl(Q,X)))])))).
-convert_quantifier(nulle, lambda(P,lambda(Q,drs([],[bool(merge(drs([variable(X)],[]),appl(P,X)),->,not(appl(Q,X)))])))).
+convert_quantifier(nul, lambda(P,lambda(Q,drs([],[bool(merge(drs([variable(X)],[]),appl(P,X)),->,drs([],[not(appl(Q,X))]))])))).
+convert_quantifier(nulle, lambda(P,lambda(Q,drs([],[bool(merge(drs([variable(X)],[]),appl(P,X)),->,drs([],[not(appl(Q,X))]))])))).
 convert_quantifier(quelque, lambda(P,lambda(Q,merge(merge(drs([variable(X)],[]),appl(P,X)),appl(Q,X))))).
 
 convert_quantifier_adj(nulle, lambda(P,lambda(X,drs([],[not(appl(P,X))])))).
@@ -2780,17 +2780,19 @@ lex(dans_dix_minutes, dl(1,lit(s(SX)),lit(s(SX))), lambda(S,lambda(E,merge(appl(
 lex(unique, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,neq,X)]),appl(P,Y)))]))))).
 lex(unique, dr(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,neg,X)]),appl(P,Y)))]))))).
 
-lex(que, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'context?'),bool(num(Y),>,1),bool(X,atomic_sub,Y),bool(drs([variable(Z)],[bool(Z,atomic_sub,Y),bool(Z,neq,X)]),->,not(appl(P,Z)))]))))))).
-lex('qu\'', dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'context?'),bool(num(Y),>,1),bool(X,atomic_sub,Y),bool(drs([variable(Z)],[bool(Z,atomic_sub,Y),bool(Z,neq,X)]),->,not(appl(P,Z)))]))))))).
-lex(que, dr(0,dl(0,np,s),dl(0,np,s)),lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P1,appl(P1,X))),E),drs([event(F)],[bool(F,=,'context?'),bool(num(F),>,1),bool(E,atomic_sub,F),bool(drs([variable(G)],[bool(G,atomic_sub,F),bool(G,neq,E)]),->,not(appl(appl(VP,lambda(P1,appl(P1,X))),G)))])))))))).
-lex('qu\'', dr(0,dl(0,np,s),dl(0,np,s)),lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P1,appl(P1,X))),E),drs([event(F)],[bool(F,=,'context?'),bool(num(F),>,1),bool(E,atomic_sub,F),bool(drs([variable(G)],[bool(G,atomic_sub,F),bool(G,neq,E)]),->,not(appl(appl(VP,lambda(P1,appl(P1,X))),G)))])))))))).
+lex(que, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'context?'),bool(num(Y),>,1),bool(X,atomic_sub,Y),bool(drs([variable(Z)],[bool(Z,atomic_sub,Y),bool(Z,neq,X)]),->,drs([],[not(appl(P,Z))]))]))))))).
+lex('qu\'', dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'context?'),bool(num(Y),>,1),bool(X,atomic_sub,Y),bool(drs([variable(Z)],[bool(Z,atomic_sub,Y),bool(Z,neq,X)]),->,drs([],[not(appl(P,Z))]))]))))))).
+lex(que, dr(0,dl(0,np,s),dl(0,np,s)),lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P1,appl(P1,X))),E),drs([event(F)],[bool(F,=,'context?'),bool(num(F),>,1),bool(E,atomic_sub,F),bool(drs([variable(G)],[bool(G,atomic_sub,F),bool(G,neq,E)]),->,drs([],[not(appl(appl(VP,lambda(P1,appl(P1,X))),G))]))])))))))).
+lex('qu\'', dr(0,dl(0,np,s),dl(0,np,s)),lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P1,appl(P1,X))),E),drs([event(F)],[bool(F,=,'context?'),bool(num(F),>,1),bool(E,atomic_sub,F),bool(drs([variable(G)],[bool(G,atomic_sub,F),bool(G,neq,E)]),->,drs([],[not(appl(appl(VP,lambda(P1,appl(P1,X))),G))]))])))))))).
 
-lex('Rien', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))]))).
-lex(rien, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))]))).
+lex('Rien', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[]),->,drs([],[not(appl(Q,X))]))]))).
+lex(rien, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[]),->,drs([],[not(appl(Q,X))]))]))).
 % eg. "Jean a rien vu"
-lex(rien, dr(0,dl(0,np,s),dr(0,dl(0,np,s),np)), lambda(TV,appl(TV,lambda(Q,drs([],[bool(drs([variable(X)],[]),->,not(appl(Q,X)))]))))).
-lex(personne, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,not(appl(Q,X)))]))).
-lex('Personne', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,not(appl(Q,X)))]))).
+lex(rien, dr(0,dl(0,np,s),dr(0,dl(0,np,s),np)), lambda(TV,appl(TV,lambda(Q,drs([],[bool(drs([variable(X)],[]),->,drs([],[not(appl(Q,X))]))]))))).
+lex(personne, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,drs([],[not(appl(Q,X))]))]))).
+lex('Personne', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,drs([],[not(appl(Q,X))]))]))).
+lex(nul, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,drs([],[not(appl(Q,X))]))]))).
+lex('Nul', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,drs([],[not(appl(Q,X))]))]))).
 
 lex('non-', dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([],[not(appl(P,X))])))).
 lex(non, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([],[not(appl(P,X))])))).
