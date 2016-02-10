@@ -9,7 +9,7 @@
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
 :- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2,is_closed/1]).
-:- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
+:- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_drs_semantics/2]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
 :- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_key_insert_unify/4, ord_select/3, ord_delete/3]).
@@ -476,12 +476,12 @@ print_grail_semantics(Sem) :-
    (
         display_unreduced_semantics(yes)
    ->
-	latex_semantics(Sem, Formula, sem),
+	latex_drs_semantics(Sem, sem),
 	format(sem, '\\rightarrow_{\\beta}\\\\ ', [])
    ;
         true
    ),
-	latex_semantics(RSem, Formula, sem),
+	latex_drs_semantics(RSem, sem),
 	format(sem, '~n\\end{multline}~2n', []).
 
 print_grail_semantics_tail :-
