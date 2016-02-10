@@ -25,6 +25,8 @@
 	latex_step_ex_counter/1,
         latex_formula/1,          % Formula ->
 	latex_semantics/2,        % Semantics x Formula ->
+	latex_drs_semantics/1,    % Semantics x Formula ->
+	latex_drs_semantics/2,    % Semantics x Formula ->
         latex_label/1,            % Label ->
         latex_label/2,            % Label x Stream ->
         latex_label/4,            % Label ->
@@ -35,7 +37,7 @@
 	latex_all_proofs/0,	  
 	latex_list/2]).           % List x Stream ->
 
-:- use_module(sem_utils, [get_variable_types/3]).
+:- use_module(sem_utils, [get_variable_types/3,get_drs_types/2]).
 :- use_module(tree234,   [btree_get/3]).
 :- use_module(options,   [get_option/2,option_true/1]).
 
@@ -548,6 +550,13 @@ write_inf(Inf, Stream) :-
 
 % ===========================================================
 
+latex_drs_semantics(Sem) :-
+	get_drs_types(Sem, Tr),
+	latex_semantics(Sem, 1, Tr, user_output).
+latex_drs_semantics(Sem, Stream) :-
+	get_drs_types(Sem, Tr),
+	latex_semantics(Sem, 1, Tr, Stream).
+
 latex_semantics(Sem, Formula) :-
 	get_variable_types(Sem, Formula, Tr),
 	latex_semantics(Sem, 1, Tr, user_output).
@@ -890,18 +899,18 @@ sem_var_name(e, 1, y) :-
 	!.
 sem_var_name(e, 2, z) :-
 	!.
-sem_var_name(s, 0, x) :-
-	!.
-sem_var_name(s, 1, y) :-
-	!.
-sem_var_name(s, 2, z) :-
-	!.
-%sem_var_name(s, 0, d) :-
+%sem_var_name(s, 0, x) :-
 %	!.
-%sem_var_name(s, 1, e) :-
+%sem_var_name(s, 1, y) :-
 %	!.
-%sem_var_name(s, 2, f) :-
+%sem_var_name(s, 2, z) :-
 %	!.
+sem_var_name(s, 0, d) :-
+	!.
+sem_var_name(s, 1, e) :-
+	!.
+sem_var_name(s, 2, f) :-
+	!.
 sem_var_name(e->t, 0, 'P') :-
 	!.
 sem_var_name(e->t, 1, 'Q') :-
