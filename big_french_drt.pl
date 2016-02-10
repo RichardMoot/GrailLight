@@ -1551,7 +1551,7 @@ default_semantics(revenir, POS,  dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))
 	pos_time(POS, [], Es, E-Time).
 
 % intransitive "arriver", resolve implicit destination anaphor
-default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([D],[bool(D,=,'lieu?')]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
+default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([varialbe(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 % intransitive "partir", resolve implicit source anaphor
 default_semantics(partir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,D),Path),appl(appl(destination,complement(D)),Path)|Time]))))))) :-
@@ -2262,10 +2262,10 @@ default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,
 
 % = past and present participles used as adjectives
 
-default_semantics(W, ver:pper, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([event(E),variable(X)],[appl(event,E)|Conds]),appl(P,V))))) :-
+default_semantics(W, ver:pper, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([event(E),variable(X)],Conds),appl(P,V))))) :-
 	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
 	add_roles([SubjectRole-X,ObjectRole-V], W, E, Conds, []).
-default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(par))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E)],[appl(event,E)|Conds]))),appl(P,V)))))) :-
+default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(par))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E)],Conds))),appl(P,V)))))) :-
 	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
 	add_roles([SubjectRole-Z,ObjectRole-V], W, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(generic,X)|Conds]))),appl(P,V)))))) :-
@@ -2326,7 +2326,7 @@ default_semantics(Word, prp:det, dr(_,lit(pp(PRP)),lit(n)), lambda(P,lambda(Q,me
 
 default_semantics(_, pun, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,appl(appl(P,appl(Q,R)),X)))))).
 default_semantics(_, pun, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),appl(N,X)))))))).
-default_semantics(_, pun, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(_, pun, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(_, pun, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(N,lambda(E,merge(merge(drs([],[]),appl(appl(Q,N),E)),appl(appl(P,N),_))))))).
 default_semantics(_, pun, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,merge(appl(P,X),appl(Q,X)))))).
 default_semantics(_, pun, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP2,lambda(X,appl(P,X))),appl(NP1,lambda(Y,appl(P,Y)))))))).
@@ -2334,7 +2334,7 @@ default_semantics(_, pun, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(N
 
 default_semantics(_, pun:cit, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,appl(appl(P,appl(Q,R)),X)))))).
 default_semantics(_, pun:cit, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),appl(N,X)))))))).
-default_semantics(_, pun:cit, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(_, pun:cit, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(_, pun:cit, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(np(_,_,_)),lit(s(_)))),lambda(P,lambda(Q,lambda(N,lambda(E,merge(merge(drs([],[]),appl(appl(Q,N),E)),appl(appl(P,N),_))))))).
 default_semantics(_, pun:cit, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,merge(appl(P,X),appl(Q,X)))))).
 default_semantics(_, pun:cit, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP2,lambda(X,appl(P,X))),appl(NP1,lambda(Y,appl(P,Y)))))))).
@@ -2357,20 +2357,21 @@ default_semantics(_, pun:cit, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lamb
 % = privative adjectives
 % NOTE: a *privative* adjective is one such that the interpretation of "A N"
 % implies that the interpretation of "N" does *not* hold, eg. "faux billet"
-% "emploi fictif"
+% "emploi fictif" (not everyone agrees that such a class actually exists
+% and maybe we should simply treat these as non-subsective adjectives)
 
-default_semantics(W, adj, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([variable(X),event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
+default_semantics(W, adj, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
 	    prefixed_privative_adjective(W).
-default_semantics(W, ver:ppre, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([variable(X),event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
+default_semantics(W, ver:ppre, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
 	    prefixed_privative_adjective(W).
-default_semantics(W, ver:pper, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([variable(X),event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
+default_semantics(W, ver:pper, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
 	    prefixed_privative_adjective(W).
 
-default_semantics(W, adj, dl(0,lit(n),lit(n)), lambda(P,lambda(X,drs([variable(X),event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
+default_semantics(W, adj, dl(0,lit(n),lit(n)), lambda(P,lambda(X,drs([event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
 	    postfixed_privative_adjective(W).
-default_semantics(W, ver:ppre, dl(0,lit(n),lit(n)), lambda(P,lambda(X,drs([variable(X),event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
+default_semantics(W, ver:ppre, dl(0,lit(n),lit(n)), lambda(P,lambda(X,drs([event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
 	    postfixed_privative_adjective(W).
-default_semantics(W, ver:pper, dl(0,lit(n),lit(n)), lambda(P,lambda(X,drs([variable(X),event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
+default_semantics(W, ver:pper, dl(0,lit(n),lit(n)), lambda(P,lambda(X,drs([event(S)],[not(appl(P,X)),drs_label(S,appl(P,X)),appl(W,S)])))) :-
 	    postfixed_privative_adjective(W).
 
 % = non-subsective prefixed adjectives
@@ -2590,7 +2591,7 @@ default_semantics(aider, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,
 
 % = laisser + inf
 
-default_semantics(laisser, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(P,lambda(X,lambda(E,merge(drs([],[appl(laisser,E),appl(appl(agent,_Subj),E),appl(appl(patient,F),E)]),appl(appl(P,X),F)))))).
+default_semantics(laisser, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(P,lambda(X,lambda(E,merge(drs([event(F)],[appl(laisser,E),appl(appl(agent,_Subj),E),appl(appl(patient,F),E)]),appl(appl(P,X),F)))))).
 
 % = prepositions - noun modifiers
 
