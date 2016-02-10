@@ -357,6 +357,7 @@ default_roles([np], np, _, [agent,patient]).
 default_roles([cl_r], np, _, [agent,patient]).
 default_roles([np], cl_r, _, [agent,patient]).
 default_roles([np,np], np, _, [agent,patient,theme]).
+default_roles([np,inf(_)], np, _, [agent,patient,theme]).
 default_roles([cl_r,np], np, _, [agent,patient,theme]).
 default_roles([cl_r,pp(_)], np, _, [agent,patient,theme]).
 default_roles([pp(_)], np, _, [agent,theme]).
@@ -2251,14 +2252,21 @@ default_semantics(W, ver:pper, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(par))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E)],[appl(event,E)|Conds]))),appl(P,V)))))) :-
 	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
 	add_roles([SubjectRole-Z,ObjectRole-V], W, E, Conds, []).
-default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(event,E),appl(generic,X)|Conds]))),appl(P,V)))))) :-
+default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(generic,X)|Conds]))),appl(P,V)))))) :-
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
-default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(event,E),appl(generic,X)|Conds]))),appl(P,V)))))) :-
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(generic,X)|Conds]))),appl(P,V)))))) :-
 	get_roles(W, [np, np, np], [SubjectRole, ObjectRole, Arg]),
 	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
 
+default_semantics(venir, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(base))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L)],Conds)))))) :-
+	add_roles([agent-X,theme-L], venir, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
+default_semantics(passer, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(base))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L)],Conds)))))) :-
+	add_roles([agent-X,theme-L], passer, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
+default_semantics(V, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(IPP))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L),variable(Y)],[appl(generic,Y)|Conds])))))) :-
+	get_roles(V, [np, np, inf(IPP)], [ARole1,ARole2,ARole3]),
+	add_roles([ARole1-Y,ARole2-X,ARole3-L], V, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
 
 % = inversed verb forms
  
