@@ -1433,6 +1433,22 @@ default_semantics(Word, ver:pper, dr(0,dl(0,lit(np(_,_,_)),lit(s(ppart))),lit(pp
 %get_roles(Word, [np], [SRole]),
 %	add_roles([SRole-X], Word, E, Conds, Time),
 
+% not all these constructions use an expletive "il", for example "il est certain de ..." is ambiguous between "he is sure that" and "it is sure that"
+
+default_semantics(être, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,il,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(INF,lambda(_NP,lambda(E,presup(drs(Es,Cs),merge(drs([event(L),event(F)],[drs_label(L,merge(drs([variable(X)],[appl(generic,X)]),appl(appl(INF,lambda(P1,appl(P1,X))),F)))]),appl(appl(ADJ,lambda(_,drs([],[]))),sub(L,E))))))))) :-
+	pos_time(ver:TIME, [], Es, E-Cs).
+
+default_semantics(estimer, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,il,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(INF,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(NP,lambda(X,drs([event(L),event(F)],[drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))|Conds]))))))))) :-
+	add_roles([agent-X,theme-M], estimer, E, Conds, [drs_label(M,appl(appl(ADJ,lambda(_,drs([],[]))),sub(L,E)))]),
+	pos_time(ver:TIME, [], Es, E-Cs).
+
+default_semantics(juger, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,il,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(INF,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(NP,lambda(X,drs([event(L),event(F)],[drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))|Conds]))))))))) :-
+	add_roles([agent-X,theme-M], juger, E, Conds, [drs_label(M,appl(appl(ADJ,lambda(_,drs([],[]))),sub(L,E)))]),
+	pos_time(ver:TIME, [], Es, E-Cs).
+
+default_semantics(paraître, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,il,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(INF,lambda(_NP,lambda(E,presup(drs(Es,Cs),drs([event(L),event(F)],[drs_label(L,merge(drs([variable(X)],[appl(generic,X)]),appl(appl(INF,lambda(P1,appl(P1,X))),F)))|Conds]))))))) :-
+	add_roles([theme-M], paraître, E, Conds, [drs_label(M,appl(appl(ADJ,lambda(_,drs([],[]))),sub(L,E)))]),
+	pos_time(ver:TIME, [], Es, E-Cs).
 
 % = "être + passive"
 % "être" only provide tense information, the passive itself takes care of role information
@@ -2374,12 +2390,20 @@ default_semantics(W, ver:pper, dr(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl
 
 % = subsective postfixed (eg. "grand")
 
-default_semantics(W, adj, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
-	    postfixed_subsective_adjective(W).
-default_semantics(W, ver:ppre, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
-	    postfixed_subsective_adjective(W).
-default_semantics(W, ver:pper, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
-	    postfixed_subsective_adjective(W).
+%default_semantics(W, adj, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
+%	    postfixed_subsective_adjective(W).
+%default_semantics(W, ver:ppre, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
+%	    postfixed_subsective_adjective(W).
+%default_semantics(W, ver:pper, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
+%	    postfixed_subsective_adjective(W).
+
+%default_semantics(W, adj, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
+%	    postfixed_subsective_adjective(W).
+%default_semantics(W, ver:ppre, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
+%	    postfixed_subsective_adjective(W).
+%default_semantics(W, ver:pper, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([event(S)],[drs_label(S,appl(P,X)),appl(W,S)]))))) :-
+%	    postfixed_subsective_adjective(W).
+
 
 % relativizers
 
@@ -2432,12 +2456,15 @@ default_semantics(W, dr(0,dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),lit(n)),
 default_semantics(a, dr(0,dl(0,lit(cl_y),dl(0,lit(np(nom,il,3-s)),dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))))),lit(np(_,_,_))), lambda(NP,lambda(_Y,lambda(_IL,lambda(Adj, lambda(P,lambda(V,merge(appl(appl(Adj,P),V),appl(NP,lambda(X,drs([event(E)],[appl(appl(il_y_a,X),E),bool(E,=,'event?')]))))))))))).
 
 % = adjective + ainf
-% "facile à lire"
+% "susceptible de ..."
 
-default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF,lambda(N,lambda(X,merge(appl(N,X),drs([event(Th)],[appl(appl(PW,Th),X),drs_label(Th,merge(drs([event(E),variable(Y)],[appl(appl(patient,X),E),appl(generic,Y)]),appl(appl(AINF,lambda(P,appl(P,Y))),E)))])))))) :-
-	combine_prep_word(à, W, PW).
-default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(de))))), lambda(DEINF,lambda(N,lambda(X,merge(appl(N,X),drs([event(Th)],[appl(appl(PW,Th),X),drs_label(Th,merge(drs([event(E),variable(Y)],[appl(appl(patient,X),E),appl(generic,Y)]),appl(appl(DEINF,lambda(P,appl(P,Y))),E)))])))))) :-
-	combine_prep_word(de, W, PW).
+default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(PRP))))), lambda(AINF,lambda(N,lambda(X,merge(appl(N,X),drs([event(Th)],[appl(appl(PW,Th),X),drs_label(Th,merge(drs([event(E)],[]),appl(appl(AINF,lambda(P,appl(P,X))),E)))])))))) :-
+	combine_prep_word(PRP, W, PW).
+
+% "tough" constructions, eg. "facile à lire"
+
+default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(PRP)))),dia(1,box(1,lit(np(_,_,_)))))), lambda(TV, lambda(N, lambda(X, merge(appl(N,X)),drs([event(L),variable(Y)],[generic(Y),appl(appl(PW,L),X),drs_label(L,merge(drs([event(E)],[]),appl(appl(appl(TV,lambda(P1,appl(P1,X))),lambda(P2,appl(P2,Y))),E)))]))))) :-
+	combine_prep_word(PRP, W, PW).
 
 % = intransitive
 
@@ -2699,9 +2726,9 @@ default_semantics(par, dr(_,dl(_,lit(np(N1,N2,N3)),lit(s(SS))),dl(_,lit(np(N1,N2
 
 % infinitives with "à" and "de" used as adjectives
 
-default_semantics(de, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(à,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y),appl(appl(patient,X),E)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
-default_semantics('d\'', dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(à,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y),appl(appl(patient,X),E)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
-default_semantics(à, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(à,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y),appl(appl(patient,X),E)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
+default_semantics(de, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(de,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
+default_semantics('d\'', dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(de,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
+default_semantics(à, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(à,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
 
 % = copula  - verb initial
 
