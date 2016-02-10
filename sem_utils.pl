@@ -23,6 +23,7 @@
 		       unify_semantics/2,
 		       try_unify_semantics/2,
 		       melt_bound_variables/2,
+		       get_drs_types/2,
 		       translate_dynamics/3]).
 
 % =
@@ -35,6 +36,7 @@
 			   ord_subtract/3]).
 :- use_module(tree234, [btree_get/3,
 	                btree_insert/4,
+			btree_remove/4,
 			btree_put/4]).
 :- use_module(latex,   [latex_list/2]).
 :- use_module(lexicon, [macro_expand/2]).
@@ -1336,6 +1338,15 @@ check_cond_list([C|Cs], Word, Tr0, Tr) :-
 	check_type(C, T, Word, Tr0, Tr1),
 	check_cond_list(Cs, Word, Tr1, Tr).
 
+syntactic_to_semantic_type(lit(np(_,_,_)), _W, T, Tree) :-
+	!,
+	btree_get(Tree, np, T).
+syntactic_to_semantic_type(lit(pp(_)), _W, T, Tree) :-
+	!,
+	btree_get(Tree, pp, T).
+syntactic_to_semantic_type(lit(s(_)), _W, T, Tree) :-
+	!,
+	btree_get(Tree, s, T).
 syntactic_to_semantic_type(lit(A), _W, T, Tree) :-
 	!,
 	btree_get(Tree, A, T).
@@ -1418,6 +1429,63 @@ get_atomic_types([A|As], T0, T) :-
     ),
 	get_atomic_types(As, T1, T).
 
+
+get_drs_types(Sem, Tree) :-
+	get_drs_types(Sem, empty, Tree).
+
+get_drs_types('is a variable', T, T) :-
+	!.
+get_drs_types('$VAR'(_), T, T) :-
+	!.
+get_drs_types(A, T, T) :-
+	atomic(A).
+get_drs_types(drs(Vs,Cs), T0, T) :-
+	!,
+	add_drs_variables(Vs, T0, T1),
+	get_conditions_types(Cs, T1, T).
+get_drs_types(lambda(X,Term), T0, T) :-
+	functor(X, '$VAR', 1),
+	arg(1, X, N),
+	integer(N),
+	btree_remove(T0, N, s, T1),
+	!,
+	get_drs_types(Term, T1, T).
+get_drs_types(Term, T0, T) :-
+	Term =.. Ls,
+	get_conditions_types(Ls, T0, T).
+
+
+get_conditions_types([], T, T).
+get_conditions_types([C|Cs], T0, T) :-
+	get_drs_types(C, T0, T1),
+	!,
+	get_conditions_types(Cs, T1, T).
+
+add_drs_variables([], T, T).
+add_drs_variables([V|Vs], T0, T) :-
+	add_drs_variable(V, T0, T1),
+	add_drs_variables(Vs, T1, T).
+
+add_drs_variable(event('$VAR'(N)), T0, T) :-
+	btree_insert(T0, N, s, T),
+	!.
+add_drs_variable(variable('$VAR'(N)), T0, T) :-
+   (	
+	btree_remove(T0, N, s, T)
+   ->
+        true
+   ;
+        T = T0
+   ).
+add_drs_variable('$VAR'(N), T0, T) :-
+   (	
+	btree_remove(T0, N, s, T)
+   ->
+        true
+   ;
+        T = T0
+   ).
+		    
 % sem_to_prolog(Goal, LambdaTerm, PrologGoal)
 %
 
