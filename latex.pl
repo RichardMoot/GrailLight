@@ -704,6 +704,12 @@ latex_semantics(lambda(X,V), N, Tr, Stream) :-
 	get_option(collapse_lambda, CL),
         latex_semantics_lambda(CL, V, N, Tr, Stream).
 
+% "trick" to give some adjectives an extra event argument
+latex_semantics(appl(F,sub(X,Y)), _, Tr, Stream) :-
+	atomic(F),
+        option_true(fxy),
+	write_fun_args(F,[X,Y], Tr, Stream),
+	!.
 latex_semantics(appl(F,X), _, Tr, Stream) :-
     (
         option_true(fxy)
