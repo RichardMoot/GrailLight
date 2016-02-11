@@ -2212,6 +2212,7 @@ check_islands1([t(_, _, F, _)|As]) :-
         check_islands1(As)
     ).
 
+% check whether the formula B for an application A/B, B |- B is valid wrt. the two wrapping stacks of B
 
 check_wrap(dl(0,lit(n),lit(n)), _, _, data(_,_,_,_,As,[],_,_)) :-
 	!,
@@ -2456,9 +2457,9 @@ adv_vp(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
 	J1 is J - 1,
 	I1 is I + 1,
-	/* there is a penalty here to indicate a preference for wrap_vp over wrap_vpi */
-	combine_probability(Prob2, -2, I1, K, wrap_vpi, ProbL),
-	combine_probability(Prob2, -2, J1, J, wrap_vpi, ProbR),
+	/* there is a penalty here to indicate a fairly strong preference for wrap_vp over wrap_vpi */
+	combine_probability(Prob2, -4, I1, K, wrap_vpi, ProbL),
+	combine_probability(Prob2, -4, J1, J, wrap_vpi, ProbR),
 	Prob is min(ProbL, ProbR),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 % variant of adv_vp with additional clitic
@@ -2468,9 +2469,9 @@ adv_vpc(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
 	J1 is J - 1,
 	I1 is I + 1,
-	/* there is a penalty here to indicate a preference for wrap_vp over wrap_vpi */
-	combine_probability(Prob2, -2, I1, K, wrap_vpi, ProbL),
-	combine_probability(Prob2, -2, J1, J, wrap_vpi, ProbR),
+	/* there is a penalty here to indicate a fairly strong preference for wrap_vp over wrap_vpi */
+	combine_probability(Prob2, -4, I1, K, wrap_vpi, ProbL),
+	combine_probability(Prob2, -4, J1, J, wrap_vpi, ProbR),
 	Prob is min(ProbL, ProbR),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
