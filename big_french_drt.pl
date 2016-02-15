@@ -2054,13 +2054,48 @@ default_semantics(paraître, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 
-% = default case for verbs having an infintive group as an argument; default to subject control
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
-	SType = inf(Prep),
-	combine_prep_word(Prep, Word, PW),
-	add_roles([agent-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))|Pred]),
-	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
+% = aider + ainf + np
+
+default_semantics(aider, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], aider_à, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+	
+
+% = convaincre
+
+default_semantics(convaincre, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], convaincre_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
+% = persuader + deinf + np
+
+default_semantics(persuader, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], persuader_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
+% = demander + deinf + pp_a
+
+default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(pp(à))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(Evs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], demander_à_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
+% = demander + deinf + np
+
+default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(Evs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], demander_à_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
+% = laisser + inf
+
+default_semantics(laisser, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], laisser, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
+default_semantics(laisser, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(INF,lambda(NPS,lambda(E,appl(NPS, lambda(X, merge(drs([event(F)],[appl(laisser,E),appl(appl(agent,_Subj),E),appl(appl(patient,F),E)]),appl(appl(P,X),F)))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-X,patient-Y,theme-Lab], laisser, E, List, [drs_label(Lab,merge(drs([event(F),variable(Y)],[appl(generic,Y)]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Tm]).
+
 
 % voir+np+inf, faire+np+inf
 % note: the subseteq relation is a bit too strong for "faire", where
@@ -2089,6 +2124,8 @@ default_semantics(faire, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(
 	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[bool(E,subseteq,F)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
+
+
 default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))),lit(np(_,_,_))), lambda(NPO, lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,appl(NPO,lambda(X,drs(EVs,Conds)))))))))) :-
 	SType = inf(Prep),
 	combine_prep_word(Prep, Word, PW),
@@ -2101,6 +2138,14 @@ default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(n
 	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
+
+% = default case for verbs having an infintive group as an argument; default to subject control
+
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
+	SType = inf(Prep),
+	combine_prep_word(Prep, Word, PW),
+	add_roles([agent-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))|Pred]),
+	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 %  transitive - sentential complement (factive verbs)
 
@@ -2569,29 +2614,6 @@ default_semantics(venir, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_))
 % appl(NP, 
 % lambda(P,lambda(E,merge(appl(appl(NP,P),E),drs([],[appl(appl(patient,m),E)])
 
-% = convaincre
-
-default_semantics(convaincre, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs([event(L)],[appl(convaincre_de,E),appl(appl(agent,Y),E),appl(appl(patient,X),E),appl(appl(theme,L),E),drs_label(L,appl(appl(TOINF,lambda(Prp,appl(Prp,X))),_))])))))))))).
-
-% = persuader + deinf + np
-
-default_semantics(persuader, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs([event(L)],[appl(persuader_de,E),appl(appl(agent,Y),E),appl(appl(patient,X),E),appl(appl(theme,L),E),drs_label(L,appl(appl(TOINF,lambda(Prp,appl(Prp,X))),_))])))))))))).
-
-% = demander + deinf + pp_a
-
-default_semantics(demander, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(pp(à))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs([event(Lab)],[appl(event,E),appl(demander,E),appl(appl(agent,Y),E),appl(appl(patient,X),E),appl(appl(instrument,Lab),E),drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))])))))))))).
-
-% = aider + ainf + np
-
-default_semantics(aider, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs([event(Lab)],[appl(event,E),appl(aider_à,E),appl(appl(agent,Y),E),appl(appl(patient,X),E),appl(appl(instrument,Lab),E),drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))])))))))))).
-
-% = aimer + inf
-
-%default_semantics(aimer, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf)))), lambda(P,lambda(X,lambda(E,merge(appl(X,lambda(V,drs([event(E),event(F)],[appl(aimer,E),appl(event,E),appl(appl(agent,V),E),appl(appl(patient,F),E)]))),appl(P,X),F))))).
-
-% = laisser + inf
-
-default_semantics(laisser, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(P,lambda(X,lambda(E,merge(drs([event(F)],[appl(laisser,E),appl(appl(agent,_Subj),E),appl(appl(patient,F),E)]),appl(appl(P,X),F)))))).
 
 % = prepositions - noun modifiers
 
