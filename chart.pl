@@ -440,7 +440,7 @@ chart_semantics(SemInfo0, Semantics0, Semantics) :-
 % underspecified lexical formulas.
 
 update_seminfo([], [], []).
-update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [_-(W0-F0)|WFs], Update0) :-
+update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [X-(W0-F0)|WFs], Update0) :-
    (
         W0 = W,
         F = F0
@@ -450,7 +450,7 @@ update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [_-(W0-F0)|WFs], Update0) :-
    ;
         /* ignore axioms which don't match the given word-formula pair */
         Update = Update0,
-        update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], WFs, Update)
+        update_seminfo(Rest, [X-(W0-F0)|WFs], Update)
    ).
 
 compute_semantics([], []).
