@@ -328,8 +328,10 @@ dot_np_semantics1(drt, lambda(P,appl(P,lambda(_V,drs([],[]))))).
 noun_semantics(drt, Word, lambda(V,drs([],[appl(Word,V)]))).
 
 
-sem_tv_subject_control(Word, lambda(INF,lambda(NP,lambda(E,appl(NP,lambda(Z,drs([event(F),event(L)],[appl(event,E)|Conds]))))))) :-
-	add_roles([agent-Z,theme-L], Word, E, Conds, [drs_label(L,appl(appl(INF,lambda(P,appl(P,Z))),F))]).
+sem_tv_subject_control(Word, POS, lambda(INF,lambda(NP,lambda(E,appl(NP,lambda(Z,drs(Es,Conds))))))) :-
+	add_roles([agent-Z,theme-L], Word, E, Conds, [drs_label(L,appl(appl(INF,lambda(P,appl(P,Z))),F))|Tnse]),	
+	pos_time(POS, [event(F)], Es, E-Tnse).														
+
 
 auxiliary_verb_etre(POS, _Rest0, lambda(P,lambda(X,lambda(E,merge(appl(appl(P,X),E),drs(EVs,Rest)))))) :-
 	past_participle_semantics(POS, [], EVs, E, Rest).
@@ -1503,14 +1505,10 @@ default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(np(_,_,_))
 	get_roles(V, [np, np, np], [Arg1, Arg2, Arg3]),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], V, E, Conds, []).
 % passive+control verb, object control only (TODO: verify!)
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))), lambda(DEINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	combine_prep_word(de, V, PW),	
-	add_roles([agent-X,patient-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))]).
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	combine_prep_word(à, V, PW),	
-	add_roles([agent-X,patient-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(AINF,lambda(P,appl(P,Y))),F)))]).
-default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
-	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]).
+default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(PRP))))), lambda(INF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
+	combine_prep_word(PRP, V, PW),
+	format(user_error, '~N~w ~w~n', [PRP,PW]), 
+	add_roles([agent-X,patient-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]).
 % passive+adjectival argument
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], V, E, Conds, [drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))]).
@@ -2000,6 +1998,40 @@ default_semantics(suffir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 
+% ===================
+% = subject control =
+% ===================
+
+% = destiner + ainf
+
+% = viser + ainf
+
+% = vouloir + inf 
+% P: type(np) -> type(inf) (inf)
+% X: type(np) (sujet)
+% type(np) = (e->t)->t
+
+default_semantics(vouloir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))), Sem) :-
+	sem_tv_subject_control(vouloir, POS, Sem).
+
+% = penser + inf
+% the subject is not *necessarily* the subject of the infinitive clause here
+
+default_semantics(penser, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(PRP))))), Sem) :-
+	combine_prep_word(PRP, penser, PW),
+	sem_tv_subject_control(PW, POS, Sem).
+
+% = venir + inf
+
+default_semantics(venir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(base))))), Sem) :-
+	sem_tv_subject_control(venir, POS, Sem).
+
+% = essayer
+
+% ===================
+% = object control =
+% ===================
+
 % = pousser + ainf + np
 
 default_semantics(pousser, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
@@ -2064,35 +2096,35 @@ default_semantics(aider, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0
 
 % = convaincre
 
-default_semantics(convaincre, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+default_semantics(convaincre, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], convaincre_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
 
 % = persuader + deinf + np
 
-default_semantics(persuader, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+default_semantics(persuader, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], persuader_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
 
 % = demander + deinf + pp_a
 
-default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(pp(à))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(Evs,List)))))))))) :-
+default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(pp(à))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], demander_à_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
 
 % = demander + deinf + np
 
-default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(Evs,List)))))))))) :-
+default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], demander_à_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
 
 % = laisser + inf
 
-default_semantics(laisser, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))),lit(np(_,_,_))), lambda(NPO, lambda(TOINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+default_semantics(laisser, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], laisser, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
 
-default_semantics(laisser, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(INF,lambda(NPS,lambda(E,appl(NPS, lambda(X, merge(drs([event(F)],[appl(laisser,E),appl(appl(agent,_Subj),E),appl(appl(patient,F),E)]),appl(appl(P,X),F)))))) :-
+default_semantics(laisser, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(DEINF,lambda(NPS,lambda(E,appl(NPS, lambda(X, drs(EVs,List))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-X,patient-Y,theme-Lab], laisser, E, List, [drs_label(Lab,merge(drs([event(F),variable(Y)],[appl(generic,Y)]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Tm]).
 
@@ -2567,53 +2599,6 @@ default_semantics(Word, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(Prep))), lamb
 
 default_semantics(Word, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(pp(Prep)))),lit(np(_,_,_))), Sem) :-
 	default_semantics(Word, ver:pres, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(pp(Prep)))),lit(np(_,_,_))), Sem).
-
-% ===================
-% = subject control =
-% ===================
-
-% = destiner + ainf
-
-% = viser + ainf
-
-% = vouloir + inf 
-% P: type(np) -> type(inf) (inf)
-% X: type(np) (sujet)
-% type(np) = (e->t)->t
-
-default_semantics(vouloir, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))), Sem) :-
-	sem_tv_subject_control(vouloir, Sem).
-
-% = penser + ainf
-
-default_semantics(penser, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), Sem) :-
-	sem_tv_subject_control(penser_à, Sem).
-
-% = penser + inf
-
-default_semantics(penser, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))), Sem) :-
-	sem_tv_subject_control(penser, Sem).
-
-
-% = venir + inf
-
-default_semantics(venir, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(base))))), lambda(P,lambda(X,lambda(E,merge(drs([],[]),appl(appl(P,X),E)))))).
-
-% = essayer
-
-% ===================
-% = object control =
-% ===================
-
-% np = (e->t)->t
-% lambda(P          e->s->t
-%    lambda(e       s
-%       drt(...)))
-% lambda(P,lambda(E,merge(drs(['Jean'],[]),appl(appl(P,Jean),E)))).
-% appl(NP, lambda(P, lambda(E, appl(appl(NP, P), E)))).
-% appl(NP, 
-% lambda(P,lambda(E,merge(appl(appl(NP,P),E),drs([],[appl(appl(patient,m),E)])
-
 
 % = prepositions - noun modifiers
 
