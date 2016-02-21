@@ -1879,12 +1879,12 @@ default_semantics(regretter, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,
 % Semantics should be: for a person X in this kind of situation (where "this kind of situation" is contextually determined)
 % person X should/must do INF.
 
-default_semantics(falloir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(INF, lambda(_, lambda(E, presup(drs(EVs,Pred),drs([event(L)],[appl(event,E)|Conds])))))) :-
+default_semantics(falloir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(INF, lambda(_, lambda(E, presup(drs(EVs,Pred),drs([event(L)],Conds)))))) :-
 	SINF = inf(_),
 	add_roles([theme-L], il_faut, E, Conds, [drs_label(L,merge(drs([event(F),variable(Y)],[bool(Y,=,'context?')]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
 % lemma error for "faut"
-default_semantics(faillir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(INF, lambda(_, lambda(E, presup(drs(EVs,Pred),drs([event(L)],[appl(event,E)|Conds])))))) :-
+default_semantics(faillir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(INF, lambda(_, lambda(E, presup(drs(EVs,Pred),drs([event(L)],Conds)))))) :-
 	SINF = inf(_),
 	add_roles([theme-L], il_faut, E, Conds, [drs_label(L,merge(drs([event(F),variable(Y)],[bool(Y,=,'context?')]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
@@ -1893,10 +1893,10 @@ default_semantics(faillir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,li
 % TODO: generics are of course better treated as a binary relation between boxes
 % "Elle signifie être obligé"
 
-default_semantics(aider, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,presup(drs(EVs,Pred),drs([event(L)],[appl(event,E)|Conds])))))))) :-
+default_semantics(aider, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,presup(drs(EVs,Pred),drs([event(L)],Conds)))))))) :-
 	add_roles([agent-X,theme-L], aider, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y),bool(appl(temps,E),subseteq,appl(temps,F))]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
-default_semantics(appeler, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,presup(drs(EVs,Pred),drs([event(L)],[appl(event,E)|Conds])))))))) :-
+default_semantics(appeler, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,presup(drs(EVs,Pred),drs([event(L)],Conds)))))))) :-
 	add_roles([agent-X,theme-L], appeler, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y),bool(appl(temps,E),<,appl(temps,F))]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
 % agent/subject is non-person only (?)
@@ -1906,10 +1906,11 @@ default_semantics(conduire, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,l
 default_semantics(conseiller, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,theme-L], conseiller, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F))),bool(appl(temps,E),<,appl(temps,L))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(exiger, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,[appl(exiger,E),appl(event,E),appl(appl(agent,X),E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]))))))) :-
-	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(faire, ver:TIME, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(PPA))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))), lambda(INF, lambda(PP, lambda(NP, lambda(E, appl(NP,lambda(X,appl(PP,lambda(Y,drs(EVs,Conds)))))))))) :-
-        PPA == à,
+default_semantics(exiger, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
+	add_roles([agent-X,theme-L], appeler, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y),bool(appl(temps,E),<,appl(temps,F))]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
+	pos_time(ver:TIME, [], EVs, E-Pred).
+
+default_semantics(faire, ver:TIME, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))), lambda(INF, lambda(PP, lambda(NP, lambda(E, appl(NP,lambda(X,appl(PP,lambda(Y,drs(EVs,Conds)))))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], faire, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 default_semantics(falloir, ver:TIME, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(PPA))),dl(_,lit(np(_,_,_)),lit(s(inf(_))))), lambda(INF, lambda(PP, lambda(_NP, lambda(E, appl(PP,lambda(Y,drs(EVs,Conds)))))))) :-
