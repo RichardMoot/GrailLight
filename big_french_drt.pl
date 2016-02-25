@@ -1526,9 +1526,10 @@ default_semantics(V, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(_P, lambda(E, p
 
 % = intransitive "aller"
 % TODO: check more examples, I think movement uses are rather limited, if they exist.
-default_semantics(aller, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P,lambda(E,appl(P,lambda(X,drs(Es,[appl(event,E),appl(aller,E),appl(appl(theme,X),E),bool(Y,=,'lieu?'),appl(appl(source,Y),E)|Time])))))) :-
-	pos_time(POS, [], Es, E-Time).
-default_semantics(aller, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q,lambda(P,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,presup(drs(Es,Time),drs([],[appl(event,E)|Conds])))))))))) :-
+%default_semantics(aller, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P,lambda(E,appl(P,lambda(X,drs(Es,[bool(Y,=,'lieu?'),appl(appl(source,Y),E)|Time])))))) :-
+%	add_roles([moving-X,path-Path], travel, E, Conds, [appl(appl(destination,Y),Path)]),
+%	pos_time(POS, [], Es, E-Time).
+default_semantics(aller, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q,lambda(P,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,presup(drs(Es,Time),drs([],Conds)))))))))) :-
 	add_roles([moving-X,path-Path], travel, E, Conds, [appl(appl(destination,Y),Path)]),
 	pos_time(POS, [], Es, E-Time).
 % version of "aller" which presupposes the speaker is not at the destination (as a sort of symmetry to "venir")
@@ -1536,23 +1537,23 @@ default_semantics(aller, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), 
 %	pos_time(POS, [], EVs, E-Time).
 
 % "se rendre à"
-default_semantics(rendre, POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(pp(à))), lambda(Q,lambda(P,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,presup(drs(Es,Time),drs([],[appl(event,E)|Conds])))))))))) :-
+default_semantics(rendre, POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(pp(à))), lambda(Q,lambda(P,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,presup(drs(Es,Time),drs([],Conds)))))))))) :-
 	add_roles([moving-X,path-Path], travel, E, Conds, [appl(appl(destination,Y),Path)]),
 	pos_time(POS, [], Es, E-Time).
 
 % "revenir" presupposes "partir"
 
-default_semantics(revenir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([event(F)],[appl(appl(appl(location,V),L),F)]),drs(Es, [appl(event,E),appl(appl(appl(travel,V),Path),E),appl(path,Path),appl(moving,V),app(appl(source,complement(L)),Path),appl(appl(destination,L),Path),bool(L,=,'lieu?')|Time]))))))) :-
+default_semantics(revenir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([event(F)],[appl(appl(appl(location,V),L),F)]),drs(Es, [appl(appl(appl(travel,V),Path),E),appl(path,Path),appl(moving,V),app(appl(source,complement(L)),Path),appl(appl(destination,L),Path),bool(L,=,'lieu?')|Time]))))))) :-
 	pos_time(POS, [], Es, E-Time).
 
-default_semantics(revenir, POS,  dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q, lambda(P, lambda(E,appl(P,lambda(V,appl(Q,lambda(Lieu,presup(drs([event(F)],[appl(appl(appl(location,V),L),F)]),drs(Es, [appl(event,E),appl(appl(appl(travel,V),Path),E),appl(path,Path),appl(moving,V),app(appl(source,complement(L)),Path),appl(appl(destination,Lieu),Path)|Time])))))))))) :-
+default_semantics(revenir, POS,  dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))), lambda(Q, lambda(P, lambda(E,appl(P,lambda(V,appl(Q,lambda(Lieu,presup(drs([event(F)],[appl(appl(appl(location,V),L),F)]),drs(Es, [appl(appl(appl(travel,V),Path),E),appl(path,Path),appl(moving,V),app(appl(source,complement(L)),Path),appl(appl(destination,Lieu),Path)|Time])))))))))) :-
 	pos_time(POS, [], Es, E-Time).
 
 % intransitive "arriver", resolve implicit destination anaphor
-default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([varialbe(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
+default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([varialbe(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 % intransitive "partir", resolve implicit source anaphor
-default_semantics(partir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,D),Path),appl(appl(destination,complement(D)),Path)|Time]))))))) :-
+default_semantics(partir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,D),Path),appl(appl(destination,complement(D)),Path)|Time]))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 
 % = intransitive --- DEFAULT CASE
@@ -1571,7 +1572,7 @@ default_semantics(Word, ver:TIME, dr(0,lit(s(_)),lit(np(_,_,_))), lambda(NPS,lam
 
 % = transitive - SVO
 
-default_semantics(quitter, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))), lambda(P,lambda(Q,lambda(E,appl(Q,lambda(V,appl(P,lambda(W,presup(drs([event(F)],[appl(appl(appl(location,V),W),F)]),drs(EVs,[appl(event,E),appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,W),Path),appl(appl(destination,complement(W)),Path),bool(appl(temps,F),<,appl(temps,E))|Time])))))))))) :-
+default_semantics(quitter, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))), lambda(P,lambda(Q,lambda(E,appl(Q,lambda(V,appl(P,lambda(W,presup(drs([event(F)],[appl(appl(appl(location,V),W),F)]),drs(EVs,[appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,W),Path),appl(appl(destination,complement(W)),Path),bool(appl(temps,F),<,appl(temps,E))|Time])))))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 
 % transitive "être"
@@ -1792,11 +1793,11 @@ default_semantics(finir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(
 % veridical
 % presupposes ainf is difficult (presupposes *trying* as well)
 
-default_semantics(réussir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(drs([event(F),event(E1)],[bool(appl(temps,E),leq,appl(temps,F)),bool(appl(temps,E1),leq,appl(temps,E)),appl(difficile,F)|CondsE1]),merge(drs(EVs,[appl(event,E)|Conds]),appl(appl(AINF,lambda(Pd,appl(Pd,Y))),F))))))))) :-
+default_semantics(réussir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(drs([event(F),event(E1)],[bool(appl(temps,E),leq,appl(temps,F)),bool(appl(temps,E1),leq,appl(temps,E)),appl(difficile,F)|CondsE1]),merge(drs(EVs,Conds),appl(appl(AINF,lambda(Pd,appl(Pd,Y))),F))))))))) :-
 	add_roles([agent-Y,theme-F], réussir_à, E, Conds, Pred),
 	add_roles([agent-Y,theme-F], essayer, E1, CondsE1, []),
 	pos_time(ver:TIME, [], EVs, E-Pred).
-default_semantics(arriver, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(drs([event(F),event(E1)],[bool(appl(temps,E),leq,appl(temps,F)),bool(appl(temps,E1),leq,appl(temps,E)),appl(difficile,F)|CondsE1]),merge(drs(EVs,[appl(event,E)|Conds]),appl(appl(AINF,lambda(Pd,appl(Pd,Y))),F))))))))) :-
+default_semantics(arriver, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(AINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(drs([event(F),event(E1)],[bool(appl(temps,E),leq,appl(temps,F)),bool(appl(temps,E1),leq,appl(temps,E)),appl(difficile,F)|CondsE1]),merge(drs(EVs,Conds),appl(appl(AINF,lambda(Pd,appl(Pd,Y))),F))))))))) :-
 	add_roles([agent-Y,theme-F], arriver_à, E, Conds, Pred),
 	add_roles([agent-Y,theme-F], essayer, E1, CondsE1, []),
 	pos_time(ver:TIME, [], EVs, E-Pred).
@@ -1869,7 +1870,7 @@ default_semantics(venir, ver:TIME, dr(_,dl(0,lit(cl_y),dl(_,lit(np(_,_,_)),lit(s
 %
 % the theme of "regretter" is generally something which happens before (though not necessarily, it is possible to regret a future event, however, these cases are rather unusual)
 
-default_semantics(regretter, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(Prep))))), lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(merge(drs([event(F)],Pred),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)), drs(EVs,[appl(event,E)|Conds])))))))) :-
+default_semantics(regretter, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(Prep))))), lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,presup(merge(drs([event(F)],Pred),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)), drs(EVs,Conds)))))))) :-
 	combine_prep_word(Prep, regretter, PW),
 	add_roles([agent-Y,theme-F], PW, E, Conds, [bool(appl(temps,F),leq,appl(temps,E))]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
@@ -1929,7 +1930,7 @@ default_semantics(faire, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(
 	add_roles([agent-X,patient-Y,theme-L], faire, E, Conds, [appl(generic,Y),drs_label(L,merge(drs([variable(Y),event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [variable(Y),event(L)], EVs, E-Pred).
 % agent/subject is non-person only (?)
-default_semantics(impliquer, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,[appl(impliquer,E),appl(event,E),appl(appl(agent,X),E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]))))))) :-
+default_semantics(impliquer, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,[appl(impliquer,E),appl(appl(agent,X),E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]))))))) :-
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 default_semantics(inciter, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,[appl(event,E),appl(inciter,E),appl(appl(agent,X),E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F))),bool(appl(temps,E),<,appl(temps,L))|Pred]))))))) :-
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
@@ -1988,14 +1989,13 @@ default_semantics(convenir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np
 	SType = inf(_),
 	add_roles([agent-X,theme-L], convenir_de, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Pred]),
 	pos_time(POS, [event(L)], EVs, E-Pred).
-default_semantics(importer, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(INF, lambda(_NP, lambda(E, drs(EVs,[appl(event,E),appl(importer,E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]))))) :-
-	D0 == inf(_),
+default_semantics(importer, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(PRP))))), lambda(INF, lambda(_NP, lambda(E, drs(EVs,Conds))))) :-
+	combine_prep_word(PRP, importer, PW),
+	add_roles([theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F),variable(Y)],[appl(generic,Y)]),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(suffir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(INF, lambda(_NP, lambda(E, drs(EVs,[appl(event,E),appl(suffir,E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]))))) :-
-	D0 == inf(_),
-	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
-default_semantics(suffir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(D0)))), lambda(INF, lambda(_NP, lambda(E, drs(EVs,[appl(event,E),appl(suffir,E),appl(appl(theme,L),E),drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]))))) :-
-        D0 == inf(_),
+default_semantics(suffire, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(PRP))))), lambda(INF, lambda(_NP, lambda(E, drs(EVs,Conds))))) :-
+	combine_prep_word(PRP, suffire, PW),
+	add_roles([theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F),variable(Y)],[appl(generic,Y)]),appl(appl(INF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
 
@@ -2182,7 +2182,7 @@ default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(n
 
 %  transitive - sentential complement (factive verbs)
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(SQ,lambda(NP,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),appl(NP,lambda(X,drs(EVs, [appl(event,E)|Conds])))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(SQ,lambda(NP,lambda(E,presup(merge(drs([event(F)],[]),appl(SQ,F)),appl(NP,lambda(X,drs(EVs, Conds)))))))) :-
 	factive(Word),
 	!,
 	add_roles([agent-X,theme-F], Word, E, Conds, List),
@@ -2233,10 +2233,10 @@ default_semantics(faillir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q
 
 % = transitive - sentential complement (non-factive verbs, non-raising verbs, such as "croire")
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|Conds]))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,theme-L], Word, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
-default_semantics(dire, ver:TIME, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(s(q))), lambda(SQ,lambda(_,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|Conds])))))))) :-
+default_semantics(dire, ver:TIME, dr(0,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(s(q))), lambda(SQ,lambda(_,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,Conds)))))))) :-
 	add_roles([agent-X,theme-L], se_dire, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,Conds))))))) :-
@@ -2270,11 +2270,11 @@ default_semantics(W, adv, dr(0,dl(0,lit(cl_r),dl(0,lit(np(NA,NB,NC)),lit(s(S1)))
 
 % = raising verbs with adjectives: sembler, paraître
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Temp),drs([],[appl(event,E)|Conds])))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Temp),drs([],Conds)))))))) :-
 	raising_verb(Word),
 	add_roles([theme-L], Word, E, Conds, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Temp).
-default_semantics(Word, ver:TIME, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(PPA))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(PP,lambda(NP,lambda(E,appl(NP,lambda(X,appl(PP,lambda(Y,presup(drs(EVs,Temp),drs([],[appl(event,E)|Conds]))))))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(PPA))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(PP,lambda(NP,lambda(E,appl(NP,lambda(X,appl(PP,lambda(Y,presup(drs(EVs,Temp),drs([],Conds))))))))))) :-
       ( PPA == a ; PPA == à ),
 	raising_verb(Word),
 	add_roles([experiencer-Y,patient-X,theme-L], Word, E, Conds, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))]),
@@ -2284,10 +2284,10 @@ default_semantics(Word, ver:TIME, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(p
 % eg. rendre [gen(x)] heurex
 %     laisse [gen(x)] rêveur
 
-default_semantics(laisser, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,drs(EVs,[appl(event,E),appl(generic,Y)|List]))))))) :-
+default_semantics(laisser, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,drs(EVs,[appl(generic,Y)|List]))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], laisser, E, List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))|Tm]),
 	pos_time(ver:TIME, [event(L),variable(Y)], EVs, E-Tm).
-default_semantics(rendre, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,drs(EVs,[appl(event,E),appl(generic,Y)|List]))))))) :- 
+default_semantics(rendre, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,drs(EVs,[appl(generic,Y)|List]))))))) :- 
 	add_roles([agent-X,patient-Y,theme-L], rendre, E, List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))|Tm]),
 	pos_time(ver:TIME, [event(L),variable(Y)], EVs, E-Tm).
 
@@ -2299,7 +2299,7 @@ default_semantics(être, ver:TIME, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), lit
 	pos_time(ver:TIME, [], EVs, E-Pres).
 default_semantics(être, ver:TIME, dr(_,dl(0,dl(0,lit(n),lit(n)),lit(s(_))), lit(np(nom,_,_))), lambda(NP,lambda(Adj,lambda(E,appl(NP,lambda(X,presup(drs(EVs,Pres),merge(drs([variable(Y)],[bool(X,is_at(E),Y)]),appl(appl(Adj,lambda(_,drs([],[]))),Y))))))))) :-
 	pos_time(ver:TIME, [], EVs, E-Pres).
-default_semantics(Word, ver:TIME, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), lit(np(nom,_,_))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|List]))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dr(_,lit(s(_)),dl(0,lit(n),lit(n))), lit(np(nom,_,_))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,List))))))) :-
 	get_roles(Word, [np, adj], [SRole, ARole]),
 	add_roles([SRole-X,ARole-L], Word, E,  List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))|Tm]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Tm).
@@ -2321,19 +2321,19 @@ default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s
 default_semantics(être, ver:TNS, dr(_,dr(0,dl(_,lit(np(_,_IL,_)),lit(s(_))),lit(s(q))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(S,lambda(_NP,lambda(E,presup(drs(EVs,Time),merge(merge(drs([event(F)],[]),appl(S,F)),appl(appl(Adj,lambda(_,drs([],[]))),sub(F,E))))))))) :-
 	pos_time(ver:TNS, [], EVs, E-Time).	
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,[appl(event,E)|List]))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(NP,lambda(E,appl(NP,lambda(X,drs(EVs,List))))))) :-
 	get_roles(Word, [np, adj], [SRole, ARole]),
 	add_roles([SRole-X,ARole-L], Word, E,  List, [drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),X))|Tm]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Tm).
 
 % = verbs taking adjective + np
 
-default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(OBJ,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs(EVs,[appl(event,E)|Conds])))))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))),dl(0,lit(n),lit(n))), lambda(Adj,lambda(OBJ,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs(EVs,Conds)))))))))) :-
 	get_roles(Word, [np, np, adj], [SRole, ORole, ARole]),
 	add_roles([SRole-X,ORole-Y,ARole-L], Word, E, Conds, [drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
 
-default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))),lit(np(_,_,_))), lambda(OBJ,lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs(EVs,[appl(event,E)|Conds])))))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n),lit(n))),lit(np(_,_,_))), lambda(OBJ,lambda(Adj,lambda(SUJ,lambda(E,appl(SUJ,lambda(X,appl(OBJ,lambda(Y,drs(EVs,Conds)))))))))) :-
 	get_roles(Word, [np, np, adj], [SRole, ORole, ARole]),
 	add_roles([SRole-X,ORole-Y,ARole-L], Word, E, Conds, [drs([],[drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),Y))])|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
