@@ -438,7 +438,9 @@ chart_semantics(SemInfo0, Semantics0, Semantics) :-
 % try to unify the initial lexical formulas with the axioms of the proof; this may further instantiate some
 % underspecified lexical formulas.
 
-update_seminfo([], [], []).
+% done when we have matched all proof axioms
+update_seminfo(_, [], []) :-
+	!.
 update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [X-(W0-F0)|WFs], Update0) :-
    (
         W0 = W,
