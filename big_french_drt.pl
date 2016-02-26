@@ -302,7 +302,7 @@ gq_les_semantics(lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>
 gq_this_semantics(Sem) :-
 	gq_the_semantics(Sem).
 
-wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),appl(appl(P,lambda(R,appl(R,X))),_)))))).
+wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
 
 % Adj  (e->t)->(e->t))
 % P    (e->t)
@@ -2100,6 +2100,13 @@ default_semantics(aider, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0
 default_semantics(convaincre, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], convaincre_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
+% = contraindre
+
+default_semantics(contraindre, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(à))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], contraindre_à, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
 
 % = persuader + deinf + np
 
