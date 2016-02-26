@@ -339,6 +339,7 @@ get_roles1(désorganiser, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(dessécher, [np, cl_r], [patient, null]). % unaccusative
 
 get_roles1(enfuir, [np, cl_r], [agent, null]).
+get_roles1(engager, [np, cl_r], [agent, null]). 
 get_roles1(ennuyer, [np, cl_r], [patient, null]).
 
 get_roles1(inscrire, [np, cl_r], [agent, null]).
