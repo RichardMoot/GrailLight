@@ -3331,6 +3331,9 @@ lex(aux, dr(0,dl(1,s,s),n), lambda(N, lambda(S, lambda(E, presup(merge(drs([vari
 lex(du, dr(0,dl(1,s,s),n), lambda(N, lambda(S, lambda(E, presup(merge(drs([variable(Y)],[]),appl(N,Y)),merge(appl(S,E),drs([],[appl(appl(de,Y),E)]))))))).
 lex(des, dr(0,dl(1,s,s),n), lambda(N, lambda(S, lambda(E, presup(merge(drs([variable(Y)],[bool(num(Y),>,1)]),appl(N,Y)),merge(appl(S,E),drs([],[appl(appl(de,Y),E)]))))))).
 
+lex(aux, dr(0,pp_a,n), lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+lex(des, dr(0,pp_de,n), lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+
 % plus_de
 
 lex(plus, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,=,appl(plus_de,Y))]))),appl(P,X))))).
@@ -3736,6 +3739,12 @@ lex(différente, dr(0,lit(n),lit(n)), lambda(P,lambda(X,presup(merge(drs([variab
 lex(différentes, dr(0,lit(n),lit(n)), lambda(P,lambda(X,presup(merge(drs([variable(Z)],[bool(Z,=,?)]),appl(P,Z)),merge(appl(P,X),drs([],[bool(X,empty_intersect,Z)])))))).
 lex(ailleurs, dl(0,lit(n),lit(n)), lambda(P,lambda(X,presup(drs([variable(Z)],[bool(Z,=,?),appl(lieu,Z)]),merge(appl(P,X),drs([],[bool(X,neq,Z)])))))).
 lex(ailleurs, dl(1,s,s), lambda(S,lambda(E,presup(drs([variable(Z)],[bool(Z,=,?),appl(lieu,Z)]),merge(appl(S,E),drs([variable(X)],[appl(lieu,X),appl(appl(lieu,X),E),bool(X,neq,Z)])))))).
+
+
+lex(quand, dr(0,s_q,s), lambda(S,lambda(E,merge(drs([],[bool(appl(temps,E),=,'context?')]),appl(S,E))))).
+lex(quand, dr(0,s_whq,s), lambda(S,lambda(E,merge(drs([][appl('quand?',E)]),appl(S,E))))).
+lex('Quand', dr(0,s_q,s), lambda(S,lambda(E,merge(drs([],[bool(appl(temps,E),=,'context?')]),appl(S,E))))).
+lex('Quand', dr(0,s_whq,s), lambda(S,lambda(E,merge(drs([][appl('quand?',E)]),appl(S,E))))).
 
 lex('Combien', dr(0,lit(s(whq)),lit(s(main))), lambda(S, lambda(E, merge(drs([],[appl('combien?',E)]),appl(S,E))))).
 lex(combien, dr(0,lit(s(whq)),lit(s(main))), lambda(S, lambda(E, merge(drs([],[appl('combien?',E)]),appl(S,E))))).
