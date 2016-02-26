@@ -2505,15 +2505,7 @@ default_semantics(auxquelles, pro:rel, dr(0, dl(0, lit(n), lit(n)), dr(0,lit(s(_
      ( Prp == à ; Prp == a ).
 default_semantics(auxquelles, pro:rel, dr(0, dl(0, lit(n), lit(n)), lit(s(_))), lambda(S, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),drs([],[appl(appl(à,X),E)])))))))).
 
-default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n))), dr(0,lit(s(_)),dia(1,box(1,lit(pp(Prp)))))), lambda(VP, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(appl(VP,lambda(Q,appl(Q,X))),E),merge(appl(N,X),drs([],[Term]))))))))) :-
-     (
-         var(Prp)
-     ->
-         /* default, make sure this doesn't occur ! */
-         Term = appl(appl(prep,X),E)
-     ;
-         Term = appl(appl(Prp,X),E)
-     ).
+default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n))), dr(0,lit(s(_)),dia(1,box(1,lit(pp(Prp)))))), lambda(VP, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(appl(VP,lambda(Q,appl(Q,X))),E),appl(N,X)))))))).
 default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n))), lit(s(_))), lambda(S, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),drs([],[Term]))))))))) :-
      (
          var(Prp)
