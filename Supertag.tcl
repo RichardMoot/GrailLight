@@ -1579,8 +1579,8 @@ proc bootstrap_parser {tmp_dir} {
 	    if {[catch {exec $grail_prefix/read_trees.pl $tmp_dir/input.txt.30.stp} ptrees_msg]} {
 		puts stderr $ptrees_msg
 	    }
-	    if {[file exists $tmp_dir/parser_crosses.pl]} {
-		exec cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl
+	    if {[file exists parser_crosses.pl]} {
+		exec cat parser_crosses.pl >> $tmp_dir/parser.pl
 	    }
 	}
     } elseif {[string equal $bootstrap "berkeley"]} {
@@ -1592,8 +1592,8 @@ proc bootstrap_parser {tmp_dir} {
 	    if {[catch {exec $grail_prefix/read_trees.pl $tmp_dir/input.berkeley} ptrees_msg]} {
 		puts stderr $ptrees_msg
 	    }
-	    if {[file exists $tmp_dir/parser_crosses.pl]} {
-		exec cat $tmp_dir/parser_crosses.pl >> $tmp_dir/parser.pl
+	    if {[file exists parser_crosses.pl]} {
+		exec cat parser_crosses.pl >> $tmp_dir/parser.pl
 	    }
 	}   
     }
