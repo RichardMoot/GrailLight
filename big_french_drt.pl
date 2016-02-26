@@ -2495,9 +2495,9 @@ default_semantics(W, ver:pper, dr(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl
 
 % relativizers
 
-default_semantics(auquel, pro:rel, dr(0, dl(0, lit(n), lit(n)), dr(0,lit(s(_)),dia(1,box(1,lit(pp(Prp)))))), lambda(VP, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(appl(VP,lambda(Q,appl(Q,X))),E),merge(appl(N,X),appl(appl(à,X),E))))))))) :-
+default_semantics(auquel, pro:rel, dr(0, dl(0, lit(n), lit(n)), dr(0,lit(s(_)),dia(1,box(1,lit(pp(Prp)))))), lambda(VP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(appl(VP,lambda(Q,appl(Q,X))),E),appl(N,X))))))) :-
      ( Prp == à ; Prp == a ).
-default_semantics(auquel, pro:rel, dr(0, dl(0, lit(n), lit(n)), lit(s(_))), lambda(S, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),appl(appl(à,X),E)))))))).
+default_semantics(auquel, pro:rel, dr(0, dl(0, lit(n), lit(n)), lit(s(_))), lambda(S, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),drs([],[appl(appl(à,X),E)])))))))).
 default_semantics(auxquels, pro:rel, dr(0, dl(0, lit(n), lit(n)), dr(0,lit(s(_)),dia(1,box(1,lit(pp(Prp)))))), lambda(VP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(appl(VP,lambda(Q,appl(Q,X))),E),appl(N,X))))))) :-
      ( Prp == à ; Prp == a ).
 default_semantics(auxquels, pro:rel, dr(0, dl(0, lit(n), lit(n)), lit(s(_))), lambda(S, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),drs([],[appl(appl(à,X),E)])))))))).
