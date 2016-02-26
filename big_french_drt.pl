@@ -301,6 +301,8 @@ gq_l_un_de_semantics(lambda(P,lambda(Q,presup(merge(drs([variable(X),variable(Y)
 gq_les_semantics(lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 gq_this_semantics(Sem) :-
 	gq_the_semantics(Sem).
+gq_these_semantics(Sem) :-
+	gq_les_semantics(Sem).
 
 wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
 
@@ -3108,6 +3110,10 @@ lex('Cet', dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
 lex('Cette', dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
+lex(ces, dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
+	gq_these_semantics(Sem).
+lex('Ces', dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
+	gq_these_semantics(Sem).
 
 % Indefinites
 
@@ -3742,9 +3748,9 @@ lex(ailleurs, dl(1,s,s), lambda(S,lambda(E,presup(drs([variable(Z)],[bool(Z,=,?)
 
 
 lex(quand, dr(0,s_q,s), lambda(S,lambda(E,merge(drs([],[bool(appl(temps,E),=,'context?')]),appl(S,E))))).
-lex(quand, dr(0,s_whq,s), lambda(S,lambda(E,merge(drs([][appl('quand?',E)]),appl(S,E))))).
+lex(quand, dr(0,s_whq,s), lambda(S,lambda(E,merge(drs([],[appl('quand?',E)]),appl(S,E))))).
 lex('Quand', dr(0,s_q,s), lambda(S,lambda(E,merge(drs([],[bool(appl(temps,E),=,'context?')]),appl(S,E))))).
-lex('Quand', dr(0,s_whq,s), lambda(S,lambda(E,merge(drs([][appl('quand?',E)]),appl(S,E))))).
+lex('Quand', dr(0,s_whq,s), lambda(S,lambda(E,merge(drs([],[appl('quand?',E)]),appl(S,E))))).
 
 lex('Combien', dr(0,lit(s(whq)),lit(s(main))), lambda(S, lambda(E, merge(drs([],[appl('combien?',E)]),appl(S,E))))).
 lex(combien, dr(0,lit(s(whq)),lit(s(main))), lambda(S, lambda(E, merge(drs([],[appl('combien?',E)]),appl(S,E))))).
