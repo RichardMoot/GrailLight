@@ -2183,7 +2183,7 @@ default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(n
 
 % = default case for verbs having an infintive group as an argument; default to subject control
 
-default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,[appl(event,E)|Conds]))))))) :-
+default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))), lambda(DEINF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,drs(EVs,Conds))))))) :-
 	SType = inf(Prep),
 	combine_prep_word(Prep, Word, PW),
 	add_roles([agent-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(P,appl(P,Y))),F)))|Pred]),
