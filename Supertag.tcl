@@ -1266,7 +1266,7 @@ proc get_lefff_pos {word pos_l prob_l} {
 
     global morph
 
-    puts stderr "POS: $word $pos_l"
+#    puts stderr "POS: $word $pos_l"
     set pos [lindex $pos_l 0]
     set prob [lindex $prob_l 0]
 
@@ -1396,7 +1396,7 @@ proc supertag {sentence} {
         set line2 [givenpos $line [lindex $s_given $sentno]]
 	incr sentno
 	lappend p_list $line2
-	puts stderr "Line2: $line2"
+#	puts stderr "Line2: $line2"
 	write_log $line
 	write_log $line2
 	puts $pw $line2
@@ -1416,7 +1416,8 @@ proc supertag {sentence} {
 	       lappend lem_list "{$lem}"
             }
 	} 
-	puts stderr "$lem_list"
+	foreach litem $lem_list { puts -nonewline stderr "[lindex $litem 0] " }
+	puts stderr ""
     }
     printpos 160 [lindex $p_list 0]
 
