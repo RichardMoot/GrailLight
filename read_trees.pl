@@ -113,7 +113,7 @@ read_daughters(C, [W|Ws]) :-
 read_label(Label) :-
 	get_char(C),
 	read_label(C, LabelL, []),
-	atom_chars(Label, LabelL).
+	atom_chars1(Label, LabelL).
 
 read_label(C) -->
 	{char_type(C, upper)},
@@ -126,6 +126,14 @@ read_label(C) -->
 	{char_type(C, lower)},
 	!,
 	[C],
+	{get_char(C2)},
+	read_label(C2).
+read_label(C) -->
+	{char_type(C, punct)},
+	!,
+	[p],
+	[u],
+	[n],
 	{get_char(C2)},
 	read_label(C2).
 
@@ -143,7 +151,7 @@ read_word(Label) :-
 
 read_word(C, Label) :-
 	read_word(C, LabelL, []),
-	atom_chars(Label0, LabelL),
+	atom_chars1(Label0, LabelL),
 	/* if atom contains "_", split it into multiple words */
 	atomic_list_concat([A|As], '_', Label0),
 	return_word(As, A, Label).
@@ -227,3 +235,8 @@ portray_tree_list1([T|Ts], T0, Tab) :-
 	tab(Tab),
 	portray_tree_list1(Ts, T, Tab).
 
+
+atom_chars1(nil, []) :-
+	!.
+atom_chars1(C, L) :-
+	atom_chars(C, L).

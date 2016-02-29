@@ -40,6 +40,7 @@ missing_formula_raw.txt
 ml_linearone.pl
 ml_vpmod.pl
 formulas.pl
+dormir.pl
 semantics.*
 tlgbank_proofs.*
 proof.tex
@@ -64,6 +65,7 @@ latex_proofs.aux
 latex_proofs.log
 latex_proofs.pdf
 immobilise.pdf
+supertag.ps
 sem.tex
 sem.aux
 sem.pdf

@@ -25,6 +25,8 @@
 	latex_step_ex_counter/1,
         latex_formula/1,          % Formula ->
 	latex_semantics/2,        % Semantics x Formula ->
+	latex_drs_semantics/1,    % Semantics x Formula ->
+	latex_drs_semantics/2,    % Semantics x Formula ->
         latex_label/1,            % Label ->
         latex_label/2,            % Label x Stream ->
         latex_label/4,            % Label ->
@@ -35,7 +37,7 @@
 	latex_all_proofs/0,	  
 	latex_list/2]).           % List x Stream ->
 
-:- use_module(sem_utils, [get_variable_types/3]).
+:- use_module(sem_utils, [get_variable_types/3,get_drs_types/2]).
 :- use_module(tree234,   [btree_get/3]).
 :- use_module(options,   [get_option/2,option_true/1]).
 
@@ -206,7 +208,7 @@ latex_print_sentence(parse, String, Dash, Goal, Stream) :-
 latex_print_sentence(prove, String, Dash, Goal, Stream) :-
 	latex_print_sentence(String, Dash, Goal, Stream).
 latex_print_sentence(comment, String, _, _, Stream) :-
-        format(Stream, '\\\\~n\\quad\\textbf{~s} \\\\~n\\\\~n', [String]).
+        format(Stream, '\\\\~n\\quad\\textrm{~s} \\\\~n\\\\~n', [String]).
  
 latex_print_sentence(String0, Dash, Goal, Stream) :-
         example_trim_underscores(String0, String),
@@ -548,6 +550,13 @@ write_inf(Inf, Stream) :-
 
 % ===========================================================
 
+latex_drs_semantics(Sem) :-
+	get_drs_types(Sem, Tr),
+	latex_semantics(Sem, 1, Tr, user_output).
+latex_drs_semantics(Sem, Stream) :-
+	get_drs_types(Sem, Tr),
+	latex_semantics(Sem, 1, Tr, Stream).
+
 latex_semantics(Sem, Formula) :-
 	get_variable_types(Sem, Formula, Tr),
 	latex_semantics(Sem, 1, Tr, user_output).
@@ -704,6 +713,12 @@ latex_semantics(lambda(X,V), N, Tr, Stream) :-
 	get_option(collapse_lambda, CL),
         latex_semantics_lambda(CL, V, N, Tr, Stream).
 
+% "trick" to give some adjectives an extra event argument
+latex_semantics(appl(F,sub(X,Y)), _, Tr, Stream) :-
+	atomic(F),
+        option_true(fxy),
+	write_fun_args(F,[X,Y], Tr, Stream),
+	!.
 latex_semantics(appl(F,X), _, Tr, Stream) :-
     (
         option_true(fxy)
@@ -712,6 +727,9 @@ latex_semantics(appl(F,X), _, Tr, Stream) :-
         !
     ).
 
+latex_semantics(atom(X), _, Tr, Stream) :-
+	!,
+	latex_semantics(X, _, Tr, Stream).
 latex_semantics(appl(X,Y), _, Tr, Stream) :-
         !,
         write(Stream, '('),
@@ -859,7 +877,7 @@ latex_semantics(Const, _, _, Stream) :-
 	latex_sem_constant(Const, Stream).
 
 latex_sem_constant(Const, Stream) :-
-        write(Stream, '\\textbf{'),
+        write(Stream, '\\textrm{'),
     (
 	atomic(Const) 
     ->
@@ -881,18 +899,18 @@ sem_var_name(e, 1, y) :-
 	!.
 sem_var_name(e, 2, z) :-
 	!.
-sem_var_name(s, 0, x) :-
-	!.
-sem_var_name(s, 1, y) :-
-	!.
-sem_var_name(s, 2, z) :-
-	!.
-%sem_var_name(s, 0, d) :-
+%sem_var_name(s, 0, x) :-
 %	!.
-%sem_var_name(s, 1, e) :-
+%sem_var_name(s, 1, y) :-
 %	!.
-%sem_var_name(s, 2, f) :-
+%sem_var_name(s, 2, z) :-
 %	!.
+sem_var_name(s, 0, d) :-
+	!.
+sem_var_name(s, 1, e) :-
+	!.
+sem_var_name(s, 2, f) :-
+	!.
 sem_var_name(e->t, 0, 'P') :-
 	!.
 sem_var_name(e->t, 1, 'Q') :-
@@ -1054,18 +1072,17 @@ write_list_of_referents(Refs0, Tr, Stream) :-
 	write_list_of_referents1(Refs, Tr, Stream).
 
 write_list_of_referents1([], _, Stream) :- 
-        write(Stream, '$ \\ $').
+        write(Stream, ' \\ ').
 write_list_of_referents1([V|Vs], Tr, Stream) :-
+        write(Stream, '$'),
         write_list_of_referents1(Vs, V, Tr, Stream).
 
 write_list_of_referents1([], V, Tr, Stream) :-
-        write(Stream, '$'),
         latex_semantics(V, 1, Tr, Stream),
         write(Stream, '$').
 write_list_of_referents1([V|Vs], V0, Tr, Stream) :-
-        write(Stream, '$'),
         latex_semantics(V0, 1, Tr, Stream),
-        write(Stream, '\\ $'),
+        write(Stream, '\\ '),
         write_list_of_referents1(Vs, V, Tr, Stream).
 
 % =

@@ -276,6 +276,8 @@ translate_form(dr(0,dl(0,dl(0,n,n),s),s), dr(0,dl(0,dl(0,lit(n),lit(n)),lit(s(A)
 
 % coordination
 
+translate_form(dr(0,dl(0,dr(0,s,dia(0,box(0,s))),dr(0,s,s)),dr(0,s,dia(0,box(0,s)))),
+	       dr(0,dl(0,dr(0,lit(s(S1)),dia(0,box(0,lit(s(S2))))),dr(0,lit(s(S1)),lit(s(S2)))),dr(0,lit(s(S1)),dia(0,box(0,lit(s(S2))))))).
 translate_form(dr(0,dl(0,dr(0,s,dr(0,s,dia(1,box(1,pp_a)))),dr(0,s,dr(0,s,dia(1,box(1,pp_a))))),dr(0,s,dr(0,s,dia(1,box(1,pp_a))))),
 	       dr(0,dl(0,dr(0,lit(s(X)),dr(0,lit(s(X)),dia(1,box(1,lit(pp(à)))))),dr(0,lit(s(X)),dr(0,lit(s(X)),dia(1,box(1,lit(pp(à))))))),dr(0,lit(s(X)),dr(0,lit(s(X)),dia(1,box(1,lit(pp(à)))))))).
 translate_form(dr(0,dl(0,dr(0,pp,pp),dr(0,pp,pp)),dr(0,pp,pp)), dr(0,dl(0,dr(0,lit(pp(P)),lit(pp(P))),dr(0,lit(pp(P)),lit(pp(P)))),dr(0,lit(pp(Q)),lit(pp(Q))))).

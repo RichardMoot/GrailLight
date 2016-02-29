@@ -8,7 +8,7 @@
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
 :- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2,is_closed/1]).
-:- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_semantics/3]).
+:- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_drs_semantics/2]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
 :- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_key_insert_unify/4, ord_select/3, ord_delete/3]).
@@ -438,8 +438,10 @@ chart_semantics(SemInfo0, Semantics0, Semantics) :-
 % try to unify the initial lexical formulas with the axioms of the proof; this may further instantiate some
 % underspecified lexical formulas.
 
-update_seminfo([], [], []).
-update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [_-(W0-F0)|WFs], Update0) :-
+% done when we have matched all proof axioms
+update_seminfo(_, [], []) :-
+	!.
+update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [X-(W0-F0)|WFs], Update0) :-
    (
         W0 = W,
         F = F0
@@ -449,7 +451,7 @@ update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], [_-(W0-F0)|WFs], Update0) :-
    ;
         /* ignore axioms which don't match the given word-formula pair */
         Update = Update0,
-        update_seminfo([IN-t(W,PosTT,Lemma,F)|Rest], WFs, Update)
+        update_seminfo(Rest, [X-(W0-F0)|WFs], Update)
    ).
 
 compute_semantics([], []).
@@ -475,12 +477,12 @@ print_grail_semantics(Sem) :-
    (
         display_unreduced_semantics(yes)
    ->
-	latex_semantics(Sem, Formula, sem),
+	latex_drs_semantics(Sem, sem),
 	format(sem, '\\rightarrow_{\\beta}\\\\ ', [])
    ;
         true
    ),
-	latex_semantics(RSem, Formula, sem),
+	latex_drs_semantics(RSem, sem),
 	format(sem, '~n\\end{multline}~2n', []).
 
 print_grail_semantics_tail :-
@@ -2212,6 +2214,7 @@ check_islands1([t(_, _, F, _)|As]) :-
         check_islands1(As)
     ).
 
+% check whether the formula B for an application A/B, B |- B is valid wrt. the two wrapping stacks of B
 
 check_wrap(dl(0,lit(n),lit(n)), _, _, data(_,_,_,_,As,[],_,_)) :-
 	!,
@@ -2456,9 +2459,9 @@ adv_vp(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
 	J1 is J - 1,
 	I1 is I + 1,
-	/* there is a penalty here to indicate a preference for wrap_vp over wrap_vpi */
-	combine_probability(Prob2, -2, I1, K, wrap_vpi, ProbL),
-	combine_probability(Prob2, -2, J1, J, wrap_vpi, ProbR),
+	/* there is a penalty here to indicate a fairly strong preference for wrap_vp over wrap_vpi */
+	combine_probability(Prob2, -4, I1, K, wrap_vpi, ProbL),
+	combine_probability(Prob2, -4, J1, J, wrap_vpi, ProbR),
 	Prob is min(ProbL, ProbR),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 % variant of adv_vp with additional clitic
@@ -2468,9 +2471,9 @@ adv_vpc(I, J, K, data(Pros0, Sem0, Prob0, _, SetA0, SetB0, SetC0, SetD0),
 	combine_probability(Prob0, Prob1, I, K, wrap_vpi, Prob2),
 	J1 is J - 1,
 	I1 is I + 1,
-	/* there is a penalty here to indicate a preference for wrap_vp over wrap_vpi */
-	combine_probability(Prob2, -2, I1, K, wrap_vpi, ProbL),
-	combine_probability(Prob2, -2, J1, J, wrap_vpi, ProbR),
+	/* there is a penalty here to indicate a fairly strong preference for wrap_vp over wrap_vpi */
+	combine_probability(Prob2, -4, I1, K, wrap_vpi, ProbL),
+	combine_probability(Prob2, -4, J1, J, wrap_vpi, ProbR),
 	Prob is min(ProbL, ProbR),
 	combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD).
 
