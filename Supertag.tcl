@@ -1084,7 +1084,9 @@ proc backslash_interpunction {word} {
 #    regsub -all "(\[0-9]{1,3})\\\.(\[0-9]{3})" $word "\1\2" word
 #    regsub -all "(\[0-9])\\\,(\[0-9])" $word "\1.\2" word
 
-#    regsub -all "\'" $word "\\\'" word
+    regsub -all "\{\"" $word "\\\"" word 
+    regsub -all "\"\}" $word "\\\"" word 
+    regsub -all "'" $word "\\\'" word
 #    regsub -all {\(} $word "\\\(" word
 #    regsub -all {\)} $word "\\\)" word
 #    regsub -all "\"" $word "\\\"" word
@@ -1339,7 +1341,7 @@ proc supertag {sentence} {
     
     .c delete all
 
-    set s_tok [tokenize $sentence]
+    set s_tok [tokenize [string trim $sentence]]
 #    puts stderr $s_tok
     set s_tmp [split $s_tok "\n"]
     set s_list {}
@@ -1524,6 +1526,8 @@ proc supertag {sentence} {
 	puts $parser_file ""
 	puts $parser_file "     \], A)."
 	puts $parser_file ""
+	.c configure -scrollregion [list 0 $miny $maxx 200]
+	update idletasks
 
     }
     close $f2
@@ -1535,9 +1539,6 @@ proc supertag {sentence} {
     update idletasks
     
     bootstrap_parser $tmp_dir
-
-    .c configure -scrollregion [list 0 $miny $maxx 200]
-    update idletasks
 
     set string [join $list2]
 
