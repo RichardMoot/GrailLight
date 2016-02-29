@@ -20,25 +20,25 @@ proc tokenize {sentence} {
 \2} sentence
     regsub -all { etc\. ([[:upper:]])} $sentence { etc.
 \1} sentence
-    regsub -all { \" \. \" } $sentence { " .
+    regsub -all { " \. " } $sentence { " .
 "} sentence
-    regsub -all { \. \" ([[:upper:]])} $sentence { .
+    regsub -all { \. " ([[:upper:]])} $sentence { .
 " \1} sentence
-    regsub -all { \. \" ([[:graph:]])} $sentence { . "
+    regsub -all { \. " ([[:graph:]])} $sentence { . "
 \1} sentence
     regsub -all { \. ([^ \"])} $sentence { .
 \1} sentence 
-    regsub -all { \.\.\. \" ([[:upper:]])} $sentence { ...
+    regsub -all { \.\.\. " ([[:upper:]])} $sentence { ...
 " \1} sentence
     regsub -all { \.\.\. ([^ \"])} $sentence { ...
 \1} sentence 
-    regsub -all { \! \" ([[:graph:]])} $sentence { ! "
+    regsub -all { \! " ([[:graph:]])} $sentence { ! "
 \1} sentence
     regsub -all { \! ([^ \"])} $sentence { .
 \1} sentence 
-    regsub -all { \? \" ([[:graph:]])} $sentence { ? "
+    regsub -all { \? " ([[:graph:]])} $sentence { ? "
 \1} sentence
-    regsub -all { \? ([^ \"])} $sentence { ?
+    regsub -all { \? ([^ "])} $sentence { ?
 \1} sentence 
     # sentence-final interpunction
 #    if {![string is punct [string rang $sentence end end]]} {
@@ -88,10 +88,10 @@ proc tokenize1 {sentence} {
     regsub -all {[[:space:]]+} $sentence " " sentence
     #
     regsub -all {œ} $sentence {oe} sentence
-    regsub -all {“} $sentence {"} sentence
-    regsub -all {”} $sentence {"} sentence
-    regsub -all {«} $sentence {"} sentence
-    regsub -all {»} $sentence {"} sentence
+    regsub -all {“} $sentence {\\\"} sentence
+    regsub -all {”} $sentence {\\\"} sentence
+    regsub -all {«} $sentence {\\\"} sentence
+    regsub -all {»} $sentence {\\\"} sentence
     regsub -all {’} $sentence {'} sentence
     regsub -all {…} $sentence {...} sentence
     regsub -all {–} $sentence {-} sentence
@@ -115,7 +115,7 @@ proc tokenize1 {sentence} {
     regsub {([[:graph:]])\:$} $sentence {\1 :} sentence
     regsub {([[:graph:]])\;$} $sentence {\1 ;} sentence
     regsub {([[:graph:]])\,$} $sentence {\1 ,} sentence
-    regsub {([[:graph:]])\"$} $sentence {\1 "} sentence
+    regsub {([[:graph:]])"$} $sentence {\1 "} sentence
     # french suffixes
     regsub -all {([[:graph:]])-je[[:space:]]} $sentence {\1 -je } sentence
     regsub -all {([[:graph:]])-tu[[:space:]]} $sentence {\1 -tu } sentence
@@ -154,10 +154,10 @@ proc tokenize1 {sentence} {
     regsub -all {([[:graph:]])\: } $sentence {\1 : } sentence
     regsub -all {([[:graph:]])\; } $sentence {\1 ; } sentence
     regsub -all {([[:graph:]])\- } $sentence {\1 - } sentence
-    regsub -all {([[:graph:]])\"([[:graph:]])} $sentence {\1 " \2} sentence
-    regsub -all {^\"([[:graph:]])} $sentence {" \1} sentence
-    regsub -all {([[:space:]])\"([[:graph:]])} $sentence {\1" \2} sentence
-    regsub -all {([[:graph:]])\"([[:space:]])} $sentence {\1 "\2} sentence
+    regsub -all {([[:graph:]])"([[:graph:]])} $sentence {\1 " \2} sentence
+    regsub -all {^"([[:graph:]])} $sentence {" \1} sentence
+    regsub -all {([[:space:]])"([[:graph:]])} $sentence {\1" \2} sentence
+    regsub -all {([[:graph:]])"([[:space:]])} $sentence {\1 "\2} sentence
     regsub -all {([[:space:]])\'([[:graph:]])} $sentence {\1' \2} sentence
     # "
     regsub -all {([[:graph:]])/([[:graph:]])} $sentence {\1 / \2} sentence
@@ -199,21 +199,21 @@ proc tokenize1 {sentence} {
     regsub -all {(^S')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {(^T')([[:graph:]])} $sentence {\1 \2} sentence
     # real numbers with superfluous spaces
-	regsub -all {\m(\d+) \, (\d+)\M} $sentence { \1,\2 } sentence
+    regsub -all {\m(\d+) \, (\d+)\M} $sentence { \1,\2 } sentence
     # numbers greater than 1.000 with space instead of "."
-        regsub -all {\m(\d+)\s+(\d{3})\M} $sentence {\1.\2} sentence
-        regsub -all {\.(\d{3})\s+(\d{3})\M} $sentence {.\1.\2} sentence
+    regsub -all {\m(\d+)\s+(\d{3})\M} $sentence {\1.\2} sentence
+    regsub -all {\.(\d{3})\s+(\d{3})\M} $sentence {.\1.\2} sentence
     # ajourd'hui
-	regsub -all {aujourd' hui} $sentence {aujourd'hui} sentence
+    regsub -all {aujourd' hui} $sentence {aujourd'hui} sentence
     # ellipsis
-        regsub -all { \( \.\.\. \) } $sentence { (...) } sentence
+    regsub -all { \( \.\.\. \) } $sentence { (...) } sentence
     # period belonging to a word (ie. abbreviations)
 
-	# initials
-	regsub -all { ([[:upper:]]) \. } $sentence { \1. } sentence
-	regsub -all {^([[:upper:]]) \. } $sentence {\1. } sentence
-	regsub -all { ([[:upper:]]) \. -([[:upper:]]) \. } $sentence { \1.-\2. } sentence
-	regsub -all {^([[:upper:]]) \. -([[:upper:]]) \. } $sentence {\1.-\2. } sentence
+    # initials
+    regsub -all { ([[:upper:]]) \. } $sentence { \1. } sentence
+    regsub -all {^([[:upper:]]) \. } $sentence {\1. } sentence
+    regsub -all { ([[:upper:]]) \. -([[:upper:]]) \. } $sentence { \1.-\2. } sentence
+    regsub -all {^([[:upper:]]) \. -([[:upper:]]) \. } $sentence {\1.-\2. } sentence
     return $sentence
 }
 
