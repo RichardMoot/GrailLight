@@ -1,5 +1,10 @@
 :- op(400, xfy, \).
 
+% given a lemmatized parse file (such as the parse files of the TLGbank), output a
+% tab-separated table to user_output with, for each sentence in the corpus, 1) the
+% number of words, 2) the number of atomic subformulas, and 3) the number of
+% connectives.
+
 export_corpus_degrees :-
 	findall(N, clause(sent(N,_),_), List),
 	export_corpus_degrees(List).
