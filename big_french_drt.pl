@@ -248,13 +248,13 @@ semantics(dot_np, Sem) :-
 % TODO - verify carefully which parts are presuppositions
 
 possessive_1p_semantics(lambda(P,lambda(Q,presup(merge(drs(Vars,L0),appl(P,X)),appl(Q,X)))), SujF, ObjF) :-
-	possessive_s_features_1p(SujF, Y, Vars, [X], L0, L1),
+	possessive_s_features_1p(SujF, Y, Vars, [variable(X)], L0, L1),
 	possessive_o_features(ObjF, X, L1, [appl(appl(de,X),Y)]).
 possessive_2p_semantics(lambda(P,lambda(Q,presup(merge(drs(Vars,L0),appl(P,X)),appl(Q,X)))), SujF, ObjF) :-
-	possessive_s_features_2p(SujF, Y, Vars, [X], L0, L1),
+	possessive_s_features_2p(SujF, Y, Vars, [variable(X)], L0, L1),
 	possessive_o_features(ObjF, X, L1, [appl(appl(de,X),Y)]).
 possessive_3p_semantics(lambda(P,lambda(Q,presup(merge(drs(Vars,L0),appl(P,X)),appl(Q,X)))), SujF, ObjF) :-
-	possessive_s_features_3p(SujF, Y, Vars, [X], L0, L1),
+	possessive_s_features_3p(SujF, Y, Vars, [variable(X)], L0, L1),
 	possessive_o_features(ObjF, X, L1, [appl(appl(de,X),Y)]).
 
 possessive_s_features_1p(s, X, [X|Xs], Xs, [appl(orateur,X)|R], R).
@@ -264,11 +264,11 @@ possessive_s_features_1p(p, X, [X,Y|Xs], Xs, [bool(Y,=,?),bool(num(Y),>,1),appl(
 % one element in order to avoid making a commitment between polite singular
 % "vous" and plurar "vous"
 
-possessive_s_features_2p(s, X, [X|Xs], Xs, [appl(auditeur,X)|R], R).
-possessive_s_features_2p(p, X, [X,Y|Xs], Xs, [bool(Y,=,?),appl(auditeur,Y),bool(X,atomic_sub,Y)|R], R).
+possessive_s_features_2p(s, X, [variable(X)|Xs], Xs, [appl(auditeur,X)|R], R).
+possessive_s_features_2p(p, X, [variable(X),variable(Y)|Xs], Xs, [bool(Y,=,?),appl(auditeur,Y),bool(X,atomic_sub,Y)|R], R).
 
-possessive_s_features_3p(s, X, [X|Xs], Xs, [bool(X,=,'singular?')|R], R).
-possessive_s_features_3p(p, X, [X|Xs], Xs, [bool(X,=,?),bool(num(X),>,1)|R], R).
+possessive_s_features_3p(s, X, [variable(X)|Xs], Xs, [bool(X,=,'singular?')|R], R).
+possessive_s_features_3p(p, X, [variable(X)|Xs], Xs, [bool(X,=,?),bool(num(X),>,1)|R], R).
 
 
 possessive_o_features(p, X, [bool(num(X),>,1)|R], R).
@@ -3531,6 +3531,10 @@ lex('Ensuite', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),ap
 lex(après, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),<,appl(temps,E))]))))))).
 lex(après, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),<,appl(temps,E))]))))))).
 lex('Après', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),<,appl(temps,E))]))))))).
+
+lex('Après', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
+lex(après, dr(0,dl(1,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
+lex(après, dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 
 lex(pendant, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
 lex(pendant, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
