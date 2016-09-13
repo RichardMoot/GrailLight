@@ -1,5 +1,6 @@
 # emacs backups
 *~
+.DS_Store
 config.log
 config.status
 head/*
