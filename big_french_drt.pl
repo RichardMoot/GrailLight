@@ -2526,8 +2526,10 @@ default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_)
 
 default_semantics(_, let, drs([],[])).
 
-default_semantics(alors, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(alors_que,E),F)]),merge(appl(P,E),appl(Q,F))))))).
-default_semantics(alors, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(alors_que,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(alors, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(alors, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(tandis, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
+default_semantics(tandis, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
 
 default_semantics(et, dr(0,dl(0,dr(0,lit(s(_)),dia(1,box(1,X))),dr(0,lit(s(_)),box(1,dia(1,X)))),dr(0,lit(s(_)),dia(1,box(1,X)))), lambda(P2,lambda(P1,lambda(V,lambda(E,merge(appl(appl(P1,V),E),merge(drs([event(E2)],[]),appl(appl(P2,V),E2)))))))).
 
@@ -2632,6 +2634,8 @@ default_semantics(à, dr(0,dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(
 
 default_semantics(monsieur, dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
 	title_semantics(monsieur, Sem).
+default_semantics('Monsieur', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
+	title_semantics(monsieur, Sem).
 default_semantics('M', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
 	title_semantics(monsieur, Sem).
 default_semantics('M.', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
@@ -2639,10 +2643,22 @@ default_semantics('M.', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
 
 default_semantics(madame, dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
 	title_semantics(madame, Sem).
+default_semantics('Madame', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
+	title_semantics(madame, Sem).
 default_semantics('Mme', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
 	title_semantics(madame, Sem).
 default_semantics('Mme.', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
 	title_semantics(madame, Sem).
+
+default_semantics('maître', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
+	title_semantics('maître', Sem).
+default_semantics('Maître', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
+	title_semantics('maître', Sem).
+default_semantics('Me', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
+	title_semantics('maître', Sem).
+default_semantics('Me.', dr(_,lit(np(_,_,_)),lit(np(_,_,_))), Sem) :-
+	title_semantics('maître', Sem).
+
 
 default_semantics(W, dr(_,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([],[appl(W,X)]))))))).
 default_semantics(W, dl(_,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([],[appl(W,X)]))))))).
@@ -2844,9 +2860,14 @@ lex('Personne', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(hu
 lex(nul, lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,drs([],[not(appl(Q,X))]))]))).
 lex('Nul', lit(np(_,_,_)), lambda(Q,drs([],[bool(drs([variable(X)],[appl(humain,X)]),->,drs([],[not(appl(Q,X))]))]))).
 
+lex(non, dr(0,dl(0,n,n),dl(0,n,n)), lambda(ADJ,lambda(N,lambda(X,merge(drs([],[not(appl(appl(ADJ,lambda(_,drs([],[]))),X))]),appl(N,X)))))).
+lex(non, dr(0,dr(0,n,n),dr(0,n,n)), lambda(ADJ,lambda(N,lambda(X,merge(drs([],[not(appl(appl(ADJ,lambda(_,drs([],[]))),X))]),appl(N,X)))))).
+lex(non, dl(1,dl(0,n,n),dl(0,n,n)), lambda(ADJ,lambda(N,lambda(X,merge(drs([],[not(appl(appl(ADJ,lambda(_,drs([],[]))),X))]),appl(N,X)))))).
+lex('non-', dr(0,dl(0,n,n),dl(0,n,n)), lambda(ADJ,lambda(N,lambda(X,merge(drs([],[not(appl(appl(ADJ,lambda(_,drs([],[]))),X))]),appl(N,X)))))).
 lex('non-', dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([],[not(appl(P,X))])))).
 lex(non, dr(0,lit(n),lit(n)), lambda(P,lambda(X,drs([],[not(appl(P,X))])))).
 lex(non, dr(0,dl(1,s,s),dl(1,s,s)), lambda(SMOD,lambda(S,lambda(E,merge(appl(S,E),drs([],not(appl(appl(SMOD,lambda(_,[])),E)))))))).
+lex(non, dr(0,dr(0,s,s),dr(0,s,s)), lambda(SMOD,lambda(S,lambda(E,merge(appl(S,E),drs([],not(appl(appl(SMOD,lambda(_,[])),E)))))))).
 % TODO: the semantics of the prefix "quasi-" given here is just the standard semantics for a
 % privative adjective, eg. "quasi-total" implies "not(total)" but says nothing about the
 % perceived (or implied) closeness to being total. It would be nice to do better than this.
@@ -2903,15 +2924,15 @@ lex('En', dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(ST))),dl(0,lit(np(_,_,_)),lit(s(ST
 lex('En', dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_ppres)), lambda(VPD,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(drs([event(F)],[bool(appl(temps,E),subseteq,appl(temps,F))]),appl(appl(VPD,lambda(Q,appl(Q,X))),F)))))))))).
 lex(en, dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_ppres)), lambda(VPD,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(drs([event(F)],[bool(appl(temps,E),subseteq,appl(temps,F))]),appl(appl(VPD,lambda(Q,appl(Q,X))),F)))))))))).
 	    
-lex('Pour', dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_inf)), lambda(VPInf,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(but,F),E)])))))))))).
-lex('Pour', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex('Pour', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex(pour, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex(pour, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex(pour, dr(0,dr(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(but,F),E)])))))))))).
-lex(pour, dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_inf)), lambda(VPInf,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(but,F),E)])))))))))).
-lex(pour, dr(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(but,F),E)])))))))))).
-lex(pour, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
+lex('Pour', dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_inf)), lambda(VPInf,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
+lex('Pour', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex('Pour', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(pour, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(pour, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(pour, dr(0,dr(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
+lex(pour, dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_inf)), lambda(VPInf,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
+lex(pour, dr(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
+lex(pour, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
 
 lex('Sans', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(merge(appl(S,E),drs([variable(X),event(F)],[bool(X,=,'?'),bool(E,subseteq,F)])),drs([],[appl(appl(VP,lambda(P,not(appl(P,X)))),F)])))))).
 lex('Sans', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(merge(appl(S,E),drs([variable(X),event(F)],[bool(X,=,'?'),bool(E,subseteq,F)])),drs([],[appl(appl(VP,lambda(P,not(appl(P,X)))),F)])))))).
@@ -2962,12 +2983,23 @@ lex(après, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambd
 lex(après, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[bool(appl(temps,F),'<',appl(temps,E)),bool(X,=,'context?')]))))))).
 
 
-lex('Afin', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex('Afin', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex(afin, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
-lex(afin, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X)],[appl(appl(but,F),E),bool(X,=,appl(agent,E))]))))))).
+lex('Afin', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex('Afin', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(afin, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(afin, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(afin, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(ST))),dl(0,lit(np(_,_,_)),lit(s(ST)))),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VPD,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(drs([event(F)],[appl(appl(goal,F),E)]),appl(appl(VPD,lambda(Q,appl(Q,X))),F)))))))))).
 
 lex(aussi, dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,merge(appl(NP,lambda(X,drs([event(E)],[appl(appl(agent,X),E),bool(E,=,'event?')]))),appl(P,X))))).
+
+% Lexconn gives only "result" for sentence-initial "aussi"
+lex('Aussi', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(result,E),F)]),appl(S,E))))).
+lex(aussi, dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(result,E),F)]),appl(S,E))))).
+
+lex(aussi, dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(parallel,E),F)]),appl(S,E))))).
+lex('aussitôt', dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),bool(drs([],[appl(appl(narration,E),F)]),\/,drs([],[appl(appl(result,E),F)])),bool(appl(temps,F),abuts,appl(temps,E))]),appl(S,E))))).
+lex('aussitôt', dr(0,dl(0,np,s),dl(0,np,s)), lambda(VP,lambda(NP,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),bool(drs([],[appl(appl(narration,E),F)]),\/,drs([],[appl(appl(result,E),F)])),bool(appl(temps,F),abuts,appl(temps,E))]),appl(appl(VP,NP),E)))))).
+lex('également', dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(parallel,E),F)]),appl(S,E))))).
+lex('également', dr(0,dl(0,np,s),dl(0,np,s)), lambda(VP,lambda(NP,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(parallel,E),F)]),appl(appl(VP,NP),E)))))).
 
 % = proper nouns - French
 
@@ -3093,17 +3125,17 @@ lex('-ce', lit(np(nom,ce,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'?')]
 lex('C\'', lit(np(nom,ce,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'?')]),appl(P,X)))).
 lex('C', lit(np(nom,ce,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'?')]),appl(P,X)))).
 
-lex(ce, dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
+lex(ce, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
-lex(cet, dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
+lex(cet, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
-lex(cette, dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
+lex(cette, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
-lex('Ce', dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
+lex('Ce', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
 lex('Cet', dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
-lex('Cette', dr(0,lit(np(_,_,3-s)),lit(n)), Sem) :-
+lex('Cette', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_this_semantics(Sem).
 lex(ces, dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
 	gq_these_semantics(Sem).
@@ -3336,8 +3368,13 @@ lex(aux, dr(0,pp_a,n), lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(nu
 lex(des, dr(0,pp_de,n), lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 
 % plus_de
+% NOTE: several different constructions are possible here
+% "plus de 200"
+% "(plus de 200) etudiants"
+% "plus d'etudiants"
 
 lex(plus, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,=,appl(plus_de,Y))]))),appl(P,X))))).
+%lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,>,Y)]))),appl(P,X))))).
 
 % Discourse connectives
 
@@ -3492,21 +3529,27 @@ lex(et,   dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(E,
 lex('(',   dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(background,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 lex('(',   dr(0,dl(1,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(background,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
-lex('Comme', dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))). % causal intrpretation
+lex('Comme', dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(explanation,E),F)]),\/,bool(drs([],[appl(appl('explanation*',E),F)]),\/,drs([],[appl(appl(background,E),F)])))]),merge(appl(P,E),appl(Q,F))))))).
+lex(comme, dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(explanation,E),F)]),\/,bool(drs([],[appl(appl('explanation*',E),F)]),\/,drs([],[appl(appl(background,E),F)])))]),merge(appl(P,E),appl(Q,F))))))).
+lex(comme, dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(explanation,E),F)]),\/,bool(drs([],[appl(appl('explanation*',E),F)]),\/,drs([],[appl(appl(background,E),F)])))]),merge(appl(P,E),appl(Q,F))))))).
 lex(plus, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(plus_que,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
-lex('Parce', dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
-lex(parce, dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
-lex(parce, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(explanation,F),E)]),merge(appl(P,E),appl(Q,F))))))).
+lex('Parce', dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[bool(drs([],[appl(appl(explanation,F),E)]),\/,drs([],[appl(appl('explanation*',F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
+lex(parce, dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[bool(drs([],[appl(appl(explanation,F),E)]),\/,drs([],[appl(appl('explanation*',F),E)]))]),merge(appl(P,E),appl(Q,F))))))). 
+lex(parce, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[bool(drs([],[appl(appl(explanation,F),E)]),\/,drs([],[appl(appl('explanation*',F),E)]))]),merge(appl(P,E),appl(Q,F))))))). 
 lex(parce, dr(0,s,s_q), lambda(Q,lambda(E,merge(drs([event(F)],[bool(F,=,?),appl(appl(explanation,F),E)]),appl(Q,E))))).
 
-lex(donc, dl(1,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(result,E),F),bool(F,=,?)]),appl(S,E))))).
-lex(donc, dr(0,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(result,E),F),bool(F,=,?)]),appl(S,E))))).
-lex('Donc', dr(0,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(result,E),F),bool(F,=,?)]),appl(S,E))))).
+lex(donc, dl(1,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(result,E),F)]),\/,drs([],[appl(appl('result*',E),F)]))]),appl(S,E))))).
+lex(donc, dr(0,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(result,E),F)]),\/,drs([],[appl(appl('result*',E),F)]))]),appl(S,E))))).
+lex('Donc', dr(0,lit(s(SS)),lit(s(SS))), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(result,E),F)]),\/,drs([],[appl(appl('result*',E),F)]))]),appl(S,E))))).
 
-lex('Pour', dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(but,E),F)]),merge(appl(P,E),appl(Q,F))))))).
-lex(pour, dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(but,E),F)]),merge(appl(P,E),appl(Q,F))))))).
-lex(pour, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(but,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex('Pour', dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(goal,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(pour, dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(goal,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(pour, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(goal,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+
+lex('Afin', dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(goal,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(afin, dr(0,dr(0,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(goal,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(afin, dr(0,dl(1,lit(s(SS)),lit(s(SS))),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(goal,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
 lex(lorsque, dr(0,dr(0,s,s),s), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),overlaps,appl(temps,F))]))))))).
 lex(lorsque, dr(0,dl(1,s,s),s), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),overlaps,appl(temps,F))]))))))).
@@ -3536,9 +3579,13 @@ lex('Après', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lamb
 lex(après, dr(0,dl(1,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 lex(après, dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 
-lex(pendant, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
-lex(pendant, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
-lex('Pendant', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
+lex(pendant, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(F)],[bool(bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl('explanation*',F),E)])),\/,drs([],[appl(appl(background,F),E),bool(appl(temps,F),simeq,appl(temps,E))]))]),merge(appl(S2,E),appl(S1,F))))))).
+lex(pendant, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(F)],[bool(bool(drs([],[appl(appl(contrast,E),F)]),\/,drs([],[appl(appl('explanation*',F),E)])),\/,drs([],[appl(appl(background,F),E),bool(appl(temps,F),simeq,appl(temps,E))]))]),merge(appl(S2,E),appl(S1,F))))))).
+lex('Pendant', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(F)],[bool(bool(drs([],[appl(appl(contrast,E),F)]),\/,drs([],[appl(appl('explanation*',F),E)])),\/,drs([],[appl(appl(background,F),E),bool(appl(temps,F),simeq,appl(temps,E))]))]),merge(appl(S2,E),appl(S1,F))))))).
+
+%lex(pendant, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
+%lex(pendant, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
+%lex('Pendant', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),simeq,appl(temps,E))]))))))).
 
 lex(dès, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),abuts,appl(temps,E))]))))))).
 lex(dès, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,F),abuts,appl(temps,E))]))))))).
@@ -3568,9 +3615,10 @@ lex(cependant, dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(
 lex(cependant, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(concession,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex('Cependant', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(concession,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 
-lex(comme, dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(comme,E),F)]),merge(appl(P,E),appl(Q,F))))))).
-lex(comme, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(comme,E),F)]),merge(appl(P,E),appl(Q,F))))))).
-lex('Comme', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(comme,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(comme, dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(parallel,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex(comme, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(parallel,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex('Comme', dr(0,dr(0,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(parallel,E),F)]),merge(appl(P,E),appl(Q,F))))))).
+lex('Comme', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(parallel,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
 lex('Néanmoins', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(opposition,F),E),bool(F,=,?)]),appl(S,E))))).
 lex(néanmoins, dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(opposition,F),E),bool(F,=,?)]),appl(S,E))))).
@@ -3592,7 +3640,12 @@ lex(tandis, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)]
 lex('Tandis', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 
 lex('Bref', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(summary,E),F),bool(F,=,?)]),appl(S,E))))).
-lex('Or', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(continuation,E),F),bool(F,=,?)]),appl(S,E))))).
+lex('Néanmoins', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(summary,E),F),bool(F,=,?)]),appl(S,E))))).
+lex('néanmoins', dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(summary,E),F),bool(F,=,?)]),appl(S,E))))).
+lex('Or', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(continuation,E),F)]),\/,drs([],[appl(appl(violation,E),F)]))]),appl(S,E))))).
+lex('Autrement', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(alternation,E),F)]),\/,bool(drs([],[appl(appl(continuation,E),F)]),\/,drs([],[appl(appl(violation,E),F)])))]),appl(S,E))))).
+lex(autrement, dr(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(alternation,E),F)]),\/,bool(drs([],[appl(appl(continuation,E),F)]),\/,drs([],[appl(appl(violation,E),F)])))]),appl(S,E))))).
+lex(autrement, dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,?),bool(drs([],[appl(appl(alternation,E),F)]),\/,bool(drs([],[appl(appl(continuation,E),F)]),\/,drs([],[appl(appl(violation,E),F)])))]),appl(S,E))))).
 
 lex(sans, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([event(F)],[not(appl(P,F))])))))).
 
@@ -3627,6 +3680,7 @@ lex(';',  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,
 lex(':',  dr(0,dl(0,lit(s(S)),lit(s(S))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(explanation,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 lex('-',  dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(background,E),F)]),merge(appl(P,E),appl(Q,F))))))).
 
+% appositive relative clauses are treated as presuppositions (this is an oversimplification, unlike presuppositions, they cannot be cancelled though they do project)
 lex(',', dr(0,dl(0,dl(0,n,n),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP,lambda(ADJ,lambda(P,appl(NP,lambda(X,presup(appl(appl(ADJ,lambda(_,drs([],[]))),X),appl(P,X)))))))).
 lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,n,n)), lambda(ADJ,lambda(NP,lambda(P,appl(NP,lambda(X,presup(appl(appl(ADJ,lambda(_,drs([],[]))),X),appl(P,X)))))))).
 lex('-', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,n,n)), lambda(ADJ,lambda(NP,lambda(P,appl(NP,lambda(X,presup(appl(appl(ADJ,lambda(_,drs([],[]))),X),appl(P,X)))))))).
@@ -3744,6 +3798,14 @@ lex(différente, dr(0,lit(n),lit(n)), lambda(P,lambda(X,presup(merge(drs([variab
 lex(différentes, dr(0,lit(n),lit(n)), lambda(P,lambda(X,presup(merge(drs([variable(Z)],[bool(Z,=,?)]),appl(P,Z)),merge(appl(P,X),drs([],[bool(X,empty_intersect,Z)])))))).
 lex(ailleurs, dl(0,lit(n),lit(n)), lambda(P,lambda(X,presup(drs([variable(Z)],[bool(Z,=,?),appl(lieu,Z)]),merge(appl(P,X),drs([],[bool(X,neq,Z)])))))).
 lex(ailleurs, dl(1,s,s), lambda(S,lambda(E,presup(drs([variable(Z)],[bool(Z,=,?),appl(lieu,Z)]),merge(appl(S,E),drs([variable(X)],[appl(lieu,X),appl(appl(lieu,X),E),bool(X,neq,Z)])))))).
+
+% only sentence-initial "ainsi" can be a discourse connective
+lex('Ainsi', dr(0,s,s), lambda(S,lambda(E,merge(drs([],[bool(F,=,'event?'),appl(appl(result,E),F)]),appl(S,E))))).
+lex(ainsi, dr(0,s,s), lambda(S,lambda(E,merge(drs([],[bool(F,=,'event?'),appl(appl(result,E),F)]),appl(S,E))))).
+
+lex('Alors', dr(0,s,s), lambda(S,lambda(E,merge(drs([],[bool(F,=,'event?'),bool(bool(drs([],[appl(appl(result,E),F)]),\/,drs([],[appl(appl('result*',E),F)])),\/,drs([],[appl(appl(narration,E),F)]))]),appl(S,E))))).
+lex(alors, dr(0,s,s), lambda(S,lambda(E,merge(drs([],[bool(F,=,'event?'),bool(bool(drs([],[appl(appl(result,E),F)]),\/,drs([],[appl(appl('result*',E),F)])),\/,drs([],[appl(appl(narration,E),F)]))]),appl(S,E))))).
+
 
 
 lex(quand, dr(0,s_q,s), lambda(S,lambda(E,merge(drs([],[bool(appl(temps,E),=,'context?')]),appl(S,E))))).
