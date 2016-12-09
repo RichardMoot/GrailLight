@@ -1402,23 +1402,23 @@ proc supertag {sentence} {
 	write_log $line2
 	puts $pw $line2
 
-	set lem_list {}
-	set pos_list [split $line2]
-	foreach member $pos_list {
-	    
-	    set pl_item [split $member "|"]
+#	set lem_list {}
+#	set pos_list [split $line2]
+#	foreach member $pos_list {
+#	    
+#	    set pl_item [split $member "|"]
 #	    puts stderr "$member - $pl_item"
-	    set lem [get_lemma [lindex $pl_item 0] [lindex $pl_item 1]]
+#	    set lem [get_lemma [lindex $pl_item 0] [lindex $pl_item 1]]
 #	    puts stderr $lem
-	    if {[string equal $lem {"} ] || 
-                [string equal $lem "\{\"" ] } { # "
-               lappend lem_list "\{\"\}"
-            } else {
-	       lappend lem_list "{$lem}"
-            }
-	} 
-	foreach litem $lem_list { puts -nonewline stderr "[lindex $litem 0] " }
-	puts stderr ""
+#	    if {[string equal $lem {"} ] || 
+#               [string equal $lem "\{\"" ] } { # "
+#               lappend lem_list "\{\"\}"
+#            } else {
+#	       lappend lem_list "{$lem}"
+#            }
+#	} 
+#	foreach litem $lem_list { puts -nonewline stderr "[lindex $litem 0] " }
+#	puts stderr ""
     }
     printpos 160 [lindex $p_list 0]
 
@@ -1497,8 +1497,8 @@ proc supertag {sentence} {
 		}
 	    }
 	    set word [backslash_interpunction $word]
-	    set lemma [backslash_interpunction [lindex $lem_list $list_counter]]
-
+#	    set lemma [backslash_interpunction [lindex $lem_list $list_counter]]
+            set lemma [backslash_interpunction [get_lemma $word $pos]]
 	    set grailcmd "$grailcmd {$word} [string tolower $pos] $lemma"
 	    set flist {}
 	    set parselist {}
