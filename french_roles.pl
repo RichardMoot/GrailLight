@@ -368,6 +368,7 @@ get_roles1(produire, [np, cl_r], [patient, null]).
 get_roles1(racheter, [np, cl_r], [agent, null]).
 
 get_roles1(retourner, [np, cl_r], [agent, null]).
+get_roles1(reposer, [np, cl_r], [agent, null]).
 get_roles1(répartir, [np, cl_r], [patient, null]).
 get_roles1(réunir, [np, cl_r], [agent, null]).
 get_roles1(rattraper, [np, cl_r], [agent, null]).
