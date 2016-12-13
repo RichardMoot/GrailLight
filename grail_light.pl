@@ -250,7 +250,7 @@ chart_parse_all0(N, Max, DL) :-
 	format('~nFailure: ~w (~w)~n', [N0,DepthLimit])
      ;
         print_statistics('S', N0, DepthLimit, Inferences0, CPU0),
-	print_grail_semantics(Result),
+	print_grail_semantics(N0, Result),
 	assert(parsed(N0, Result)),
 	format('~nSuccess: ~w (~w)~n', [N0,DepthLimit])
      ),
@@ -392,7 +392,7 @@ try_recover_chart_semantics(N0, DL, Inferences, CPU) :-
 	!,
        	increase_global_counter('$SOLUTION'),
 	assert(parsed(N0, Sem)),
-	print_grail_semantics(Sem),
+	print_grail_semantics(N0, Sem),
 	format('~nSuccess: ~w (MAX)~n', [N0]),
         print_statistics('S', N0, DL, Inferences, CPU).
 try_recover_chart_semantics(N0, DL, Inferences, CPU) :-
@@ -464,15 +464,15 @@ print_grail_semantics_header :-
 	get_option(paper_size, PaperSize),
 	latex_header(sem, PaperSize).
 
-print_grail_semantics(Sem) :-
+print_grail_semantics(SentN0, Sem) :-
 	renumbervars(Sem),
 	reduce_sem(Sem, RSem),
 	format('~nSemantics   : ~p~n', [Sem]),
 	format('Reduced Sem : ~p~n', [RSem]),
 	format(log, '~n% = Semantics~2n ~W~2n', [Sem,[numbervars(true),quoted(true)]]),
 	format(log, '% = Reduced Semantics~2n~W~2n', [RSem,[numbervars(true),quoted(true)]]),
-	format(sem_pl, '~n% = Semantics~2n ~W.~2n', [Sem,[numbervars(true),quoted(true)]]),
-	format(sem_pl, '% = Reduced Semantics~2n~W.~2n', [RSem,[numbervars(true),quoted(true)]]),
+	format(sem_pl, '~n% = Semantics~2nsemantics(~d, unreduced, ~W).~2n', [SentN0,Sem,[numbervars(true),quoted(true)]]),
+	format(sem_pl, '% = Reduced Semantics~2nsemantics(~d, reduced, ~W).~2n', [SentN0,RSem,[numbervars(true),quoted(true)]]),
 	format(sem, '~n\\begin{multline}~n', []),
    (
         display_unreduced_semantics(yes)
