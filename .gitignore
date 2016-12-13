@@ -31,6 +31,7 @@ at*.pl
 300*.pl
 8000*.pl
 frwiki*
+news*.pl
 *.out
 ml.pl
 lnr.pl
