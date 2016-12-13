@@ -3579,6 +3579,13 @@ lex('Après', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lamb
 lex(après, dr(0,dl(1,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 lex(après, dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 
+% = "Selon NP S" is translated as "NP soutient que S" (NP claims that S) 
+lex('Selon', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(F,appl(NP,lambda(X,drs([event(L)],[appl(appl(appl(soutenir_que,L),X),F),drs_label(L,merge(drs([event(E)],[]),appl(S,E)))]))))))).
+lex(selon, dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(F,appl(NP,lambda(X,drs([event(L)],[appl(appl(appl(soutenir_que,L),X),F),drs_label(L,merge(drs([event(E)],[]),appl(S,E)))]))))))).
+lex(selon, dr(0,dl(1,s,s),np), lambda(NP,lambda(S,lambda(F,appl(NP,lambda(X,drs([event(L)],[appl(appl(appl(soutenir_que,L),X),F),drs_label(L,merge(drs([event(E)],[]),appl(S,E)))]))))))).
+
+lex('D\'', dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(pp(apres))), lambda(PP,lambda(S,lambda(F,appl(PP,lambda(X,drs([event(L)],[appl(appl(appl(soutenir_que,L),X),F),drs_label(L,merge(drs([event(E)],[]),appl(S,E)))]))))))).
+
 lex(pendant, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(F)],[bool(bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl('explanation*',F),E)])),\/,drs([],[appl(appl(background,F),E),bool(appl(temps,F),simeq,appl(temps,E))]))]),merge(appl(S2,E),appl(S1,F))))))).
 lex(pendant, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(F)],[bool(bool(drs([],[appl(appl(contrast,E),F)]),\/,drs([],[appl(appl('explanation*',F),E)])),\/,drs([],[appl(appl(background,F),E),bool(appl(temps,F),simeq,appl(temps,E))]))]),merge(appl(S2,E),appl(S1,F))))))).
 lex('Pendant', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(F)],[bool(bool(drs([],[appl(appl(contrast,E),F)]),\/,drs([],[appl(appl('explanation*',F),E)])),\/,drs([],[appl(appl(background,F),E),bool(appl(temps,F),simeq,appl(temps,E))]))]),merge(appl(S2,E),appl(S1,F))))))).
