@@ -182,6 +182,7 @@ proc tokenize1 {sentence} {
     regsub -all {([[:space:]]d')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {([[:space:]]j')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {([[:space:]]jusqu')([[:graph:]])} $sentence {\1 \2} sentence
+    regsub -all {([[:space:]]lorsqu')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {([[:space:]]qu')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {([[:space:]]l')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {([[:space:]]m')([[:graph:]])} $sentence {\1 \2} sentence
@@ -192,6 +193,7 @@ proc tokenize1 {sentence} {
     regsub -all {(^D')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {(^J')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {(^Jusqu')([[:graph:]])} $sentence {\1 \2} sentence
+    regsub -all {(^Lorsqu')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {(^L')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {(^M')([[:graph:]])} $sentence {\1 \2} sentence
     regsub -all {(^N')([[:graph:]])} $sentence {\1 \2} sentence
