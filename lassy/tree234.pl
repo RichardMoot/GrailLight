@@ -155,7 +155,7 @@ btree_get4(>, _ , _ , _, K2, V2, _ , _ , T2, T3, K, V) :-
 % btree_get_replace(+Tree, +Key, ?Val, +NewVal, ?NewTree)
 %
 % Assigns NewVal to Key in NewTree but reports back the old Val
-% for Key in Tree as well. Behaves as is defined by the clause
+% for Key in Tree as well. Behaves as if defined by the clause
 %
 % btree_get_replace(T0, K, V0, V, T) :-
 %       btree_get(T0, K, V0),

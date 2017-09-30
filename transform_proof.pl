@@ -95,6 +95,7 @@ infile(aq2).
 infile(as2).
 infile(at).
 infile(300).
+infile(1000).
 infile(8000).
 infile(annodis).
 infile(frwiki1).

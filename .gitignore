@@ -29,12 +29,17 @@ aq*.pl
 as*.pl
 at*.pl
 300*.pl
+1000*.pl
 8000*.pl
 frwiki*
+emea*.pl
+europar*.pl
 news*.pl
 *.out
 ml.pl
 lnr.pl
+drt.pl
+discourse_rel.pl
 missing_word.txt
 missing_word_raw.txt
 missing_formula.txt

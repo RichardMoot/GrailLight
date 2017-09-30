@@ -61,13 +61,21 @@ xml_files('flmf7as2ep.af.cat.xml', as2).
 xml_files('flmf7atep.cat.xml', at).
 
 xml_files('flmf300_13000ep.cat.xml', '300').
+xml_files('flmf3_01000_01499ep.aa.xml','1000').
+%xml_files('flmf3_03500_03999ep.aa.xml','3500').
 xml_files('flmf3_08000_08499ep.xd.cat.xml', '8000').
+%xml_files('flmf3_08500_08999ep.aa.xml','8500').
+%xml_files('flmf3_09000_09499ep.aa.xml','9000').
+%xml_files('flmf3_10000_10499ep.aa.xml','10000').
+%xml_files('flmf3_11000_11499ep.aa.xml','11000').
+%xml_files('flmf3_12000_12499ep.aa.xml','12000').
+%xml_files('flmf3_12500_12999co.aa.xml','12500').
 
 xml_files('annodis.er.xml', annodis).
 xml_files('frwiki1.xml', frwiki1).
 xml_files('frwiki2.xml', frwiki2).
-% xml_files('Europar.550.xml', europar).
-% xml_files('emea-fr-dev.xml', emea_d).
+xml_files('Europar.550.xml', europar).
+xml_files('emea-fr-dev.xml', emea_d).
 % xml_files('emea-fr-test.xml', emea_t).
 
 % NOTE: all exported predicates are declared as being in module "user", since otherwise predicates like listing/1

@@ -1,35 +1,3 @@
- Pour les SCA , la durée de la perfusion dépend de la manière dont le SCA doit être traité : elle peut durer jusqu' à 72 heures au maximum chez les patients devant recevoir des médicaments .
- Lorsqu' il est utilisé pour prévenir la formation de caillots sanguins chez les patients subissant une ICP , une dose plus élevée d' Angiox est utilisée , et la perfusion peut être poursuivie jusqu' à quatre heures après la procédure .
- Les doses de perfusion doivent être réduites chez les patients ayant des problèmes rénaux subissant une ICP .
- Angiox ne doit pas être utilisé chez les patients qui présentent des problèmes rénaux aigus .
- Pour plus d' informations , voir le résumé des caractéristiques du produit ( également inclus dans l' EPAR ) .
- Comment Angiox agit -il ?
- La coagulation sanguine peut poser un problème en cas de perturbation du flux sanguin .
- Angiox est un anticoagulant ;
- il empêche le sang de coaguler ( formation de caillots ) .
- La bivalirudine , principe actif de Angiox , est une substance synthétique dérivée de l' hirudine , la substance anticoagulante produite par les sangsues .
- Elle bloque spécifiquement l' une des substances impliquées dans le processus de coagulation , la thrombine .
- Celle-ci se trouve au centre des processus complexes de la coagulation sanguine .
- En utilisant Angiox durant le SCA ou l' ICP , le risque de formation de caillots sanguins est considérablement réduit .
- Ceci peut contribuer à maintenir le flux sanguin vers le coeur chez les patients atteints d' angor ou d' une crise cardiaque et à améliorer l' efficacité de leur ICP .
- Quelles études ont été menées avec Angiox ?
- Angiox a été étudié chez plus de 20.000 patients .
- Pour le traitement des SCA , l' étude principale a porté sur près de 14.000 patients et a comparé l' efficacité de Angiox , pris seul ou avec un inhibiteur de la glycoprotéine IIb/IIIa ( inhibiteur de GP , un autre type de médicament contribuant à prévenir la formation de caillots ) , avec le traitement standard en combinaison avec de l' héparine ( un autre anticoagulant ) et un inhibiteur de GP .
- Tous les patients ont également reçu de l' aspirine , avec ou sans clopidogrel .
- L' efficacité d' Angiox en tant qu' anticoagulant utilisé dans l' ICP a été étudiée chez plus de 6.000 patients .
- Angiox a été comparé à l' héparine .
- Durant l' ICP , un stent ( petit tube qui reste dans l' artère afin d' en empêcher la fermeture ) est souvent posé chez les patients et d' autres anticoagulants sont également administrés , comme l' abciximab , l' aspirine .
- Pour toutes les études , les quatre critères principaux ont été les suivants : taux de décès , crise cardiaque , revascularisation urgente ( rétablissement du flux sanguin vers le coeur ) et hémorragie importante ( saignement ) .
- Quel est le bénéfice démontré par Angiox au cours des études ?
- Angiox s' est avéré aussi efficace que les traitements auxquels il a été comparé .
- Lorsqu' il a été utilisé pour le traitement de SCA , Angiox , administré avec ou sans inhibiteur de GP , a été aussi efficace que le traitement standard pour prévenir l' apparition globale de nouveaux événements ( décès , crises cardiaques ou revascularisations ) après 30 jours et après un an .
- Angiox a été le plus efficace chez les patients ayant également reçu de l' aspirine et du clopidogrel .
- Les patients ayant reçu Angiox sans inhibiteur de GP ont également présenté un taux d' hémorragies inférieur après 30 jours et après un an .
- Chez les patients subissant un ICP , Angiox s' est montré aussi efficace que l' héparine pour toutes les mesures , excepté en ce qui concerne le saignement majeur , pour lequel il s' est révélé nettement meilleur ( niveau de saignement inférieur ) que l' héparine .
- Quel est le risque associé à l' utilisation de Angiox ?
- L' effet indésirable le plus fréquent avec Angiox ( observé chez plus d' un patient sur 10 ) est le saignement bénin .
- Pour avoir le détail de tous les effets indésirables observés lors de l' utilisation de Angiox , voir la notice .
- Angiox ne doit pas être utilisé chez les personnes pouvant présenter une hypersensibilité ( allergie ) à la bivalirudine , aux autres hirudines , ou à l' un des autres composants constituant Angiox .
  Il convient en outre de ne pas l' utiliser chez les patients ayant eu une hémorragie récente , souffrant d' hypertension aiguë ou présentant des troubles graves des reins , ou encore chez les patients présentant une infection cardiaque .
  Pour une liste complète des restrictions , voir la notice .
  Pourquoi Angiox a -t-il été approuvé ?

@@ -60,7 +60,8 @@ set tmp_dir            "/Users/moot/Library/Supertagger"
 set semantics          drt
 set postagset          tt
 set grail_exec         "grail_light_nd.pl"
-set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
+set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2016-10-31/lexparser-french.sh"
+# set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
 set stanford_parser_length 30
 
 set berkeley_parser_cmd "/usr/bin/java -jar /Users/moot/Programs/BerkeleyParser/BerkeleyParser-1.7.jar -gr /Users/moot/Programs/BerkeleyParser/fra_sm5.gr "
