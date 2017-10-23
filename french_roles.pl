@@ -341,6 +341,7 @@ get_roles1(dessécher, [np, cl_r], [patient, null]). % unaccusative
 get_roles1(enfuir, [np, cl_r], [agent, null]).
 get_roles1(engager, [np, cl_r], [agent, null]). 
 get_roles1(ennuyer, [np, cl_r], [patient, null]).
+get_roles1(évader, [np, cl_r], [agent, null]).
 
 get_roles1(inscrire, [np, cl_r], [agent, null]).
 get_roles1(intégrer, [np, cl_r], [agent, null]).
@@ -715,6 +716,7 @@ get_roles1(rendre, [np, cl_r, np, pp(de)], [patient, null, compte, theme]). % se
 get_roles1(rendre, [np, cl_r, np, s(q)], [patient, null, compte, theme]). % se rendre compte que
 get_roles1(rendre, [np, cl_r, pp(à)], [agent, null, destination]). % se rendre compte que
 
+get_roles1(retirer, [np, cl_r, pp(de)], [patient, null, theme]).
 
 get_roles1(retourner, [np, cl_r, pp(contre)], [agent, null, theme]).
 get_roles1(retrouver, [np, cl_r, pp(_)], [patient, null, lieu]).

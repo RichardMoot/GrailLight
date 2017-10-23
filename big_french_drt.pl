@@ -2367,6 +2367,17 @@ default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(par))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(pp(par))), lambda(Q,lambda(R,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), lambda(A,lambda(P,lambda(V,merge(drs([event(E),variable(X)],[appl(generic,X)|Conds]),appl(P,V)))))) :-
+	get_roles(W, [np, np, adj], [ArgRole1, ArgRole2, ArgRole3]),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-L], W, E, Conds, [drs_label(L,appl(appl(A,lambda(_,drs([],[]))),V))]).
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(generic,X)|Conds]))),appl(P,V)))))) :-
 	get_roles(W, [np, np, np], [SubjectRole, ObjectRole, Arg]),
 	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
