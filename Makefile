@@ -173,3 +173,29 @@ news39.pl: annodis.pl grail_light_cr.pl
 	rm semantics.pl
 	./grail_light_cr.pl from 493 to 529 annodis.pl	
 	egrep 'semantics.+ reduced' semantics.pl > news39.pl
+
+debat_light.pos: debat_light_tok.txt
+	pos --model /Users/moot/checkout/models/ext_french_pos_tt --input debat_light_tok.txt > debat_light.pos
+
+super10.txt: debat_light.pos
+	 msuper -input debat_light.pos --ofmt "%w|%p|%S \n" --model /Users/moot/checkout/models/french_tt/ --beta 0.1 > super10.txt
+super50.txt: debat_light.pos
+	 msuper -input debat_light.pos --ofmt "%w|%p|%S \n" --model /Users/moot/checkout/models/french_tt/ --beta 0.05 > super50.txt
+super100.txt: debat_light.pos
+	 msuper -input debat_light.pos --ofmt "%w|%p|%S \n" --model /Users/moot/checkout/models/french_tt/ --beta 0.01 > super100.txt
+
+super10_nolem.pl: super10.txt
+	./supertag2pl super10.txt > super10_nolem.pl
+super50_nolem.pl: super50.txt
+	./supertag2pl super50.txt > super50_nolem.pl
+super100_nolem.pl: super100.txt
+	./supertag2pl super100.txt > super100_nolem.pl
+
+super10.pl: super10_nolem.pl
+	./lefff.pl super10_nolem.pl
+super50.pl: super50_nolem.pl
+	./lefff.pl super50_nolem.pl
+super100.pl: super100_nolem.pl
+	./lefff.pl super100_nolem.pl
+
+

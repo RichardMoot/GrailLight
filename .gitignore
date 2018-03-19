@@ -31,6 +31,12 @@ at*.pl
 300*.pl
 1000*.pl
 8000*.pl
+super*.pl
+super*.txt
+debat_light*.txt
+sem10.pdf
+debat_light.pos
+debat_list_q.txt
 frwiki*
 emea*.pl
 europar*.pl
