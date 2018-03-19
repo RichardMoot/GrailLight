@@ -3046,6 +3046,7 @@ lex('Tu', lit(np(nom,g,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)
 lex('T', lit(np(_,_,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
 lex('T\'', lit(np(_,_,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
 lex(te, lit(np(_,_,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
+lex('-tu', lit(np(nom,g,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
 lex(tu, lit(np(nom,g,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
 lex(toi, lit(np(nom,g,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
 lex('-toi', lit(np(nom,g,2-s)), lambda(P,merge(drs([variable(X)],[appl(auditeur,X)]),appl(P,X)))).
@@ -3533,6 +3534,16 @@ lex(dont, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(1,box(1,lit(pp(de)))))), S
 lex(dont, dr(0,dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(N, lambda(X, merge(drs([event(E)],[]),appl(appl(VP,lambda(P,appl(NP,lambda(Y,merge(drs([],[appl(appl(de,Y),X)]),merge(appl(P,Y),appl(N,X))))))),E))))))).
 lex(dont, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(NP2, lambda(P, merge(appl(NP,lambda(Y,appl(NP2,lambda(X,drs([],[appl(appl(de,Y),X)]))))),merge(drs([event(E)],[]),merge(appl(appl(VP,NP),E),appl(P,Y))))))))).
 
+lex(quoi,  dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, n, n)), lit(s(_))), lambda(S, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[bool(X,=,'context?')]),merge(appl(S,E),merge(appl(N,X),drs([],[Term]))))))))) :-
+     (
+         var(Prp)
+     ->
+         /* default to "à" */
+         Term = appl(appl(à,X),E)
+     ;
+         Term = appl(appl(Prp,X),E)
+     ).
+lex(quoi, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), lit(s(whq))), dr(0, lit(s(_)), dia(1, box(1, lit(pp(Prp)))))), lambda(VP, lambda(PP, appl(PP,lambda(X,merge(drs([event(E)],[bool(X,=,'context?')]),appl(appl(VP,lambda(P,appl(P,X))),E))))))).
 
 lex(où, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n))), lit(s(_))), lambda(S, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),drs([],[Term]))))))))) :-
      (

@@ -41,7 +41,8 @@ set lefff_prefix       [file normalize ".."]
 set model_prefix       [file normalize "../models"]
 set grail_prefix       [file normalize "../GrailLight"]
 set grammar_prefix     [file normalize "../Grail/grammars"]
-set tagger_prefix      /Users/moot/Corpus/WSJ/candc-1.00/bin
+set cnc_tagger_prefix      /Users/moot/Corpus/WSJ/candc-1.00/bin
+set keras_tagger_prefix    /Users/moot/checkout/DeepGrail/
 
 set pos_model(dutch)   "$model_prefix/best_dutch_pos_reduced"
 set st_model(dutch)    "$model_prefix/best_dutch_model"
@@ -53,8 +54,13 @@ set pos_model(frenchx) "$model_prefix/extra_pos_tt"
 set st_model(french)   "$model_prefix/french_tt"
 set st_model(frenchx)  "$model_prefix/french_tt"
 
-set pos_cmd            "$tagger_prefix/mpos"
-set st_cmd             "$tagger_prefix/msuper"
+set postagger keras
+set supertagger keras
+
+set cnc_pos_cmd            "$cnc_tagger_prefix/mpos"
+set cnc_st_cmd             "$cnc_tagger_prefix/msuper"
+set keras_pos_cmd          "keras_tagger_prefix/best_pos/pos.py"
+set keras_st_cmd           "keras_tagger_prefix/best_super/super.py"
 set grail_cmd          "$grail_prefix/g3"
 set tmp_dir            "/Users/moot/Library/Supertagger"
 set semantics          drt
@@ -155,6 +161,12 @@ proc update_menus {} {
 	.mb.options.pos entryconfigure 3 -state disabled
 	.mb.options.pos entryconfigure 4 -state normal
 	.mb.options.pos entryconfigure 5 -state normal
+	set postagger cnc
+	set supertagger cnc
+	.mb.options.postagger entryconfigure 0 -state normal
+	.mb.options.postagger entryconfigure 1 -state disabled
+	.mb.options.supertagger entryconfigure 0 -state normal
+	.mb.options.supertagger entryconfigure 1 -state disabled
 	if {![string equal $postagset "detailed"] && ![string equal $postagset "reduced"]} {
 	    set postagset detailed
 	    update_models
@@ -1336,8 +1348,8 @@ proc printcomment {comment} {
 
 proc supertag {sentence} {
 
-    global comment grail_cmd pos_cmd pos_model st_cmd st_model
-    global beta algo link par grammar_prefix debug debugstring skip
+    global comment grail_cmd postagger keras_pos_cmd cnc_pos_cmd pos_model st_model
+    global beta algo link par grammar_prefix debug debugstring skip supertagger keras_st_cmd cnc_st_cmd
     global lang tmp_dir c_pos_list semantics grail_parse model_prefix lefff_prefix grail_prefix grail_exec
     
     .c delete all
@@ -1386,8 +1398,16 @@ proc supertag {sentence} {
 
     write_log "# POS tag"
 
-    if {[catch {exec $pos_cmd --model $pos_model($lang) --ofmt "%w|%P \\n" --input $tmp_dir/input.txt > $tmp_dir/postag.txt} pos_msg] } {
-	puts stderr $pos_msg
+    if {[string equal $postagger "cnc"]} {
+	if {[catch {exec $cnc_pos_cmd --model $pos_model($lang) --ofmt "%w|%P \\n" --input $tmp_dir/input.txt > $tmp_dir/postag.txt} pos_msg] } {
+	    puts stderr $pos_msg
+	}
+    } elseif {[string equal $postagger "keras"]} {
+	if {[catch {exec $keras_pos_cmd --beta 0.1 --input $tmp_dir/input.txt --ouput $tmp_dir/postag.txt} pos_msg] } {
+	    puts stderr $pos_msg
+	}
+    } else {
+	puts stderr "Unrecognized POS tagger: $postagger"
     }
     set pt [open "$tmp_dir/postag.txt" r]
     set pw [open "$tmp_dir/st_input.txt" w]
@@ -1432,8 +1452,16 @@ proc supertag {sentence} {
     printcurrentcomment
     update idletasks
 
-    if {[catch {exec $st_cmd --input $tmp_dir/st_input.txt --output $tmp_dir/supertag.txt --ifmt "%w|%p|%0 \n" --ofmt "%w|%p|%S \n" --model $st_model($lang) --algorithm $algo --beta $beta} super_msg]} {
-	puts stderr $super_msg
+    if {[string equal $supertagger "cnc"]} {
+	if {[catch {exec $cnc_st_cmd --input $tmp_dir/st_input.txt --output $tmp_dir/supertag.txt --ifmt "%w|%p|%0 \n" --ofmt "%w|%p|%S \n" --model $st_model($lang) --algorithm $algo --beta $beta} super_msg]} {
+	    puts stderr $super_msg
+	}
+    } elseif {[string equal $supertagger "keras"]} {
+	if {[catch {exec $keras_st_cmd --input $tmp_dir/st_input.txt --output $tmp_dir/supertag.txt --beta $beta} super_msg]} {
+	    puts stderr $super_msg
+	}
+    } else {
+	puts stderr "Unknown supertagger: $supertagger"
     }
 
     set f2 [open "$tmp_dir/supertag.txt" r]
@@ -1680,12 +1708,31 @@ menu .mb.options -tearoff 0
 .mb.options add cascade -label Language -menu .mb.options.lang
 .mb.options add cascade -label "POS model" -menu .mb.options.pos
 .mb.options add separator
+.mb.options add cascade -label "POS tagger" -menu .mb.options.postagger
+.mb.options add cascade -label "Supertagger" -menu .mb.options.supertagger
 .mb.options add cascade -label "Bootstrap parser" -menu .mb.options.bparser
 .mb.options add cascade -label Parser -menu .mb.options.parser
+.mb.options add separator
 .mb.options add cascade -label "Proof Output" -menu .mb.options.output
 .mb.options add cascade -label Semantics -menu .mb.options.sem
 .mb.options add separator
 .mb.options add cascade -label Debug -menu .mb.options.debug
+
+menu .mb.options.postagger
+.mb.options.postagger add radio -label "C&C maxent" -variable postagger -value cnc -command {
+    update_menus
+}
+.mb.options.postagger add radio -label "Keras LSTM" -variable postagger -value keras -command {
+    update_menus
+}
+
+menu .mb.options.supertagger
+.mb.options.supertagger add radio -label "C&C maxent" -variable supertagger -value cnc -command {
+    update_menus
+}
+.mb.options.supertagger add radio -label "Keras LSTM" -variable supertagger -value keras -command {
+    update_menus
+}
 
 menu .mb.options.bparser
 .mb.options.bparser add radio -label "Stanford Parser" -variable bootstrap -value stanford -command {
@@ -1744,6 +1791,8 @@ menu .mb.options.beta
 .mb.options.beta add radio -label 0.01 -variable beta
 .mb.options.beta add radio -label 0.005 -variable beta
 .mb.options.beta add radio -label 0.001 -variable beta
+.mb.options.beta add radio -label 0.0005 -variable beta
+.mb.options.beta add radio -label 0.0001 -variable beta
 menu .mb.options.link
 .mb.options.link add radio -label auto -variable link
 .mb.options.link add radio -label partial -variable link
