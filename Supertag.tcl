@@ -42,8 +42,9 @@ set model_prefix       [file normalize "../models"]
 set grail_prefix       [file normalize "../GrailLight"]
 set grammar_prefix     [file normalize "../Grail/grammars"]
 
-set cnc_tagger_prefix  /Users/moot/Software/candc-1.1/bin
-set keras_tagger_prefix    /Users/moot/checkout/DeepGrail/
+set cnc_tagger_prefix    /Users/moot/Software/candc-1.1/bin
+set keras_tagger_prefix  /Users/moot/checkout/DeepGrail
+set keras_model_prefix   /Users/moot/checkout/DeepGrail
 
 set pos_model(dutch)   "$model_prefix/best_dutch_pos_reduced"
 set st_model(dutch)    "$model_prefix/best_dutch_model"
@@ -60,8 +61,10 @@ set supertagger keras
 
 set cnc_pos_cmd            "$cnc_tagger_prefix/mpos"
 set cnc_st_cmd             "$cnc_tagger_prefix/msuper"
-set keras_pos_cmd          "keras_tagger_prefix/best_pos/pos.py"
-set keras_st_cmd           "keras_tagger_prefix/best_super/super.py"
+set keras_pos_cmd          "$keras_tagger_prefix/best_pos/pos2.py"
+set keras_st_cmd           "$keras_tagger_prefix/best_super/super.py"
+set keras_pos_model        "$keras_model_prefix/best_pos/small_pos.h5"
+set keras_st_model         "$keras_model_prefix/best_super/small_super.h5"
 set grail_cmd          "$grail_prefix/g3"
 set tmp_dir            "/Users/moot/Library/Supertagger"
 set semantics          drt
@@ -71,7 +74,7 @@ set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2016-10-31/le
 # set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
 set stanford_parser_length 30
 
-set berkeley_parser_cmd "/usr/bin/java -jar /Users/moot/Programs/BerkeleyParser/BerkeleyParser-1.7.jar -gr /Users/moot/Programs/BerkeleyParser/fra_sm5.gr "
+set berkeley_parser_cmd "/usr/bin/java -jar /Users/moot/Software/BerkeleyParser/BerkeleyParser-1.7.jar -gr /Users/moot/Software/BerkeleyParser/fra_sm5.gr "
 set bootstrap "berkeley"
 
 set bw 1
@@ -1349,7 +1352,7 @@ proc printcomment {comment} {
 
 proc supertag {sentence} {
 
-    global comment grail_cmd postagger keras_pos_cmd cnc_pos_cmd pos_model st_model
+    global comment grail_cmd postagger keras_pos_cmd keras_pos_model cnc_pos_cmd pos_model st_model keras_st_model
     global beta algo link par grammar_prefix debug debugstring skip supertagger keras_st_cmd cnc_st_cmd
     global lang tmp_dir c_pos_list semantics grail_parse model_prefix lefff_prefix grail_prefix grail_exec
     
@@ -1391,7 +1394,6 @@ proc supertag {sentence} {
 	}
 	puts $f1 ""
     }
-
     write_log "# sentence"
     write_log $s_tok
     close $f1
@@ -1404,7 +1406,7 @@ proc supertag {sentence} {
 	    puts stderr $pos_msg
 	}
     } elseif {[string equal $postagger "keras"]} {
-	if {[catch {exec $keras_pos_cmd --beta 0.1 --input $tmp_dir/input.txt --ouput $tmp_dir/postag.txt} pos_msg] } {
+	if {[catch {exec $keras_pos_cmd --model $keras_pos_model --beta 0.1 --input $tmp_dir/input.txt --output $tmp_dir/postag.txt} pos_msg] } {
 	    puts stderr $pos_msg
 	}
     } else {
@@ -1458,7 +1460,7 @@ proc supertag {sentence} {
 	    puts stderr $super_msg
 	}
     } elseif {[string equal $supertagger "keras"]} {
-	if {[catch {exec $keras_st_cmd --input $tmp_dir/st_input.txt --output $tmp_dir/supertag.txt --beta $beta} super_msg]} {
+	if {[catch {exec $keras_st_cmd --model $keras_st_model --input $tmp_dir/st_input.txt --output $tmp_dir/supertag.txt --beta $beta} super_msg]} {
 	    puts stderr $super_msg
 	}
     } else {
