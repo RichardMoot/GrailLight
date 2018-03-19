@@ -42,6 +42,7 @@ set model_prefix       [file normalize "../models"]
 set grail_prefix       [file normalize "../GrailLight"]
 set grammar_prefix     [file normalize "../Grail/grammars"]
 set tagger_prefix      /Users/moot/Corpus/WSJ/candc-1.00/bin
+set cnc_tagger_prefix  /Users/moot/Software/candc-1.1/bin
 
 set pos_model(dutch)   "$model_prefix/best_dutch_pos_reduced"
 set st_model(dutch)    "$model_prefix/best_dutch_model"
