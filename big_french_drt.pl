@@ -3060,6 +3060,19 @@ lex(certains, lit(np(_,_,_)), lambda(P,merge(drs([],[bool(num(X),>,1)]),appl(P,X
 lex('Certaines', lit(np(_,_,_)), lambda(P,merge(drs([],[bool(num(X),>,1)]),appl(P,X)))).
 lex(certaines, lit(np(_,_,_)), lambda(P,merge(drs([],[bool(num(X),>,1)]),appl(P,X)))).
 
+lex(minimum, lit(n), lambda(X,drs([],[not(drs([variable(Y)],[bool(Y,=,'context?'),bool(Y,<,X)]))]))).
+lex(maximum, lit(n), lambda(X,drs([],[not(drs([variable(Y)],[bool(Y,=,'context?'),bool(Y,>,X)]))]))).
+
+lex(minimal, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,<,X)]),appl(P,Y)))]))))).
+lex(minimaux, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,<,X)]),appl(P,Y)))]))))).
+lex(minimale, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,<,X)]),appl(P,Y)))]))))).
+lex(minimales, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,<,X)]),appl(P,Y)))]))))).
+
+lex(maximal, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,>,X)]),appl(P,Y)))]))))).
+lex(maximaux, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,>,X)]),appl(P,Y)))]))))).
+lex(maximale, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,>,X)]),appl(P,Y)))]))))).
+lex(maximales, dl(0,lit(n),lit(n)), lambda(P,lambda(X,merge(appl(P,X),drs([],[not(merge(drs([variable(Y)],[bool(Y,>,X)]),appl(P,Y)))]))))).
+
 lex('Il', lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex('Elle', lit(np(_,n,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex(il, lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
@@ -3167,6 +3180,26 @@ lex(ces, dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
 	gq_these_semantics(Sem).
 lex('Ces', dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
 	gq_these_semantics(Sem).
+% "tel" as singular determiner is treated as a standard indefinite
+lex(tel, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
+	gq_a_semantics(Sem).
+lex(telle, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
+	gq_ta_semantics(Sem).
+lex('Telle', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
+	gq_a_semantics(Sem).
+lex('Tel', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
+	gq_a_semantics(Sem).
+% "tel" as plural determiner is treated like "des" and "quelques"
+lex(tels, dr(0,lit(np(_,_,_)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+lex(telles, dr(0,lit(np(_,_,_)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+lex('Tels', dr(0,lit(np(_,_,_)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+lex('Telles', dr(0,lit(np(_,_,_)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+
+% "tel" as adjective is treat as indicating similarity with a previously referenced entity
+lex(tel, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
+lex(tels, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
+lex(telle, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
+lex(telles, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
 
 % Indefinites
 % currently, no difference in meaning is made between "des", "certains", "plusieurs" and "quelques"
