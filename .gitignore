@@ -4,6 +4,9 @@
 config.log
 config.status
 head/*
+*_parse.txt
+*_left.txt
+*_right.txt
 # autoconf traces
 autom4te.cache/*
 # XML files
