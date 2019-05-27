@@ -3184,7 +3184,7 @@ lex('Ces', dr(0,lit(np(_,_,3-p)),lit(n)), Sem) :-
 lex(tel, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
 lex(telle, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
-	gq_ta_semantics(Sem).
+	gq_a_semantics(Sem).
 lex('Telle', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
 lex('Tel', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-

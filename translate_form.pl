@@ -146,6 +146,7 @@ translate_form(dr(0,dr(0,dl(0,cl_r,s),pp),np),dr(0,dr(0,dl(0,lit(cl_r),lit(s(mai
 translate_form(dr(0,dl(0,cl_r,dr(0,s,np)),dl(0,cl_r,dl(0,np,s_ppart))), dr(0,dl(0,lit(cl_r),dr(0,lit(s(main)),lit(np(nom,A,B)))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(ppart)))))).
 translate_form(dr(0,dr(0,dl(0,cl_r,s),dl(0,np,s_inf)),np), dr(0,dr(0,dl(0,lit(cl_r),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(np(nom,_,_)))).
 translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s)),pp_de),np), dr(0,dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),lit(pp(de))),lit(np(acc,_,_)))).
+translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s)),pp),np), dr(0,dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(main)))),lit(pp(_))),lit(np(acc,_,_)))).
 translate_form(dr(0,dl(0,cl_r,dr(0,s,np)),dl(0,np,s_inf)), dr(0,dl(0,lit(cl_r),dr(0,lit(s(main)),lit(np(nom,_,_)))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s)),dl(1,s,s)), dr(0,dl(0,cl_r,dl(0,lit(np(nom,_,_)),lit(s(main)))),dl(1,lit(s(A)),lit(s(A))))).
 translate_form(dr(0,dr(0,s,dl(0,np,s_inf)),pp_a), dr(0,dr(0,lit(s(main)),dl(0,lit(np(nom,_,_)),lit(s(inf(_))))),lit(pp(à)))). % "[a quoi] sert ..."
@@ -170,6 +171,7 @@ translate_form(dr(0,dl(0,cl_r,s),dr(0,dl(0,cl_r,s),dia(1,box(1,pp_de)))),dr(0,dl
 translate_form(dr(0,dl(0,cl_r,s),dl(0,cl_r,s)),dr(0,dl(0,lit(cl_r),lit(s(A))),dl(0,lit(cl_r),lit(s(A))))).
 % adverbs/clitics
 translate_form(dr(0,dr(0,dl(0,np,s),pp_a),dl(0,np,s_inf)), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(pp(à))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
+translate_form(dr(0,dr(0,dl(0,np,s),pp),dl(0,np,s_inf)), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),lit(pp(_))),dl(0,lit(np(nom,_,_)),lit(s(inf(_)))))).
 % cl_r
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,cl_r,dl(0,np,s))),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(C)))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(C)))))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s)),dr(0,dl(0,cl_r,dl(0,np,s)),dia(1,box(1,np)))),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(C)))),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(C)))),dia(1,box(1,lit(np(acc,_,_))))))).
@@ -205,6 +207,7 @@ translate_form(dr(0,dl(0,np,s_inf),dl(0,n,n)),dr(0,dl(0,lit(np(nom,_,_)),lit(s(i
 translate_form(dr(0,dl(0,np,s_inf),dl(0,np,s_pass)),dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(pass))))).
 translate_form(dr(0,dl(0,np,s_inf),dl(0,np,s_ppart)),dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(ppart))))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),np),pp_a), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(np(acc,_,_))),lit(pp(à)))).
+translate_form(dr(0,dr(0,dl(0,np,s_inf),np),pp), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(np(acc,_,_))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),pp),pp_a), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(_))),lit(pp(à)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),pp_de),pp_a), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(de))),lit(pp(à)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),pp),pp), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(_))),lit(pp(_)))).
@@ -223,6 +226,7 @@ translate_form(dr(0,dr(0,dl(0,np,s_inf),s_q),pp_a), dr(0,dr(0,dl(0,lit(np(nom,_,
 translate_form(dr(0,dr(0,dl(0,np,s_inf),s_q),pp_de), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(s(q))),lit(pp(de)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),s_q),pp), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(s(q))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),s_whq),pp_a), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(s(whq))),lit(pp(à)))).
+translate_form(dr(0,dr(0,dl(0,np,s_inf),s_whq),pp), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(s(whq))),lit(pp(_)))).
 translate_form(dl(0,cl_r,dl(0,np,s_inf)),dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(inf(base)))))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s_inf)),pp_a),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(inf(base))))),lit(pp(à)))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s_inf)),pp_de),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(inf(base))))),lit(pp(de)))).
@@ -237,6 +241,7 @@ translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s_inf)),pp_de),np),dr(0,dr(0,dl(0,lit
 translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),np), dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),np),dl(0,np,s_inf)), dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),lit(np(acc,_,_))),dl(0,lit(np(nom,A,B)),lit(s(inf(_)))))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),pp_a),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(pp(à)))).
+translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),pp),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,n,n)),np), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dl(0,lit(n),lit(n))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),np),dl(0,n,n)), dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(np(acc,_,_))),dl(0,lit(n),lit(n)))).
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s_inf)),dl(0,cl_r,dl(0,np,s_ppart))),dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(inf(base))))),dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(ppart)))))).
@@ -245,13 +250,18 @@ translate_form(dr(0,dl(0,cl_r,dl(0,np,s_inf)),dr(0,dl(0,np,s_inf),dia(1,box(1,pp
 translate_form(dr(0,dl(0,cl_r,dl(0,np,s_inf)),dr(0,dl(0,np,s_inf),dia(1,box(1,pp_de)))), dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,A,B)),lit(s(inf(base))))),dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(_)))),dia(1,box(1,lit(pp(de))))))).
 translate_form(dl(1,s,dl(0,np,s_inf)),dl(1,lit(s(_)),dl(0,lit(np(nom,_,_)),lit(s(inf(base)))))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),pp_a),dl(0,np,s_inf)),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),lit(pp(à))),dl(0,lit(np(nom,A,B)),lit(s(inf(_)))))).
+translate_form(dr(0,dr(0,dl(0,np,s_inf),pp),dl(0,np,s_inf)),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),lit(pp(_))),dl(0,lit(np(nom,A,B)),lit(s(inf(_)))))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),dl(0,n,n)),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),dl(0,lit(n),lit(n)))).
 translate_form(dr(0,dl(0,cl_y,dl(0,np,s_inf)),np), dr(0,dl(0,lit(cl_y),dl(0,lit(np(nom,_,_)),lit(s(inf(base))))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),pp_par),pp_de),np),dr(0,dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(par))),lit(pp(de))),lit(np(acc,_,_)))).
+translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),pp),pp),np),dr(0,dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(_))),lit(pp(_))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),pp_a),np),pp),dr(0,dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à))),lit(np(acc,_,_))),lit(pp(_)))).
+translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),pp),np),pp),dr(0,dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(_))),lit(np(acc,_,_))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),pp_a),dl(0,n,n)),np),dr(0,dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à))),dl(0,lit(n),lit(n))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),pp_par),np),dr(0,dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(pp(par))),lit(np(acc,_,_)))).
+translate_form(dr(0,dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),pp),np),dr(0,dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(pp(_))),lit(np(acc,_,_)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),pp_a),dl(0,n,n)),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à))),dl(0,lit(n),lit(n)))).
+translate_form(dr(0,dr(0,dl(0,np,s_inf),pp),dl(0,n,n)),dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp())),dl(0,lit(n),lit(n)))).
 translate_form(dr(0,dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),pp),dr(0,dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(base)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_))))),lit(pp(_)))).
 translate_form(dr(0,dr(0,dl(0,cl_r,dl(0,np,s_inf)),s_q),np),dr(0,dr(0,dl(0,lit(cl_r),dl(0,lit(np(nom,_,_)),lit(s(inf(base))))),lit(s(q))),lit(np(acc,_,_)))).
 translate_form(dl(0,np,dl(0,np,s_inf)),dl(0,lit(np(acc,_,_)),dl(0,lit(np(nom,_,_)),lit(s(inf(base)))))).
