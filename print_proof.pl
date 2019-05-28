@@ -81,8 +81,90 @@ update_sem(FS, FS).
 %	get_max_variable_number(Sem, Max),
 %	numbervars(Sem, Max, _).	
 
+print_formula_sem(tuple(Formula,Sem,Stacks), Stream) :-
+	print_formula_sem_stacks(Formula, Sem, Stacks, Stream).
 print_formula_sem(Formula-Sem, Stream) :-
 	print_formula_sem(Formula, Sem, Stream).
+
+print_formula_sem_stacks(Formula, Sem, Stacks, Stream) :-
+	print_formula(Formula, Stream),
+	format(Stream, '-~W', [Sem, [quoted(true)]]),
+	print_stacks(Stacks, Stream).
+
+print_stacks(stacks(S1,S2,S3,S4), Stream) :-
+	print_stack(S1, 1, Stream),
+	print_stack(S2, 2, Stream),
+	print_stack(S3, 3, Stream),
+	print_stack(S4, 4, Stream).
+
+print_stack(Stack, SN, Stream) :-
+	write(Stream, '-['),
+	print_stack0(Stack, SN, Stream).
+
+print_stack0([], _, Stream) :-
+	write(Stream, ']').
+print_stack0([S|Ss], SN, Stream) :-
+	print_stack1(Ss, S, SN, Stream).
+
+print_stack1([], S, SN, Stream) :-
+	format(Stream, '~@]', [print_stack_item1(S,SN,Stream)]).
+print_stack1([S|Ss], S0, SN, Stream) :-
+	format(Stream, '~@,', [print_stack_item1(S0,SN,Stream)]),
+	print_stack1(Ss, S, SN, Stream).
+
+print_stack_item1(_-T, SN, Stream) :-
+	print_stack_item1(T, SN, Stream).
+print_stack_item1(t(I1,I2,I3,I4), SN, Stream) :-
+	print_stack_item2(SN, I1, I2, I3, I4, Stream).
+print_stack_item1(t(I1,I2,I3,I4,_), SN, Stream) :-
+	print_stack_item2(SN, I1, I2, I3, I4, Stream).
+
+
+print_stack_item2(1, _, _, F, _, Stream) :-
+	print_formula_nv(F, Stream).
+print_stack_item2(2, _, _, F, _, Stream) :-
+	print_formula_nv(F, Stream).
+print_stack_item2(3, F, _, _, _, Stream) :-
+	print_formula_nv(F, Stream).
+print_stack_item2(4, F, _, _, _, Stream) :-
+	print_formula_nv(F, Stream).
+
+
+print_formula_nv(F0, Stream) :-
+	simplify_formula(F0, F),
+	print_formula(F, Stream).
+
+
+simplify_formula(X, X) :-
+	var(X),
+	!.
+simplify_formula(lit(s(A0)), lit(s(A))) :-
+	!,
+	simplify_argument(A0, A).
+simplify_formula(lit(pp(A0)), lit(pp(A))) :-
+	!,
+	simplify_argument(A0, A).
+simplify_formula(lit(np(_,_,_)), lit(np)) :-
+	!.
+simplify_formula(lit(X), lit(X)) :-
+	!.
+simplify_formula(dl(I,A0,B0), dl(I,A,B)) :-
+	simplify_formula(A0, A),
+	simplify_formula(B0, B).
+simplify_formula(dr(I,A0,B0), dr(I,A,B)) :-
+	simplify_formula(A0, A),
+	simplify_formula(B0, B).
+simplify_formula(p(I,A0,B0), p(I,A,B)) :-
+	simplify_formula(A0, A),
+	simplify_formula(B0, B).
+simplify_formula(dia(_,A0), dia(1,A)) :-
+	simplify_formula(A0, A).
+simplify_formula(box(_,A0), box(1,A)) :-
+	simplify_formula(A0, A).
+
+simplify_argument('$VAR'(_), '$VAR'(0)) :-
+	!.
+simplify_argument(A, A).
 
 print_formula_sem(Formula, Sem, Stream) :-
 	print_formula(Formula, Stream),
@@ -127,6 +209,9 @@ print_formula1(pp(A), Stream) :-
 print_formula1(n, Stream) :-
 	!,
 	write(Stream, n).
+print_formula1(np, Stream) :-
+	!,
+	write(Stream, np).
 print_formula1(cl_r, Stream) :-
 	!,
 	write(Stream, cl_r).
