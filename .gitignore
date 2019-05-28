@@ -1,9 +1,15 @@
 # emacs backups
 *~
+*_silver.txt
+parse_all.txt
+silver_all.txt
 .DS_Store
 config.log
 config.status
 head/*
+*_parse.txt
+*_left.txt
+*_right.txt
 # autoconf traces
 autom4te.cache/*
 # XML files
