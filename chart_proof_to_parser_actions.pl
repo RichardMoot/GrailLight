@@ -81,6 +81,7 @@ all_silver_proofs :-
         fail.
 all_silver_proofs.
 
+
 chart_proofs_to_parser_actions(InFile, OutFile) :-
 	abolish(proof/2),
 	compile(InFile),
@@ -182,8 +183,6 @@ rule_premisses(gap_e, List0, [A], Es) :-
 	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_,_),
 	select(A, List0, Es),
 	!.
-
-	
 rule_premisses(c_l_lnr, List0, [A], Es) :-
     A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
     select(A, List0, Es), 
@@ -192,7 +191,6 @@ rule_premisses(c_r_lnr, List0, [A], Es) :-
     A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
     select(A, List0, Es),
     !.
-			
 rule_premisses(prod_i, [A,B,C], Ds, Es) :-
     (
 	A = rule(_,_,dr(0,_,p(0,_,_))-_,_)
@@ -209,6 +207,7 @@ rule_premisses(prod_i, [A,B,C], Ds, Es) :-
 % default, 
 rule_premisses(_, List, [], List).
 
+			
 pros_head(dr(_,A,A), A, _, Pros, Pros) :-
     !.
 pros_head(A, dl(_,A,A), Pros, _, Pros) :-
@@ -225,6 +224,7 @@ pros_head(dr(_,_,B), B, Pros, _, Pros) :-
     !.
 pros_head(B,dl(_,B,_), _, Pros, Pros) :-
     !.
+
 
 print_list([]).
 print_list([X|Xs]) :-
