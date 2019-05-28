@@ -10,6 +10,31 @@ proof_file('../TLGbank/chart_proofs/8000_proofs.pl', '8000_parse.txt').
 proof_file('../TLGbank/chart_proofs/annodis_proofs.pl', 'annodis_parse.txt').
 proof_file('../TLGbank/chart_proofs/frwiki1_proofs.pl', 'frwiki1_parse.txt').
 proof_file('../TLGbank/chart_proofs/frwiki2_proofs.pl', 'frwiki2_parse.txt').
+proof_file('../TLGbank/chart_proofs/emea_d_proofs.pl', 'emea_d_parse.txt').
+proof_file('../TLGbank/chart_proofs/europar_proofs.pl', 'europar_parse.txt').
+
+
+silver_proof_file('../TLGbank/chart_proofs/aa2_proofs.pl', 'aa2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ab2_proofs.pl', 'ab2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ae1_proofs.pl', 'ae1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/af2_proofs.pl', 'af2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ag1_proofs.pl', 'ag1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ag2_proofs.pl', 'ag2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ah1_proofs.pl', 'ah1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ah2_proofs.pl', 'ah2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ai1_proofs.pl', 'ai1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ai2_proofs.pl', 'ai2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/aj1_proofs.pl', 'aj1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ak1_proofs.pl', 'ak1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ak2_proofs.pl', 'ak2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/al1_proofs.pl', 'al1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/am1_proofs.pl', 'am1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/am2_proofs.pl', 'am2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/an1_proofs.pl', 'an1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/an2_proofs.pl', 'an2_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ao1_proofs.pl', 'ao1_silver.txt').
+silver_proof_file('../TLGbank/chart_proofs/ao2_proofs.pl', 'ao2_silver.txt').
+
 
 portray(dr(I,A,B)) :-
 	format('dr(~p,~p,~p)', [I,A,B]).
@@ -45,6 +70,16 @@ all_chart_proofs :-
 	flush_output,
         fail.
 all_chart_proofs.
+
+all_silver_proofs :-
+        silver_proof_file(InFile, OutFile),
+        format('~NCreating ~w...', [OutFile]),
+	flush_output,
+        chart_proofs_to_parser_actions(InFile, OutFile),
+        format('done', []),
+	flush_output,
+        fail.
+all_silver_proofs.
 
 chart_proofs_to_parser_actions(InFile, OutFile) :-
 	abolish(proof/2),
@@ -149,7 +184,15 @@ rule_premisses(gap_e, List0, [A], Es) :-
 	!.
 
 	
-	
+rule_premisses(c_l_lnr, List0, [A], Es) :-
+    A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
+    select(A, List0, Es), 
+    !.
+rule_premisses(c_r_lnr, List0, [A], Es) :-
+    A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
+    select(A, List0, Es),
+    !.
+			
 rule_premisses(prod_i, [A,B,C], Ds, Es) :-
     (
 	A = rule(_,_,dr(0,_,p(0,_,_))-_,_)
@@ -161,10 +204,27 @@ rule_premisses(prod_i, [A,B,C], Ds, Es) :-
     ->
 	Ds = [C],
 	Es = [A,B]
-    ).
+    ),
+    !.
 % default, 
 rule_premisses(_, List, [], List).
 
+pros_head(dr(_,A,A), A, _, Pros, Pros) :-
+    !.
+pros_head(A, dl(_,A,A), Pros, _, Pros) :-
+    !.
+pros_head(dr(0,np,n), n, _P, Pros, Pros) :-
+    !.
+pros_head(dr(_,dl(_,n,n),n), n, _, Pros, Pros) :-
+    !.
+pros_head(dr(0,pp,n), n, _, Pros, Pros) :-
+    !.
+pros_head(dr(0,pp,np), np, _, Pros, Pros) :-
+    !.
+pros_head(dr(_,_,B), B, Pros, _, Pros) :-
+    !.
+pros_head(B,dl(_,B,_), _, Pros, Pros) :-
+    !.
 
 print_list([]).
 print_list([X|Xs]) :-
