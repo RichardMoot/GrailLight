@@ -2610,6 +2610,14 @@ default_semantics(Word, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(Prep))),
 	combine_prep_word(Prep, Word, PrepWord),
 	add_roles([SRole-X,ORole-Y,PRole-Z], PrepWord, E, Conds, []).
 
+% = ditransitive + (np + pp) verb-initial
+
+default_semantics(Word, dr(_,dr(_,dr(_,lit(s(_)),lit(pp(Prep))),lit(np(_,_,_))),lit(np(_,_,_))), lambda(R, lambda(Q, lambda(P, lambda(E, appl(R,lambda(X,appl(Q,lambda(Y,appl(P,lambda(Z,drs([],Conds)))))))))))) :-
+	get_roles(Word, [np,np,pp(Prep)], [SRole,ORole,PRole]),
+	combine_prep_word(Prep, Word, PrepWord),
+	add_roles([SRole-X,ORole-Y,PRole-Z], PrepWord, E, Conds, []).
+
+
 % = transitive + pp
 
 default_semantics(Word, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(Prep))), lambda(PP,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(PP,lambda(Y,drs([],Conds))))))))) :-
@@ -3937,6 +3945,13 @@ lex(où, dr(0,lit(s(whq)),dl(0,np,lit(s(inf(_))))), lambda(INF, lambda(E, drs([]
 lex('Où', dr(0,lit(s(whq)),lit(s(main))), lambda(S, lambda(E, drs([],[appl('lieu?',E),drs_label(E,merge(drs([event(F)],[]),appl(S,F)))])))).
 lex('où', dr(0,lit(s(whq)),lit(s(main))), lambda(S, lambda(E, drs([],[appl('lieu?',E),drs_label(E,merge(drs([event(F)],[]),appl(S,F)))])))).
 
+%lex('Que', dr(0,s_whq,dr(0,s,dia(1,box(1,np)))), lambda(P, lambda(E, appl(appl(P,lambda(R,merge(drs([variable(X)],[bool(X,=,'?')]),appl(R,X)))),E)))).
+lex('Que', dr(0,s_whq,dr(0,s,dia(1,box(1,np)))), lambda(P, lambda(E, merge(drs([variable(X)],[bool(X,=,'?')]),appl(appl(P,lambda(R,appl(R,X))),E))))).
+% P ((e->t)->t)->s->t
+% R (e->t)									%lambda(NPS,lambda(E,appl(NPS,lambda(X,drs([variable(X)],[appl(sleep,X)])))))	
+%wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
+
+									  
 % ladite ledit
 
 lex(été, dr(0,dl(0,np,s_ppart),dl(0,np,s_pass)), lambda(VP,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
