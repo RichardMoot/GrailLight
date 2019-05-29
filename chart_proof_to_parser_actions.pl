@@ -1,16 +1,40 @@
 
-proof_file('../TLGbank/chart_proofs/aa1_proofs.pl', 'aa1_parse.txt').
-proof_file('../TLGbank/chart_proofs/ap1_proofs.pl', 'ap1_parse.txt').
-proof_file('../TLGbank/chart_proofs/aq2_proofs.pl', 'aq2_parse.txt').
-proof_file('../TLGbank/chart_proofs/as2_proofs.pl', 'as2_parse.txt').
-proof_file('../TLGbank/chart_proofs/at_proofs.pl', 'at_parse.txt').
-proof_file('../TLGbank/chart_proofs/300_proofs.pl', '300_parse.txt').
-proof_file('../TLGbank/chart_proofs/1000_proofs.pl', '1000_parse.txt').
-proof_file('../TLGbank/chart_proofs/8000_proofs.pl', '8000_parse.txt').
-proof_file('../TLGbank/chart_proofs/annodis_proofs.pl', 'annodis_parse.txt').
-proof_file('../TLGbank/chart_proofs/frwiki1_proofs.pl', 'frwiki1_parse.txt').
-proof_file('../TLGbank/chart_proofs/frwiki2_proofs.pl', 'frwiki2_parse.txt').
+proof_file('../TLGbank/parse_actions/aa1_parse_actions.pl', 'aa1_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/ap1_parse_actions.pl', 'ap1_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/aq2_parse_actions.pl', 'aq2_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/as2_parse_actions.pl', 'as2_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/at_parse_actions.pl', 'at_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/300_parse_actions.pl', '300_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/1000_parse_actions.pl', '1000_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/8000_parse_actions.pl', '8000_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/annodis_parse_actions.pl', 'annodis_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/frwiki1_parse_actions.pl', 'frwiki1_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/frwiki2_parse_actions.pl', 'frwiki2_parse_actions.txt').
 
+% portray(dr(I,dl(J,lit(s(X)),lit(s(X))),lit(s(X)))) :-
+% 	!,
+% 	format('dr(~p,dl(~p,~p,~p),~p)', [I,J,lit(s(_)),lit(s(_)),lit(s(_))]).
+% portray(dr(I,dl(J,lit(pp(X)),lit(pp(X))),lit(pp(X)))) :-
+% 	!,
+% 	format('dr(~p,dl(~p,~p,~p),~p)', [I,J,lit(pp(_)),lit(pp(_)),lit(pp(_))]).
+% portray(dr(I,dl(0,lit(np(_,_,_)),lit(s(X))),dl(0,lit(np(_,_,_)),lit(s(X))))) :-
+% 	!,
+% 	format('dr(~p,dl(0,np,~p),dl(0,np,~p))', [I,lit(s(_)),lit(s(_))]).
+% portray(dl(I,dl(0,lit(np(_,_,_)),lit(s(X))),dl(0,lit(np(_,_,_)),lit(s(X))))) :-
+% 	!,
+% 	format('dr(~p,dl(0,np,~p),dl(0,np,~p))', [I,lit(s(_)),lit(s(_))]).
+% portray(dr(I,lit(s(X)),lit(s(X)))) :-
+% 	!,
+% 	format('dr(~p,~p,~p)', [I,lit(s(_)),lit(s(_))]).
+% portray(dl(I,lit(s(X)),lit(s(X)))) :-
+% 	!,
+% 	format('dl(~p,~p,~p)', [I,lit(s(_)),lit(s(_))]).
+% portray(dr(I,lit(pp(X)),lit(pp(X)))) :-
+% 	!,
+% 	format('dr(~p,~p,~p)', [I,lit(s(_)),lit(s(_))]).
+% portray(dl(I,lit(pp(X)),lit(pp(X)))) :-
+% 	!,
+% 	format('dl(~p,~p,~p)', [I,lit(s(_)),lit(s(_))]).
 portray(dr(I,A,B)) :-
 	format('dr(~p,~p,~p)', [I,A,B]).
 portray(dl(I,A,B)) :-
@@ -25,16 +49,44 @@ portray(box(I,A)) :-
 portray(lit(np(_,_,_))) :-
 	!,
 	print(np).
-portray(lit(s(_))) :-
+portray(lit(s(SUB))) :-
 	!,
-	print(s).
-portray(lit(pp(_))) :-
+	print(s),
+	portray_subtype(SUB).
+portray(lit(pp(SUB))) :-
 	!,
-	print(pp).
+	print(pp),
+	portray_subtype(SUB).
 portray(lit(A)) :-
 	!,
 	print(A).
 
+portray_subtype(_).
+% portray_subtype(V) :-
+% 	var(V),
+% 	!.
+% portray_subtype(main) :-
+% 	!.
+% portray_subtype(inf(base)) :-
+% 	!,
+% 	write('_inf').
+% portray_subtype(inf(de)) :-
+% 	!,
+% 	write('_deinf').
+% portray_subtype(inf(par)) :-
+% 	!,
+% 	write('_parinf').
+% portray_subtype(inf(pour)) :-
+% 	!,
+% 	write('_pourinf').
+% portray_subtype(inf(a)) :-
+% 	!,
+% 	write('_ainf').
+% portray_subtype(inf(à)) :-
+% 	!,
+% 	write('_ainf').
+% portray_subtype(X) :-
+% 	format('_~p', X).
 
 all_chart_proofs :-
         proof_file(InFile, OutFile),
@@ -79,12 +131,13 @@ chart_proof_to_parser_actions(Proof0, Proof, List0, List) :-
         List = List0
    ).
 
-chart_proof_to_parser_actions1(rule(axiom,Pros,Form-Sem,Premisses), rule(axiom,Pros,Form-Sem,Premisses)) -->
+chart_proof_to_parser_actions1(rule(axiom,Pros,Form-Sem-S1-S2-S3-S4,Premisses), rule(axiom,Pros,Form-Sem-S1-S2-S3-S4,Premisses)) -->
 	!,
-	[Pros-Form-'O'].
+	[Pros-Form-S1-S2-S3-S4-'O'].
 chart_proof_to_parser_actions1(rule(Name,Pros,Form,Premisses0), NewProof, ParserActions0, ParserActions) :-
-	rule_premisses(Name, Premisses0, _AuxPremisses, TruePremisses),
-   (	
+	rule_premisses(Name, Premisses0, AuxPremisses, TruePremisses),
+   (
+	check_all_axioms(AuxPremisses),
 	all_axiom_premisses(TruePremisses, Name, ParserActions0, ParserActions)
    ->
         NewProof = rule(axiom,Pros,Form,[])
@@ -100,24 +153,28 @@ chart_proof_to_parser_actions_list([R0|Rs0], [R|Rs]) -->
 	chart_proof_to_parser_actions1(R0, R),
 	chart_proof_to_parser_actions_list(Rs0, Rs).
 
-all_axiom_premisses([rule(axiom,Pros,Form-_,_)], Name) -->
+check_all_axioms([]).
+check_all_axioms([rule(axiom,_,_,_)|Rs]) :-
+	check_all_axioms(Rs).
+
+all_axiom_premisses([rule(axiom,Pros,Form-_-S1-S2-S3-S4,_)], Name) -->
 	!,
 	{atom_concat(Name, '1', ActionName)},
-	[Pros-Form-ActionName].
-all_axiom_premisses([rule(axiom,Pros1,Form1-_,_),rule(axiom,Pros2,Form2-_,_)], Name) -->
+	[Pros-Form-S1-S2-S3-S4-ActionName].
+all_axiom_premisses([rule(axiom,Pros1,Form1-_-S1-S2-S3-S4,_),rule(axiom,Pros2,Form2-_-T1-T2-T3-T4,_)], Name) -->
 	!,
 	{atom_concat(Name, '1', ActionName1)},
 	{atom_concat(Name, '2', ActionName2)},
-	[Pros1-Form1-ActionName1],
-	[Pros2-Form2-ActionName2].
-all_axiom_premisses([rule(axiom,Pros1,Form1-_,_),rule(axiom,Pros2,Form2-_,_),rule(axiom,Pros3,Form3-_,_)], Name) -->
+	[Pros1-Form1-S1-S2-S3-S4-ActionName1],
+	[Pros2-Form2-T1-T2-T3-T4-ActionName2].
+all_axiom_premisses([rule(axiom,Pros1,Form1-_-S1-S2-S3-S4,_),rule(axiom,Pros2,Form2-_-T1-T2-T3-T4,_),rule(axiom,Pros3,Form3-_-U1-U2-U3-U4,_)], Name) -->
 	!,
 	{atom_concat(Name, '1', ActionName1)},
 	{atom_concat(Name, '2', ActionName2)},
 	{atom_concat(Name, '3', ActionName3)},
-	[Pros1-Form1-ActionName1],
-	[Pros2-Form2-ActionName2],
-	[Pros3-Form3-ActionName3].
+	[Pros1-Form1-S1-S2-S3-S4-ActionName1],
+	[Pros2-Form2-T1-T2-T3-T4-ActionName2],
+	[Pros3-Form3-U1-U2-U3-U4-ActionName3].
 
 
 % rule_premisses(RuleName, AllPremisses, AuxPremisses, TruePremisses)
@@ -172,6 +229,6 @@ print_list([X|Xs]) :-
 	print_list(Xs).
 print_action_list([]) :-
 	format('~n', []).
-print_action_list([X-Y-Z|Zs]) :-
-	format('~w|~p|~w ', [X,Y,Z]),
+print_action_list([X-Y-S1-S2-S3-S4-Z|Zs]) :-
+	format('~w|~p|~p|~p|~p|~p|~w ', [X,Y,S1,S2,S3,S4,Z]),
 	print_action_list(Zs).
