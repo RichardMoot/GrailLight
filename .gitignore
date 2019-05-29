@@ -1,6 +1,11 @@
 # emacs backups
 *~
+parse_gold.txt
+counts*.txt
+atoms.txt
+*_transitions.txt
 *_silver.txt
+*_parse_actions.txt
 parse_all.txt
 silver_all.txt
 .DS_Store
