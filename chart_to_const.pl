@@ -1,11 +1,35 @@
 
-:- ['../TLGbank/chart_proofs/8000_proofs.pl'].
-
+proof_file('../TLGbank/chart_proofs/aa1_proofs.pl').
+proof_file('../TLGbank/chart_proofs/ap1_proofs.pl').
+proof_file('../TLGbank/chart_proofs/aq2_proofs.pl').
+proof_file('../TLGbank/chart_proofs/as2_proofs.pl').
+proof_file('../TLGbank/chart_proofs/at_proofs.pl').
+proof_file('../TLGbank/chart_proofs/300_proofs.pl').
+proof_file('../TLGbank/chart_proofs/8000_proofs.pl').
+    
 chart_to_const :-
-	findall(I-Pros, proof(I,rule(_,Pros,_F,_Prems)), ProsList),
-	chart_to_const(ProsList, LLs, LRs),
-	export(LLs, '8000_left.txt'),
-	export(LRs, '8000_right.txt').
+    findall(X, proof_file(X), List),
+    chart_to_const(List).
+
+chart_to_const([]).
+chart_to_const([F|Fs]) :-
+    chart_to_const1(F),
+    chart_to_const(Fs).
+
+chart_to_const1(F) :-
+    file_base_name(F,BN),
+    print(BN),
+    file_name_extension(B, _, BN),
+    atomic_list_concat([B,left], '_', BL),
+    atomic_list_concat([B,right], '_', BR),
+    file_name_extension(BL, txt, BLT),
+    file_name_extension(BR, txt, BRT),
+    abolish(proof/2),
+    compile(F),
+    findall(I-Pros, proof(I,rule(_,Pros,_F,_Prems)), ProsList),
+    chart_to_const(ProsList, LLs, LRs),
+    export(LLs, BLT),
+    export(LRs, BRT).
 
 chart_pros_to_const(I) :-
 	proof(I, rule(_, Pros, _, _)),

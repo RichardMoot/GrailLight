@@ -10,6 +10,31 @@ proof_file('../TLGbank/parse_actions/8000_parse_actions.pl', '8000_parse_actions
 proof_file('../TLGbank/parse_actions/annodis_parse_actions.pl', 'annodis_parse_actions.txt').
 proof_file('../TLGbank/parse_actions/frwiki1_parse_actions.pl', 'frwiki1_parse_actions.txt').
 proof_file('../TLGbank/parse_actions/frwiki2_parse_actions.pl', 'frwiki2_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/emea_d_parse_actions.pl', 'emea_d_parse_actions.txt').
+proof_file('../TLGbank/parse_actions/europar_parse_actions.pl', 'europar_parse_actions.txt').
+
+
+silver_proof_file('../TLGbank/parse_actions/aa2_parse_actions.pl', 'aa2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ab2_parse_actions.pl', 'ab2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ae1_parse_actions.pl', 'ae1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/af2_parse_actions.pl', 'af2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ag1_parse_actions.pl', 'ag1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ag2_parse_actions.pl', 'ag2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ah1_parse_actions.pl', 'ah1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ah2_parse_actions.pl', 'ah2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ai1_parse_actions.pl', 'ai1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ai2_parse_actions.pl', 'ai2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/aj1_parse_actions.pl', 'aj1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ak1_parse_actions.pl', 'ak1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ak2_parse_actions.pl', 'ak2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/al1_parse_actions.pl', 'al1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/am1_parse_actions.pl', 'am1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/am2_parse_actions.pl', 'am2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/an1_parse_actions.pl', 'an1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/an2_parse_actions.pl', 'an2_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ao1_parse_actions.pl', 'ao1_silver.txt').
+silver_proof_file('../TLGbank/parse_actions/ao2_parse_actions.pl', 'ao2_silver.txt').
+
 
 % portray(dr(I,dl(J,lit(s(X)),lit(s(X))),lit(s(X)))) :-
 % 	!,
@@ -97,6 +122,17 @@ all_chart_proofs :-
 	flush_output,
         fail.
 all_chart_proofs.
+
+all_silver_proofs :-
+        silver_proof_file(InFile, OutFile),
+        format('~NCreating ~w...', [OutFile]),
+	flush_output,
+        chart_proofs_to_parser_actions(InFile, OutFile),
+        format('done', []),
+	flush_output,
+        fail.
+all_silver_proofs.
+
 
 chart_proofs_to_parser_actions(InFile, OutFile) :-
 	abolish(proof/2),
@@ -204,9 +240,14 @@ rule_premisses(gap_e, List0, [A], Es) :-
 	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_,_),
 	select(A, List0, Es),
 	!.
-
-	
-	
+rule_premisses(c_l_lnr, List0, [A], Es) :-
+    A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
+    select(A, List0, Es), 
+    !.
+rule_premisses(c_r_lnr, List0, [A], Es) :-
+    A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
+    select(A, List0, Es),
+    !.
 rule_premisses(prod_i, [A,B,C], Ds, Es) :-
     (
 	A = rule(_,_,dr(0,_,p(0,_,_))-_,_)
@@ -218,9 +259,28 @@ rule_premisses(prod_i, [A,B,C], Ds, Es) :-
     ->
 	Ds = [C],
 	Es = [A,B]
-    ).
+    ),
+    !.
 % default, 
 rule_premisses(_, List, [], List).
+
+			
+pros_head(dr(_,A,A), A, _, Pros, Pros) :-
+    !.
+pros_head(A, dl(_,A,A), Pros, _, Pros) :-
+    !.
+pros_head(dr(0,np,n), n, _P, Pros, Pros) :-
+    !.
+pros_head(dr(_,dl(_,n,n),n), n, _, Pros, Pros) :-
+    !.
+pros_head(dr(0,pp,n), n, _, Pros, Pros) :-
+    !.
+pros_head(dr(0,pp,np), np, _, Pros, Pros) :-
+    !.
+pros_head(dr(_,_,B), B, Pros, _, Pros) :-
+    !.
+pros_head(B,dl(_,B,_), _, Pros, Pros) :-
+    !.
 
 
 print_list([]).

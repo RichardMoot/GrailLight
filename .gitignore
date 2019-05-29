@@ -1,5 +1,8 @@
 # emacs backups
 *~
+*_silver.txt
+parse_all.txt
+silver_all.txt
 .DS_Store
 config.log
 config.status
