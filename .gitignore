@@ -1,6 +1,12 @@
 # emacs backups
 *~
 parse_gold.txt
+*_trees.txt
+*_matches.txt
+*_clean.txt
+*_pros.txt
+*_test.txt
+*_gold.txt
 counts*.txt
 atoms.txt
 *_transitions.txt
