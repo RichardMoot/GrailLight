@@ -41,8 +41,13 @@ following (in a shell terminal).
 
 Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers] (https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
 
-![screen shot of the interactive interface to the taggers](supertag.png)
+You can then simply run `Supertag.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
 
+![screen shot of the interactive interface to the taggers](supertagger.png)
+
+In each case, the darker part of the bar (next to each formula) indicates the probability assigned by the supertagger to the formula (moving the mouse pointer over a formula displays the formula and its probability).
+
+The menu allows you the change the supertagger/models used and the beta value of the supertagger; essentially, larger beta values result in more formulas per word, meaning slower parsing but higher likelyhood of finding a proof).
 
 # User interface to the chart parser
 
@@ -50,7 +55,11 @@ Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimen
 
 ![screen shot of the interactive interface to the chart parser](parser.png)
 
+You can double-click on table row to apply a chart rule to this item. When there are multiple possibilities, a pop-up allows you to select the desired one (with `<Enter>`). You can undo a choice by pressing `<u>`. 
+
 # User interface for manually annotating and correcting additional sentences
+
+The file `treebank_annotator.tcl` is another interface to the part-of-speech tagger and supertagger. Contrary to the `Supertag.tcl` script, this script is useful for manually annotating additional data, bootstrapping with the current output of the taggers, and manually correcting the errors, first of the part-of-speech tags, then of the supertags.
 
 # Going Further
 
