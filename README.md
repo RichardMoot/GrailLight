@@ -39,7 +39,7 @@ following (in a shell terminal).
 
 # User interface to the part-of-speech/supertagger
 
-Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers] (https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
+Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers](https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
 
 You can then simply run `Supertag.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
 
