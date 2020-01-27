@@ -66,7 +66,7 @@ After startup, the parser window looks as follows, changing with the input sente
 
 ![screen shot of the interactive interface to the chart parser](parser.png)
 
-Each table row displays the current structure, formula, log probability, and stack information of the active items in the chart (read [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/chart_parser.pdf) for more information about the chart parter).
+Each table row displays the current structure, formula, log probability, and stack information of the active items in the chart (read [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/chart_parser.pdf) for more information about the chart parser).
 
 You can double-click on table row to apply a chart rule to this item. When there are multiple possibilities, a pop-up allows you to select the desired one (with `<Enter>`). You can _undo_ a choice by pressing `<u>`, and _export_ the parser result by pressing `x`. 
 
