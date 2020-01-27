@@ -47,15 +47,19 @@ You can then simply run `Supertag.tcl` and type an input sentence into the entry
 
 In each case, the darker part of the bar (next to each formula) indicates the probability assigned by the supertagger to the formula (moving the mouse pointer over a formula displays the formula and its probability).
 
-The menu allows you the change the supertagger/models used and the beta value of the supertagger; essentially, larger beta values result in more formulas per word, meaning slower parsing but higher likelyhood of finding a proof).
+The result of the supertagger is passed as input to GrailLight, and if a proof is found, the syntactic proof can be found be selecting `Proof` from the `File` menu, and the meaning (in Discourse Representation Theory) can be found by selecting `Semantics` from the `File` menu.
+
+The menu allows you the change the supertagger/models used and the beta value of the supertagger; essentially, larger beta values result in more formulas per word, meaning slower parsing but higher likelyhood of finding a proof). It is recommended to use a fairly high beta value (such as the default 0.1) and only decrease it when no proof is found. Several useful values are available in the `Beta` item of the `Options` menu. 
 
 # User interface to the chart parser
 
-Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimentary TclTk interface to the chart parser. Example input files for the parser can be found in the `chart_proofs/aux` directory of the [TLGbank](http://richardmoot.github.io/TLGbank/).
+Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimentary TclTk interface to the chart parser. Example input files for the parser can be found in the `chart_proofs/aux` directory of the [TLGbank](http://richardmoot.github.io/TLGbank/). Giving `parser.tcl` a file as argument will open a Prolog file containing parser input. You can also load a file by selecting `Load` from the `File` menu.
 
 ![screen shot of the interactive interface to the chart parser](parser.png)
 
-You can double-click on table row to apply a chart rule to this item. When there are multiple possibilities, a pop-up allows you to select the desired one (with `<Enter>`). You can undo a choice by pressing `<u>`. 
+Each table row displays the current structure, formula, log probability, and stack information of the active items in the chart (read [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/chart_parser.pdf) for more information about the chart partser).
+
+You can double-click on table row to apply a chart rule to this item. When there are multiple possibilities, a pop-up allows you to select the desired one (with `<Enter>`). You can _undo_ a choice by pressing `<u>`, and _export_ the parser result by pressing `x`. 
 
 # User interface for manually annotating and correcting additional sentences
 
