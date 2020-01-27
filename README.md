@@ -1,12 +1,14 @@
 # GrailLight
 
-:copyright: 2015-2019 [CNRS](http://www.cnrs.fr)
+:copyright: 2015-2020 [CNRS](http://www.cnrs.fr)
 
-:copyright: 2015-2019 Richard Moot (@RichardMoot)
+:copyright: 2015-2020 Richard Moot (@RichardMoot)
 
 Grail Light is a light-weight chart parser for multimodal type-logical
 grammars, written in SWI Prolog. It is accompanied by a set of auxiliary tools for interaction with the
-supertagger, interactive parsing, corpus extraction, etc. Together with the [part-of-speech tag and supertag models](https://github.com/RichardMoot/models), Grail Light
+supertagger, interactive parsing, corpus extraction, etc.
+
+Together with [DeepGrail](https://richardmoot.github.io/DeepGrail/) or the older [part-of-speech tag and supertag models](https://github.com/RichardMoot/models), Grail Light
 can function as a wide-coverage parser for French, assigning Discourse Representation Structures as the meaning of parsed sentences. Grail Light produces natural
 deduction proofs like those found in the [TLGbank](http://richardmoot.github.io/TLGbank/) and uses the same conventions for formulas, rules and proofs.
 
