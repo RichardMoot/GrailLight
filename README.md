@@ -53,7 +53,14 @@ The menu allows you the change the supertagger/models used and the beta value of
 
 # User interface to the chart parser
 
-Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimentary TclTk interface to the chart parser. Example input files for the parser can be found in the `chart_proofs/aux` directory of the [TLGbank](http://richardmoot.github.io/TLGbank/). Giving `parser.tcl` a file as argument will open a Prolog file containing parser input. You can also load a file by selecting `Load` from the `File` menu.
+Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimentary TclTk interface to the chart parser. Example input files for the parser can be found in the `chart_proofs/aux` directory of the [TLGbank](http://richardmoot.github.io/TLGbank/). Giving `parser.tcl` a file as argument will open a Prolog file containing parser input. You can also load a file by selecting `Load` from the `File` menu or try.
+
+```
+head -364 annodis.pl > anno10.pl
+./parser.tcl anno10.pl
+```
+
+to manually parse the first 10 sentences of the `annodis.pl` file in the repository (you can do this for the complete file as well, but this requires a quite a bit of patience reading all data).
 
 ![screen shot of the interactive interface to the chart parser](parser.png)
 
