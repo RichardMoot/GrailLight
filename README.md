@@ -49,7 +49,7 @@ In each case, the darker part of the bar (next to each formula) indicates the pr
 
 The result of the supertagger is passed as input to GrailLight, and if a proof is found, the syntactic proof can be found be selecting `Proof` from the `File` menu, and the meaning (in Discourse Representation Theory) can be found by selecting `Semantics` from the `File` menu.
 
-The menu allows you the change the supertagger/models used and the beta value of the supertagger; essentially, larger beta values result in more formulas per word, meaning slower parsing but higher likelyhood of finding a proof). It is recommended to use a fairly high beta value (such as the default 0.1) and only decrease it when no proof is found. Several useful values are available in the `Beta` item of the `Options` menu. 
+The menu allows you the change the supertagger/models used and the beta value of the supertagger; essentially, larger beta values result in more formulas per word, meaning slower parsing but higher likelyhood of finding a proof. It is recommended to use a fairly high beta value (such as the default 0.1) and only decrease it when no proof is found. Several useful values are available in the `Beta` item of the `Options` menu. 
 
 # User interface to the chart parser
 
