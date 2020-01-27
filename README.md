@@ -37,6 +37,21 @@ following (in a shell terminal).
 
 `pdflatex latex_proofs.tex`
 
+# User interface to the part-of-speech/supertagger
+
+Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers] (https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
+
+![screen shot of the interactive interface to the taggers](supertag.png)
+
+
+# User interface to the chart parser
+
+Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimentary TclTk interface to the chart parser. Example input files for the parser can be found in the `chart_proofs/aux` directory of the [TLGbank](http://richardmoot.github.io/TLGbank/).
+
+![screen shot of the interactive interface to the chart parser](parser.png)
+
+# User interface for manually annotating and correcting additional sentences
+
 # Going Further
 
 The file [`readme.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/readme.pdf) contains more detailed instructions whereas the
