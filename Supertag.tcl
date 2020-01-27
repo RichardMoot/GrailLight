@@ -1,6 +1,6 @@
 #!/bin/sh
 # the next line restarts using wish \
-exec wish "$0" "$@"
+exec /usr/bin/wish "$0" "$@"
 
 set auto_path [linsert $auto_path 0 /Users/moot/checkout/monde/]
 
@@ -117,7 +117,7 @@ set_default_colors $bw
 
 proc st_dialog {} {
 
-    tk_dialog .about "About the supertagger/parser" "Interface script to the Clark & Curran taggers and the Grail parser" "" 0 "Ok"
+    tk_dialog .about "About the supertagger/parser" "Interface script to the combined part-of-speech/supertaggers and the Grail parser" "" 0 "Ok"
 
 }
 
