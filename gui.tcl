@@ -1,6 +1,6 @@
 #!/bin/sh
 # the next line restarts using wish \
-exec wish "$0" "$@"
+exec /usr/bin/wish "$0" "$@"
 
 set auto_path [linsert $auto_path 0 /Users/moot/checkout/monde/]
 set resources_prefix "/Users/moot/checkout/monde/Resources"

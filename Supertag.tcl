@@ -1011,6 +1011,9 @@ proc printst {x y list} {
 	set this [.c create text $x1 $y -tags $tags  -text "$fstring" \
 		      -anchor w]
 		foreach o [list $this $r1 $r2 $r3] {
+	    .c bind $o <1> {
+		printcomment "[lindex [.c gettags current] 0] [lindex [.c gettags current] 1]"
+	    }
 	    .c bind $o <Enter> {
 		printcomment "[lindex [.c gettags current] 0] [lindex [.c gettags current] 1]"
 	    }
