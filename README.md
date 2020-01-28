@@ -37,6 +37,43 @@ following (in a shell terminal).
 
 `pdflatex latex_proofs.tex`
 
+# User interface to the part-of-speech/supertagger
+
+Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers](https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
+
+You can then simply run `Supertag.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
+
+![screen shot of the interactive interface to the taggers](supertagger.png)
+
+In each case, the darker part of the bar (next to each formula) indicates the probability assigned by the supertagger to the formula (moving the mouse pointer over a formula displays the formula and its probability).
+
+The result of the supertagger is passed as input to GrailLight, and if a proof is found, the syntactic proof can be found be selecting `Proof` from the `File` menu, and the meaning (in Discourse Representation Theory) can be found by selecting `Semantics` from the `File` menu.
+
+The menu allows you the change the supertagger/models used and the beta value of the supertagger; essentially, larger beta values result in more formulas per word, meaning slower parsing but higher likelyhood of finding a proof. It is recommended to use a fairly high beta value (such as the default 0.1) and only decrease it when no proof is found. Several useful values are available in the `Beta` item of the `Options` menu. 
+
+# User interface to the chart parser
+
+Type `make parser.tcl` and start the created file `parser.tcl` to open a rudimentary TclTk interface to the chart parser. Example input files for the parser can be found in the `chart_proofs/aux` directory of the [TLGbank](http://richardmoot.github.io/TLGbank/). Giving `parser.tcl` a file as argument will open a Prolog file containing parser input. You can also load a file by selecting `Load` from the `File` menu or try.
+
+```
+head -364 annodis.pl > anno10.pl
+./parser.tcl anno10.pl
+```
+
+to manually parse the first 10 sentences of the `annodis.pl` file in the repository (you can do this for the complete file as well, but this requires a quite a bit of patience reading all data).
+
+After startup, the parser window looks as follows, changing with the input sentence and the parser actions performed.
+
+![screen shot of the interactive interface to the chart parser](parser.png)
+
+Each table row displays the current structure, formula, log probability, and stack information of the active items in the chart (read [`chart_parser.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/chart_parser.pdf) for more information about the chart parser).
+
+You can double-click on table row to apply a chart rule to this item. When there are multiple possibilities, a pop-up allows you to select the desired one (with `<Enter>`). You can _undo_ a choice by pressing `<u>`, and _export_ the parser result by pressing `x`. 
+
+# User interface for manually annotating and correcting additional sentences
+
+The file `treebank_annotator.tcl` is another interface to the part-of-speech tagger and supertagger. Contrary to the `Supertag.tcl` script, this script is useful for manually annotating additional data, bootstrapping with the current output of the taggers, and manually correcting the errors, first of the part-of-speech tags, then of the supertags.
+
 # Going Further
 
 The file [`readme.pdf`](https://github.com/RichardMoot/GrailLight/blob/master/readme.pdf) contains more detailed instructions whereas the
