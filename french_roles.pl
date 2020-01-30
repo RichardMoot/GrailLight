@@ -345,6 +345,7 @@ get_roles1(évader, [np, cl_r], [agent, null]).
 
 get_roles1(inscrire, [np, cl_r], [agent, null]).
 get_roles1(intégrer, [np, cl_r], [agent, null]).
+get_roles1(installer, [np, cl_r, pp(_)], [agent, null, destination]).
 get_roles1(intéresser, [np, cl_r], [patient, null]). % unaccusative
 
 get_roles1(maintenir, [np, cl_r], [patient, null]).
@@ -679,7 +680,7 @@ get_roles1(lancer, [np, cl_r, pp(dans)], [agent, null, theme]).
 
 get_roles1(inquiéter, [np, cl_r, pp(de)], [agent, null, theme]).
 get_roles1(inscrire, [np, cl_r, pp(_)], [agent, null, theme]).
-get_roles1(intégrer, [np, cl_r,pp(_)], [agent, null, theme]).
+get_roles1(intégrer, [np, cl_r, pp(_)], [agent, null, theme]).
 get_roles1(intéresser, [np, cl_r, pp(à)], [patient, null, theme]). % unaccusative
 
 get_roles1(maintenir, [np, cl_r, pp(à)], [patient, null, theme]).

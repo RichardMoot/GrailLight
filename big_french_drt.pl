@@ -2840,6 +2840,12 @@ default_semantics(Word, lit(s(_)), lambda(E,drs([],[appl(Word,E)]))).
 
 % de X a Y
 
+lex('Est', n, lambda(X,drs([],[appl('Est',X)]))).  % explicitly added to correct stemmer errors ("est" as form of "etre)
+lex('Nord', n, lambda(X,drs([],[appl('Nord',X)]))).
+lex('Sud', n, lambda(X,drs([],[appl('Sud',X)]))).
+lex('Ouest', n, lambda(X,drs([],[appl('Ouest',X)]))).
+
+
 lex(à, dr(0,dl(0,pp_de,dl(0,n,n)),np), lambda(NP, lambda(PP, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(appl(N,X),drs([],[appl(appl(start,Y),X),appl(appl(end,Z),X)]))))))))))).
 
 lex(autour, dr(0,pp_a,pp_de), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([variable(Y)],[appl(appl(autour_de,Y),X)]),appl(P,Y))))))).
@@ -3017,7 +3023,7 @@ lex(afin, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambd
 lex(afin, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
 lex(afin, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(ST))),dl(0,lit(np(_,_,_)),lit(s(ST)))),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VPD,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(drs([event(F)],[appl(appl(goal,F),E)]),appl(appl(VPD,lambda(Q,appl(Q,X))),F)))))))))).
 
-lex(aussi, dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,merge(appl(NP,lambda(X,drs([event(E)],[appl(appl(agent,X),E),bool(E,=,'event?')]))),appl(P,X))))).
+lex(aussi, dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,merge(appl(NP,lambda(X,drs([event(E),variable(Y)],[appl(appl(agent,X),E),bool(E,=,'event?')]))),appl(P,X))))).
 
 % Lexconn gives only "result" for sentence-initial "aussi"
 lex('Aussi', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(result,E),F)]),appl(S,E))))).
