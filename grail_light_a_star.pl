@@ -5,7 +5,7 @@
 
 :- use_module(transform_proof, [transform_proof/2]).
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
-:- use_module(heap, [empty_heap/1,is_empty_heap/1,add_to_heap/4,get_from_heap/4,heap_to_list/2]).
+:- use_module(heap, [empty_heap/1,is_empty_heap/1,add_to_heap/4,get_from_heap/4,heap_to_list/2,heap_size/2]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
 :- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2,is_closed/1]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_drs_semantics/2]).
@@ -43,12 +43,12 @@ output_proofs(chart).
 % = function combining the weight of items given a rule application.
 
 % = combine two log-probabilities using sum
-combine_probability(Prob0, Prob1, J, K, _R, Prob) :-
+combine_probability(Prob0, Prob1, _J, _K, _R, Prob) :-
 	/* assign penalty based on crosses tree branches */
 	/* experimental, needs to be properly evaluated */
-	crosses(J, K, Cross),
-	CrossProb is -log(1/(Cross+1)),
-	Prob is Prob0 + Prob1 + CrossProb.
+%	crosses(J, K, Cross),
+%	CrossProb is -log(1/(Cross+1)),
+	Prob is Prob0 + Prob1.
 
 % = take minus log of initial probability 
 compute_weight(Prob, Weight) :-
@@ -344,6 +344,8 @@ update_crossing(S) :-
 	retractall(word(_,_,_)),
 	retractall(vp_left(_)),
 	retractall(let_right(_)),
+	retractall(max_queue_size(_)),
+	assert(max_queue_size(0)),
 	assert((word(A,B,C) :- word(S,A,B,C))).
 
 % = print_statistics
@@ -537,7 +539,11 @@ lemma_sequence([L|Ls], N0, N) :-
 
 list_to_chart(List, N, As0, As, V0, V, S0, S) :-
 	compute_a_star_weights(List),
-	list_to_chart1(List, N, As0, As, V0, V, S0, S).
+	list_to_chart1(List, N, As0, As, V0, V, S0, S),
+	update_max_queue_size(As),
+	heap_size(As, TotalForms),
+	retractall(total_formulas(_)),
+	assert(total_formulas(TotalForms)).
 
 list_to_chart1([], N, As, As, V, V, S, S) :-
 	retractall(sentence_length(_)),
@@ -623,11 +629,28 @@ get_data_weight(data(_, _, Weight, _, _, _, _, _), Weight).
 heuristic_weight(item(_, L, R, _), Heuristic) :-
 	a_star_heuristic(L, R, Heuristic).
 
+
+% = upate_max_queue_size(Agenda)
+%
+% update the global variable keeping track of the maximum queue size
+% if the size has increased.
+
+update_max_queue_size(Agenda) :-
+	max_queue_size(CurrentMax),
+	heap_size(Agenda, QSize),
+   (
+        QSize =< CurrentMax
+   ->
+        true
+   ;
+        retractall(max_queue_size(_)),
+        assert(max_queue_size(QSize))
+   ).
+
 % = robust_max_queue_size(+QueueSize)
 %
 % computes the size of the queue; normally this is stored as a dynamic predicate max_queue_size/1.
-% However, if it is not, this predicate will scan the chart to find the chart item with the
-% highest value.
+% However, if it is not, this predicate will return -1.
 
 robust_max_queue_size(MaxQ) :-
     (
@@ -635,35 +658,9 @@ robust_max_queue_size(MaxQ) :-
     ->
          true
     ;
-         robust_max_queue_size1(1000, 1000, MaxQ)
+         MaxQ = -1
     ).
 
-
-robust_max_queue_size1(Current, Step, MaxQ) :-
-    (
-         stored(Current, _, _, _, _, _)
-    ->
-         New is Current + Step,
-         robust_max_queue_size1(New, Step, MaxQ)
-    ;
-         NewStep is Step/10,
-         New is Current - Step + NewStep,
-         robust_max_queue_size2(NewStep, New, MaxQ)
-    ).
-
-
-robust_max_queue_size2(1, Current, MaxQ) :-
-	!,
-    (
-	stored(Current, _, _, _, _, _)
-    ->
-        New is Current + 1,
-        robust_max_queue_size2(1, New, MaxQ)
-    ;
-        MaxQ is Current - 1
-    ).
-robust_max_queue_size2(Step, Current, MaxQ) :-
-	robust_max_queue_size1(Current, Step, MaxQ).
 
 % = is_punct(+POS)
 %
@@ -879,7 +876,6 @@ get_pos_tt(Pos, PosTT) :-
 % = 
 
 chart_parse(Agenda, NewId, Sem) :-
-%	init_agenda(Axioms, Id, Agenda),
 	active_chart_rules(Agenda),
     (
         /* succeed for empty sentences (eg. interpunction only) */
@@ -1119,26 +1115,31 @@ check_solution(Index, Sem) :-
 	compute_proof(Index),
        	increase_global_counter('$SOLUTION').
 
-init_agenda(Axioms, NewId, Agenda) :-
-	empty_heap(Empty),
-	add_axioms_to_agenda(Axioms, 0, NewId, Empty, Agenda),
-	retractall(total_formulas(_)),
-	assert(total_formulas(NewId)).
 
-%exhaust(queue(Front, Back)) :-
-%	Front >= Back,
-%	!,
-%	retractall(max_queue_size(_)),
-%	assert(max_queue_size(Front)).
+is_solution(Index) :-
+	final_item(Goal, Index, _),
+	item_in_chart(Goal, Index).
+
 exhaust(Agenda, _Id) :-
 	is_empty_heap(Agenda),
 	!.
 exhaust(Agenda0, Max0) :-
 	pop_agenda(Agenda0, _Weight, Id-Item, Agenda1),
-	write(':'),
+   (
+	check_solution(Id)
+   ->
+        /* if we found a solution, it must be the best one */
+        /* we add the solution to the chart and succeed */
+	add_item_to_chart(Item, Id)
+   ;
+        /* if we are not at a solution, compute the consequences of */
+        /* the current item, add them to the agenda, then add the current */
+        /* item to the chart */
 	add_consequences_to_agenda(Item, Id, Max0, Max, Agenda1, Agenda),
+	update_max_queue_size(Agenda),
 	add_item_to_chart(Item, Id),
-	exhaust(Agenda, Max).
+	exhaust(Agenda, Max)
+   ).
 
 add_consequences_to_agenda(Item, Id, Max0, Max, Agenda0, Agenda) :-
 	find_all_consequences(Item, Id, Consequences),
@@ -1312,6 +1313,7 @@ init_chart :-
 	retractall(key_index(_,_)),
 	retractall(a_star_weight(_,_,_)),
 	retractall(a_star_heuristic(_,_,_)),
+	assert(max_queue_size(0)),
 	write('-'),
 	flush_output.
 
@@ -1327,7 +1329,15 @@ item_in_chart(Item) :-
 empty_agenda(queue(0,0)).
 
 pop_agenda(Heap0, Weight, Item, Heap) :-
-	get_from_heap(Heap0, Weight, Item, Heap).
+	get_from_heap(Heap0, Weight, Item, Heap),
+	print_item(Item).
+
+% default
+%print_item(_) :-
+%	write(':').
+% debug
+print_item(Num-item(F,L,R,_)) :-
+	format('~w: ~p (~w-~w)~n', [Num,F,L,R]).
 
 % = update_data
 %
@@ -1506,7 +1516,6 @@ add_item_to_agenda(Item0, Justification, NewId0, NewId, Heap0, Heap) :-
 	Data0 = data(_, _, Weight, _, _, _, _, _),
         update_data(Data0, I, J, Justification, Data),
 	Item = item(F, I, J, Data),
-	write('.'),
     (   coherent_item(I, J, Data),
         \+ subsumed_item(Item, Justification)
     ->
@@ -1515,6 +1524,7 @@ add_item_to_agenda(Item0, Justification, NewId0, NewId, Heap0, Heap) :-
 %         simplified_formula_to_key(SF, Key),
 %        assertz(stored(Back, Key, I, J, F, Data)),
     %        assert(key_index(Key, Back)),
+	write('.'),
         assertz(justification(NewId0, Justification)),
 	a_star_heuristic(I, J, Heuristic),
 	HW is Weight + Heuristic,
@@ -1531,8 +1541,8 @@ add_item_to_agenda(Item0, Justification, NewId0, NewId, Heap0, Heap) :-
 add_item_to_chart(Item, Id) :-
 	Item = item(F, I, J, Data),
 	write('.'),
-	/* check for subsumption again; probably superfluous, but in theory
-        /* an item can become subsumed between entering the agenda and
+	/* check for subsumption again; probably superfluous, but in theory */
+        /* an item can become subsumed between entering the agenda and */
         /* being added to the chart */
     (   
         \+ subsumed_item(Item, _Justification)
