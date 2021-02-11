@@ -4,15 +4,15 @@
 %   Updated: 29 November 1983
 %   Purpose: Implement heaps in Prolog.
 
-:- module(heap, [
-        empty_heap/1,           % -> Heap
-        add_to_heap/4,          % Heap x Key x Datum -> Heap
-	get_from_heap/4,        % Heap -> Key x Datum x Heap
-	heap_size/2,            % Heap -> Int
-	heap_to_list/2,         % Heap -> List
-	list_to_heap/2,         % List -> Heap
-	min_of_heap/3,
-	min_of_heap/5]).        % Heap -> Key x Datum
+:- module(heap, [ empty_heap/1,           % -> Heap
+		  is_empty_heap/1,        %
+		  add_to_heap/4,          % Heap x Key x Datum -> Heap
+		  get_from_heap/4,        % Heap -> Key x Datum x Heap
+		  heap_size/2,            % Heap -> Int
+		  heap_to_list/2,         % Heap -> List
+		  list_to_heap/2,         % List -> Heap
+		  min_of_heap/3,
+		  min_of_heap/5]).        % Heap -> Key x Datum
 
 /*  A heap is a labelled binary tree where the key of each node is less
     than or equal to the keys of its sons.  The point of a heap is that
@@ -47,6 +47,9 @@
 */
 
 empty_heap(t(0,[],t)).
+
+
+is_empty_heap(t(0,_,_)).
 
 %   add_to_heap(+OldHeap, +Key, +Datum, -NewHeap)
 %   inserts the new Key-Datum pair into the heap.  The insertion is

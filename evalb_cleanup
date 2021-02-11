@@ -1,0 +1,9 @@
+#!/usr/bin/sed -f
+
+s/\\'/*SQO*/g
+s/'('/*BRO*/g
+s/')'/*BRC*/g
+s/'//g
+s/,/*COMMA*/g
+s/,/*DOT*/g
+s/%/*PCT*/g

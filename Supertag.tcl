@@ -1,6 +1,6 @@
 #!/bin/sh
 # the next line restarts using wish \
-exec wish "$0" "$@"
+exec /usr/bin/wish "$0" "$@"
 
 set auto_path [linsert $auto_path 0 /Users/moot/checkout/monde/]
 
@@ -119,7 +119,7 @@ set_default_colors $bw
 
 proc st_dialog {} {
 
-    tk_dialog .about "About the supertagger/parser" "Interface script to the Clark & Curran taggers and the Grail parser" "" 0 "Ok"
+    tk_dialog .about "About the supertagger/parser" "Interface script to the combined part-of-speech/supertaggers and the Grail parser" "" 0 "Ok"
 
 }
 
@@ -1013,6 +1013,9 @@ proc printst {x y list} {
 	set this [.c create text $x1 $y -tags $tags  -text "$fstring" \
 		      -anchor w]
 		foreach o [list $this $r1 $r2 $r3] {
+	    .c bind $o <1> {
+		printcomment "[lindex [.c gettags current] 0] [lindex [.c gettags current] 1]"
+	    }
 	    .c bind $o <Enter> {
 		printcomment "[lindex [.c gettags current] 0] [lindex [.c gettags current] 1]"
 	    }

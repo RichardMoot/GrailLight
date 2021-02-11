@@ -52,4 +52,3 @@ Sequoia sentences not in Annodis
 406-418 (Jardiniers de France)
 437-438 (fin du précédent)
 
-D’après

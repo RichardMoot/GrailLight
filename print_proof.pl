@@ -72,6 +72,13 @@ print_pros(p(_,_,_,L,R), Stream) :-
 print_pros(p(_,L,R), Stream) :-
 	print_pros(L, Stream),
 	print_pros(R, Stream).
+print_pros(t(List), Stream) :-
+	print_pros_list(List, Stream).
+
+print_pros_list([], _).
+print_pros_list([P|Ps], Stream) :-
+	print_pros(P, Stream),
+	print_pros_list(Ps, Stream).
 
 update_sem(lit(let)-_, lit(let)-true) :-
 	/* special case for let to avoid singleton variable warnings */

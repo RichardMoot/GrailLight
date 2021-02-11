@@ -284,7 +284,8 @@ translate_form(dr(0,dl(0,dl(0,np,s),s),s), dr(0,dl(0,dl(0,lit(np(nom,_,_)),lit(s
 translate_form(dr(0,dl(0,np,s),s), dr(0,dl(0,lit(np(_,_,_)),lit(s(A))),lit(s(A)))).
 translate_form(dr(0,dl(0,n,s),s), dr(0,dl(0,lit(n),lit(s(A))),lit(s(A)))).
 translate_form(dr(0,dl(0,dl(0,n,n),s),s), dr(0,dl(0,dl(0,lit(n),lit(n)),lit(s(A))),lit(s(A)))).
-
+translate_form(dr(0,dl(0,dl(0,n,n),np),np), dr(0,dl(0,dl(0,lit(n),lit(n)),lit(np(A,B,C))),lit(np(A,B,C)))).
+	       
 % coordination
 
 translate_form(dr(0,dl(0,dr(0,s,dia(0,box(0,s))),dr(0,s,s)),dr(0,s,dia(0,box(0,s)))),
@@ -348,3 +349,14 @@ translate_form(dr(0,dr(0,s_whq,dr(0,s,dia(1,box(1,np)))),n),
 
 translate_form(lit(s),lit(s(_))).
 translate_form(lit(np),lit(np(_,_,_))).
+translate_form(np, lit(np(_,_,_))).
+translate_form(n, lit(n)).
+translate_form(dr(0,np,n),dr(0,lit(np(_,_,_)),lit(n))).
+translate_form(s, lit(s(_))).
+translate_form(dl(0,s,s),dl(0,lit(s(S)),lit(s(S)))).
+translate_form(dl(1,s,s),dl(1,lit(s(S)),lit(s(S)))).
+translate_form(dr(0,dl(0,np,s_inf),dl(0,np,s_inf)),dr(0,dl(0,lit(np(nom,A,B)),lit(s(inf(_)))),dl(0,lit(np(nom,A,B)),lit(s(inf(_)))))).
+translate_form(dl(0,n,n), dl(0,lit(n),lit(n))).
+translate_form(dr(0,dl(0,np,np),np), dr(0,dl(0,lit(np(A,B,C)),lit(np(A,B,C))),lit(np(_,_,_)))).
+translate_form(dr(0,dl(1,s,s),n), dr(0,dl(1,lit(s(S)),lit(s(S))),lit(n))).
+translate_form(dr(0,dl(0,n,n),np), dr(0,dl(0,lit(n),lit(n)),lit(np(_,_,_)))).
