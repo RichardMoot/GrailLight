@@ -63,8 +63,10 @@ set cnc_pos_cmd            "$cnc_tagger_prefix/mpos"
 set cnc_st_cmd             "$cnc_tagger_prefix/msuper"
 set keras_pos_cmd          "$keras_tagger_prefix/best_pos/pos2.py"
 set keras_st_cmd           "$keras_tagger_prefix/best_super/super.py"
+set keras_superpos_cmd     "$keras_tagger_prefix/best_superpos/superpos.py"
 set keras_pos_model        "$keras_model_prefix/best_pos/small_pos.h5"
 set keras_st_model         "$keras_model_prefix/best_super/small_super.h5"
+set keras_superpos_cmd     "$keras_tagger_prefix/best_superpos/small_superpos.h5"
 set grail_cmd          "$grail_prefix/g3"
 set tmp_dir            "/Users/moot/Library/Supertagger"
 set semantics          drt
@@ -1353,6 +1355,7 @@ proc printcomment {comment} {
 proc supertag {sentence} {
 
     global comment grail_cmd postagger keras_pos_cmd keras_pos_model cnc_pos_cmd pos_model st_model keras_st_model
+    global keras_superpos_cmd keras_superpos_model
     global beta algo link par grammar_prefix debug debugstring skip supertagger keras_st_cmd cnc_st_cmd
     global lang tmp_dir c_pos_list semantics grail_parse model_prefix lefff_prefix grail_prefix grail_exec
     

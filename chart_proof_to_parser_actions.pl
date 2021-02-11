@@ -219,43 +219,43 @@ rule_premisses(e_start, [A,B], [A], [B]) :-
 rule_premisses(e_start_l, [A,B], [B], [A]) :-
 	!.
 rule_premisses(ef_start, List0, [A], Es) :-
-	A = rule(_,_,dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,_,_)))))-_,_),
+	A = rule(_,_,dr(0,_,dr(0,_,dia(Ind,box(Ind,dr(0,_,_)))))-_-_-_-_-_,_),
 	select(A, List0, Es),
 	!.
 rule_premisses(ef_start_iv, List0, [A], Es) :-
-	A = rule(_,_,dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(_,_,_)),lit(s(_)))))))-_,_),
+	A = rule(_,_,dr(0,_,dr(0,_,dia(Ind,box(Ind,dl(0,lit(np(_,_,_)),lit(s(_)))))))-_-_-_-_-_,_),
 	select(A, List0, Es),
 	!.
-rule_premisses(gap_i, List0, [B], Es) :-
-	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_,_),
-	B = rule(_,_,X-_,_),
+rule_premisses(gap_i, List0, [], Es) :-
+	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_-_-_-_-_,_),
+	B = rule(_,_,X-_-_-_-_-_,_),
 	member(A, List0),
 	select(B, List0, Es),
 	!.
 rule_premisses(gap_c, List0, [A], Es) :-
-	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_,_),
+	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_-_-_-_-_,_),
 	select(A, List0, Es),
 	!.
 rule_premisses(gap_e, List0, [A], Es) :-
-	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_,_),
+	A = rule(_,_,dl(0,dr(0,lit(s(S)),dia(Ind,box(Ind,X))),dr(0,lit(s(S)),box(Ind,dia(Ind,X))))-_-_-_-_-_,_),
 	select(A, List0, Es),
 	!.
 rule_premisses(c_l_lnr, List0, [A], Es) :-
-    A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
+    A = rule(_,_,dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n)))-_-_-_-_-_,_),
     select(A, List0, Es), 
     !.
 rule_premisses(c_r_lnr, List0, [A], Es) :-
-    A = dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n))),
+    A = rule(_,_,dr(0,_,dl(0,dia(0,box(0,lit(n))),lit(n)))-_-_-_-_-_,_),
     select(A, List0, Es),
     !.
 rule_premisses(prod_i, [A,B,C], Ds, Es) :-
     (
-	A = rule(_,_,dr(0,_,p(0,_,_))-_,_)
+	A = rule(_,_,dr(0,_,p(0,_,_))-_-_-_-_-_,_)
     ->
         Ds = [A],
         Es = [B,C]
     ;
-        C = rule(_,_,dl(0,p(0,_,_),_)-_,_)
+        C = rule(_,_,dl(0,p(0,_,_),_)-_-_-_-_-_,_)
     ->
 	Ds = [C],
 	Es = [A,B]
