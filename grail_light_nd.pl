@@ -13,8 +13,8 @@
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
 :- use_module(ordset, [ord_subtract/3, ord_member/2, ord_insert/3, ord_subset/2, ord_key_insert/4, ord_key_insert_unify/4, ord_select/3, ord_delete/3]).
 :- use_module(list_utils, [strip_keys/2,insert_nth0/4]).
-:- use_module(library(pce)).
-:- use_module(library(pce_util)).
+%:- use_module(library(pce)).
+%:- use_module(library(pce_util)).
 
 :- dynamic sentence_length/1, total_formulas/1, unparsed/3, parsed/2.
 :- dynamic word/3, word/4, word/5, stored/6, max_queue_size/1, justify/2.
