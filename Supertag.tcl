@@ -2,7 +2,7 @@
 # the next line restarts using wish \
 exec /usr/bin/wish "$0" "$@"
 
-set auto_path [linsert $auto_path 0 /Users/moot/checkout/monde/]
+set auto_path [linsert $auto_path 0 [pwd]]
 
 package require Tk
 package require Mk4tcl
