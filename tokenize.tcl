@@ -2,6 +2,8 @@
 
 package provide tokenize 1.0
 
+encoding system utf-8
+
 proc tokenize {sentence} {
 
     set prev $sentence
