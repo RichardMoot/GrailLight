@@ -267,19 +267,25 @@ xml_proof(Index, Proof, Stream) :-
 	Proof = rule(_, Pros, _, _),
 	format(Stream, '<!-- ~w. ', [Index]),
 	print_pros_xml(Pros, Stream),
-	format(Stream, '>~n', []),
+	format(Stream, ' -->~n', []),
 	xml_proof1(Proof, 0, Stream).
 
-xml_proof1(rule(A,B0,C,Ds), T0, Stream) :-
-	reduce_pros(B0, B),
+xml_proof1(rule(A,B0,C0,Ds), T0, Stream) :-
+        reduce_pros(B0, B),
+        xml_formula_sem(C0, Form, Sem),
 	nl(Stream),
 	tab(Stream, T0),
-	format(Stream, '<rule name="~w" pros="~q" formula="~w">', [A,B,C]),
+	format(Stream, '<rule name="~w" pros="~q" formula="~w" sem="~w">', [A,B,Form, Sem]),
 	T is T0 + 3,
 	xml_proof_list(Ds, T, Stream),
 	nl(Stream),
 	tab(Stream, T0),
 	format(Stream, '</rule>', []).
+
+
+xml_formula_sem(Form-Sem, Form, Sem) :-
+        !.
+xml_formula_sem(Form, Form, '').
 
 xml_proof_list([], _, _).
 xml_proof_list([P|Ps], T, Stream) :-
@@ -299,10 +305,12 @@ print_pros_xml(L-R, Stream) :-
 print_pros_xml(leaf(_,_,Pros,_,_), Stream) :-
 	print_pros_xml1(Pros, Stream).
 print_pros_xml(p(_,_,_,L,R), Stream) :-
-	print_pros_xml(L, Stream),
+        print_pros_xml(L, Stream),
+        format(Stream, ' ', []),
 	print_pros_xml(R, Stream).
 print_pros_xml(p(_,L,R), Stream) :-
 	print_pros_xml(L, Stream),
+        format(Stream, ' ', []),
 	print_pros_xml(R, Stream).
 
 print_pros_xml1(Pros0, Stream) :-
