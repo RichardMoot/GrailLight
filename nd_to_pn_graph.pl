@@ -109,7 +109,7 @@ print_all_proofs :-
 	fail.
 print_all_proofs.
 
-nd_to_pn(Proof0, _Num, List) :-
+nd_to_pn(Proof0, Num, List) :-
 	label_all_atoms(Proof0, Proof),
 	nd_to_pn0(Proof, List0, []),
 	keysort(List0, List),
@@ -121,11 +121,12 @@ nd_to_pn(Proof0, _Num, List) :-
 	print_formula_list(WordList, List, Goal, Edges, Labels),
 	numbervars(Edges),
 	numbervars(Labels),
+	format('=== start graph ~p ===~n', [Num]),
 	format('=== edges ===~n', []),
 	print_list(Edges),
 	format('=== labels ===~n', []),
 	print_list(Labels),
-	format('===~n', []),
+	format('=== end graph ~p ===~n', [Num]),
 	!,
 	format(user_error, '.', []).
 nd_to_pn(_, Num, _) :-
@@ -427,10 +428,28 @@ print_formula_neg(X-lit(A, N), Edges, Edges, [Label|Labels], Labels, Tree0, Tree
 	btree_insert(Tree0, N, X, Tree)
    ),
 	Label = label(X, atom(A)).
+print_formula_neg(Y-dr(I,A,dia(J,box(J,B))), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(drdiabox(I,J))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_neg(Y-dr(I,A,box(J,dia(J,B))), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(drboxdia(I,J))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
 print_formula_neg(Y-dr(I,A,B), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
 	!,
 	Edge = appl(X,Y,Z),
 	Label = label(X,conn(dr(I))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_neg(Y-dl(I,dia(J,box(J,B)),A), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(dldiabox(I,J))),
 	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
 	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
 print_formula_neg(Y-dl(I,B,A), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
