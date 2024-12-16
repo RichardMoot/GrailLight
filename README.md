@@ -12,6 +12,8 @@ Together with [DeepGrail](https://richardmoot.github.io/DeepGrail/) or the older
 can function as a wide-coverage parser for French, assigning Discourse Representation Structures as the meaning of parsed sentences. Grail Light produces natural
 deduction proofs like those found in the [TLGbank](http://richardmoot.github.io/TLGbank/) and uses the same conventions for formulas, rules and proofs.
 
+There is a separte page describing [command line usage](command_line.md) of the chart parser with an external supertagger. Command line usage is recommended for practical applications.  
+
 # Quick Start
 
 Clone the repository, enter the Grail Light directory, start SWI
