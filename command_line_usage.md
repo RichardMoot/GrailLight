@@ -93,16 +93,14 @@ sent(20, A) :-
 		   [ si('Aussi', adv-adv, aussi, [dr(0, s, s)-0.9999778]),
 		     si(ont,
 			v-ver:pres,
-			avoir,
-			
+			avoir,			
 			[ dr(0, dr(0, s, dl(0, np, s_ppart)), np)-0.9980058,
 			  dr(0, dr(0, s, np), dl(0, np, s_ppart))-0.0018172036
 			]),
 		     si('-ils', cls-pro:per, ils, [np-0.99999213]),
 		     si(décidé,
 			vpp-ver:pper,
-			décider,
-			
+			décider,			
 			[ dr(0, dl(0, np, s_ppart), dl(0, np, s_inf))-0.95984834,
 			  dr(0, dr(0, dl(0, np, s_ppart), dl(0, np, s_inf)), np)-0.012183049,
 			  dr(0, dl(0, np, s_ppart), pp_de)-0.0071665817,
