@@ -162,3 +162,5 @@ proof(N, rule(RuleName, Structure, Formula-LambdaTerm, ListOfPremisses)).
 ```
 
 where `N` is the sentence number, `RuleName` the name of the last rule of the proof, `Structure` the computed structure (a tree over the words in the sentence), `Formula` is the goal formula, and `LambdaTerm` the lambda term corresponding to the proof, `ListOfPremisses` is the list of proofs (all of the form `rule(...)` allowing us to derive the conclusion).
+
+Note that the easiest way to obtain the lambda term of the proof (without any substitutions) is to simply obtain it from the last line of the proof.
