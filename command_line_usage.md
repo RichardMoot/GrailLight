@@ -43,7 +43,36 @@ For our example, this script gives the following ouput.
 
 ```
 sent(20, Result) :-
-      prob_parse([ ex_si('Aussi', adv-adv, 'Aussi', [dr(0,s,s)-0.9999778]), ex_si(ont, v-ver:pres, ont, [dr(0,dr(0,s,dl(0,np,s_ppart)),np)-0.9980058, dr(0,dr(0,s,np),dl(0,np,s_ppart))-0.0018172036]), ex_si('-ils', cls-pro:per, '-ils', [np-0.99999213]), ex_si(dÃ©cidÃ©, vpp-ver:pper, dÃ©cidÃ©, [dr(0,dl(0,np,s_ppart),dl(0,np,s_inf))-0.95984834, dr(0,dr(0,dl(0,np,s_ppart),dl(0,np,s_inf)),np)-0.012183049, dr(0,dl(0,np,s_ppart),pp_de)-0.0071665817, dr(0,dr(0,dl(0,np,s_ppart),dl(0,np,s_inf)),pp_a)-0.005813557, dr(0,dr(0,dl(0,np,s_ppart),pp_de),np)-0.0021970696, dr(0,dl(0,cl_r,dl(0,np,s_inf)),dl(0,np,s_inf))-0.0011594007, dr(0,dl(0,np,s),dl(0,np,s_inf))-0.0011494745, dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,np,s_inf))-0.0010469758, dr(0,dl(0,cl_r,dl(0,np,s_ppart)),dl(0,np,s_inf))-0.0010047258]), ex_si('d\'', p-prp, 'd\'', [dr(0,pp_de,np)-0.9892832, dr(0,pp_de,n)-0.010377718]), ex_si('eux-mÃªmes', pro-pro:per, 'eux-mÃªmes', [np-0.99766695, n-0.002082536]), ex_si(',', ponct-pun, ',', [let-0.99999964]), ex_si(mercredi, nc-nom, mercredi, [dl(1,s,s)-0.99971145]), ex_si(',', ponct-pun, ',', [let-0.99999976]), ex_si(de, p-prp, de, [dr(0,dl(0,np,s_inf),dl(0,np,s_inf))-0.9999877]), ex_si(se, clr-pro:per, se, [cl_r-1.0]), ex_si(soumettre, vinf-ver:infi, soumettre, [dr(0,dl(0,cl_r,dl(0,np,s_inf)),pp_a)-0.99848455]), ex_si(Ã , p-prp, Ã , [dr(0,pp_a,np)-0.99999905]), ex_si('l\'', det-det:art, 'l\'', [dr(0,np,n)-1.0]), ex_si(arbitrage, nc-nom, arbitrage, [n-1.0]), ex_si(dÃ©finitif, adj-adj, dÃ©finitif, [dl(0,n,n)-1.0]), ex_si(des, p+d-prp:det, des, [dr(0,dl(0,n,n),n)-0.9999982]), ex_si(autoritÃ©s, nc-nom, autoritÃ©s, [n-1.0]), ex_si(monÃ©taires, adj-adj, monÃ©taires, [dl(0,n,n)-1.0]), ex_si('.', ponct-pun, '.', [dl(0,s,txt)-0.9996948])], Result).
+      prob_parse([ ex_si('Aussi', adv-adv, 'Aussi', [dr(0,s,s)-0.9999778]),
+                   ex_si(ont, v-ver:pres, ont, [dr(0,dr(0,s,dl(0,np,s_ppart)),np)-0.9980058,
+	                                        dr(0,dr(0,s,np),dl(0,np,s_ppart))-0.0018172036]),
+                   ex_si('-ils', cls-pro:per, '-ils', [np-0.99999213]),
+                   ex_si(décidé, vpp-ver:pper, décidé, [dr(0,dl(0,np,s_ppart),dl(0,np,s_inf))-0.95984834,
+                                                        dr(0,dr(0,dl(0,np,s_ppart),dl(0,np,s_inf)),np)-0.012183049,
+                                                        dr(0,dl(0,np,s_ppart),pp_de)-0.0071665817,
+                                                        dr(0,dr(0,dl(0,np,s_ppart),dl(0,np,s_inf)),pp_a)-0.005813557,
+                                                        dr(0,dr(0,dl(0,np,s_ppart),pp_de),np)-0.0021970696,
+                                                        dr(0,dl(0,cl_r,dl(0,np,s_inf)),dl(0,np,s_inf))-0.0011594007,
+                                                        dr(0,dl(0,np,s),dl(0,np,s_inf))-0.0011494745,
+                                                        dr(0,dl(0,cl_r,dl(0,np,s)),dl(0,np,s_inf))-0.0010469758,
+                                                        dr(0,dl(0,cl_r,dl(0,np,s_ppart)),dl(0,np,s_inf))-0.0010047258]),
+                   ex_si('d\'', p-prp, 'd\'', [dr(0,pp_de,np)-0.9892832,
+                                               dr(0,pp_de,n)-0.010377718]),
+                   ex_si('eux-mêmes', pro-pro:per, 'eux-mêmes', [np-0.99766695, n-0.002082536]),
+                   ex_si(',', ponct-pun, ',', [let-0.99999964]),
+                   ex_si(mercredi, nc-nom, mercredi, [dl(1,s,s)-0.99971145]),
+                   ex_si(',', ponct-pun, ',', [let-0.99999976]),
+                   ex_si(de, p-prp, de, [dr(0,dl(0,np,s_inf),dl(0,np,s_inf))-0.9999877]),
+                   ex_si(se, clr-pro:per, se, [cl_r-1.0]),
+                   ex_si(soumettre, vinf-ver:infi, soumettre, [dr(0,dl(0,cl_r,dl(0,np,s_inf)),pp_a)-0.99848455]),
+                   ex_si(à , p-prp, à, [dr(0,pp_a,np)-0.99999905]),
+                   ex_si('l\'', det-det:art, 'l\'', [dr(0,np,n)-1.0]),
+                   ex_si(arbitrage, nc-nom, arbitrage, [n-1.0]),
+                   ex_si(définitif, adj-adj, définitif, [dl(0,n,n)-1.0]),
+                   ex_si(des, p+d-prp:det, des, [dr(0,dl(0,n,n),n)-0.9999982]),
+                   ex_si(autorités, nc-nom, autorité, [n-1.0]),
+                   ex_si(monétaires, adj-adj, monétaires, [dl(0,n,n)-1.0]),
+                   ex_si('.', ponct-pun, '.', [dl(0,s,txt)-0.9996948])], Result).
 ```
 
 ## Lemmatization
