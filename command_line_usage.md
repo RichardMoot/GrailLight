@@ -156,3 +156,11 @@ grail_light_nd superpos.pl
 This command tries to parse all sentence and outputs the results in a number of files:
 - `semantics.pl` contains the Prolog ouput giving the DRT semantics, both in unreduced and reduced versions.
 - `proofs.pl` contains the Prolog proofs (chart proofs, but they can be converted to natural deduction)
+
+The proofs in `proofs.pl` are of the following form
+
+```
+proof(N, rule(RuleName, Structure, Formula-LambdaTerm, ListOfPremisses)).
+```
+
+where `N` is the sentence number, `RuleName` the name of the last rule of the proof, `Structure` the computed structure (a tree over the words in the sentence), `Formula` is the goal formula, and `LambdaTerm` the lambda term corresponding to the proof, `ListOfPremisses` is the list of proofs (all of the form `rule(...)` allowing us to derive the conclusion).
