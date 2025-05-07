@@ -1509,7 +1509,7 @@ default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(np(_,_,_))
 % passive+control verb, object control only (TODO: verify!)
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(np(_,_,_)),lit(s(inf(PRP))))), lambda(INF,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-
 	combine_prep_word(PRP, V, PW),
-	format(user_error, '~N~w ~w~n', [PRP,PW]), 
+%	format(user_error, '~N~w ~w~n', [PRP,PW]), 
 	add_roles([agent-X,patient-Y,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))]).
 % passive+adjectival argument
 default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(OBJ,lambda(E,appl(OBJ,lambda(Y,drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))) :-

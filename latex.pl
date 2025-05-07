@@ -41,7 +41,7 @@
 :- use_module(tree234,   [btree_get/3]).
 :- use_module(options,   [get_option/2,option_true/1]).
 
-dynamic portray_axioms/1.
+:- dynamic portray_axioms/1.
 
 portray_axioms(short).
 %portray_axioms(normal).

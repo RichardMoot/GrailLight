@@ -2,7 +2,6 @@
 
 :- module(options, [create_options/0,
 		    set_option/2,
-		    set_option/4,
 		    set_option_true/1,
 		    set_option_false/1,
 		    get_option/2,
@@ -80,13 +79,13 @@ set_option_true(Option) :-
 set_option_false(Option) :-
 	set_option(Option, 0).
 
-set_option(Option, Value, Menu, MenuItem) :-
-    (
-        xpce
-    ->
-	send(Menu, clear_selection),
-	send(Menu, selected, MenuItem, @on)
-    ;
-        true
-    ),
-    	set_option(Option, Value).
+%% set_option(Option, Value, Menu, MenuItem) :-
+%%     (
+%%         xpce
+%%     ->
+%% 	send(Menu, clear_selection),
+%% 	send(Menu, selected, MenuItem, @on)
+%%     ;
+%%         true
+%%     ),
+%%     	set_option(Option, Value).

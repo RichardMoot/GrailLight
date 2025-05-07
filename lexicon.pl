@@ -202,14 +202,14 @@ find_lexical_match([L|Ls], Rs0, Word, Formula, Sem) :-
     ),
 	find_lexical_match(Ls, Rs, Word, Formula, Sem).
 
-ask_replace(L, W, Answer) :-
-	new(D, dialog('Word not in lexicon')),
-	concat_atom(['"', W, '" not in lexicon!\nSelect a replacement or press cancel\nand edit you lexicon.'], Text),
-	send(D, append, new(_, text(Text,@default,@default))),
-	append_button_list(L, D),
-	send(D, append, button(cancel, message(D, return, '* cancel *'))),
-	get(D, confirm, Answer),
-	send(D, free).
+%% ask_replace(L, W, Answer) :-
+%% 	new(D, dialog('Word not in lexicon')),
+%% 	concat_atom(['"', W, '" not in lexicon!\nSelect a replacement or press cancel\nand edit you lexicon.'], Text),
+%% 	send(D, append, new(_, text(Text,@default,@default))),
+%% 	append_button_list(L, D),
+%% 	send(D, append, button(cancel, message(D, return, '* cancel *'))),
+%% 	get(D, confirm, Answer),
+%% 	send(D, free).
 
 append_button_list([], _).
 append_button_list([B|Bs], D) :-
