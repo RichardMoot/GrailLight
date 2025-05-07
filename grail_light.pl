@@ -1512,10 +1512,10 @@ add_item_to_agenda(Item0, Justification, queue(Front,Back), queue(Front, NewBack
 	Item0 = item(F, I, J, Data0),
         update_data(Data0, I, J, Justification, Data),
 	Item = item(F, I, J, Data),
-	write('.'),
     (   coherent_item(I, J, Data),
         \+ subsumed_item(Item, Front, Back, Justification)
     ->
+	write('.'),
         simplify_formula(F, SF),
         simplified_formula_to_key(SF, Key),
         assertz(stored(Back, Key, I, J, F, Data)),
