@@ -22,6 +22,8 @@
 		       equivalent_semantics/2,
 		       unify_semantics/2,
 		       try_unify_semantics/2,
+		       relabel_sem_vars/2,
+		       relabel_sem_vars/4,
 		       melt_bound_variables/2,
 		       get_drs_types/2,
 		       translate_dynamics/3]).
@@ -633,6 +635,9 @@ drs_variable_numbers1(variable('$VAR'(N)), R0, R) :-
 
 relabel_sem_vars(T0, T) :-
 	relabel_sem_vars(T0, T, 0, _, empty, _).
+
+relabel_sem_vars(T0, T, N0, N) :-
+	relabel_sem_vars(T0, T, N0, N, emtpy, _).
 
 % relabel_sem(T0, T, M0, M)
 
