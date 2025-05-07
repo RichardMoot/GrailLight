@@ -1,8 +1,41 @@
 
-start(Enriched) :-
-	proof(_, Proof),
-	enrich_proof_term(Proof, Enriched).
+start :-
+	proof(N, Proof),
+	format(user_error, '~w', [N]), 
+	enrich_proof_term(Proof, Enriched0),
+	transform_term(Enriched0, Enriched),
+	format(user_error, '.', [N]), 
+	format('semantics(~w, ~w).~n', [N,Enriched]),
+	fail.
+start.
 
+transform_term(Term0, Term) :-
+	/* 1 indicates at least on subterm has changes, so continue */
+	transform_term(Term0, Term1, 1),
+	!,
+	transform_term(Term1, Term).
+transform_term(Term, Term).       % no changes, so keep last term.
+	
+transform_term(Term, Transformed, 1) :-
+	transform(Term, Transformed),
+	!.
+transform_term(X-'$VAR'(N), X-'$VAR'(N), 0).
+transform_term(X-word(N,M), X-word(N,M), 0).
+transform_term(X-word(N), X-word(N), 0).   % should not appear
+transform_term(X-appl(M0,N0), X-appl(M,N), Bool) :-
+	transform_term(M0, M, Bool0),
+	transform_term(N0, N, Bool1),
+	Bool is max(Bool0,Bool1).
+transform_term(X-lambda(Y,M0), X-lambda(Y,M), Bool) :-
+	transform_term(M0, M, Bool).
+
+% treat "au contraire" as a single predicate
+
+transform(X-appl(dr(0, X, lit(n))-word(W1, au), lit(n)-word(W2, contraire)), word(W1, X-au_contraire)) :-
+	W2 is W1 + 1.
+
+% take a proof and enrich the lambda term assigned to this proof so that each node in the
+% tree has the associated formula information.
 
 enrich_proof_term(Proof, Enriched) :-
 	Proof = rule(_, _, Formula-Term,_),
@@ -12,9 +45,11 @@ conclusion_formula(rule(_, _, Formula-_, _), Formula).
 conclusion_term(rule(_, _, -Term,_), Term).
 conclusion_formula_term(rule(_, _, Formula-Term,_), Formula, Term).
 conclusion_subproofs(rule(_, _, _, SubProofs), SubProofs).
+conclusion_pros(rule(_, Pros, _, _), Pros).
 
 enrich_term('$VAR'(M), Formula, _, Formula-'$VAR'(M)).
-enrich_term(word(M), Formula, _, Formula-word(M)).
+enrich_term(word(M), Formula, Proof, Formula-word(M,Pros)) :-
+	conclusion_pros(Proof, Pros).
 enrich_term(lambda(X,M), Formula, Proof, Formula-lambda(X,Enriched)) :-
 	conclusion_subproofs(Proof, [Proof0]),
 	conclusion_formula(Proof0, Formula0),
