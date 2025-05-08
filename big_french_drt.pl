@@ -1909,6 +1909,9 @@ default_semantics(conduire, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,l
 default_semantics(conseiller, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,theme-L], conseiller, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F))),bool(appl(temps,E),<,appl(temps,L))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
+default_semantics(déconseiller, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
+	add_roles([agent-X,theme-L], déconseiller, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y)]),appl(appl(INF,lambda(P,appl(P,Y))),F))),bool(appl(temps,E),<,appl(temps,L))|Pred]),
+	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 default_semantics(exiger, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,theme-L], appeler, E, Conds, [drs_label(L,merge(drs([variable(Y),event(F)],[appl(generic,Y),bool(appl(temps,E),<,appl(temps,F))]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [], EVs, E-Pred).
@@ -1937,6 +1940,12 @@ default_semantics(impliquer, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,
 default_semantics(inciter, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(à))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], inciter, E, Conds, [appl(generic,Y),drs_label(L,merge(drs([event(F)],[bool(appl(temps,E),<,appl(temps,F))]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [variable(Y),event(L)], EVs, E-Pred).
+
+default_semantics(interdire, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
+	add_roles([agent-X,patient-Y,theme-L], interdire, E, Conds, [appl(generic,Y),drs_label(L,merge(drs([event(F)],[bool(appl(temps,E),<,appl(temps,F))]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
+	pos_time(ver:TIME, [variable(Y),event(L)], EVs, E-Pred).
+
+
 default_semantics(imposer, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(inf(de))))), lambda(INF, lambda(NP, lambda(E, appl(NP,lambda(X,drs(EVs,Conds))))))) :-
 	add_roles([agent-X,patient-Y,theme-L], imposer, E, Conds, [appl(generic,Y),drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [variable(Y),event(L)], EVs, E-Pred).
@@ -2060,12 +2069,33 @@ default_semantics(permettre, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n
 	add_roles([agent-X,patient-Y,theme-L], permettre, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(POS, [variable(Y),event(L)], EVs, E-Pred).
 
-% = permettre + deinf + pp_a
+% = permettre/interdire + deinf + pp_a
 
 default_semantics(permettre, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
 	SType = inf(_),
 	PType = à,
 	add_roles([agent-X,patient-Y,theme-L], permettre, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
+
+
+default_semantics(conseiller, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], conseiller, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
+
+default_semantics(déconseiller, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], déconseiller, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
+
+
+
+default_semantics(interdire, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], interdire, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(POS, [event(L)], EVs, E-Pred).
 
 
@@ -2637,6 +2667,10 @@ default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(N1, lambda(N2, lam
 default_semantics(W, dr(0,dl(0,lit(n),lit(n)),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),appl(NP,lambda(Y,drs([],[appl(appl(W,Y),X)])))))))).
 default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),lambda(P,lambda(Q,lambda(Z,appl(Q,lambda(Y,appl(P,lambda(X,merge(drs([],[appl(appl(W,X),Y)]),appl(Z,Y)))))))))).
 
+% very rare: (np/np)/np
+default_semantics(W, dr(0,dr(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),lambda(P,lambda(Q,lambda(Z,appl(Q,lambda(Y,appl(P,lambda(X,merge(drs([],[appl(appl(W,X),Y)]),appl(Z,Y)))))))))).
+
+
 default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)),lambda(P,lambda(NP,lambda(Q,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(W,X),Y)]),merge(appl(Q,X),appl(P,X))))))))).
 
 % = prepositions - noun modifiers having preposition as argument (eg. "deux d'entre nous")
@@ -3023,7 +3057,7 @@ lex(afin, dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambd
 lex(afin, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
 lex(afin, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(ST))),dl(0,lit(np(_,_,_)),lit(s(ST)))),dl(0,lit(np(_,_,_)),s_deinf)), lambda(VPD,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(drs([event(F)],[appl(appl(goal,F),E)]),appl(appl(VPD,lambda(Q,appl(Q,X))),F)))))))))).
 
-lex(aussi, dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,merge(appl(NP,lambda(X,drs([event(E),variable(Y)],[appl(appl(agent,X),E),bool(E,=,'event?')]))),appl(P,X))))).
+%lex(aussi, dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,merge(appl(NP,lambda(X,drs([event(E),variable(Y)],[appl(appl(agent,X),E),bool(E,=,'event?')]))),appl(P,X))))).
 
 % Lexconn gives only "result" for sentence-initial "aussi"
 lex('Aussi', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(result,E),F)]),appl(S,E))))).

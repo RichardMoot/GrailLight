@@ -352,7 +352,7 @@ transform_proof(rule(e_endd, GoalPros, dl(I0,E,D)-Sem, [Proof1,Proof2]), N0, N,
 
 transform_proof(rule(e_end_l, GoalPros, D-Sem, [Proof1, Proof2]), N0, N,
 		rule(dl, GoalPros, D-Sem,
-		     [rule(dldiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-true, [Proof4]),
+		     [rule(drdiaboxi(I,N0), XY, dr(0,C,dia(I,box(I,B)))-true, [Proof4]),
 		      Proof2])) :-
 	GoalPros = p(_,XY,Z),
 	ExtrForm = dl(0,dr(0,C,dia(I,box(I,B))),D),

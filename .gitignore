@@ -109,3 +109,8 @@ stored*.txt
 tmp*.pl
 annodis_backup.pl
 log
+graph_*_*.pl
+graph_*_*.txt
+allgraphs.txt
+*.tgz
+

@@ -1,5 +1,5 @@
-
 :- use_module(library(ordsets), [ord_seteq/2, ord_add_element/3]).
+:- use_module(tree234, [list_to_btree/2,btree_to_list/2,btree_init/1,btree_get/3,btree_insert/4]).
 
 % = pretty-printer for formulas
 
@@ -109,7 +109,7 @@ print_all_proofs :-
 	fail.
 print_all_proofs.
 
-nd_to_pn(Proof0, _Num, List) :-
+nd_to_pn(Proof0, Num, List) :-
 	label_all_atoms(Proof0, Proof),
 	nd_to_pn0(Proof, List0, []),
 	keysort(List0, List),
@@ -118,8 +118,15 @@ nd_to_pn(Proof0, _Num, List) :-
         number_list_atoms(Sequent),
 	verify_atoms(List, Goal),
 	find_words(Proof0, WordList),
-	print_lists(WordList, List),
-	print_goal(Proof),
+	print_formula_list(WordList, List, Goal, Edges, Labels),
+	numbervars(Edges),
+	numbervars(Labels),
+	format('=== start graph ~p ===~n', [Num]),
+	format('=== edges ===~n', []),
+	print_list(Edges),
+	format('=== labels ===~n', []),
+	print_list(Labels),
+	format('=== end graph ~p ===~n', [Num]),
 	!,
 	format(user_error, '.', []).
 nd_to_pn(_, Num, _) :-
@@ -239,8 +246,12 @@ find_hypothesis(rule(_, _, _, Premisses), K, A) :-
 % =       auxiliary predicates        =
 % =====================================
 
-print_goal(rule(_, _, Goal-_, _)) :-
-	format('GOAL:~p~n', [Goal]).
+print_list([]) :-
+	nl.
+print_list([X|Xs]) :-
+	format('~p~n', [X]),
+	print_list(Xs).
+
 
 print_lists([], []).
 print_lists([N-W|Ws], [N-F|Fs]) :-
@@ -391,5 +402,85 @@ find_premiss_words([P|Ps], L0, L) :-
 	find_words(P, L0, L1),
 	find_premiss_words(Ps, L1, L).
 
+print_formula_list(Words, Formulas, Goal, Edges, Labels) :-
+	btree_init(Tree0),
+	print_formula_list(Words, Formulas, Edges, Edges0, Labels, Labels0, Tree0, Tree),
+        print_formula_pos(X-Goal, Edges0, [], Labels0, [label(X,goal)], Tree, _).
+
+print_formula_list([], [], Es, Es, Ls, Ls, T, T).
+print_formula_list([N-W|Ws], [N-F|Fs], Es0, Es, [Label|Ls0], Ls, T0, T) :-
+	Label = label(X, word(N,W)),
+	print_formula_neg(X-F, Es0, Es1, Ls0, Ls1, T0, T1),
+	print_formula_list(Ws, Fs, Es1, Es, Ls1, Ls, T1, T).
+
+print_formula(Formula, Edges, Labels, Tree) :-
+	btree_init(Tree0),
+	print_formula_neg(_-Formula, Edges, [], Labels, [], Tree0, Tree).
+
+print_formula_neg(X-lit(A, N), Edges, Edges, [Label|Labels], Labels, Tree0, Tree) :-
+	!,
+   (
+	btree_get(Tree0, N, Var)
+   ->
+        X = Var,
+        Tree = Tree0
+   ;
+	btree_insert(Tree0, N, X, Tree)
+   ),
+	Label = label(X, atom(A)).
+print_formula_neg(Y-dr(I,A,dia(J,box(J,B))), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(drdiabox(I,J))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_neg(Y-dr(I,A,box(J,dia(J,B))), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(drboxdia(I,J))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_neg(Y-dr(I,A,B), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(dr(I))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_neg(Y-dl(I,dia(J,box(J,B)),A), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(dldiabox(I,J))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_neg(Y-dl(I,B,A), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = appl(X,Y,Z),
+	Label = label(X,conn(dl(I))),
+	print_formula_neg(X-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_pos(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
 
 
+% the negative version of this atom should already have been printed,
+% so we only update the variables here.
+print_formula_pos(X-lit(_, N), Edges, Edges, Labels, Labels, Tree0, Tree) :-
+	!,
+   (
+	btree_get(Tree0, N, Var)
+   ->
+        X = Var,
+        Tree = Tree0
+   ;
+	btree_insert(Tree0, N, X, Tree)
+   ).
+print_formula_pos(X-dr(I,A,B), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = lambda(X,Y,Z),
+	Label = label(X,dr(I)),
+	print_formula_pos(Y-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_neg(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
+print_formula_pos(X-dl(I,B,A), [Edge|Edges0], Edges, [Label|Labels0], Labels, Tree0, Tree) :-
+	!,
+	Edge = lambda(X,Y,Z),
+	Label = label(X,dr(I)),
+	print_formula_pos(Y-A, Edges0, Edges1, Labels0, Labels1, Tree0, Tree1),
+	print_formula_neg(Z-B, Edges1, Edges, Labels1, Labels, Tree1, Tree).
