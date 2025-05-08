@@ -1,3 +1,4 @@
+% -*- Mode: Prolog -*-
 
 :- use_module(library(ordsets), [ord_seteq/2, ord_add_element/3]).
 
