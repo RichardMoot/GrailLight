@@ -1,3 +1,5 @@
+
+
 :- use_module(sem_utils, [relabel_sem_vars/2,relabel_sem_vars/4,replace_sem/4,get_fresh_variable_number/2]).
 
 
@@ -147,7 +149,10 @@ beta_reduce(X, Y) :-
 beta_reduce(X, X).
 
 beta_reduce(X, Y, 1) :-
-	beta_reduce_step(X, Y),
+        beta_reduce_step(X, Y),
+        conclusion_term(X, Sem1),
+	conclusion_term(Y, Sem2),
+	format('~n~p~n~p~n', [Sem1,Sem2]),
 	!.
 beta_reduce(rule(Nm,Pros,Form,Proofs0), rule(Nm,Pros,Form,Proofs), N) :-
 	beta_reduce_proof_list(Proofs0, Proofs, N).
@@ -160,29 +165,31 @@ beta_reduce_proof_list([P|Ps], [Q|Qs], N) :-
 
 
 beta_reduce_step(Proof0, Proof) :-
-	Proof0 = rule(_, _, _-appl(lambda(X,M), N), [Sub1,Sub2]),
-	trace,
-	match_proof_semantics(N, Sub1, Sub2, Fun, _Arg),
-	Fun = rule(_, _, _-lambda(X,M), [Proof1]),
+	Proof0 = rule(_, _, _-appl(lambda(_,_), N), [Sub1,Sub2]),
+	%	trace,
+%	replace_sem(M, Y, N, Sem),
+	match_proof_semantics(N, Sub1, Sub2, Fun, Arg),
+	Fun = rule(_, _, _-lambda(X,_), [Proof1]),
 	!,
-	replace_proof(Proof1, X, N, Proof).
+	replace_proof(Proof1, X, N, Arg, Proof).
 %beta_reduce_step(Proof, Proof, 0).
 
-replace_proof(rule(_, _, _-X, _), X, N, N) :-
+replace_proof(rule(_, _, _-X, _), X, _, Proof, Proof) :-
 	!.
-replace_proof(rule(N, P, A, Rs0), Var, Proof, rule(N, P, A, Rs)) :-
-	replace_proof_list(Rs0, Var, Proof, Rs).
+replace_proof(rule(N, P, A-Sem0, Rs0), Var, Term, Proof, rule(N, P, A-Sem, Rs)) :-
+        replace_sem(Sem0, Var, Term, Sem),
+	replace_proof_list(Rs0, Var, Term, Proof, Rs).
 
-replace_proof_list([], _, _, []).
-replace_proof_list([X|Xs], Var, Proof, [Y|Ys]) :-
-	replace_proof(X, Var, Proof, Y),
-	replace_proof_list(Xs, Var, Proof, Ys).
+replace_proof_list([], _, _, _, []).
+replace_proof_list([X|Xs], Var, Term, Proof, [Y|Ys]) :-
+	replace_proof(X, Var, Term, Proof, Y),
+	replace_proof_list(Xs, Var, Term, Proof, Ys).
 
-match_proof_semantics(N, Sub1, Sub2, Sub2, Sub1) :-
+match_proof_semantics(N, Sub1, Sub2, Sub1, Sub2) :-
 	conclusion_term(Sub2, M),
 	is_alpha_equivalent(M, N),
 	!.
-match_proof_semantics(N, Sub1, Sub2, Sub1, Sub2) :-
+match_proof_semantics(N, Sub1, Sub2, Sub2, Sub1) :-
 	conclusion_term(Sub1, M),
 	is_alpha_equivalent(M, N),
 	!.
