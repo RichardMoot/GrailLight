@@ -30,6 +30,7 @@ start :-
 % remove those already seen
 % recursively compute 1-step reductions for all new sets of terms.
 
+
 generate_parse_terms([], Visited, Visited).
 generate_parse_terms([New|News0], Visited0, Visited) :-
 	%    format('~w~n', [Term])
@@ -553,3 +554,4 @@ remove_variable(lambda(Y,M), X, lambda(Y, N)) :-
 remove_variable(appl(M0,N0), X, appl(M,N)) :-
 	remove_variable(M0, X, M),
 	remove_variable(N0, X, N).
+

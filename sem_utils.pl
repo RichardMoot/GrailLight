@@ -25,6 +25,7 @@
 		       relabel_sem_vars/2,
 		       relabel_sem_vars/4,
 		       melt_bound_variables/2,
+		       relabel_sem_vars/2,
 		       get_drs_types/2,
 		       translate_dynamics/3]).
 
