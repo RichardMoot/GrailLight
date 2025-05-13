@@ -4,12 +4,14 @@
 
 
 start :-
-	proof(N, Proof),
-	format(user_error, '~w', [N]), 
+	proof(N, Proof0),
+	format(user_error, '~w', [N]),
+	beta_reduce(Proof0, Proof),
 	enrich_proof_term(Proof, Enriched0),
 	transform_term(Enriched0, Enriched),
-	format(user_error, '.', [N]), 
-	format('semantics(~w, ~w).~n', [N,Enriched]),
+	format(user_error, '.', [N]),
+	numbervars(Enriched, 0, _),
+	format('semantics(~q, ~q).~n', [N,Enriched]),
 	fail.
 start.
 
@@ -17,7 +19,7 @@ transform_term(Term0, Term) :-
 	/* 1 indicates at least on subterm has changes, so continue */
 	transform_term(Term0, Term1, 1),
 	!,
-	format(user_error, '*******', []),
+%	format(user_error, '*******', []),
 	transform_term(Term1, Term).
 transform_term(Term, Term).       % no changes, so keep last term.
 	
@@ -65,10 +67,12 @@ enrich_term(appl(lambda(X,M),N), Formula, Proof, Rich) :-
 %        trace,
         replace_sem(M, X, N, Norm),
         enrich_term(Norm, Formula, Proof, Rich).    
-enrich_term(lambda(X,M), Formula, Proof, Formula-lambda(X,Enriched)) :-
+enrich_term(lambda(X,M), Formula, Proof, Formula-lambda(FX-X,Enriched)) :-
 	conclusion_subproofs(Proof, [Proof0]),
 	conclusion_formula(Proof0, Formula0),
-	enrich_term(M, Formula0, Proof0, Enriched).
+	enrich_term(M, Formula0, Proof0, Enriched),
+%	trace,
+        subterm_check(FX-X, Enriched).
 enrich_term(appl(M,N), Formula, Proof, Formula-appl(Enriched1,Enriched2)) :-
 	match_application(Formula, Formula1, Formula2, Proof, Proof1, Proof2),
 	enrich_term(M,  Formula1, Proof1, Enriched1),
@@ -156,9 +160,9 @@ beta_reduce(X, X).
 
 beta_reduce(X, Y, 1) :-
         beta_reduce_step(X, Y),
-        conclusion_term(X, Sem1),
-	conclusion_term(Y, Sem2),
-	format('~n~p~n~p~n', [Sem1,Sem2]),
+%        conclusion_term(X, Sem1),
+%	conclusion_term(Y, Sem2),
+%	format('~n~p~n~p~n', [Sem1,Sem2]),
 	!.
 beta_reduce(rule(Nm,Pros,Form,Proofs0), rule(Nm,Pros,Form,Proofs), N) :-
 	beta_reduce_proof_list(Proofs0, Proofs, N).
@@ -220,6 +224,20 @@ is_alpha_equivalent(lambda(X,M), V0, V, lambda(Y,P)) :-
 	is_alpha_equivalent(N, V1, V, P).
 	
 
+subterm_check(X, M) :-
+	subterm(X, M),
+	!.
+
+subterm(X, X).
+subterm(X, _-appl(M,_)) :-
+	subterm(X, M).
+subterm(X, _-appl(_,N)) :-
+	subterm(X, N).
+subterm(X, _-lambda(Y,M)) :-
+	X \== Y,
+	subterm(X,M).
+
+	
 % 5. Les jeunes garçons jouent dehors et l' homme sourit à proximité
  
 proof(5, rule(dl, p(0,p(0,p(0,'Les',p(0,jeunes,garçons)),p(1,jouent,dehors)),p(0,et,p(0,p(0,'l\'',homme),p(1,sourit,p(0,à,proximité))))), lit(s(main))-appl(appl(word(9),appl(appl(word(13),word(14)),appl(word(12),appl(word(10),word(11))))),appl(lambda('$VAR'(0),appl(word(5),appl(word(3),'$VAR'(0)))),appl(word(0),appl(word(1),word(2))))), [
@@ -270,43 +288,43 @@ proof(5, rule(dl, p(0,p(0,p(0,'Les',p(0,jeunes,garçons)),p(1,jouent,dehors)),p(
 
 % 7. On veut au contraire l' y ramener . 
 
-%% proof(7, rule(dl, p(0,p(0,'On',p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener)))),'.'), lit(txt)-appl(word(7),appl(lambda('$VAR'(7),appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(7)))),word(0))), [
-%%    rule(dl, p(0,'On',p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener)))), lit(s(main))-appl(lambda('$VAR'(7),appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(7)))),word(0)), [
-%%       rule(axiom, 'On', lit(np(nom,_,_))-word(0), []),
-%%       rule(dli(0), p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener))), dl(0,lit(np(nom,_,_)),lit(s(main)))-lambda('$VAR'(8),appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(8)))), [
-%%          rule(dl1, p(0,'$VAR'(0),p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener)))), lit(s(main))-appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(8))), [
-%%             rule(dl, p(0,'$VAR'(0),p(0,veut,p(0,'l\'',p(0,y,ramener)))), lit(s(main))-appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(8)), [
-%%                rule(hyp(0), '$VAR'(0), lit(np(nom,_,_))-'$VAR'(8), []),
-%%                rule(dr, p(0,veut,p(0,'l\'',p(0,y,ramener))), dl(0,lit(np(nom,_,_)),lit(s(main)))-appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))), [
-%%                   rule(axiom, veut, dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(base)))))-word(1), []),
-%%                   rule(dr, p(0,'l\'',p(0,y,ramener)), dl(0,lit(np(nom,_,_)),lit(s(inf(base))))-appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6)))))), [
-%%                      rule(axiom, 'l\'', dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(np(acc,_,3-s))))))-word(4), []),
-%%                      rule(drdiaboxi(1,1), p(0,y,ramener), dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(np(acc,_,3-s)))))-true, [
-%%                         rule(dr, p(0,y,p(0,ramener,'$VAR'(1))), dl(0,lit(np(nom,_,_)),lit(s(inf(base))))-appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6)))), [
-%%                            rule(axiom, y, dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(pp(à))))))-word(5), []),
-%%                            rule(drdiaboxi(1,2), p(0,ramener,'$VAR'(1)), dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(pp(à)))))-true, [
-%%                               rule(dr, p(0,p(0,ramener,'$VAR'(1)),'$VAR'(2)), dl(0,lit(np(nom,_,_)),lit(s(inf(base))))-appl(appl(word(6),'$VAR'(5)),'$VAR'(6)), [
-%%                                  rule(dr, p(0,ramener,'$VAR'(1)), dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à)))-appl(word(6),'$VAR'(5)), [
-%%                                     rule(axiom, ramener, dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à))),lit(np(acc,_,3-s)))-word(6), []),
-%%                                     rule(hyp(1), '$VAR'(1), lit(np(acc,_,3-s))-'$VAR'(5), [])
-%%                                     ]),
-%%                                  rule(hyp(2), '$VAR'(2), lit(pp(à))-'$VAR'(6), [])
-%%                                  ])
-%%                               ])
-%%                            ])
-%%                         ])
-%%                      ])
-%%                   ])
-%%                ]),
-%%             rule(dr, p(0,au,contraire), dl(1,lit(s(main)),lit(s(main)))-appl(word(2),word(3)), [
-%%                rule(axiom, au, dr(0,dl(1,lit(s(main)),lit(s(main))),lit(n))-word(2), []),
-%%                rule(axiom, contraire, lit(n)-word(3), [])
-%%                ])
-%%             ])
-%%          ])
-%%       ]),
-%%    rule(axiom, '.', dl(0,lit(s(main)),lit(txt))-word(7), [])
-%%    ])).
+proof(7, rule(dl, p(0,p(0,'On',p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener)))),'.'), lit(txt)-appl(word(7),appl(lambda('$VAR'(7),appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(7)))),word(0))), [
+   rule(dl, p(0,'On',p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener)))), lit(s(main))-appl(lambda('$VAR'(7),appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(7)))),word(0)), [
+      rule(axiom, 'On', lit(np(nom,_,_))-word(0), []),
+      rule(dli(0), p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener))), dl(0,lit(np(nom,_,_)),lit(s(main)))-lambda('$VAR'(8),appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(8)))), [
+         rule(dl1, p(0,'$VAR'(0),p(0,p(1,veut,p(0,au,contraire)),p(0,'l\'',p(0,y,ramener)))), lit(s(main))-appl(appl(word(2),word(3)),appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(8))), [
+            rule(dl, p(0,'$VAR'(0),p(0,veut,p(0,'l\'',p(0,y,ramener)))), lit(s(main))-appl(appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))),'$VAR'(8)), [
+               rule(hyp(0), '$VAR'(0), lit(np(nom,_,_))-'$VAR'(8), []),
+               rule(dr, p(0,veut,p(0,'l\'',p(0,y,ramener))), dl(0,lit(np(nom,_,_)),lit(s(main)))-appl(word(1),appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6))))))), [
+                  rule(axiom, veut, dr(0,dl(0,lit(np(nom,_,_)),lit(s(main))),dl(0,lit(np(nom,_,_)),lit(s(inf(base)))))-word(1), []),
+                  rule(dr, p(0,'l\'',p(0,y,ramener)), dl(0,lit(np(nom,_,_)),lit(s(inf(base))))-appl(word(4),lambda('$VAR'(5),appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6)))))), [
+                     rule(axiom, 'l\'', dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(np(acc,_,3-s))))))-word(4), []),
+                     rule(drdiaboxi(1,1), p(0,y,ramener), dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(np(acc,_,3-s)))))-true, [
+                        rule(dr, p(0,y,p(0,ramener,'$VAR'(1))), dl(0,lit(np(nom,_,_)),lit(s(inf(base))))-appl(word(5),lambda('$VAR'(6),appl(appl(word(6),'$VAR'(5)),'$VAR'(6)))), [
+                           rule(axiom, y, dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(pp(à))))))-word(5), []),
+                           rule(drdiaboxi(1,2), p(0,ramener,'$VAR'(1)), dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),dia(1,box(1,lit(pp(à)))))-true, [
+                              rule(dr, p(0,p(0,ramener,'$VAR'(1)),'$VAR'(2)), dl(0,lit(np(nom,_,_)),lit(s(inf(base))))-appl(appl(word(6),'$VAR'(5)),'$VAR'(6)), [
+                                 rule(dr, p(0,ramener,'$VAR'(1)), dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à)))-appl(word(6),'$VAR'(5)), [
+                                    rule(axiom, ramener, dr(0,dr(0,dl(0,lit(np(nom,_,_)),lit(s(inf(base)))),lit(pp(à))),lit(np(acc,_,3-s)))-word(6), []),
+                                    rule(hyp(1), '$VAR'(1), lit(np(acc,_,3-s))-'$VAR'(5), [])
+                                    ]),
+                                 rule(hyp(2), '$VAR'(2), lit(pp(à))-'$VAR'(6), [])
+                                 ])
+                              ])
+                           ])
+                        ])
+                     ])
+                  ])
+               ]),
+            rule(dr, p(0,au,contraire), dl(1,lit(s(main)),lit(s(main)))-appl(word(2),word(3)), [
+               rule(axiom, au, dr(0,dl(1,lit(s(main)),lit(s(main))),lit(n))-word(2), []),
+               rule(axiom, contraire, lit(n)-word(3), [])
+               ])
+            ])
+         ])
+      ]),
+   rule(axiom, '.', dl(0,lit(s(main)),lit(txt))-word(7), [])
+   ])).
 
 
 % 11772. Il n' y a pas de jeune enfant qui éclabousse dans l' eau
