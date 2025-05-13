@@ -60,6 +60,11 @@ conclusion_pros(rule(_, Pros, _, _), Pros).
 enrich_term('$VAR'(M), Formula, _, Formula-'$VAR'(M)).
 enrich_term(word(M), Formula, Proof, Formula-word(M,Pros)) :-
 	conclusion_pros(Proof, Pros).
+enrich_term(appl(lambda(X,M),N), Formula, Proof, Rich) :-
+        !,
+%        trace,
+        replace_sem(M, X, N, Norm),
+        enrich_term(Norm, Formula, Proof, Rich).    
 enrich_term(lambda(X,M), Formula, Proof, Formula-lambda(X,Enriched)) :-
 	conclusion_subproofs(Proof, [Proof0]),
 	conclusion_formula(Proof0, Formula0),
@@ -143,9 +148,10 @@ translate_name(dli(_), impl_i).
 			   
 % Example sentence	
 
-beta_reduce(X, Y) :-
+beta_reduce(X, Z) :-
 	beta_reduce(X, Y, 1),
-	!.
+	!,
+	beta_reduce(Y, Z).
 beta_reduce(X, X).
 
 beta_reduce(X, Y, 1) :-
@@ -166,7 +172,7 @@ beta_reduce_proof_list([P|Ps], [Q|Qs], N) :-
 
 beta_reduce_step(Proof0, Proof) :-
 	Proof0 = rule(_, _, _-appl(lambda(_,_), N), [Sub1,Sub2]),
-	%	trace,
+%		trace,
 %	replace_sem(M, Y, N, Sem),
 	match_proof_semantics(N, Sub1, Sub2, Fun, Arg),
 	Fun = rule(_, _, _-lambda(X,_), [Proof1]),
