@@ -10,7 +10,7 @@ start :-
 	enrich_proof_term(Proof, Enriched0),
 	transform_term(Enriched0, Enriched),
 	format(user_error, '.', [N]),
-	numbervars(Enriched, 0, _),
+	numbervars(Enriched, 0, _, [singletons(true)]),
 	format('semantics(~q, ~q).~n', [N,Enriched]),
 	fail.
 start.
