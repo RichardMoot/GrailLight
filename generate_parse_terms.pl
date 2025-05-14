@@ -301,9 +301,9 @@ is_correct_action(end(N), CorrectTerm, [G], [end(N)|Vs], Vs) :-
 	graph_to_term(G, Term),
 	is_alpha_equivalent(Term, CorrectTerm),
 	!.
-is_correct_action(appl(N,M), CorrectTerm, Gs0, [appl(N,M)|Vs], Vs) :-
+is_correct_action(appl(N,M), CorrectTerm, Gs0, [appl(N,M)|As], As) :-
 	/* we again assume the root node is the first list member of each graph */
-	trace,
+%	trace,
 	G1 = [N-_|_]-_,
 	G2 = [M-_|_]-_,
 	select(G1, Gs0, Gs1),
@@ -312,8 +312,8 @@ is_correct_action(appl(N,M), CorrectTerm, Gs0, [appl(N,M)|Vs], Vs) :-
 	graph_to_term(G2, Term2),
 	check_is_subterm(appl(Term1,Term2), CorrectTerm),
 	!.
-is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|Vs], Vs) :-
-	member(G, Gs),
+is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|As], As) :-
+        member(G, Gs),
 	G = Vs-Es,
 	member(V1-L1, Vs),
 	member(V2-L2, Vs),
@@ -325,7 +325,7 @@ is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|Vs], Vs
 	Result = lambda('$VAR'(FX), TermC),
 	check_is_subterm(Result, CorrectTerm).	
 % if none of the previous cases succeeded, then the action must be incorrect
-is_correct_action(_, _, _, Vs, Vs).
+is_correct_action(_, _, _, As, As).
 
 
 select_term(X, X, V, V).
@@ -533,16 +533,18 @@ print_length(_) :-
 
 
 subterm(X, X).
-subterm(X, appl(M,_)) :-
-	subterm(X, M).
-subterm(X, appl(_,N)) :-
-	subterm(X, N).
-subterm(X, lambda(_,M)) :-
-	subterm(X, M).
+subterm(appl(M,_), X) :-
+	subterm(M, X).
+subterm(appl(_,N), X) :-
+	subterm(N, X).
+subterm(lambda(_,M), X) :-
+	subterm(M, X).
 
 check_is_subterm(M, N) :-
 	is_subterm(M, N),
 	!.
+
+% is_subterm(X, Y) is true if X is a subterm of Y
 
 is_subterm(X, Y) :-
 	get_fresh_variable_number(X, V),
@@ -552,12 +554,12 @@ is_subterm(X, Y) :-
 
 is_subterm(X, V, Y) :-
 	is_equivalent(X, V, _, Y).
-is_subterm(appl(M,_), V, P) :-
-	is_subterm(M, V, P).
-is_subterm(appl(_,N), V, P) :-
-	is_subterm(N, V, P).
-is_subterm(lambda(_,M), V, P) :-
-	is_subterm(M, V, P).
+is_subterm(P, V, appl(M,_)) :-
+	is_subterm(P, V, M).
+is_subterm(P, V, appl(_,N)) :-
+	is_subterm(P, V, N).
+is_subterm(P, V, lambda(_,M)) :-
+	is_subterm(P, V, M).
 %is_subterm(lambda(X,M), lambda(Y,Q)) :-
 %	replace_sem(P, Y, X, Q),
 %	is_subterm(M, P).
@@ -597,13 +599,13 @@ is_alpha_equivalent(word(N), V, V, word(N)).
 is_alpha_equivalent(appl(N0,M0), V0, V, appl(N,M)) :-
 	is_alpha_equivalent(N0, V0, V1, N),
 	is_alpha_equivalent(M0, V1, V, M).
-is_alpha_equivalent(lambda(X,M), V0, V, lambda(Y,P)) :-
+is_alpha_equivalent(lambda(X,M0), V0, V, lambda(Y,N0)) :-
 	% if Y already exists in M, replace is by a fresh variable V0
 	% then replace X by Y
-	replace_sem(M, Y, V0, N0),
-	replace_sem(N0, X, Y, N),
+	replace_sem(M0, X, '$VAR'(V0), M),
+	replace_sem(N0, Y, '$VAR'(V0), N),
 	V1 is V0 + 1,
-	is_alpha_equivalent(N, V1, V, P).
+	is_alpha_equivalent(M, V1, V, N).
 
 remove_variable('$VAR'(N), _, '$VAR'(N)).
 remove_variable(word(N), _, word(N)).
