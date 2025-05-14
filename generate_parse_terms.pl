@@ -35,7 +35,9 @@ test(AllTerms) :-
 	generate_parse_terms(appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))), AllTerms).
 test(Example, All, Valid) :-
 	Term = appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))),
-	generate_parse_terms(Term, AllTerms),
+	generate_parse_terms(Term, AllTerms0),
+	sort(AllTerms0, AllTerms),
+	print_list(AllTerms),
 	member(Example, AllTerms),
 %	AllTerms = [_,Example|_], % take the second term list
 	term_list_to_graph_list(Example, GraphList),
@@ -323,7 +325,8 @@ is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|As], As
 	get_fresh_variable_number(TermA, FX),
 	add_variable(LR, '$VAR'(FX), TermB, TermCC),
 	Result = lambda('$VAR'(FX), TermC),
-	check_is_subterm(Result, CorrectTerm).	
+	check_is_subterm(Result, CorrectTerm),
+	!.	
 % if none of the previous cases succeeded, then the action must be incorrect
 is_correct_action(_, _, _, As, As).
 
