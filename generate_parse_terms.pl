@@ -26,6 +26,20 @@ start :-
 start :-
 	told.
 
+
+generate_parse_terms(Term0, AllTerms) :-
+	relabel_sem_vars(Term0, Term),
+	generate_parse_terms([[Term]], [[Term]], AllTerms).
+
+test(AllTerms) :-
+	generate_parse_terms(appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))), AllTerms).
+test(All, Valid) :-
+	Term = appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))),
+	generate_parse_terms(Term, AllTerms),
+	AllTerms = [_,Example|_], % take the second term list
+	term_list_to_graph_list(Example, GraphList),
+	compute_correct_actions(Term, GraphList, All, Valid).
+
 % compute all 1-step reductions
 % remove those already seen
 % recursively compute 1-step reductions for all new sets of terms.
@@ -127,7 +141,9 @@ term_yield(appl(M,N), Ys0, Ys) :-
 	term_yield(M, Ys0, Ys1),
 	term_yield(N, Ys1, Ys).
 
-% = 
+% = term_to_graph(+Term, -Graph)
+%
+% take a lambda term Term and convert it into a hypergraph Graph (in the form Vertices-Edges)
 
 term_to_graph(Term, Vertices-Edges) :-
 	term_to_graph(Term, 0, _, Vertices, Edges).
@@ -282,10 +298,46 @@ correct_actions([A|As], CorrectTerm, Gs, Vs0, Vs) :-
 
 is_correct_action(end(N), CorrectTerm, [G], [end(N)|Vs], Vs) :-
 	graph_to_term(G, Term),
-	is_alpha_equivalent(Term, Correct_Term),
+	is_alpha_equivalent(Term, CorrectTerm),
 	!.
+is_correct_action(appl(N,M), CorrectTerm, Gs0, [appl(N,M)|Vs], Vs) :-
+	/* we again assume the root node is the first list member of each graph */
+	trace,
+	G1 = [N-_|_]-_,
+	G2 = [M-_|_]-_,
+	select(G1, Gs0, Gs1),
+	member(G2, Gs1),
+	graph_to_term(G1, Term1),
+	graph_to_term(G2, Term2),
+	check_is_subterm(appl(Term1,Term2), CorrectTerm),
+	!.
+is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|Vs], Vs) :-
+	member(G, Gs),
+	G = Vs-Es,
+	member(V1-L1, Vs),
+	member(V2-L2, Vs),
+	graph_to_term(L1, V1, Vs, Es, TermA),
+	graph_to_term(L2, V2, Vs, Es, TermB),
+	select_term(TermA, TermB, TermC, TermCC),
+	get_fresh_variable_number(TermA, FX),
+	add_variable(LR, '$VAR'(FX), TermB, TermCC),
+	Result = lambda('$VAR'(FX), TermC),
+	check_is_subterm(Result, CorrectTerm).	
 % if none of the previous cases succeeded, then the action must be incorrect
 is_correct_action(_, _, _, Vs, Vs).
+
+
+select_term(X, X, V, V).
+select_term(appl(M0,N), X, appl(M,N), V) :-
+	select_term(M0, X, M, V).
+select_term(appl(M,N0), X, appl(M,N), V) :-
+	select_term(N0, X, N, V).
+select_term(lambda(Y,M0), X, lambda(Y,M), V) :-
+	/* NB: we explicitly allow variable capture here, i.e. X can contain Y */
+	select_term(M0, X, M, V).
+
+add_variable(l, X, Term, appl(X, Term)).
+add_variable(r, X, Term, appl(Term, X)).
 
 compute_root_nodes([], []).
 compute_root_nodes([G|Gs], [R|Rs]) :-
@@ -351,6 +403,11 @@ root_node([N-_|_]-_, N).
 
 action_subterm(end(_), Graph, Term) :-
 	graph_to_term(Graph, Term).
+
+% apply_acction(+Action, +InGraph, -OutGraph)
+%
+% takes an action description Action and an input graph InGraph (in Vs-Es form) and produces
+% the graph resulting from the application of the given Action as OutGraph.
 
 apply_action(end(_), Graph, Graph).
 apply_action(appl(N,M), Graph0, Graph) :-
@@ -473,6 +530,15 @@ print_length(L) :-
 print_length(_) :-
 	true.
 
+
+subterm(X, X).
+subterm(X, appl(M,_)) :-
+	subterm(X, M).
+subterm(X, appl(_,N)) :-
+	subterm(X, N).
+subterm(X, lambda(_,M)) :-
+	subterm(X, M).
+
 check_is_subterm(M, N) :-
 	is_subterm(M, N),
 	!.
@@ -506,10 +572,12 @@ is_equivalent(appl(N0,M0), V0, V, appl(N,M)) :-
 is_equivalent(lambda(X,M), V0, V, lambda(Y,P)) :-
 	% if Y already exists in M, replace is by a fresh variable V0
 	% then replace X by Y
-	replace_sem(M, Y, V0, N0),
+	% as written, fails when X = Y
+	replace_sem(M, Y, '$VAR'(V0), N0),
 	replace_sem(N0, X, Y, N),
 	V1 is V0 + 1,
 	is_equivalent(N, V1, V, P).
+% this case allows specifically for equivalence module lambda expensions
 is_equivalent(lambda(X,M), V0, V, P) :-
 	remove_variable(M, X, N),
 	is_equivalent(N, V0, V, P).
