@@ -33,10 +33,11 @@ generate_parse_terms(Term0, AllTerms) :-
 
 test(AllTerms) :-
 	generate_parse_terms(appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))), AllTerms).
-test(All, Valid) :-
+test(Example, All, Valid) :-
 	Term = appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))),
 	generate_parse_terms(Term, AllTerms),
-	AllTerms = [_,Example|_], % take the second term list
+	member(Example, AllTerms),
+%	AllTerms = [_,Example|_], % take the second term list
 	term_list_to_graph_list(Example, GraphList),
 	compute_correct_actions(Term, GraphList, All, Valid).
 
@@ -569,18 +570,18 @@ is_equivalent(word(N), V, V, word(N)).
 is_equivalent(appl(N0,M0), V0, V, appl(N,M)) :-
 	is_equivalent(N0, V0, V1, N),
 	is_equivalent(M0, V1, V, M).
-is_equivalent(lambda(X,M), V0, V, lambda(Y,P)) :-
+is_equivalent(lambda(X,M0), V0, V, lambda(Y,P0)) :-
 	% if Y already exists in M, replace is by a fresh variable V0
 	% then replace X by Y
 	% as written, fails when X = Y
-	replace_sem(M, Y, '$VAR'(V0), N0),
-	replace_sem(N0, X, Y, N),
+	replace_sem(M0, X, '$VAR'(V0), M),
+	replace_sem(P0, Y, '$VAR'(V0), P),
 	V1 is V0 + 1,
-	is_equivalent(N, V1, V, P).
+	is_equivalent(M, V1, V, P).
 % this case allows specifically for equivalence module lambda expensions
-is_equivalent(lambda(X,M), V0, V, P) :-
+is_equivalent(P, V0, V, lambda(X,M)) :-
 	remove_variable(M, X, N),
-	is_equivalent(N, V0, V, P).
+	is_equivalent(P, V0, V, N).
 
 
 % 
