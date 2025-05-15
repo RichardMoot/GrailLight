@@ -317,6 +317,9 @@ is_correct_action(appl(N,M), CorrectTerm, Gs0, [appl(N,M)|As], As) :-
 is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|As], As) :-
         member(G, Gs),
 	G = Vs-Es,
+        Vs=[Top-LTop|_],
+%	trace,
+	graph_to_term(LTop, Top, Vs, Es, TTerm),
 	member(V1-L1, Vs),
 	member(V2-L2, Vs),
 	graph_to_term(L1, V1, Vs, Es, TermA),
@@ -326,6 +329,8 @@ is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|As], As
 	add_variable(LR, '$VAR'(FX), TermB, TermCC),
 	Result = lambda('$VAR'(FX), TermC),
 	check_is_subterm(Result, CorrectTerm),
+	/* verify the abstraction wasn't already there */
+	\+ check_is_subterm(Result, TTerm),
 	!.	
 % if none of the previous cases succeeded, then the action must be incorrect
 is_correct_action(_, _, _, As, As).
