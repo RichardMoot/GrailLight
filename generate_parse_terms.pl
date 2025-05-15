@@ -26,7 +26,29 @@ start :-
 start :-
 	told.
 
+export_action_graphs([]).
+export_action_graphs([I|Is]) :-
+	proof(I, rule(_,_,_-Term,_)),
+	format('~n === ~w. ~p ===~n', [I, Term]),
+	generate_parse_terms(Term, AllTerms),
+	export_action_graphs1(AllTerms, Term),
+	export_action_graphs(Is).
 
+export_action_graphs1([], _).
+export_action_graphs1([T|Ts], GoalTerm) :-
+	term_list_to_graph_list(T, GraphList),
+	compute_correct_actions(GoalTerm, GraphList, All, Valid),
+	export_action_graphs2(GraphList, All, Valid),
+	export_action_graphs1(Ts, GoalTerm).
+
+export_action_graphs2(A, B, C) :-
+	format('=== graphs ===~n', []),
+	print_list(A),
+	format('=== actions ===~n', []),
+	print_list(B),
+	format('=== valid actions ===~n', []),
+	print_list(C).
+	
 test_data(Train, Dev, Test) :-
 	short_sentences(17, AllIds),
 	random_data_split(AllIds, Train, Dev, Test).
