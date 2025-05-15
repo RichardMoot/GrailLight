@@ -31,24 +31,66 @@ export_action_graphs([I|Is]) :-
 	proof(I, rule(_,_,_-Term,_)),
 	format('~n === ~w. ~p ===~n', [I, Term]),
 	generate_parse_terms(Term, AllTerms),
-	export_action_graphs1(AllTerms, Term),
+	export_action_graphs1(AllTerms, I, 1, Term),
 	export_action_graphs(Is).
 
-export_action_graphs1([], _).
-export_action_graphs1([T|Ts], GoalTerm) :-
+export_action_graphs1([], _, _, _).
+export_action_graphs1([T|Ts], SentN, TermN0, GoalTerm) :-
+	format(' === ~w.~w ~p ===~n', [SentN,TermN0,T]),
 	term_list_to_graph_list(T, GraphList),
 	compute_correct_actions(GoalTerm, GraphList, All, Valid),
 	export_action_graphs2(GraphList, All, Valid),
-	export_action_graphs1(Ts, GoalTerm).
+	TermN is TermN0 + 1,
+	export_action_graphs1(Ts, SentN, TermN, GoalTerm).
 
 export_action_graphs2(A, B, C) :-
 	format('=== graphs ===~n', []),
-	print_list(A),
+	export_vertices_list(A),
+	export_edges_list(A),
 	format('=== actions ===~n', []),
-	print_list(B),
-	format('=== valid actions ===~n', []),
-	print_list(C).
-	
+	export_actions(B, C).
+
+export_graph(Vs-Es) :-
+    export_graph(Vs, Es).
+
+export_graph(Vs, Es) :-
+    export_vertices(Vs),
+    export_edges(Es).
+
+export_vertices_list([]).
+export_vertices_list([Vs-_|Gs]) :-
+    export_vertices(Vs),
+    export_vertices_list(Gs).
+
+export_vertices([]).
+export_vertices([N-L|Vs]) :-
+    format('vertex(~p, ~p).~n', [N, L]),
+    export_vertices(Vs).
+
+export_edges_list([]).
+export_edges_list([_-Es|Gs]) :-
+    export_edges(Es),
+    export_edges_list(Gs).
+
+export_edges([]).
+export_edges([E|Es]) :-
+    format('~p.~n', [E]),
+    export_edges(Es).
+
+export_actions([], _).
+export_actions([A|As], Vs0) :-
+    action_bool(A, Vs0, Vs, Bool),
+    format('action(~p,~p).~n', [A, Bool]),
+    export_actions(As, Vs).
+
+
+action_bool(A, Vs0, Vs, Bool) :-
+    select(A, Vs0, Vs),
+    !,
+    Bool = 1.
+action_bool(_, Vs, Vs, 0).
+
+
 test_data(Train, Dev, Test) :-
 	short_sentences(17, AllIds),
 	random_data_split(AllIds, Train, Dev, Test).
