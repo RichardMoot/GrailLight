@@ -27,6 +27,34 @@ start :-
 	told.
 
 
+test_data(Train, Dev, Test) :-
+	short_sentences(17, AllIds),
+	random_data_split(AllIds, Train, Dev, Test).
+
+short_sentences(MaxLength, SentIndices) :-
+	findall(Idx, is_short_sentence(MaxLength, Idx), SentIndices).
+
+is_short_sentence(Len, Idx) :-
+	proof(Idx, rule(_,_,_-Term,_)),
+	rightmost_word(Term, Right),
+	Right =< Len.
+
+random_data_split(All, Train, Dev, Test) :-
+	random_data_split(All, 0.2, Train, Dev, Test).
+
+random_data_split(All, Fraction, Train, Dev, Test) :-
+	set_random(seed(111)),
+	length(All, Total),
+	DevTestNum is floor(Fraction * Total),
+	length(Dev0, DevTestNum),
+	length(Test0, DevTestNum),
+	random_permutation(All, Random),
+	append(Test0, DevTrain, Random),
+	append(Dev0, Train0, DevTrain),
+	sort(Train0, Train),
+	sort(Dev0, Dev),
+	sort(Test0, Test).
+
 generate_parse_terms(Term0, AllTerms) :-
 	relabel_sem_vars(Term0, Term),
 	generate_parse_terms([[Term]], [[Term]], AllTerms).
