@@ -34,7 +34,9 @@ generate_parse_terms(Term0, AllTerms) :-
 test(AllTerms) :-
 	generate_parse_terms(appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))), AllTerms).
 test(Example, All, Valid) :-
-	Term = appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))),
+	%	Term = appl(word(1),lambda('$VAR'(0),(appl(word(2),'$VAR'(0))))),
+%	Term = appl(word(1), lambda('$VAR'(0), appl(word(2),lambda('$VAR'(1),appl('$VAR'(1),'$VAR'(0)))))),
+	Term = appl(word(2), lambda('$VAR'(1), appl(word(1),lambda('$VAR'(0),appl('$VAR'(1),'$VAR'(0)))))),
 	generate_parse_terms(Term, AllTerms0),
 	sort(AllTerms0, AllTerms),
 	print_list(AllTerms),
@@ -81,7 +83,8 @@ decompose_term(A0, A) :-
 
 decompose_lambda(lambda(X,M0), M) :-
 	decompose_lambda1(M0, X, M),
-	M \== M0.
+	M \== M0,
+	M0 \= X.
 decompose_lambda(lambda(X,M0), lambda(X,M)) :-
 	decompose_lambda(M0, M).
 decompose_lambda(appl(M0, N), appl(M,N)) :-
@@ -99,7 +102,8 @@ decompose_lambda1(appl(M0,N0), X, appl(M,N)) :-
 	decompose_lambda1(M0, X, M),
 	decompose_lambda1(N0, X, N).
 decompose_lambda1(lambda(X,M0), Y, lambda(X,M)) :-
-	decompose_lambda1(M0, Y, M).
+	decompose_lambda1(M0, Y, M),
+        M \= X.
 
 % =
 
@@ -328,6 +332,7 @@ is_correct_action(lambda(LR, V1, V2), CorrectTerm, Gs, [lambda(LR,V1,V2)|As], As
 	get_fresh_variable_number(TermA, FX),
 	add_variable(LR, '$VAR'(FX), TermB, TermCC),
 	Result = lambda('$VAR'(FX), TermC),
+%	Result \= lambda('$VAR'(FX),'$VAR'(FX)),   % probably not needed
 	check_is_subterm(Result, CorrectTerm),
 	/* verify the abstraction wasn't already there */
 	\+ check_is_subterm(Result, TTerm),
@@ -592,8 +597,11 @@ is_equivalent(lambda(X,M0), V0, V, lambda(Y,P0)) :-
 is_equivalent(P, V0, V, lambda(X,M)) :-
 	remove_variable(M, X, N),
 	is_equivalent(P, V0, V, N).
-
-
+% these cases are necessary because the remove_variable predicate can produce closed subterms
+is_equivalent(P, V0, V, appl(M, lambda(X,X))) :-
+	is_equivalent(P, V0, V, M).
+is_equivalent(P, V0, V, appl(lambda(X,X), M)) :-
+	is_equivalent(P, V0, V, M).
 % 
 
 is_alpha_equivalent(Term0, Term) :-
