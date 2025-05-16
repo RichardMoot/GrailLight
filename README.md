@@ -1,8 +1,8 @@
 # GrailLight
 
-:copyright: 2015-2024 [CNRS](http://www.cnrs.fr)
+:copyright: 2015-2025 [CNRS](http://www.cnrs.fr)
 
-:copyright: 2015-2024 Richard Moot (@RichardMoot)
+:copyright: 2015-2025 Richard Moot (@RichardMoot)
 
 Grail Light is a light-weight chart parser for multimodal type-logical
 grammars, written in SWI Prolog. It is accompanied by a set of auxiliary tools for interaction with the
