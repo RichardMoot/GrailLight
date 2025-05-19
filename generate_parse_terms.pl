@@ -43,31 +43,71 @@ export_action_graphs1([T|Ts], SentN, TermN0, GoalTerm) :-
 	TermN is TermN0 + 1,
 	export_action_graphs1(Ts, SentN, TermN, GoalTerm).
 
-export_action_graphs2(A, B, C) :-
-	format('=== graphs ===~n', []),
-	export_vertices_list(A),
-	export_edges_list(A),
-	format('=== actions ===~n', []),
-	export_actions(B, C).
+export_action_graphs2(Vs, HyperEdges, Actions) :-
+	get_fresh_vertex_number(Vs, Vertices, Vertices0, 0, VarNo0),
+	hyperedges_to_edges(HyperEdges, Vertices0, Vertices1, Edges, Edges0, VarNo0, VarNo1),
+        actions_to_edges(Actions, Vertices1, [], Edges0, [], VarNo1, _),
+	export_vertices(Vertices),
+	export_edges(Edges).
+
+get_fresh_vertex_number([], Vs, Vs, Max0, Max) :-
+	Max is Max0 + 1.
+get_fresh_vertex_number([N-L|Ws], [N-L|Vs0], Vs, Max0, Max) :-
+	Max1 is max(N,Max0),
+	get_fresh_vertex_number(Ws, Vs0, Vs, Max1, Max).
+
+hyperedges_to_edges([H|Hs], Vs0, Vs, Es0, Es, N0, N) :-
+	hyperedge_to_edges(H, N, Vs0, Vs1, Es0, Es1),
+	N1 is N0 + 1,
+	hyperedges_to_edges(Hs, Vs1, Vs, Es1, Es, N1, N).
+
+hyperedge_to_edges(hyperedge(L,X,Y,Z), N, [N-[L,hyper]|Vs], Vs, Es0, Es) :-
+	hyperedge_to_edges1(L, X, Y, Z, N, Es0, Es).
+
+hyperedge_to_edges1(appl, X, Y, Z, N, [edge(N, res, X), edge(Y, fun, N), edge(Z, arg, N)|Es], Es).
+hyperedge_to_edges1(lambda, X, Y, Z, N, [edge(N, abs, X), edge(Y, body, N), edge(Z, var, N)|Es], Es).
+
+
+%% export_action_graphs2(A, B, C) :-
+%% 	format('=== graphs ===~n', []),
+%% 	export_vertices_list(A, [], 0, Max),
+%% 	export_edges_list(A, Max),
+%% 	format('=== actions ===~n', []),
+%% 	export_actions(B, C).
 
 export_graph(Vs-Es) :-
-    export_graph(Vs, Es).
+	export_graph(Vs, Es).
 
 export_graph(Vs, Es) :-
-    export_vertices(Vs),
-    export_edges(Es).
+	export_vertices(Vs),
+	export_edges(Es).
 
-export_vertices_list([]).
-export_vertices_list([Vs-_|Gs]) :-
-    export_vertices(Vs),
-    export_vertices_list(Gs).
+export_vertices_list(Vs) :-
+	export_vertices_list(Vs, []).
 
-export_vertices([]).
-export_vertices([N-L|Vs]) :-
-    format('vertex(~p, ~p).~n', [N, L]),
-    export_vertices(Vs).
+export_vertices_list([], _).
+export_vertices_list([Vs-_|Gs], Set0) :-
+	export_vertices(Vs, Set0, Set),
+	export_vertices_list(Gs, Set).
 
-export_edges_list([]).
+export_vertices([], _).
+export_vertices([N-L|Vs], Set0) :-
+	add_vertex(N, Set0, Set),
+	vertex_features(N, L, Features),
+	format('vertex(~p, ~p).~n', [N, Features]),
+	export_vertices(Vs, Set).
+
+vertex_features(F, F).
+
+add_vertex(N, Set0, Set) :-
+	ord_member(N, Set0),
+	!,
+	format(user_error, '{Warning: duplicate vertex index ~w}~n', [N]),
+	Set = Set0.
+add_vertex(N, Set0, Set) :-
+	ord_insert(Set0, N, Set).
+
+export_edges_list([], _).
 export_edges_list([_-Es|Gs]) :-
     export_edges(Es),
     export_edges_list(Gs).
