@@ -1,7 +1,7 @@
 % -*- Mode: Prolog -*-
 
 :- use_module(sem_utils, [relabel_sem_vars/2,relabel_sem_vars/4,replace_sem/4,get_fresh_variable_number/2]).
-:- use_module(ordset, [ord_union/3, ord_subtract/3, ord_insert/3]).
+:- use_module(ordset, [ord_union/3, ord_subtract/3, ord_insert/3, ord_member/2]).
 
 :- compile('/Users/moot/checkout/TLGbank/nd_proofs/300_nd.pl').
 
@@ -43,10 +43,11 @@ export_action_graphs1([T|Ts], SentN, TermN0, GoalTerm) :-
 	TermN is TermN0 + 1,
 	export_action_graphs1(Ts, SentN, TermN, GoalTerm).
 
-export_action_graphs2(Vs, HyperEdges, Actions) :-
+export_action_graphs2(ComponentList, Actions, VActions) :-
+        merge_components(ComponentList, Vs, Es),
 	get_fresh_vertex_number(Vs, Vertices, Vertices0, 0, VarNo0),
-	hyperedges_to_edges(HyperEdges, Vertices0, Vertices1, Edges, Edges0, VarNo0, VarNo1),
-        actions_to_edges(Actions, Vertices1, [], Edges0, [], VarNo1, _),
+	hyperedges_to_edges(Es, Vertices0, Vertices1, Edges, Edges0, VarNo0, VarNo1),
+        actions_to_edges(Actions, VActions, Vertices1, [], Edges0, [], VarNo1, _),
 	export_vertices(Vertices),
 	export_edges(Edges).
 
@@ -56,6 +57,7 @@ get_fresh_vertex_number([N-L|Ws], [N-L|Vs0], Vs, Max0, Max) :-
 	Max1 is max(N,Max0),
 	get_fresh_vertex_number(Ws, Vs0, Vs, Max1, Max).
 
+hyperedges_to_edges([], Vs, Vs, Es, Es, N, N).
 hyperedges_to_edges([H|Hs], Vs0, Vs, Es0, Es, N0, N) :-
 	hyperedge_to_edges(H, N, Vs0, Vs1, Es0, Es1),
 	N1 is N0 + 1,
@@ -67,6 +69,30 @@ hyperedge_to_edges(hyperedge(L,X,Y,Z), N, [N-[L,hyper]|Vs], Vs, Es0, Es) :-
 hyperedge_to_edges1(appl, X, Y, Z, N, [edge(N, res, X), edge(Y, fun, N), edge(Z, arg, N)|Es], Es).
 hyperedge_to_edges1(lambda, X, Y, Z, N, [edge(N, abs, X), edge(Y, body, N), edge(Z, var, N)|Es], Es).
 
+actions_to_edges([], _, Vs, Vs, Es, Es, Max, Max).
+actions_to_edges([A|As], Cs, Vs0, Vs, Es0, Es, Max0, Max) :-
+    is_correct_action(A, Cs, Bool),
+    Max1 is Max0 + 1,
+    action_to_edges(A, Bool, Max0, Vs0, Vs1, Es0, Es1),
+    actions_to_edges(As, Cs, Vs1, Vs, Es1, Es, Max1, Max).
+
+action_to_edges(end(X), Bool, N, [N-[end,action,Bool]|Vs], Vs, [edge(N, end, X)|Es], Es).
+action_to_edges(appl(X,Y), Bool, N, [N-[appl,action,Bool]|Vs], Vs, [edge(N, fun, X),edge(N, arg, Y)|Es], Es).
+action_to_edges(lambda(LR, X,Y), Bool, N, [Node|Vs],Vs, Edges, Es0) :-
+    (
+	X = Y
+    ->
+    Edges = [edge(N, self_abs, X)|Es0],
+    Node = N-[self_abs,LR,action,Bool]
+    ;
+    Edges = [edge(N, root, X), edge(N, sister, Y)|Es0],
+    Node = N-[abs,LR,action,Bool]
+    ).
+is_correct_action(A, Cs, TF) :-
+    member(A, Cs),
+    !,
+    TF = 1.
+is_correct_action(_, _, 0).
 
 %% export_action_graphs2(A, B, C) :-
 %% 	format('=== graphs ===~n', []),
@@ -75,6 +101,19 @@ hyperedge_to_edges1(lambda, X, Y, Z, N, [edge(N, abs, X), edge(Y, body, N), edge
 %% 	format('=== actions ===~n', []),
 %% 	export_actions(B, C).
 
+
+merge_components(Components, Vertices-Edges) :-
+    merge_components(Components, Vertices, Edges).
+
+merge_components(Components, Vertices, Edges) :-
+    merge_components(Components, [], Vertices, [], Edges).
+
+merge_components([], Vs, Vs, Es, Es).
+merge_components([Vs1-Es1|Cs], Vs0, Vs, Es0, Es) :-
+    append(Vs0, Vs1, Vs2),
+    append(Es0, Es1, Es2),
+    merge_components(Cs, Vs2, Vs, Es2, Es).
+    
 export_graph(Vs-Es) :-
 	export_graph(Vs, Es).
 
@@ -90,6 +129,9 @@ export_vertices_list([Vs-_|Gs], Set0) :-
 	export_vertices(Vs, Set0, Set),
 	export_vertices_list(Gs, Set).
 
+export_vertices(Vs) :-
+    export_vertices(Vs, []).
+
 export_vertices([], _).
 export_vertices([N-L|Vs], Set0) :-
 	add_vertex(N, Set0, Set),
@@ -97,7 +139,15 @@ export_vertices([N-L|Vs], Set0) :-
 	format('vertex(~p, ~p).~n', [N, Features]),
 	export_vertices(Vs, Set).
 
-vertex_features(F, F).
+vertex_features(_, F0, F) :-
+    (
+	is_list(F0)
+    ->
+    F = F0
+    ;
+    F = [F0]
+    ).
+
 
 add_vertex(N, Set0, Set) :-
 	ord_member(N, Set0),
