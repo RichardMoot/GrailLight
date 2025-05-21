@@ -29,14 +29,14 @@ start :-
 export_action_graphs([]).
 export_action_graphs([I|Is]) :-
 	proof(I, rule(_,_,_-Term,_)),
-	format('~n === ~w. ~p ===~n', [I, Term]),
+	format('~n% === ~w. ~p ===~n', [I, Term]),
 	generate_parse_terms(Term, AllTerms),
 	export_action_graphs1(AllTerms, I, 1, Term),
 	export_action_graphs(Is).
 
 export_action_graphs1([], _, _, _).
 export_action_graphs1([T|Ts], SentN, TermN0, GoalTerm) :-
-	format(' === ~w.~w ~p ===~n', [SentN,TermN0,T]),
+	format('% === ~w.~w ~p ===~n', [SentN,TermN0,T]),
 	term_list_to_graph_list(T, GraphList),
 	compute_correct_actions(GoalTerm, GraphList, All, Valid),
 	export_action_graphs2(GraphList, All, Valid),
@@ -59,7 +59,7 @@ get_fresh_vertex_number([N-L|Ws], [N-L|Vs0], Vs, Max0, Max) :-
 
 hyperedges_to_edges([], Vs, Vs, Es, Es, N, N).
 hyperedges_to_edges([H|Hs], Vs0, Vs, Es0, Es, N0, N) :-
-	hyperedge_to_edges(H, N, Vs0, Vs1, Es0, Es1),
+	hyperedge_to_edges(H, N0, Vs0, Vs1, Es0, Es1),
 	N1 is N0 + 1,
 	hyperedges_to_edges(Hs, Vs1, Vs, Es1, Es, N1, N).
 
