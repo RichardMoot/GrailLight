@@ -1976,9 +1976,14 @@ add_quantifier(event('$VAR'(X)), Q, F, quant(Q,'$VAR'(X),F)).
 add_quantifier(variable('$VAR'(X)), Q, F, quant(Q,'$VAR'(X),F)).
 
 drs_conditions_to_fol([], true).
-drs_conditions_to_fol([C|Cs], bool(F0,&,F)) :-
-	drs_condition_to_fol(C, F0),
-	drs_conditions_to_fol(Cs, F).
+drs_conditions_to_fol([C|Cs], F) :-
+	drs_conditions_to_fol(Cs, C, F).
+
+drs_conditions_to_fol([], C, F) :-
+	drs_condition_to_fol(C, F).
+drs_conditions_to_fol([C|Cs], C0, bool(F0,&,F)) :-
+	drs_condition_to_fol(C0, F0),
+	drs_conditions_to_fol(Cs, C, F).
 
 drs_condition_to_fol(bool(drs(Vars1,Conds1),->,drs(Vars2,Conds2)), Form) :-
 	!,
