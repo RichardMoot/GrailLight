@@ -1988,7 +1988,7 @@ drs_condition_to_fol(bool(drs(Vars1,Conds1),->,drs(Vars2,Conds2)), Form) :-
 	drs_conditions_to_fol(Conds2, Form2).
 drs_condition_to_fol(bool(drs(Vars1,Conds1),\/,drs(Vars2,Conds2)), bool(Form1,\/,Form3)) :-
 	!,
-	add_quantifiers(Vars1, exist, Form0, Form1),
+	add_quantifiers(Vars1, exists, Form0, Form1),
 	drs_conditions_to_fol(Conds1, Form0),
 	add_quantifiers(Vars2, exists, Form2, Form3),
 	drs_conditions_to_fol(Conds2, Form2).
