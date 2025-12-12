@@ -80,7 +80,7 @@ set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2016-10-31/le
 # set stanford_parser_cmd "/Users/moot/Programs/stanford-parser-full-2015-04-20/lexparser-french.sh"
 set stanford_parser_length 30
 
-set berkeley_parser_cmd "/usr/bin/java -jar /Users/moot/Software/BerkeleyParser/BerkeleyParser-1.7.jar -gr /Users/moot/Software/BerkeleyParser/fra_sm5.gr "
+set berkeley_parser_cmd "/usr/bin/java -jar ../BerkeleyParser/BerkeleyParser-1.7.jar -gr /Users/moot/Software/BerkeleyParser/fra_sm5.gr "
 set bootstrap "berkeley"
 
 set bw 1
