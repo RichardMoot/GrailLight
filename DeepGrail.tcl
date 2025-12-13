@@ -58,7 +58,8 @@ set st_model(french)   "$model_prefix/french_tt"
 set st_model(frenchx)  "$model_prefix/french_tt"
 
 set postagger keras
-set supertagger keras
+# set supertagger keras
+set supertagger deepgrail
 
 set lemmatiser lefff
 #set lemmatiser none
@@ -1392,6 +1393,13 @@ proc supertag {sentence} {
 	if {[catch {exec $keras_st_cmd --model $keras_st_model --input $tmp_dir/st_input.txt --output $tmp_dir/supertag.txt --beta $beta} super_msg]} {
 	    puts stderr $super_msg
 	}
+    } elseif {[string equal $supertagger "deepgrail"]} {
+	set saveDir [pwd]
+	cd /Users/moot/checkout/DeepGrailSupertagger 
+	if {[catch {exec /Users/moot/python/p39torch/bin/python predict.py} super_msg]} {
+	    puts stderr $super_msg
+	}
+	cd $saveDir
     } else {
 	puts stderr "Unknown supertagger: $supertagger"
     }
@@ -1688,6 +1696,9 @@ menu .mb.options.supertagger
     update_menus
 }
 .mb.options.supertagger add radio -label "Keras LSTM" -variable supertagger -value keras -command {
+    update_menus
+}
+.mb.options.supertagger add radio -label "DeepGrail Transformer" -variable supertagger -value deepgrail -command {
     update_menus
 }
 
