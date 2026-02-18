@@ -1559,7 +1559,7 @@ default_semantics(revenir, POS,  dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))
 	pos_time(POS, [], Es, E-Time).
 
 % intransitive "arriver", resolve implicit destination anaphor
-default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([varialbe(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
+default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 % intransitive "partir", resolve implicit source anaphor
 default_semantics(partir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,D),Path),appl(appl(destination,complement(D)),Path)|Time]))))))) :-
