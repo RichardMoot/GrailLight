@@ -3189,6 +3189,7 @@ lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), la
 lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
 lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
 lex(pas, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,drs([],[not(appl(NP,lambda(X,appl(P,X))))])))).
+lex(pas, dr(0,np,pp_de), lambda(PPde,lambda(P,drs([],[not(appl(PPde,lambda(X,appl(P,X))))])))).
 
 lex(jamais, dr(0,s,s), lambda(S, lambda(F, drs([], [not(merge(drs([event(E)],[bool(E,subseteq,F)]),appl(S,E)))])))).
 lex(jamais, dl(1,s,s), lambda(S, lambda(F, drs([], [not(merge(drs([event(E)],[bool(E,subseteq,F)]),appl(S,E)))])))).
