@@ -164,3 +164,20 @@ proof(N, rule(RuleName, Structure, Formula-LambdaTerm, ListOfPremisses)).
 where `N` is the sentence number, `RuleName` the name of the last rule of the proof, `Structure` the computed structure (a tree over the words in the sentence), `Formula` is the goal formula, and `LambdaTerm` the lambda term corresponding to the proof, `ListOfPremisses` is the list of proofs (all of the form `rule(...)` allowing us to derive the conclusion).
 
 Note that the easiest way to obtain the lambda term of the proof (without any substitutions) is to simply obtain it from the last line of the proof.
+
+## Using a bootstrap parser
+
+Using the parser as described above returns the first-found parse for the highest probability supertags. This can be modified in different ways. A simple way to do this is to use an external parser, such as the Berkeley parser and use it on the input sentences as follows.
+
+```
+$berkeley_parser_cmd < input.txt > input.berkeley
+read_trees.pl input.berkeley
+cat parser_crosses.pl >> superpos.pl
+```
+
+Followed by
+```
+grail_light_cr superpos.pl
+```
+
+Doing this will penalise parses by the number of brackets assigned by the Berkeley parser they cross.
