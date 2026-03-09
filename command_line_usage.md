@@ -175,9 +175,9 @@ read_trees.pl input.berkeley
 cat parser_crosses.pl >> superpos.pl
 ```
 
-Followed by
+Followed by calling the GrailLight parser as follows.
 ```
 grail_light_cr superpos.pl
 ```
 
-Doing this will penalise parses by the number of brackets assigned by the Berkeley parser they cross.
+Doing this will penalise parses by the number of brackets assigned by the Berkeley parser they cross. This will give better parser performance than just first found. However, it is worth experimenting with other strategies. The predicate `combine_probability/6` in the file `grail_light_cr.pl` allows the user to define a custom bonus/malus for different rules types and different string positions.
