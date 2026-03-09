@@ -8,7 +8,7 @@ Grail Light is a light-weight chart parser for multimodal type-logical
 grammars, written in SWI Prolog. It is accompanied by a set of auxiliary tools for interaction with the
 supertagger, interactive parsing, corpus extraction, etc.
 
-Together with [DeepGrail](https://richardmoot.github.io/DeepGrail/) or the older [part-of-speech tag and supertag models](https://github.com/RichardMoot/models), Grail Light
+Together with [DeepGrail](https://www.ins2i.cnrs.fr/fr/deepgrail), or the older [DeepGrail2021](https://richardmoot.github.io/DeepGrail2021/), Grail Light
 can function as a wide-coverage parser for French, assigning Discourse Representation Structures as the meaning of parsed sentences. Grail Light produces natural
 deduction proofs like those found in the [TLGbank](http://richardmoot.github.io/TLGbank/) and uses the same conventions for formulas, rules and proofs.
 
@@ -41,7 +41,7 @@ following (in a shell terminal).
 
 # User interface to the part-of-speech/supertagger
 
-Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers](https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
+Use the file `DeepGrail.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the [DeepGrail](https://www.ins2i.cnrs.fr/fr/deepgrail) Transformer supertagger (strongly recommended) or the older Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail2021/). Be sure to set the `deepgrail_prefix` variable in the file to the path containing the `predict.py` script from DeepGrail.
 
 You can then simply run `Supertag.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
 
