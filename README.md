@@ -107,6 +107,8 @@ Language Modelling **3(1)**, pp. 229-265.
 Richard Moot (2017) _The Grail Theorem Prover: Type Theory for Syntax and Semantics_. In Stergios Chatzikyriakidis and Zhaohui Luo (eds.) Modern Perspectives in
 Type-Theoretical Semantics, pp. 247-277.
 
+Moot, R. (2021) _Type-logical investigations: proof-theoretic, computational and linguistic aspects of modern type-logical grammars_ (Habilitation &agrave; Diriger des Recherches, Universit&eacute; Montpellier).
+
 Beno&icirc;t Sagot (2010) _The_ Lefff, _a freely available and large-coverage morphological and syntactic lexicon for French_. In Proceedings of the 7th international conference on Language Resources and Evaluation (LREC 2010), Istanbul, Turkey
 
 Stuart M. Shieber, Yves Schabes and Fernando C. N. Pereira (1995)
