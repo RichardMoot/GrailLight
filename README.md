@@ -43,7 +43,7 @@ following (in a shell terminal).
 
 Use the file `DeepGrail.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the [DeepGrail](https://www.ins2i.cnrs.fr/fr/deepgrail) Transformer supertagger (strongly recommended) or the older Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail2021/). Be sure to set the `deepgrail_prefix` variable in the file to the path containing the `predict.py` script from DeepGrail.
 
-You can then simply run `Supertag.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
+You can then simply run `DeepGrail.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
 
 ![screen shot of the interactive interface to the taggers](supertagger.png)
 
