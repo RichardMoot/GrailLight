@@ -5,7 +5,14 @@
 
 :- compile('/Users/moot/checkout/TLGbank/nd_proofs/300_nd.pl').
 
+
 start :-
+        tell('action_graphs.txt'),
+        test_data(_Train, _Dev, Test),
+        export_action_graphs(Test),
+        told.
+
+generate_term_logs :-
 	tell('term_log.txt'),
 %	Sents = [4],
 %	member(N, Sents),
@@ -23,12 +30,13 @@ start :-
 	format(user_error, '~n***~w parse items for ~w words', [LenAllTerms, Right]),
 	print_list(AllTerms),
 	fail.
-start :-
+generate_term_logs :-
 	told.
 
 export_action_graphs([]).
 export_action_graphs([I|Is]) :-
-	proof(I, rule(_,_,_-Term,_)),
+	proof(I, rule(_,Pros,_-Term,_)),
+	format('~n% === ~w. ~@ ===~n', [I, print_pros(Pros)]),
 	format('~n% === ~w. ~p ===~n', [I, Term]),
 	generate_parse_terms(Term, AllTerms),
 	export_action_graphs1(AllTerms, I, 1, Term),
@@ -180,6 +188,11 @@ action_bool(A, Vs0, Vs, Bool) :-
     Bool = 1.
 action_bool(_, Vs, Vs, 0).
 
+
+test_data(MaxLen, Train, Dev, Test) :-
+	short_sentences(MaxLen, AllIds),
+	random_data_split(AllIds, Train, Dev, Test).
+    
 
 test_data(Train, Dev, Test) :-
 	short_sentences(17, AllIds),
@@ -824,3 +837,14 @@ remove_variable(appl(M0,N0), X, appl(M,N)) :-
 	remove_variable(M0, X, M),
 	remove_variable(N0, X, N).
 
+
+print_pros(A) :-
+         print_pros(A, 0, _).
+
+print_pros(p(_,A,B), N0, N) :-
+         !,
+         print_pros(A, N0, N1),
+         print_pros(B, N1, N).
+print_pros(A, N0, N)  :-
+         N is N0 + 1,
+         format('~w-~w ', [A,N0]).
