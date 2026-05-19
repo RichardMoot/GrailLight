@@ -1422,10 +1422,17 @@ default_semantics(Word, nam:INFO, dr(0,lit(n),lit(n)), lambda(P,lambda(X,presup(
 
 % "se faire" passive
 
-default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(INF)))), lambda(INF,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),merge([variable(X),event(L)],Conds))))))))) :-
+default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(INF)))), lambda(INFV,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),merge([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
 	nonvar(INF),
 	INF = inf(_),
-	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,appl(INF,lambda(Prp,appl(Prp,X))))]),
+	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,appl(INFV,lambda(Prp,appl(Prp,X))))]),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+
+default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dr(0,dl(0,lit(np(_,_,_)),lit(s(INF))),dia(_,box(_,lit(np(_,_,_)))))), lambda(INFObj,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),merge([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
+	nonvar(INF),
+	INF = inf(_),
+	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,drs([event(F)],[appl(appl(appl(INFObj,lambda(Prp,appl(Prp,Y))),lambda(PX,appl(PX,X))),F)]))]),
 	pos_time(ver:TIME, [], Es, E-Tnse).														
 
 % passive (tagged as past participle, should correct some POS-tag errors)
@@ -1552,7 +1559,7 @@ default_semantics(revenir, POS,  dr(0,dl(_,lit(np(_,_,_)),lit(s(_))),lit(pp(à))
 	pos_time(POS, [], Es, E-Time).
 
 % intransitive "arriver", resolve implicit destination anaphor
-default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([varialbe(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
+default_semantics(arriver, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,complement(D)),Path),appl(appl(destination,D),Path)|Time]))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 % intransitive "partir", resolve implicit source anaphor
 default_semantics(partir, POS, dl(_,lit(np(_,_,_)),lit(s(_))), lambda(P, lambda(E,appl(P,lambda(V,presup(drs([variable(D)],[bool(D,=,'lieu?')]),drs(EVs, [appl(appl(appl(travel,Path),V),E),appl(moving,V),appl(path,Path),appl(appl(source,D),Path),appl(appl(destination,complement(D)),Path)|Time]))))))) :-
@@ -2891,6 +2898,10 @@ lex(plutôt, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(drs([event(
 % "y compris"
 lex(compris, dr(0,dl(0,cl_y,dl(1,s,s)),dl(1,s,s)), lambda(SS,lambda(_,lambda(S,lambda(E,merge(merge(drs([event(F)],[]),appl(appl(SS,lambda(_,drs([],[bool(F,subseteq,E)]))),F)),appl(S,E))))))).
 
+% "en train de"
+% hack, should be replaced by multi-word meaning assignment
+lex(train, dr(0,lit(n),dl(0,lit(np(_,_,_)),lit(s(_)))), lambda(INF,lambda(X,merge(drs([event(E)],[appl(appl(en_train_de,X),E)]),appl(appl(INF,lambda(P,appl(P,X))),E))))).
+
 % "tout" is "tout en VPR" constructions is considered semantically vacuous (admittedly a simplification, but hard to do better!)
 lex(tout, dr(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,dl(0,np,s),dl(0,np,s))), lambda(X,X)).
 lex(tout, dr(0,dl(0,dr(0,s,np),dr(0,s,np)),dl(0,dr(0,s,np),dr(0,s,np))), lambda(X,X)).
@@ -3069,6 +3080,11 @@ lex('aussitôt', dr(0,dl(0,np,s),dl(0,np,s)), lambda(VP,lambda(NP,lambda(E,merge
 lex('également', dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(parallel,E),F)]),appl(S,E))))).
 lex('également', dr(0,dl(0,np,s),dl(0,np,s)), lambda(VP,lambda(NP,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),appl(appl(parallel,E),F)]),appl(appl(VP,NP),E)))))).
 
+lex(hors, dr(_,pp(_),pp(de)), lambda(X,X)).
+lex('près', dr(_,pp(_),pp(de)), lambda(X,X)).
+lex(loin, dr(_,pp(_),pp(de)), lambda(X,X)).
+
+
 % = proper nouns - French
 
 lex('Là', dr(0,lit(s(_)),lit(s(_))), lambda(S,lambda(E,merge(drs([variable(X)],[bool(X,=,'lieu?'),appl(appl(lieu,X),E)]),appl(S,E))))).
@@ -3173,6 +3189,7 @@ lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), la
 lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
 lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
 lex(pas, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,drs([],[not(appl(NP,lambda(X,appl(P,X))))])))).
+lex(pas, dr(0,np,pp_de), lambda(PPde,lambda(P,drs([],[not(appl(PPde,lambda(X,appl(P,X))))])))).
 
 lex(jamais, dr(0,s,s), lambda(S, lambda(F, drs([], [not(merge(drs([event(E)],[bool(E,subseteq,F)]),appl(S,E)))])))).
 lex(jamais, dl(1,s,s), lambda(S, lambda(F, drs([], [not(merge(drs([event(E)],[bool(E,subseteq,F)]),appl(S,E)))])))).
@@ -3558,6 +3575,7 @@ lex(':', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,la
 lex(':', dr(0,lit(s(q)),lit(s(main))), lambda(X,X)).
 lex(':', dr(0,dl(0,lit(n),lit(n)),lit(np(_,_,_))), lambda(NP,lambda(N, lambda(X, merge(appl(NP,lambda(_,drs([],[]))),appl(N,X)))))).
 
+lex(et, dr(0,dl(0,lit(np(_,_,_)),lit(s(A))),lit(s(A))),  lambda(S, lambda(NP, lambda(E, merge(appl(NP,lambda(X,(drs([],[appl(appl(parallel,X),E)])))),appl(S,E)))))). 
 % "et" for nouns is sometimes better interpreted as disjunction especially with plural, eg. "enfants et adults", 
 % lex(et, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,drs([],[bool(appl(P,X),\/,appl(Q,X))]))))).
 lex(et, dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,merge(appl(P,X),appl(Q,X)))))). % interpret as conjunction

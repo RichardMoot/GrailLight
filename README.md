@@ -1,14 +1,14 @@
 # GrailLight
 
-:copyright: 2015-2025 [CNRS](http://www.cnrs.fr)
+:copyright: 2015-2026 [CNRS](http://www.cnrs.fr)
 
-:copyright: 2015-2025 Richard Moot (@RichardMoot)
+:copyright: 2015-2026 Richard Moot (@RichardMoot)
 
 Grail Light is a light-weight chart parser for multimodal type-logical
 grammars, written in SWI Prolog. It is accompanied by a set of auxiliary tools for interaction with the
 supertagger, interactive parsing, corpus extraction, etc.
 
-Together with [DeepGrail](https://richardmoot.github.io/DeepGrail/) or the older [part-of-speech tag and supertag models](https://github.com/RichardMoot/models), Grail Light
+Together with [DeepGrail](https://www.ins2i.cnrs.fr/fr/deepgrail), or the older [DeepGrail2021](https://richardmoot.github.io/DeepGrail2021/), Grail Light
 can function as a wide-coverage parser for French, assigning Discourse Representation Structures as the meaning of parsed sentences. Grail Light produces natural
 deduction proofs like those found in the [TLGbank](http://richardmoot.github.io/TLGbank/) and uses the same conventions for formulas, rules and proofs.
 
@@ -41,9 +41,9 @@ following (in a shell terminal).
 
 # User interface to the part-of-speech/supertagger
 
-Use the file `Supertag.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail/) (recommended, set the `keras_tagger_prefix` and `keras_model_prefix` in `Supertag.tcl` to the executables and models respectively) or the [Clark and Curran taggers](https://www.aclweb.org/anthology/J07-4004.pdf) with the corresponding [French models](https://github.com/RichardMoot/models) (set the `cnc_tagger_prefix` and `model_prefix` variables in `Supertag.tcl` to the executables and models respectively).
+Use the file `DeepGrail.tcl` for a TclTk user interface to the part-of-speech tagger and supertagger. You can select either the [DeepGrail](https://www.ins2i.cnrs.fr/fr/deepgrail) Transformer supertagger (strongly recommended) or the older Keras LSTM taggers and models from [DeepGrail](https://richardmoot.github.io/DeepGrail2021/). Be sure to set the `deepgrail_prefix` variable in the file to the path containing the `predict.py` script from DeepGrail.
 
-You can then simply run `Supertag.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
+You can then simply run `DeepGrail.tcl` and type an input sentence into the entry field. The result of the supertagger looks as shown in the figure below.
 
 ![screen shot of the interactive interface to the taggers](supertagger.png)
 
@@ -106,6 +106,8 @@ Language Modelling **3(1)**, pp. 229-265.
 
 Richard Moot (2017) _The Grail Theorem Prover: Type Theory for Syntax and Semantics_. In Stergios Chatzikyriakidis and Zhaohui Luo (eds.) Modern Perspectives in
 Type-Theoretical Semantics, pp. 247-277.
+
+Richard Moot (2021) _Type-logical investigations: proof-theoretic, computational and linguistic aspects of modern type-logical grammars_ (Habilitation &agrave; Diriger des Recherches, Universit&eacute; Montpellier).
 
 Beno&icirc;t Sagot (2010) _The_ Lefff, _a freely available and large-coverage morphological and syntactic lexicon for French_. In Proceedings of the 7th international conference on Language Resources and Evaluation (LREC 2010), Istanbul, Turkey
 

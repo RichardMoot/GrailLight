@@ -90,10 +90,10 @@ proc tokenize1 {sentence} {
     regsub -all {[[:space:]]+} $sentence " " sentence
     #
     regsub -all {œ} $sentence {oe} sentence
-    regsub -all {“} $sentence {\\\"} sentence
-    regsub -all {”} $sentence {\\\"} sentence
-    regsub -all {«} $sentence {\\\"} sentence
-    regsub -all {»} $sentence {\\\"} sentence
+    regsub -all {“} $sentence {\"} sentence
+    regsub -all {”} $sentence {\"} sentence
+    regsub -all {«} $sentence {\"} sentence
+    regsub -all {»} $sentence {\"} sentence
     regsub -all {’} $sentence {'} sentence
     regsub -all {…} $sentence {...} sentence
     regsub -all {–} $sentence {-} sentence
