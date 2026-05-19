@@ -3,12 +3,14 @@
 :- use_module(sem_utils, [relabel_sem_vars/2,relabel_sem_vars/4,replace_sem/4,get_fresh_variable_number/2]).
 :- use_module(ordset, [ord_union/3, ord_subtract/3, ord_insert/3, ord_member/2]).
 
-:- compile('/Users/moot/checkout/TLGbank/nd_proofs/300_nd.pl').
+%:- compile('/Users/moot/checkout/TLGbank/nd_proofs/300_nd.pl').
+:- compile('/Users/moot/checkout/TLGbank/nd_proofs/aa1_nd.pl').
 
 
 start :-
         tell('action_graphs.txt'),
-        test_data(_Train, _Dev, Test),
+        % only export test data for now
+        test_data(8, _Train, _Dev, Test),
         export_action_graphs(Test),
         told.
 
@@ -36,8 +38,8 @@ generate_term_logs :-
 export_action_graphs([]).
 export_action_graphs([I|Is]) :-
 	proof(I, rule(_,Pros,_-Term,_)),
-	format('~n% === ~w. ~@ ===~n', [I, print_pros(Pros)]),
-	format('~n% === ~w. ~p ===~n', [I, Term]),
+	format('~n% *** ~w. ~@ ***~n', [I, print_pros(Pros)]),
+	format('~n% *** ~w. ~p ***~n', [I, Term]),
 	generate_parse_terms(Term, AllTerms),
 	export_action_graphs1(AllTerms, I, 1, Term),
 	export_action_graphs(Is).
@@ -192,11 +194,23 @@ action_bool(_, Vs, Vs, 0).
 test_data(MaxLen, Train, Dev, Test) :-
 	short_sentences(MaxLen, AllIds),
 	random_data_split(AllIds, Train, Dev, Test).
-    
 
-test_data(Train, Dev, Test) :-
-	short_sentences(17, AllIds),
+test_data(MinLen, MaxLen, Train, Dev, Test) :-
+	mid_sentences(MinLen, MaxLen, AllIds),
 	random_data_split(AllIds, Train, Dev, Test).
+    
+test_data(Train, Dev, Test) :-
+        test_data(0, 17, Train, Dev, Test).
+
+mid_sentences(MinLength, MaxLength, SentIndices) :-
+        findall(Idx, is_mid_sentence(MinLength, MaxLength, Idx), SentIndices).
+
+is_mid_sentence(Min, Max, Idx) :-
+	proof(Idx, rule(_,_,_-Term,_)),
+	rightmost_word(Term, Right),
+	Right =< Max,
+        Right >= Min.
+
 
 short_sentences(MaxLength, SentIndices) :-
 	findall(Idx, is_short_sentence(MaxLength, Idx), SentIndices).
@@ -766,8 +780,9 @@ is_subterm(P, V, appl(M,_)) :-
 	is_subterm(P, V, M).
 is_subterm(P, V, appl(_,N)) :-
 	is_subterm(P, V, N).
-is_subterm(P, V, lambda(_,M)) :-
-	is_subterm(P, V, M).
+is_subterm(P, V, lambda(X,M)) :-
+        remove_variable(M, X, N),
+	is_subterm(P, V, N).
 %is_subterm(lambda(X,M), lambda(Y,Q)) :-
 %	replace_sem(P, Y, X, Q),
 %	is_subterm(M, P).
@@ -788,7 +803,7 @@ is_equivalent(lambda(X,M0), V0, V, lambda(Y,P0)) :-
 	replace_sem(P0, Y, '$VAR'(V0), P),
 	V1 is V0 + 1,
 	is_equivalent(M, V1, V, P).
-% this case allows specifically for equivalence module lambda expensions
+% this case allows specifically for equivalence module lambda expansions
 is_equivalent(P, V0, V, lambda(X,M)) :-
 	remove_variable(M, X, N),
 	is_equivalent(P, V0, V, N).
