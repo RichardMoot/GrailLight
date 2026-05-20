@@ -1,6 +1,6 @@
 #!/bin/sh
 # the next line restarts using wish \
-exec /Users/moot/opt/anaconda3/bin/wish "$0" "$@"
+exec /opt/anaconda3/bin/wish "$0" "$@"
 
 set auto_path [linsert $auto_path 0 [pwd]]
 
