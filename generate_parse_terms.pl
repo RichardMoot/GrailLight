@@ -7,9 +7,31 @@
 :- compile('/Users/moot/checkout/TLGbank/nd_proofs/aa1_nd.pl').
 
 
+% =====
+%
+% This first part of the script generates input hypergraphs for training
+% graph neural networds based on the ideas in my Perspectives on Neural
+% Proof Nets paper. Given a lambda term, it generates all possible
+% decompositions and the possible actions to recombine these into
+% the original graph, with the correct actions labeled as such.
+% This turns the problem into a graph labeling problem, where it is
+% relatively easy to do beam search with the k-best actions, just as
+% many standard parsing algorithms do.
+%
+% For larger graphs, this produces too many intermediate structures, so
+% some sort of random sampling probably needs to be added.
+%
+% It would be worth it to reimplement this part in Python to avoid
+% back-and-forth between Prolog and Python in the machine learning
+% graph. This is, instead of Prolog computing the possible continuations
+% and new graphs, Python would do this directly.
+%
+% =====
+
 start :-
         tell('action_graphs.txt'),
         % only export test data for now
+	% maximum sentence length is set to 8 for now
         test_data(8, _Train, _Dev, Test),
         export_action_graphs(Test),
         told.
@@ -865,7 +887,20 @@ print_pros(A, N0, N)  :-
         N is N0 + 1,
         format('~w-~w ', [A,N0]).
 
+% =====
 %
+% This second part of the graph data is the more standard part.
+% It transforms the lambda term and formulas into a hypergraph representing
+% the term, but with the labels allowing us to reconstruct all formulas.
+%
+% There are two types of hyperedges, applications and abstractions, each
+% connecting three vertices.
+%
+% There are two basic types of nodes: atomic nodes, labeled with atomic
+% formulas (np, s, ...), and flow nodes, labeled with connectives (/, \)
+% Orthogonal to this distinction, some nodes are labeled as word nodes,
+% word(N, Word) with N an integer representing the string position, and
+% others as bound variables var(N) with N a unique integer
 
 label_start :-
         tell('label_graphs.txt'),
