@@ -891,35 +891,49 @@ export_typed_term(TypedTerm) :-
 	format('===~n', []).
 
 
+% = export_typed_term(Type-Term, X0, X, Edges0, Edges, Vertices0, Vertices)
+%
+% translate a typed term into its hypergraph representation
+% uses three accumulators:
+% X is the accumulator for vertex number, each recursive call is guaranteed
+%   to return the root node of the typed term as a hypergraph node
+% Edges is the accumulator for the hyperedges
+%       each hyperedge is of the form hyperedge(Type, X, Y, Z) where Type
+%       is one of appl/lambda and X, Y, Z are the three linked nodes
+% Vertices is the accumulator of the vertices
+%       each node is of the form node(Num, Main, Features) where Num is
+%       the unique node number (in depth-first post-order), Main is the
+%       main node  feature 
+
 export_typed_term(Gamma-appl(N,M), X0, X, Es0, Es, Vs0, Vs) :-
 	export_typed_term(N, X0, X1, Es0, Es1, Vs0, Vs1),
 	export_typed_term(M, X1, X2, Es1, Es2, Vs1, Vs2),
 	X is X2 + 1,
-	edge_features(Gamma, F, Fs),
+	node_features(Gamma, F, Fs),
 	Vs = [node(X, F, Fs)|Vs2],
 	Es =  [hyperedge(appl, X, X1, X2)|Es2].
 %	format('hyperedge(appl, ~w, ~w, ~w, ~w, ~w).~n', [X, X1, X2, F, Fs]).
 export_typed_term(Gamma-lambda(_-Z,M), X0, X, Es0, Es, Vs0, Vs) :-
 	export_typed_term(M, X0, X1, Es0, Es1, Vs0, Vs1),
 	find_variable(Z, Vs1, XX),
-	edge_features(Gamma, F, Fs),
+	node_features(Gamma, F, Fs),
 	X is X1 + 1,
 	Vs = [node(X, F, Fs)|Vs1],
 	Es = [hyperedge(lambda, X, X1, XX)|Es1].
 %	format('hyperedge(appl, ~w, ~w, ~w, ~w, ~w).~n', [X, X1, XX, F, Fs]).
-export_typed_term(Alpha-'$VAR'(N), X0, X, Es, Es, Vs, [node(X, var(N), F, Fs)|Vs]) :-
+export_typed_term(Alpha-'$VAR'(N), X0, X, Es, Es, Vs, [node(X, F, [var(N)|Fs])|Vs]) :-
 	X is X0 + 1,
-	edge_features(Alpha, F, Fs).
-export_typed_term(Alpha-word(N,Word), X0, X, Es, Es, Vs, [node(X, word(N,Word), F, Fs)|Vs]) :-
+	node_features(Alpha, F, Fs).
+export_typed_term(Alpha-word(N,Word), X0, X, Es, Es, Vs, [node(X, F, [word(N,Word)|Fs])|Vs]) :-
 	X is X0 + 1,
-	edge_features(Alpha, F, Fs).
+	node_features(Alpha, F, Fs).
 
 find_variable('$VAR'(N), Vertices, X) :-
-	member(node(X, var(N), _, _), Vertices),
+	member(node(X, _, [var(N)|_]), Vertices),
 	!.
 
-edge_features(arrow([F|Fs],_,_), F, Fs).
-edge_features(atom([F|Fs]), F, Fs).
+node_features(arrow([F|Fs],_,_), F, Fs).
+node_features(atom([F|Fs]), F, Fs).
 
 add_types_to_proof_term(Proof, TypedTerm) :-
 	find_axioms(Proof, Axioms),
