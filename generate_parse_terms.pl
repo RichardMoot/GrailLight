@@ -7,9 +7,31 @@
 :- compile('/Users/moot/checkout/TLGbank/nd_proofs/aa1_nd.pl').
 
 
+% =====
+%
+% This first part of the script generates input hypergraphs for training
+% graph neural networds based on the ideas in my Perspectives on Neural
+% Proof Nets paper. Given a lambda term, it generates all possible
+% decompositions and the possible actions to recombine these into
+% the original graph, with the correct actions labeled as such.
+% This turns the problem into a graph labeling problem, where it is
+% relatively easy to do beam search with the k-best actions, just as
+% many standard parsing algorithms do.
+%
+% For larger graphs, this produces too many intermediate structures, so
+% some sort of random sampling probably needs to be added.
+%
+% It would be worth it to reimplement this part in Python to avoid
+% back-and-forth between Prolog and Python in the machine learning
+% graph. This is, instead of Prolog computing the possible continuations
+% and new graphs, Python would do this directly.
+%
+% =====
+
 start :-
         tell('action_graphs.txt'),
         % only export test data for now
+	% maximum sentence length is set to 8 for now
         test_data(8, _Train, _Dev, Test),
         export_action_graphs(Test),
         told.
@@ -852,14 +874,248 @@ remove_variable(appl(M0,N0), X, appl(M,N)) :-
 	remove_variable(M0, X, M),
 	remove_variable(N0, X, N).
 
+% 
 
 print_pros(A) :-
-         print_pros(A, 0, _).
+        print_pros(A, 0, _).
 
 print_pros(p(_,A,B), N0, N) :-
-         !,
-         print_pros(A, N0, N1),
-         print_pros(B, N1, N).
+        !,
+        print_pros(A, N0, N1),
+        print_pros(B, N1, N).
 print_pros(A, N0, N)  :-
-         N is N0 + 1,
-         format('~w-~w ', [A,N0]).
+        N is N0 + 1,
+        format('~w-~w ', [A,N0]).
+
+% =====
+%
+% This second part of the graph data is the more standard part.
+% It transforms the lambda term and formulas into a hypergraph representing
+% the term, but with the labels allowing us to reconstruct all formulas.
+%
+% There are two types of hyperedges, applications and abstractions, each
+% connecting three vertices.
+%
+% There are two basic types of nodes: atomic nodes, labeled with atomic
+% formulas (np, s, ...), and flow nodes, labeled with connectives (/, \)
+% Orthogonal to this distinction, some nodes are labeled as word nodes,
+% word(N, Word) with N an integer representing the string position, and
+% others as bound variables var(N) with N a unique integer
+
+label_start :-
+        tell('label_graphs.txt'),
+        % only export test data for now
+        test_data(8, _Train, _Dev, Test),
+        export_label_graphs(Test),
+        told.
+
+export_label_graphs([]).
+export_label_graphs([N|Ns]) :-
+	proof(N, Proof),
+	add_types_to_proof_term(Proof, TypedTerm),
+	export_typed_term(TypedTerm),
+	export_label_graphs(Ns).
+
+
+export_typed_term(TypedTerm) :-
+	export_typed_term(TypedTerm, -1, _, [], Edges, [], Vertices),
+	format('===~n', []),
+	print_list(Vertices),
+	format('===~n', []),
+	print_list(Edges),
+	format('===~n', []).
+
+
+% = export_typed_term(Type-Term, X0, X, Edges0, Edges, Vertices0, Vertices)
+%
+% translate a typed term into its hypergraph representation
+% uses three accumulators:
+% X is the accumulator for vertex number, each recursive call is guaranteed
+%   to return the root node of the typed term as a hypergraph node
+% Edges is the accumulator for the hyperedges
+%       each hyperedge is of the form hyperedge(Type, X, Y, Z) where Type
+%       is one of appl/lambda and X, Y, Z are the three linked nodes
+% Vertices is the accumulator of the vertices
+%       each node is of the form node(Num, Main, Features) where Num is
+%       the unique node number (in depth-first post-order), Main is the
+%       main node  feature 
+
+export_typed_term(Gamma-appl(N,M), X0, X, Es0, Es, Vs0, Vs) :-
+	export_typed_term(N, X0, X1, Es0, Es1, Vs0, Vs1),
+	export_typed_term(M, X1, X2, Es1, Es2, Vs1, Vs2),
+	X is X2 + 1,
+	node_features(Gamma, F, Fs),
+	Vs = [node(X, F, Fs)|Vs2],
+	Es =  [hyperedge(appl, X, X1, X2)|Es2].
+%	format('hyperedge(appl, ~w, ~w, ~w, ~w, ~w).~n', [X, X1, X2, F, Fs]).
+export_typed_term(Gamma-lambda(_-Z,M), X0, X, Es0, Es, Vs0, Vs) :-
+	export_typed_term(M, X0, X1, Es0, Es1, Vs0, Vs1),
+	find_variable(Z, Vs1, XX),
+	node_features(Gamma, F, Fs),
+	X is X1 + 1,
+	Vs = [node(X, F, Fs)|Vs1],
+	Es = [hyperedge(lambda, X, X1, XX)|Es1].
+%	format('hyperedge(appl, ~w, ~w, ~w, ~w, ~w).~n', [X, X1, XX, F, Fs]).
+export_typed_term(Alpha-'$VAR'(N), X0, X, Es, Es, Vs, [node(X, F, [var(N)|Fs])|Vs]) :-
+	X is X0 + 1,
+	node_features(Alpha, F, Fs).
+export_typed_term(Alpha-word(N,Word), X0, X, Es, Es, Vs, [node(X, F, [word(N,Word)|Fs])|Vs]) :-
+	X is X0 + 1,
+	node_features(Alpha, F, Fs).
+
+find_variable('$VAR'(N), Vertices, X) :-
+	member(node(X, _, [var(N)|_]), Vertices),
+	!.
+
+node_features(arrow([F|Fs],_,_), F, Fs).
+node_features(atom([F|Fs]), F, Fs).
+
+add_types_to_proof_term(Proof, TypedTerm) :-
+	find_axioms(Proof, Axioms),
+	proof_sem(Proof, Term),
+	add_types_to_term(Term, Axioms, [], TypedTerm).
+
+add_types_to_term(word(N), Axioms, _, Type-word(N, Word)) :-
+	member(N-(Word-Type), Axioms),
+	!.
+add_types_to_term(appl(N0,M0), Axioms, Hyps, Gamma-appl(Alpha-N,Beta-M)) :-
+	add_types_to_term(N0, Axioms, Hyps, Alpha-N),
+	add_types_to_term(M0, Axioms, Hyps, Beta-M),
+	Alpha = arrow(_, Beta0, Gamma),
+	same_skeleton(Beta0, Beta).
+add_types_to_term(lambda(X,M0), Axioms, Hyps0, arrow(_,Alpha,Beta)-lambda(Alpha-X,Beta-M)) :-
+	X = '$VAR'(Y),
+	Hyps = [Y-Alpha|Hyps0],
+	add_types_to_term(M0, Axioms, Hyps, Beta-M).
+add_types_to_term('$VAR'(N), _,  Hyps, Alpha-'$VAR'(N)) :-
+	member(N-Alpha, Hyps),
+	!.
+
+same_skeleton(arrow(Fs0, As0, Bs0), arrow(Fs, As, Bs)) :-
+	merge_features(Fs0, Fs),
+	same_skeleton(As0, As),
+	same_skeleton(Bs0, Bs).
+same_skeleton(atom(Fs), atom(Gs)) :-
+	same_atom(Fs, Gs).
+
+merge_features(F, F).
+
+same_atom(Fs, Gs) :-
+	var(Fs),
+	!,
+	Fs =  Gs.
+same_atom(Fs, Gs) :-
+	var(Gs),
+	!,
+	Gs = Fs.
+same_atom(Fs, Gs) :-
+	atom_feature(Fs, A),
+	atom_feature(Gs, A).
+
+
+atom_feature([F|_], A) :-
+	is_atomic_type(F),
+	!,
+	A = F.
+atom_feature([_|Fs], A) :-
+	atom_feature(Fs, A).
+
+is_atomic_type(np).
+is_atomic_type(n).
+is_atomic_type(pp).
+is_atomic_type(s).
+is_atomic_type(cl_r).
+is_atomic_type(cl_y).
+is_atomic_type(txt).
+
+proof_sem(rule(_, _, _-Sem, _), Sem).
+
+find_axioms(Proof, Axioms) :-
+	find_axioms(Proof, Axioms0, []),
+	keysort(Axioms0, Axioms1),
+	find_doubles(Axioms1, Axioms).
+
+
+find_doubles([N-A|As], Bs) :-
+	find_doubles(As, N, A, Bs).
+
+
+find_doubles([], N, A, [N-A]).
+find_doubles([N0-A0|As], N, A, Bs0) :-
+	check_duplicate(N0, N, A0, A, Bs0, Bs),
+	find_doubles(As, N0, A0, Bs).
+
+check_duplicate(N, N, A0, A, Bs0, Bs) :-
+	!,
+   (
+	A0 == A
+   ->
+        true
+   ;
+        format(user_error, '{Warning: duplicate lexical formula ~w ~w}~n', [A0, A])
+   ),
+        Bs = Bs0.
+check_duplicate(_, N, _, A, [N-A|Bs], Bs).
+
+find_axioms(rule(axiom, Word, Formula0-word(N), [])) -->
+	!,
+	{normalize_formula(Formula0, Formula)},
+	[N-(Word-Formula)].
+find_axioms(rule(_, _, _, Premisses)) -->
+	find_axioms_list(Premisses).
+
+
+find_axioms_list([]) -->
+	[].
+find_axioms_list([P|Ps]) -->
+	find_axioms(P),
+	find_axioms_list(Ps).
+
+
+normalize_formula(dr(I,A0,dia(J,box(J,B0))), arrow([dr,I,diabox,J], B, A)) :-
+	!,
+	normalize_formula(A0, A),
+	normalize_formula(B0, B).
+normalize_formula(dr(I,A0,box(J,dia(J,B0))), arrow([dr,I,boxdia,J], B, A)) :-
+	!,
+	normalize_formula(A0, A),
+	normalize_formula(B0, B).
+normalize_formula(dl(I,dia(J,box(J,A0)),B0), arrow([dl,I,diabox,J], A, B)) :-
+	!,
+	normalize_formula(A0, A),
+	normalize_formula(B0, B).
+normalize_formula(dl(I,box(J,dia(J,A0)),B0), arrow([dl,I,boxdia,J], A, B)) :-
+	!,
+	normalize_formula(A0, A),
+	normalize_formula(B0, B).
+normalize_formula(dr(I,A0,B0), arrow([dr,I], B, A)) :-
+	normalize_formula(A0, A),
+	normalize_formula(B0, B).
+normalize_formula(dl(I,A0,B0), arrow([dl,I], A, B)) :-
+	normalize_formula(A0, A),
+	normalize_formula(B0, B).
+normalize_formula(lit(A0), atom(A)) :-
+	normalize_atom(A0, A).
+
+normalize_atom(np(A,B,C), [np|Fs]) :-
+	add_features([A,B,C], Fs).
+normalize_atom(s(A),  [s|Fs]) :-
+	add_features([A], Fs).
+normalize_atom(pp(A), [pp|Fs]) :-
+	add_features([A], Fs).
+normalize_atom(n, [n]).
+normalize_atom(cl_r, [cl_r]).
+normalize_atom(cl_y, [cl_y]).
+normalize_atom(txt, [txt]).
+
+add_features([], []).
+add_features([F|Fs], Gs0) :-
+	add_feature(F, Gs0, Gs),
+	add_features(Fs, Gs).
+
+add_feature('is a variable', Fs,  Fs) :-
+	!.
+add_feature(inf(X), [inf|Fs0], Fs) :-
+	!,
+	add_feature(X, Fs0, Fs).
+add_feature(X, [X|Fs], Fs).
