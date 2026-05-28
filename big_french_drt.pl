@@ -325,7 +325,7 @@ dot_np_semantics(classic, Dis, Sem) :-
 dot_np_semantics(neo, Dis, Sem) :-
 	dot_np_semantics1(Dis, Sem).
 
-dot_np_semantics1(drt, lambda(P,appl(P,lambda(_V,drs([],[]))))).
+dot_np_semantics1(drt, lambda(P,appl(P,lambda(Y,drs([variable(X),event(E)],[bool(X,is_at(E),Y)]))))).
 
 noun_semantics(drt, Word, lambda(V,drs([],[appl(Word,V)]))).
 
