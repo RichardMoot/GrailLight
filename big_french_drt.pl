@@ -2987,6 +2987,10 @@ lex(tellement, dr(0,dr(0,dl(0,lit(n),lit(n)),lit(s(q))),dl(0,lit(n),lit(n))), la
 
 lex(que, dr(0,lit(s(q)),lit(np(_,_,_))), Sem) :-
 	semantics(dot_np, Sem).
+% this is for constructions like aussi/plus/moins ADJ que ADJ
+% the variable X used here for the adjective should be the same as the
+% one for the first adjective, but this requires a proper treatment
+% of multi-word units
 lex(que, dr(0,s_q,dl(0,n,n)), lambda(P,merge(drs([variable(X)],[]),appl(appl(P,lambda(_,drs([],[]))),X)))).
 
 % "C' est dans le jardin que Marie dort"
