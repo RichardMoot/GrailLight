@@ -2987,6 +2987,7 @@ lex(tellement, dr(0,dr(0,dl(0,lit(n),lit(n)),lit(s(q))),dl(0,lit(n),lit(n))), la
 
 lex(que, dr(0,lit(s(q)),lit(np(_,_,_))), Sem) :-
 	semantics(dot_np, Sem).
+lex(que, dr(0,s_q,dl(0,n,n)), lambda(P,merge(drs([variable(X)],[]),appl(appl(P,lambda(_,drs([],[]))),X)))).
 
 % "C' est dans le jardin que Marie dort"
 lex(est, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(q))),lit(pp(PRP))), lambda(PP, lambda(CS, lambda(_NP, lambda(E,merge(appl(PP,lambda(X,drs([],[appl(appl(PRP,X),E)]))),appl(CS,E))))))).
