@@ -1422,14 +1422,14 @@ default_semantics(Word, nam:INFO, dr(0,lit(n),lit(n)), lambda(P,lambda(X,presup(
 
 % "se faire" passive
 
-default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(INF)))), lambda(INFV,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),merge([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
+default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(np(_,_,_)),lit(s(INF)))), lambda(INFV,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
 	nonvar(INF),
 	INF = inf(_),
 	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,appl(INFV,lambda(Prp,appl(Prp,X))))]),
 	pos_time(ver:TIME, [], Es, E-Tnse).
 
 
-default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dr(0,dl(0,lit(np(_,_,_)),lit(s(INF))),dia(_,box(_,lit(np(_,_,_)))))), lambda(INFObj,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),merge([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
+default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dr(0,dl(0,lit(np(_,_,_)),lit(s(INF))),dia(_,box(_,lit(np(_,_,_)))))), lambda(INFObj,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,presup(drs(Es,Tnse),drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
 	nonvar(INF),
 	INF = inf(_),
 	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,drs([event(F)],[appl(appl(appl(INFObj,lambda(Prp,appl(Prp,Y))),lambda(PX,appl(PX,X))),F)]))]),
