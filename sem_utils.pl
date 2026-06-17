@@ -1957,6 +1957,44 @@ get_arguments_result(t, t, []).
 get_arguments_result(A->B, R, [A|As]) :-
 	get_arguments_result(B, R, As).
 
+% = normalize_drs
+
+normalize_drs(merge(D0, E0), F) :-
+	!,
+	normalize_drs(D0, D),
+	normalize_drs(E0, E),
+	merge_drs(D, E, F).
+normalize_drs(presup(D0, E0), F) :-
+	!,
+	normalize_drs(D0, D),
+	normalize_drs(E0, E),
+	merge_drs(D, E, F).
+normalize_drs(drs(X,C0), drs(X,C)) :-
+	normalize_conditions(C0, C).
+
+normalize_conditions([], []).
+normalize_conditions([C|Cs], [D|Ds]) :-
+	normalize_condition(C,  D),
+	normalize_conditions(Cs, Ds).
+
+normalize_condition(bool(drs(V,X0),C,drs(W,Y0)), bool(drs(V,X),C,drs(W,Y))) :-
+	!,
+	normalize_conditions(X0, X),
+	normalize_conditions(Y0, Y).
+normalize_condition(not(D0), not(D)) :-
+	normalize_drs(D0, D).
+normalize_condition(drs_label(L,X0), drs_label(L,X)) :-
+	!,
+	normalize_drs(X0, X).
+normalize_condition(drs(Vs,X0), drs(Vs,X)) :-
+	!,
+	normalize_conditions(X0, X).
+normalize_condition(P, P).
+
+merge_drs(drs(X,C),drs(Y,D), drs(Z,F)) :-
+	merge_lists(X, Y, Z),
+	merge_lists(C, D, F).
+	
 % = drs_to_fol(+DRS, -Formula)
 %
 % converts a Discourse Representation Structure DRS into an equivalent
@@ -2001,7 +2039,48 @@ drs_condition_to_fol(not(drs(Vars,Conds)), not(Form)) :-
 	!,
 	drs_conditions_to_fol(Conds, Form0),
 	add_quantifiers(Vars, exists, Form0, Form).
-drs_condition_to_fol(Form, Form).
+drs_condition_to_fol(drs_label(K,Drs), hybrid_at(K,Form)) :-
+	!,
+	drs_to_fol(Drs, Form).
+drs_condition_to_fol(DRS, Form) :-
+	DRS = drs(_,_),
+	!,
+	drs_to_fol(DRS, Form).
+drs_condition_to_fol(appl(X,Y0), Term) :-
+	application_to_term(Y0, [], Arg),
+	application_to_term(X, [Arg], Term).
+
+
+application_to_term(X, Term) :-
+	application_to_term(X, [], Term).
+
+application_to_term(X, Ys, Term) :-
+	atomic(X),
+	Term =.. [X|Ys].
+application_to_term('$VAR'(X), [], '$VAR'(X)).
+application_to_term(appl(X, Y),  Ys, Term) :-
+	!,
+	application_to_term(Y, [], Arg),
+	application_to_term(X, [Arg|Ys], Term).
+
+hybrid_fol_to_fol(Hybrid, Form) :-
+	hybrid_fol_to_fol(Hybrid, [], Form).
+
+hybrid_fol_to_fol(hybrid_at(K,Form0), L, Form) :-
+	!,
+	hybrid_fol_to_fol(Form0, [K|L], Form).
+hybrid_fol_to_fol(quant(Q,V,F0), L, quant(Q,V,F)) :-
+	!,
+	hybrid_fol_to_fol(F0, L, F).
+hybrid_fol_to_fol(bool(F0,C,G0), L, bool(F,C,G)) :-
+	!,
+	hybrid_fol_to_fol(F0, L, F),
+	hybrid_fol_to_fol(G0, L, G).
+hybrid_fol_to_fol(Atom0, L, Atom) :-
+	Atom0 =.. [F|AList],
+	append(L, AList, List),
+	Atom =.. [F|List].	
+
 
 test_conversion(F) :-
 	DRS = drs([X],[appl(orange,X),bool(drs([Y],[appl(farmer,Y)]),->,drs([Z],[appl(donkey,Z),appl(appl(beat,Z),Y)]))]),
