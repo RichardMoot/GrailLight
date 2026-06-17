@@ -27,6 +27,11 @@
 		       melt_bound_variables/2,
 		       relabel_sem_vars/2,
 		       get_drs_types/2,
+		       drs_to_fol/2,
+		       normalize_drs/2,
+		       drs_to_first_order/2,
+		       drs_to_hybrid/2,
+		       hybrid_fol_to_fol/2,
 		       translate_dynamics/3]).
 
 % =
@@ -1957,6 +1962,16 @@ get_arguments_result(t, t, []).
 get_arguments_result(A->B, R, [A|As]) :-
 	get_arguments_result(B, R, As).
 
+% = drs_to_hybrid
+
+drs_to_hybrid(DRS, Formula) :-
+	normalize(DRS, NDRS),
+	drs_to_fol(NDRS, Formula).
+
+drs_to_first_order(DRS, Formula) :-
+	drs_to_hybrid(DRS, HybridF),
+	hybrid_fol_to_fol(HybridF, Formula).
+
 % = normalize_drs
 
 normalize_drs(merge(D0, E0), F) :-
@@ -2046,9 +2061,7 @@ drs_condition_to_fol(DRS, Form) :-
 	DRS = drs(_,_),
 	!,
 	drs_to_fol(DRS, Form).
-drs_condition_to_fol(appl(X,Y0), Term) :-
-	application_to_term(Y0, [], Arg),
-	application_to_term(X, [Arg], Term).
+drs_condition_to_fol(appl(X,Y), appl(X,Y)).
 
 
 application_to_term(X, Term) :-
@@ -2076,10 +2089,19 @@ hybrid_fol_to_fol(bool(F0,C,G0), L, bool(F,C,G)) :-
 	!,
 	hybrid_fol_to_fol(F0, L, F),
 	hybrid_fol_to_fol(G0, L, G).
-hybrid_fol_to_fol(Atom0, L, Atom) :-
-	Atom0 =.. [F|AList],
-	append(L, AList, List),
-	Atom =.. [F|List].	
+hybrid_fol_to_fol(appl(T0,U), L, appl(T,U)) :-
+	add_arguments_to_term(T0, L, T).
+
+add_arguments_to_term(appl(T0, U), L, appl(T, U)) :-
+	!,
+	add_arguments_to_term(T0, L,  T).
+add_arguments_to_term(T0, L, T) :-
+	add_arguments_to_term1(L, T0, T).
+
+add_arguments_to_term1([], T, T).
+add_arguments_to_term1([V|Vs], T0, T) :-
+	add_arguments_to_term1(Vs, appl(T0, V), T).
+
 
 
 test_conversion(F) :-
