@@ -7,7 +7,7 @@
 :- use_module(lexicon, [macro_expand/2,get_item_semantics/5]).
 :- use_module(heap, [empty_heap/1,add_to_heap/4,get_from_heap/4]).
 :- use_module(prob_lex, [list_atom_term/2,list_atom_term/3,remove_brackets/2]).
-:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2,is_closed/1]).
+:- use_module(sem_utils, [substitute_sem/3,reduce_sem/2,drs_to_hybrid/2,replace_sem/4,melt_bound_variables/2,subterm/2,subterm_with_unify/2,renumbervars/1,try_unify_semantics/2,is_closed/1]).
 :- use_module(latex, [latex_proof/2,latex_header/1,latex_header/2,latex_tail/1,latex_drs_semantics/2]).
 :- use_module(options, [create_options/0,get_option/2,option_true/1]).
 :- use_module(print_proof, [print_proof/3,xml_proof/3]).
@@ -33,6 +33,8 @@
 quote_mode(1, 1).
 
 display_unreduced_semantics(no).
+
+display_first_order_semantics(yes).
 
 default_depth_limit(10000).
 %default_depth_limit(25000).
@@ -482,8 +484,18 @@ print_grail_semantics(SentN0, Sem) :-
    ;
         true
    ),
-	latex_drs_semantics(RSem, sem),
-	format(sem, '~n\\end{multline}~2n', []).
+        latex_drs_semantics(RSem, sem),
+ 	format(sem, '~n\\end{multline}~2n', []),
+  (	
+	display_first_order_semantics(yes),
+	drs_to_hybrid(RSem, Form)
+   ->
+        format(sem, '\\[~n', []),
+        latex_semantics(Form, sem),
+	format(sem, '\\]~2n', [])
+   ;
+        true
+   ).
 
 print_grail_semantics_tail :-
 	latex_tail(sem),
