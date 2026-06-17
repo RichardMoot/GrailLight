@@ -589,6 +589,15 @@ latex_semantics(ref(Ind,X,Y), _, Tr, Stream) :-
 					latex_semantics(X, 1, Tr, Stream),
 					latex_write_set(Y, Tr, Stream)]).
 
+latex_semantics(hybrid_at(X,Y), _, Tr, Stream) :-
+	!,
+	write(Stream, '@_{'),
+	latex_semantics(X, 1, Tr, Stream),
+	write(Stream, '}('),
+	latex_semantics(Y, 1, Tr, Stream),
+	write(Stream, ')').
+
+
 % = DRT
 
 latex_semantics(drs_label(L,T), _, Tr, Stream) :-
