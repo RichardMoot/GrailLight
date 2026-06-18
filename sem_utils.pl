@@ -2093,9 +2093,9 @@ hybrid_fol_to_fol1(bool(F0,C,G0), X, bool(F,C,G)) :-
  	!,
 	hybrid_fol_to_fol1(F0, X, F),
  	hybrid_fol_to_fol1(G0, X, G).
-hybrid_fol_to_fol1(appl(T0,U), X, appl(T,U)) :-
+hybrid_fol_to_fol1(appl(T0,U), X, T) :-
 	!,
- 	add_arguments_to_term(T0, [X], T).
+ 	add_arguments_to_term_start(appl(T0,U), [X], T).
 hybrid_fol_to_fol1(F, _, F).
 
 %% hybrid_fol_to_fol(Hybrid, Form) :-
@@ -2112,17 +2112,20 @@ hybrid_fol_to_fol1(F, _, F).
 %% 	hybrid_fol_to_fol(F0, L, F),
 %% 	hybrid_fol_to_fol(G0, L, G).
 %% hybrid_fol_to_fol(appl(T0,U), L, appl(T,U)) :-
-%% 	add_arguments_to_term(T0, L, T).
+%% 	add_arguments_to_term_end(T0, L, T).
 
-add_arguments_to_term(appl(T0, U), L, appl(T, U)) :-
+add_arguments_to_term_start(Term0, L, Term) :-
+	add_arguments_to_term(L, Term0, Term).
+
+add_arguments_to_term_end(appl(T0, U), L, appl(T, U)) :-
 	!,
-	add_arguments_to_term(T0, L,  T).
-add_arguments_to_term(T0, L, T) :-
-	add_arguments_to_term1(L, T0, T).
+	add_arguments_to_term_end(T0, L,  T).
+add_arguments_to_term_end(T0, L, T) :-
+	add_arguments_to_term_end1(L, T0, T).
 
-add_arguments_to_term1([], T, T).
-add_arguments_to_term1([V|Vs], T0, T) :-
-	add_arguments_to_term1(Vs, appl(T0, V), T).
+add_arguments_to_term([], T, T).
+add_arguments_to_term([V|Vs], T0, T) :-
+	add_arguments_to_term(Vs, appl(T0, V), T).
 
 
 
