@@ -492,9 +492,11 @@ print_grail_semantics(SentN0, Sem) :-
   ->
 	format(sem_pl, '% = Firt-order Semantics~2nsemantics(~d, first_order, ~W).~2n', [SentN0,Form,[numbervars(true),quoted(true)]]),
         format(sem, '% ~w~n', [Form]),
-        format(sem, '\\[\\textrm{Formula:}\\;~n', []),
+        format(sem, '\\begin{align*}~n', []),
+        format(sem, '\\begin{autobreak}~n', []),
         latex_semantics(Form, lit(s(_)), sem),
-	format(sem, '\\]~2n', [])
+	format(sem, '\\end{autobreak}~n', []),
+	format(sem, '\\end{align*}~2n', [])
    ;
         true
    ).
