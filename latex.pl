@@ -77,6 +77,7 @@ latex_header(Stream, PaperSize) :-
 	format(Stream, '\\usepackage{amssymb}~n', []),         
 	format(Stream, '\\usepackage{latexsym}~n', []),         
 	format(Stream, '\\usepackage{amsmath}~n', []),         
+	format(Stream, '\\usepackage{autobreak}~n', []),         
 	format(Stream, '\\usepackage{proof}~n', []),         
 	format(Stream, '\\usepackage{moreverb}~n', []),         
 	format(Stream, '\\usepackage{array}~n', []),         
@@ -1218,90 +1219,98 @@ binds(update(_,_),update(_,_),=<,2).
 % =
 
 write_quant(exists, Stream) :-
-     !,
-     write(Stream, ' \\exists ').
+	!,
+	write(Stream, ' \\exists ').
 write_quant(forall, Stream) :-
-     !,
-     write(Stream, ' \\forall ').
+	!,
+	write(Stream, ' \\forall ').
 write_quant(iota, Stream) :-
-     !,
-     write(Stream, ' \\iota ').
+	!,
+	write(Stream, ' \\iota ').
 write_quant(X, Stream) :-
-     write(Stream, X).
+	write(Stream, X).
 
 % = binary connectives
 
 % logical connectives
+%
+% and/or/implication end with newline to serve as possible line break
+% point for the autobreak package
 
 write_conn(and, Stream) :-
-     !,
-     write(Stream, ' \\wedge ').
+	!,
+	write(Stream, ' \\,\\wedge'),
+	nl(Stream).
 write_conn(&, Stream) :-
-     !,
-     write(Stream, ' \\wedge ').
+	!,
+	write(Stream, ' \\,\\wedge'),
+	nl(Stream).
 write_conn(or, Stream) :-
-     !,
-     write(Stream, ' \\vee ').
+	!,
+	write(Stream, ' \\,\\vee'),
+	nl(Stream).
 write_conn(\/, Stream) :-
-     !,
-     write(Stream, ' \\vee ').
+	!,
+	write(Stream, ' \\,\\vee'),
+	nl(Stream).
 write_conn(->, Stream) :-
-     !,
-     write(Stream, ' \\rightarrow ').
+	!,
+	write(Stream, ' \\,\\rightarrow'),
+	nl(Stream).
 
 % inequalities and comparisons
 
 write_conn(neq, Stream) :-
-     !,
-     write(Stream, ' \\neq ').
+	!,
+	write(Stream, ' \\neq ').
 write_conn(approx, Stream) :-
-     !,
-     write(Stream, ' \\approxeq ').
+	!,
+	write(Stream, ' \\approxeq ').
 write_conn(leq, Stream) :-
-     !,
-     write(Stream, ' \\leq ').
+	!,
+	write(Stream, ' \\leq ').
 write_conn(geq, Stream) :-
-     !,
-     write(Stream, ' \\geq ').
+	!,
+	write(Stream, ' \\geq ').
 write_conn(nleq, Stream) :-
-     !,
-     write(Stream, ' \\nleq ').
+	!,
+	write(Stream, ' \\nleq ').
 write_conn(lneq, Stream) :-
-     !,
-     write(Stream, ' \\lneq ').
+	!,
+	write(Stream, ' \\lneq ').
 write_conn(gneq, Stream) :-
-     !,
-     write(Stream, ' \\gneq ').
+	!,
+	write(Stream, ' \\gneq ').
 write_conn(ngeq, Stream) :-
-     !,
-     write(Stream, ' \\ngeq ').
+	!,
+	write(Stream, ' \\ngeq ').
 write_conn(prec, Stream) :-
-     !,
-     write(Stream, ' \\prec ').
+	!,
+	write(Stream, ' \\prec ').
 write_conn(succ, Stream) :-
-     !,
-     write(Stream, ' \\succ ').
+	!,
+	write(Stream, ' \\succ ').
 write_conn(preceq, Stream) :-
-     !,
-     write(Stream, ' \\preceq ').
+	!,
+	write(Stream, ' \\preceq ').
 write_conn(succeq, Stream) :-
-     !,
-     write(Stream, ' \\succeq ').
+	!,
+	write(Stream, ' \\succeq ').
 write_conn(simeq, Stream) :-
-     !,
-     write(Stream, ' \\simeq ').
+	!,
+	write(Stream, ' \\simeq ').
 write_conn(eq, Stream) :-
-     !,
-     write(Stream, ' = ').
+	!,
+	write(Stream, ' = ').
 write_conn(overlaps, Stream) :-
-     !,
-     write(Stream, ' \\circ ').
+	!,
+	write(Stream, ' \\circ ').
 write_conn(starts, Stream) :-
-     !,
-     write(Stream, ' \\, \\textit{starts}\\; ').
+	!,
+	write(Stream, ' \\, \\textit{starts}\\; ').
 write_conn(abuts, Stream) :-
-     !,
-     write(Stream, ' \\mbox{\\ensuremath{\\supset\\!\\subset}} ').
+	!,
+	write(Stream, ' \\mbox{\\ensuremath{\\supset\\!\\subset}} ').
 
 % sets
 
