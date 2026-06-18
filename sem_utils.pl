@@ -1386,7 +1386,7 @@ syntactic_to_semantic_type(Syn, W, _, _) :-
 	
 e_type(E) :-
     (
-	user:entity_type(_)
+	current_predicate(_, user:entity_type(_))
     ->
 	user:entity_type(E)
     ;
@@ -1395,7 +1395,7 @@ e_type(E) :-
 
 drs_type(Drs) :-
     (
-        user:drs_type(_)
+	current_predicate(_, user:drs_type(_))
     ->
         user:drs_type(Drs)
     ;
@@ -1404,7 +1404,7 @@ drs_type(Drs) :-
 
 t_type(Bool) :-
     (
-	user:boolean_type(_)
+	current_predicate(_, user:boolean_type(_))
     ->
 	user:boolean_type(Bool)
 	
@@ -1414,7 +1414,7 @@ t_type(Bool) :-
 
 s_type(State) :-
     (
-	user:state_type(_)
+	current_predicate(_, user:state_type(_))
     ->
 	user:state_type(State)
     ;
@@ -1965,7 +1965,7 @@ get_arguments_result(A->B, R, [A|As]) :-
 % = drs_to_hybrid
 
 drs_to_hybrid(DRS, Formula) :-
-	normalize(DRS, NDRS),
+	normalize_drs(DRS, NDRS),
 	drs_to_fol(NDRS, Formula).
 
 drs_to_first_order(DRS, Formula) :-
@@ -2061,7 +2061,7 @@ drs_condition_to_fol(DRS, Form) :-
 	DRS = drs(_,_),
 	!,
 	drs_to_fol(DRS, Form).
-drs_condition_to_fol(appl(X,Y), appl(X,Y)).
+drs_condition_to_fol(F, F).
 
 
 application_to_term(X, Term) :-
@@ -2076,21 +2076,43 @@ application_to_term(appl(X, Y),  Ys, Term) :-
 	application_to_term(Y, [], Arg),
 	application_to_term(X, [Arg|Ys], Term).
 
-hybrid_fol_to_fol(Hybrid, Form) :-
-	hybrid_fol_to_fol(Hybrid, [], Form).
+hybrid_fol_to_fol(Hybrid, Formula) :-
+	hybrid_fol_to_fol1(Hybrid, Formula),
+	renumbervars(Formula).
 
-hybrid_fol_to_fol(hybrid_at(K,Form0), L, Form) :-
+hybrid_fol_to_fol1(Hybrid, quant(exists,X,Form)) :-
+	hybrid_fol_to_fol1(Hybrid, X, Form).
+
+hybrid_fol_to_fol1(hybrid_at(Y,Form0), X, quant(exists,Y,bool(appl(appl('R',Y),X),&,Form))) :-
 	!,
-	hybrid_fol_to_fol(Form0, [K|L], Form).
-hybrid_fol_to_fol(quant(Q,V,F0), L, quant(Q,V,F)) :-
+	hybrid_fol_to_fol1(Form0, Y, Form).
+hybrid_fol_to_fol1(quant(Q,V,F0), X, quant(Q,V,F)) :-
+ 	!,
+ 	hybrid_fol_to_fol1(F0, X, F).
+hybrid_fol_to_fol1(bool(F0,C,G0), X, bool(F,C,G)) :-
+ 	!,
+	hybrid_fol_to_fol1(F0, X, F),
+ 	hybrid_fol_to_fol1(G0, X, G).
+hybrid_fol_to_fol1(appl(T0,U), X, appl(T,U)) :-
 	!,
-	hybrid_fol_to_fol(F0, L, F).
-hybrid_fol_to_fol(bool(F0,C,G0), L, bool(F,C,G)) :-
-	!,
-	hybrid_fol_to_fol(F0, L, F),
-	hybrid_fol_to_fol(G0, L, G).
-hybrid_fol_to_fol(appl(T0,U), L, appl(T,U)) :-
-	add_arguments_to_term(T0, L, T).
+ 	add_arguments_to_term(T0, [X], T).
+hybrid_fol_to_fol1(F, _, F).
+
+%% hybrid_fol_to_fol(Hybrid, Form) :-
+%% 	hybrid_fol_to_fol(Hybrid, [], Form).
+
+%% hybrid_fol_to_fol(hybrid_at(K,Form0), L, Form) :-
+%% 	!,
+%% 	hybrid_fol_to_fol(Form0, [K|L], Form).
+%% hybrid_fol_to_fol(quant(Q,V,F0), L, quant(Q,V,F)) :-
+%% 	!,
+%% 	hybrid_fol_to_fol(F0, L, F).
+%% hybrid_fol_to_fol(bool(F0,C,G0), L, bool(F,C,G)) :-
+%% 	!,
+%% 	hybrid_fol_to_fol(F0, L, F),
+%% 	hybrid_fol_to_fol(G0, L, G).
+%% hybrid_fol_to_fol(appl(T0,U), L, appl(T,U)) :-
+%% 	add_arguments_to_term(T0, L, T).
 
 add_arguments_to_term(appl(T0, U), L, appl(T, U)) :-
 	!,
