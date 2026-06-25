@@ -157,9 +157,12 @@ reduce_drs1(drs(V,L0), drs(V,[bool(presup(P,Q),->,R)|L])) :-
 	ord_intersect(FV, BV, []).
 reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,->,R)|L]))) :-
 	select(bool(presup(P,Q),->,R), L0, L).
-	
-reduce_drs1(drs(V,L0), presup(P, drs(V,[Q|L]))) :-
-	select(presup(P, Q), L0, L).
+
+% this case is a bit weird: it is for when a presupposition occurs as a
+% DRS condition
+reduce_drs1(drs(V,L0), presup(P, R)) :-
+	select(presup(P, Q), L0, L),
+	drs_merge(drs(V,L), Q, R).
 reduce_drs1(drs(V,L0), presup(P, drs(V,[drs_label(X,Q)|L]))) :-
 	select(drs_label(X,presup(P, Q)), L0, L).
 
