@@ -94,7 +94,6 @@ reduce_sem(SemIn, SemOut) :-
 	/* user-defined semantic treatment */
 	reduce_user(SemDRS, SemOut).
 
-% = DRS merge; simply appends contexts and conditions
 
 reduce_drs(D0, D) :-
 	reduce_drs1(D0, D1),
@@ -102,6 +101,10 @@ reduce_drs(D0, D) :-
 	!,
 	reduce_drs(D1, D).
 reduce_drs(D, D).
+
+% DRS merge; simply appends contexts and conditions, but removes any
+% duplicate variables or conditions (only strictly identical duplicates
+% are removed)
 
 reduce_drs1(merge(drs(X,C),drs(Y,D)), drs(Z,F)) :-
 	merge_lists(X, Y, Z),
@@ -203,8 +206,19 @@ reduce_condition(appl(F0,A0), appl(F,A)) :-
 	reduce_condition(A0, A).
 reduce_condition(C, C).
 
+% = drs_bool(?Connective)
+%
+% true if Connective is an allowed binary boolean connective in a DRS
+% condition. In standard Discourse Representation Theory, these are only
+% implication and disjunction. 
+
 drs_bool(->).
 drs_bool(\/).
+
+% = merge_list(+List1, +List2, -Merged)
+%
+% true if Merged contains all elements of List1 and List2 but with
+% strict duplicates removed. 
 
 merge_lists([], Ls2, Ls2).
 merge_lists([L1|Ls1], Ls2, [L1|Ls]) :-
@@ -221,6 +235,9 @@ strict_removeall(E, [L|Ls0], [L|Ls]) :-
 
 
 % = Quine's reductions
+%
+% some standard simplifications to remove occurrences of "true" and "false"
+% for example, true -> A is replaced by A.
 
 reduce_quine(Sem0, Sem) :-
 	reduce_quine(active),
@@ -1499,7 +1516,18 @@ add_drs_variable('$VAR'(N), T0, T) :-
    ;
         T = T0
    ).
-		    
+
+
+% =========================================================================
+% This section is old code intended to work with film_db.pl in the Grail 
+% grammar fragments. This grammar combines a small movie database where the
+% user can ask simple questions and add simple facts, and the semantics is
+% converted to Prolog queries and assertions.
+%
+% This code is deprecated but I welcom anyone wanting to make an updated
+% version of this code.
+
+
 % sem_to_prolog(Goal, LambdaTerm, PrologGoal)
 %
 
@@ -1818,19 +1846,8 @@ vars_to_term([], V, V).
 vars_to_term([V|Vs], V0, T) :-
 	vars_to_term(Vs, V0-V, T).
 
-smash_drs([], List, Term) :-
-	smash_drs1(List,Term).
-smash_drs([X|Xs], List, lambda(X, Term)) :-
-	smash_drs(Xs, List, Term).
-
-smash_drs1([], true).
-smash_drs1([C|Cs], Term) :-
-	smash_drs2(Cs, C, Term).
-
-smash_drs2([], Term, Term).
-smash_drs2([C|Cs], C0, bool(C0,&,Term)) :-
-	smash_drs2(Cs, C, Term).
-
+% = end of the filmdb.pl code
+% =========================================================================
 
 % = freeze(+Term, -FrozenTerm)
 
@@ -1965,15 +1982,26 @@ get_arguments_result(t, t, []).
 get_arguments_result(A->B, R, [A|As]) :-
 	get_arguments_result(B, R, As).
 
-% = drs_to_hybrid
+% = drs_to_hybrid(+DRS, -Formula)
+%
+% normalizes a DRS, then converts it to a formula in hybrid first-order
+% logic.
 
 drs_to_hybrid(DRS, Formula) :-
 	normalize_drs(DRS, NDRS),
 	drs_to_fol(NDRS, Formula).
 
+% = drs_to_first_order(+DRS, -Formula)
+%
+% normalizes a DRS, then converts it to a formula in first-order logic.
+% For most users, this is the predicate that should be used to convert
+% DRS output, as produced by GrailLight, into first-order logic formulas
+% to send to theorem provers.
+
 drs_to_first_order(DRS, Formula) :-
 	drs_to_hybrid(DRS, HybridF),
-	hybrid_fol_to_fol(HybridF, Formula).
+	hybrid_fol_to_fol(HybridF, Formula0),
+	reduce_quine(Formula0, Formula).
 
 % = normalize_drs
 
@@ -2017,6 +2045,18 @@ merge_drs(drs(X,C),drs(Y,D), drs(Z,F)) :-
 %
 % converts a Discourse Representation Structure DRS into an equivalent
 % first-order logic formula Formula.
+%
+% Note that this requires a DRS without any remaining merge/2 or presup/2 
+% predicates. Use drs_to_first_order/2 to normalize then reduce a DRS
+%
+% This is basically the standard translation of Kamp & Reyle, with the
+% extensions of my French grammar, notably
+% - drs_label(K,D),   with interpretation: at world K, the embedded DRS D
+%                     is true (just like the @_k operation from hybrid
+%                     first-order logic
+% - DRS as condition, embedded DRSs are used to prevent the variables
+%                     introduced by the Verkuyl-style temporal analysis 
+%                     to be valid as antecedents for temporal anaphora.
 
 drs_to_fol(drs(Vars,Conds), Fol) :-
 	add_quantifiers(Vars, exists, Fol0, Fol),
@@ -2079,6 +2119,13 @@ application_to_term(appl(X, Y),  Ys, Term) :-
 	application_to_term(Y, [], Arg),
 	application_to_term(X, [Arg|Ys], Term).
 
+% = hybrid_to_fol(+Hybrid, -Formula)
+%
+% true if Formula is that standard translation of a formula Hybrid in hybrid
+% first-order logic into a formula in first-order logic.
+% The basic idea, as for many modal to first-order logic translations, is
+% to add a world variable to predicates.
+
 hybrid_fol_to_fol(Hybrid, Formula) :-
 	hybrid_fol_to_fol1(Hybrid, Formula),
 	renumbervars(Formula).
@@ -2086,6 +2133,9 @@ hybrid_fol_to_fol(Hybrid, Formula) :-
 hybrid_fol_to_fol1(Hybrid, quant(exists,X,Form)) :-
 	hybrid_fol_to_fol1(Hybrid, X, Form).
 
+% the standard translation would simply moves from current world X to the
+% world Y specified by the @_y binder. I've added xRy as extra formula to
+% be able to trace the path taken.
 hybrid_fol_to_fol1(hybrid_at(Y,Form0), X, quant(exists,Y,bool(appl(appl('R',Y),X),&,Form))) :-
 	!,
 	hybrid_fol_to_fol1(Form0, Y, Form).
@@ -2101,6 +2151,9 @@ hybrid_fol_to_fol1(appl(T0,U), X, T) :-
  	add_arguments_to_term_start(appl(T0,U), [X], T).
 hybrid_fol_to_fol1(F, _, F).
 
+% Alternative version for passing a stack of worlds to each predicate
+% I *strongly* prefer the un-commented version above, though.
+%
 %% hybrid_fol_to_fol(Hybrid, Form) :-
 %% 	hybrid_fol_to_fol(Hybrid, [], Form).
 
