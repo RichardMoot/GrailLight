@@ -338,6 +338,8 @@ sem_tv_subject_control(Word, POS, lambda(INF,lambda(NP,lambda(E,appl(NP,lambda(Z
 auxiliary_verb_etre(POS, _Rest0, lambda(P,lambda(X,lambda(E,merge(appl(appl(P,X),E),drs(EVs,Rest)))))) :-
 	past_participle_semantics(POS, [], EVs, E, Rest).
 
+auxiliary_verb_avoir_inv(POS, _Rest0, lambda(X,lambda(P,lambda(E,merge(appl(appl(P,X),E),drs(EVs,Rest)))))) :-
+	past_participle_semantics(POS, [], EVs, E, Rest).
 auxiliary_verb_avoir(POS, _Rest0, lambda(P,lambda(X,lambda(E,merge(appl(appl(P,X),E),drs(EVs,Rest)))))) :-
 	past_participle_semantics(POS, [], EVs, E, Rest).
 auxiliary_verb_se(POS, _Rest0, lambda(VPPC, lambda(C, lambda(NP,lambda(E,merge(appl(appl(appl(VPPC,C),NP),E),drs(EVs,Rest))))))) :-
@@ -1752,6 +1754,8 @@ default_semantics(Word, ver:POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(_
 	pos_time(ver:POS, [event(L)], EVs, E-Time).
 	
 
+default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), Sem) :-
+	auxiliary_verb_avoir_inv(POS, [], Sem).	
 default_semantics(avoir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
 	auxiliary_verb_avoir(POS, [], Sem).
 default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
@@ -3664,6 +3668,7 @@ lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),lit(np(_,_,_))), lambda(NP,lambda(
 % "Il y a deux ans"
 lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dl(1,s,s))),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
 lex(a, dr(0,dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),s),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(_,lambda(_,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
+lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dr(0,s,s))),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
 
 % = coordination and discourse connectives
 
@@ -3887,6 +3892,8 @@ lex(vous, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np
 lex(le, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'masculin?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 lex(la, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'féminin?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 lex('l\'', dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
+lex('l\'', dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
+lex('L\'', dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex(les, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?'),bool(num(Y),>,1)]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 
 lex(me, dr(0,dl(0,np,s),dr(0,dl(0,np,s),dia(1,box(1,pp_a)))), lambda(P,lambda(Q,lambda(E,merge(drs([variable(Y)],[appl(orateur,Y)]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
