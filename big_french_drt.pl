@@ -342,6 +342,8 @@ auxiliary_verb_avoir_inv(POS, _Rest0, lambda(X,lambda(P,lambda(E,merge(appl(appl
 	past_participle_semantics(POS, [], EVs, E, Rest).
 auxiliary_verb_avoir(POS, _Rest0, lambda(P,lambda(X,lambda(E,merge(appl(appl(P,X),E),drs(EVs,Rest)))))) :-
 	past_participle_semantics(POS, [], EVs, E, Rest).
+auxiliary_verb_y_avoir(POS, _Rest0, lambda(P,lambda(Y,lambda(X,lambda(E,merge(appl(appl(appl(P,Y),X),E),drs(EVs,Rest))))))) :-
+	past_participle_semantics(POS, [], EVs, E, Rest).
 auxiliary_verb_se(POS, _Rest0, lambda(VPPC, lambda(C, lambda(NP,lambda(E,merge(appl(appl(appl(VPPC,C),NP),E),drs(EVs,Rest))))))) :-
 	past_participle_semantics(POS, [], EVs, E, Rest).	
 
@@ -1756,6 +1758,8 @@ default_semantics(Word, ver:POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(_
 
 default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),dl(_,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), Sem) :-
 	auxiliary_verb_avoir_inv(POS, [], Sem).	
+default_semantics(avoir, POS, dr(_,dl(_,lit(cl_y),dl(_,lit(np(_,_,_)),lit(s(_)))),dl(_,lit(cl_y),dl(_,lit(np(_,_,_)),lit(s(ppart))))), Sem) :-
+	auxiliary_verb_y_avoir(POS, [], Sem).
 default_semantics(avoir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
 	auxiliary_verb_avoir(POS, [], Sem).
 default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
@@ -3508,6 +3512,15 @@ lex(des, dr(0,dl(1,s,s),n), lambda(N, lambda(S, lambda(E, presup(merge(drs([vari
 lex(aux, dr(0,pp_a,n), lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex(des, dr(0,pp_de,n), lambda(P,lambda(Q,presup(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 
+% au moins X/au plus X
+
+lex('Au', dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(au,X)]),appl(N,X)),appl(P,X)))))))).
+lex(au, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(au,X)]),appl(N,X)),appl(P,X)))))))).
+
+lex('En', dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
+lex(en, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
+
+
 % plus_de
 % NOTE: several different constructions are possible here
 % "plus de 200"
@@ -3540,6 +3553,7 @@ lex(ou, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),
 lex(ou, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lambda(P,drs([],[bool(appl(NP1,P),\/,appl(NP2,P))]))))).
 lex(ou, dr(0,dl(0,np,np),n), lambda(N,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(N,Y)),\/,appl(NP,P))]))))).
 lex(ou, dr(0,dl(0,np,np),dl(0,n,n)), lambda(NN,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(appl(NN,lambda(_,drs([],[]))),Y)),\/,appl(NP,P))]))))).
+lex(ou, dr(0,dl(0,dr(0,lit(np(_,_,_)),lit(n)),dr(0,lit(np(_,_,_)),lit(n))),dr(0,lit(np(_,_,_)),lit(n))),lambda(Det1,lambda(Det2,lambda(N,lambda(P,drs([],[bool(appl(appl(Det1,N),P),\/,appl(appl(Det2,N),P))])))))).
 
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,'event?')]),appl(S,E))))).
 lex(mais, dl(0,lit(s(Z)),dr(0,lit(s(Z)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
@@ -3665,6 +3679,7 @@ lex(où, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n)))
 
 % "Il y a une alpiniste ..."
 lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(E,appl(NP,lambda(X,drs([event(E)],[appl(appl(existe,X),E)])))))))).
+lex(eu, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(E,appl(NP,lambda(X,drs([event(E)],[appl(appl(existe,X),E)])))))))).
 % "Il y a deux ans"
 lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dl(1,s,s))),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
 lex(a, dr(0,dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),s),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(_,lambda(_,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
@@ -3749,6 +3764,14 @@ lex('Après', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs(
 lex('Après', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 lex(après, dr(0,dl(1,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
 lex(après, dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),<,appl(temps,E))]))),appl(S,E)))))).
+
+lex(avant, dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),<,appl(temps,F))]))))))).
+lex(avant, dr(0,dl(1,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),<,appl(temps,F))]))))))).
+lex('Avant', dr(0,dr(0,s,s),s_q), lambda(S1,lambda(S2,lambda(E,merge(merge(drs([event(F)],[]),appl(S1,F)),merge(appl(S2,E),drs([],[bool(appl(temps,E),<,appl(temps,F))]))))))).
+
+lex('Avant', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),>,appl(temps,E))]))),appl(S,E)))))).
+lex(avant, dr(0,dl(1,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),>,appl(temps,E))]))),appl(S,E)))))).
+lex(avant, dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[bool(appl(temps,X),>,appl(temps,E))]))),appl(S,E)))))).
 
 % = "Selon NP S" is translated as "NP soutient que S" (NP claims that S) 
 lex('Selon', dr(0,dr(0,s,s),np), lambda(NP,lambda(S,lambda(F,appl(NP,lambda(X,drs([event(L)],[appl(appl(appl(soutenir_que,L),X),F),drs_label(L,merge(drs([event(E)],[]),appl(S,E)))]))))))).
@@ -4046,6 +4069,7 @@ lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,la
 lex('(', dr(0,dl(0,n,n),lit(np(_,_,_))), lambda(NP, lambda(N, lambda(X, merge(appl(N,X),drs([],[appl(NP,lambda(_,drs([],[])))])))))). 
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(N,X),drs([],[appl(P,X)])))))))).
 lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[appl(appl(background,X),E)]),appl(S,E))))))))).
+lex('(', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(_)))), lambda(VP,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[appl(appl(background,X),E)]),appl(appl(VP,NP),E))))))))).
 lex('(', dr(0,dl(0,n,n),s), lambda(S,lambda(N,lambda(X,merge(appl(N,X),merge(drs([event(E)],[appl(appl(background,X),E)]),appl(S,E))))))).
 lex('(', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex('-', dr(0,dl(1,s,s),s), lambda(P,lambda(Q,lambda(E,merge(drs([event(F)],[appl(appl(background,F),E)]),merge(appl(P,E),appl(Q,F))))))).
