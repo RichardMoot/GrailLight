@@ -3050,6 +3050,8 @@ lex(tellement, dr(0,dr(0,dl(0,lit(n),lit(n)),lit(s(q))),dl(0,lit(n),lit(n))), la
 
 lex(que, dr(0,lit(s(q)),lit(np(_,_,_))), Sem) :-
 	semantics(dot_np, Sem).
+lex(que, dr(0,lit(s(q)),lit(pp(_))), Sem) :-
+	semantics(dot_np, Sem).
 % this is for constructions like aussi/plus/moins ADJ que ADJ
 % the variable X used here for the adjective should be the same as the
 % one for the first adjective, but this requires a proper treatment
@@ -3333,6 +3335,11 @@ lex(tel, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y
 lex(tels, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
 lex(telle, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
 lex(telles, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
+
+
+% = "tel que" gives examples
+lex(tel, dr(0,dl(0,lit(n),lit(n)),lit(s(q))), lambda(S,lambda(P,lambda(X, merge(appl(P,X),drs([event(E)],[bool(E,subseteq,X),drs_label(E,S)])))))).
+
 
 % Indefinites
 % currently, no difference in meaning is made between "des", "certains", "plusieurs" and "quelques"
