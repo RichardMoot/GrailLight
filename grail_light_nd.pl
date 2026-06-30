@@ -2682,6 +2682,14 @@ ord_key_union_var_3(>, H1, V1, T1, H2, V2, T2, [H2-V2|Union]) :-
 
 % = streams
 
+close_all_streams :-
+    stream_property(Stream, _),
+    close(Stream, [force(true)]),
+    fail.
+
+close_all_streams.
+
+
 check_log_stream :-
     (
 	is_stream(log)
