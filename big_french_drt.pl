@@ -2113,6 +2113,12 @@ default_semantics(interdire, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,
 	add_roles([agent-X,patient-Y,theme-L], interdire, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(POS, [event(L)], EVs, E-Pred).
 
+default_semantics(ordonner, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], ordonner, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
+
 
 % RAISING + INF
 
@@ -3520,6 +3526,14 @@ lex(au, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(
 lex('En', dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
 lex(en, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
 
+% un peu
+
+lex('Un', dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
+lex(un, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
+
+
+lex(ayant, dr(0,dl(0,n,n),dl(0,np,s_ppart)), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),merge(merge(drs([event(E)],[]),drs(EVs,Rest)),appl(appl(VP,lambda(P,appl(P,X))),E))))))) :-
+	past_participle_semantics(ver:pres, [], EVs, E, Rest).
 
 % plus_de
 % NOTE: several different constructions are possible here
@@ -3862,6 +3876,8 @@ lex(sans, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([e
 lex('.', dl(0,dr(0,s,s),txt), lambda(SMOD,appl(appl(SMOD,lambda(_,drs([event(E)],[bool(E,=,'event?')]))),E))).
 lex('.', dl(0,lit(s(_)),lit(txt)), Sem) :-
 	semantics(dot, Sem).
+lex('\"', dl(0,lit(s(_)),lit(txt)), Sem) :-
+	semantics(dot, Sem).
 lex('?', dl(0,lit(s(_)),lit(txt)), Sem) :-
 	semantics(dot, Sem).
 lex('...', dl(0,lit(s(_)),lit(txt)), Sem) :-
@@ -3917,6 +3933,7 @@ lex(vous, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np
 lex(le, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'masculin?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 lex(la, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'féminin?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 lex('l\'', dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
+lex(le, dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex('l\'', dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex('L\'', dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex(les, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?'),bool(num(Y),>,1)]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
@@ -4046,8 +4063,6 @@ lex('Que', dr(0,s_whq,dr(0,s,dia(1,box(1,np)))), lambda(P, lambda(E, merge(drs([
 % R (e->t)									%lambda(NPS,lambda(E,appl(NPS,lambda(X,drs([variable(X)],[appl(sleep,X)])))))	
 %wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
 
-									  
-% ladite ledit
 
 lex(été, dr(0,dl(0,np,s_ppart),dl(0,np,s_pass)), lambda(VP,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
 	pos_time(ver:pper, [], Es, E-Cs).
@@ -4058,6 +4073,12 @@ lex(été, dr(0,dl(0,np,lit(s(_))),dl(0,np,lit(s(ppart)))), Sem) :-
 
 lex(à, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(P,lambda(S,lambda(E,merge(merge(drs([event(F)],[appl(appl(à,E),F)]),appl(S,E)),appl(appl(P,merge(drs([variable(X)],[]),lambda(Q,appl(Q,X)))),F)))))).
 
+% "deux à trois"
+% because the two determiner arguments will each generate a variable, an
+% embedded DRS is used to hide these variables anaphoric binding, much like
+% the event variables introduced by the Verkuyl-style interval semantics
+lex(à, dr(0,dl(0,dr(0,np,n),dr(0,np,n)),dr(0,np,n)), lambda(Y,lambda(X,lambda(N,lambda(P,merge(merge(merge(drs([variable(Z)],[]),appl(N,Z)),appl(P,Z)),drs([],[
+									   merge(appl(appl(Y,lambda(_,drs([],[]))),lambda(V,drs([],[bool(num(Z),leq,num(V))]))),									 appl(appl(X,lambda(_,drs([],[]))),lambda(W,drs([],[bool(num(W),leq,num(Z))]))))]))))))).
 
 lex(',', dl(0,n,n), lambda(X,X)).
 lex(',', dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(X,X)).
