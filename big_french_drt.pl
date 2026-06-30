@@ -3439,6 +3439,8 @@ lex('l\'', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_the_semantics(Sem).
 lex('L\'', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_the_semantics(Sem).
+lex(le, dr(0,dl(0,n,n)), lambda(ADJ,lambda(P,presup(merge(drs([variable(X)],[]),appl(appl(ADJ,lambda(_,drs([],[]))),X)),appl(P,X))))).
+
 
 % Existential
 
