@@ -2584,8 +2584,8 @@ default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_)
 % = Default semantics without POS tag =
 % =====================================
 
-
 default_semantics(_, let, drs([],[])).
+default_semantics(_, lit(let), drs([],[])).
 
 default_semantics(alors, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(alors, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
