@@ -1481,6 +1481,12 @@ default_semantics(présenter, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),
 	add_roles([agent-Y,theme-L], se_présenter, E, Conds, []),
 	pos_time(ver:TIME, [], Es, E-Tnse).
 
+% frequent lemmatiser error
+
+default_semantics(présente, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_présenter, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
 
 % passive (tagged as past participle, should correct some POS-tag errors)
 
