@@ -130,20 +130,28 @@ get_item_semantics(Word, Formula, Semantics) :-
         default_semantics(Word, Formula, Semantics),
 	!.
 get_item_semantics(Word, Formula, Word) :-
-   (	
+   (
+        Formula = let
+   ->
+        true
+   ;
+        Formula = lit(let)
+   ->
+        true
+   ;   
 	is_stream(log)
    ->		    
-	format(log, 'MIS_SEM_FORM: ~p~n', [Formula]),
+	format(log, 'MIS_SEM_FORM: ~k~n', [Formula]),
 	format(log, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word])
    ;
         is_stream(sem_pl)
    ->
-	format(sem_pl, '% MIS_SEM_FORM: ~p~n', [Formula]),
+	format(sem_pl, '% MIS_SEM_FORM: ~k~n', [Formula]),
 	format(sem_pl, '% MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word])
    ;
         true
    ),
- 	format(user_error, '% MIS_SEM_FORM: ~p~n', [Formula]),
+ 	format(user_error, '% MIS_SEM_FORM: ~k~n', [Formula]),
 	format(user_error, '% MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]).
    
 		
@@ -161,22 +169,30 @@ get_item_semantics(Word, _POS, _Lemma, Formula, Semantics) :-
         default_semantics(Word, Formula, Semantics),
 	!.
 get_item_semantics(Word, POS, Lemma, Formula, Lemma) :-
-   (	
+    (
+        Formula = let
+    ->
+        true
+    ;
+        Formula = lit(let)
+    ->
+        true
+    ;	
 	is_stream(log)
    ->		    
-	format(log, 'MIS_SEM_FORM: ~p~n', [Formula]),
+	format(log, 'MIS_SEM_FORM: ~k~n', [Formula]),
 	format(log, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
 	format(log, 'MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula])
    ;
         is_stream(sem_pl)
    ->
-	format(sem_pl, '% MIS_SEM_FORM: ~p~n', [Formula]),
+	format(sem_pl, '% MIS_SEM_FORM: ~k~n', [Formula]),
 	format(sem_pl, '% MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
 	format(sem_pl, '% MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula])
    ;
         true
    ),
-	format(user_error, 'MIS_SEM_FORM: ~p~n', [Formula]),
+	format(user_error, 'MIS_SEM_FORM: ~k~n', [Formula]),
 	format(user_error, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
 	format(user_error, 'MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula]).
    
