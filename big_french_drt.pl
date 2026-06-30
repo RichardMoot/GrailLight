@@ -3613,6 +3613,8 @@ lex(que, dr(0,lit(s(q)),lit(n)), lambda(P,merge(drs([variable(X)],[]),appl(P,X))
 lex(que, dr(0,lit(s(q)),lit(s(main))), lambda(X,X)).
 lex('qu\'', dr(0,lit(s(q)),lit(s(main))), lambda(X,X)).
 
+lex(que, dr(0,dl(0,lit(np(_,ce,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(_CE,lambda(P,merge(drs([event(E),variable(X)],[bool(X,=,E)]),merge(appl(P,X),appl(S,E))))))).
+lex('qu\'', dr(0,dl(0,lit(np(_,ce,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambda(_CE,lambda(P,merge(drs([event(E),variable(X)],[bool(X,=,E)]),merge(appl(P,X),appl(S,E))))))).
 
 % = relativization
 
