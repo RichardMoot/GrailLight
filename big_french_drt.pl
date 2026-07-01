@@ -1494,6 +1494,14 @@ default_semantics(présente, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),l
 	add_roles([agent-Y,theme-L], se_présenter, E, Conds, []),
 	pos_time(ver:TIME, [], Es, E-Tnse).
 
+% = 
+
+default_semantics(demander, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(s(whq))), lambda(SWHQ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([event(L),event(F)],[drs_label(L,appl(SWHQ,F))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_demander, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+
+
 
 % passive (tagged as past participle, should correct some POS-tag errors)
 
@@ -2288,6 +2296,11 @@ default_semantics(faire, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(
 	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[bool(E,subseteq,F)]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
+% = avoir + deinf + pp_pour
+
+default_semantics(avoir, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(pp(pour))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], avoir_pour_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Tm]).
 
 
 default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SType)))),lit(np(_,_,_))), lambda(NPO, lambda(INF, lambda(NPS, lambda(E, appl(NPS,lambda(Y,appl(NPO,lambda(X,drs(EVs,Conds)))))))))) :-
@@ -2302,6 +2315,8 @@ default_semantics(Word, ver:TIME, dr(0,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(n
 	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(INF,lambda(P,appl(P,Y))),F)))|Pred]),
 	pos_time(ver:TIME, [event(L)], EVs, E-Pred).
 
+
+default_semantics(quel, _,  dr(_,dr(_,dl(_,dr(_,lit(pp(Prep)),lit(np(_,_,_))),lit(s(whq))),lit(s(_))),lit(n)), lambda(N,lambda(S,lambda(_PP,lambda(E,merge(appl(S,E),merge(drs([variable(X)],[appl(appl(Prep,X),E),bool(X,=,'?quel')]),appl(N,X)))))))).
 
 % = default case for verbs having an infintive group as an argument; default to subject control
 
@@ -2497,6 +2512,8 @@ default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), la
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(generic,X)|Conds]))),appl(P,V)))))) :-
 	get_roles(W, [np, np, np], [SubjectRole, ObjectRole, Arg]),
 	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(s(_))), lambda(SQ,lambda(N,lambda(V, merge(appl(N,V),drs([event(E),event(F)],[drs_label(F,appl(SQ,E))|Conds])))))) :-
+	add_roles([agent-V,theme-F], W, E, Conds, []).
 
 default_semantics(venir, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(base))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L)],Conds)))))) :-
 	add_roles([agent-X,theme-L], venir, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
@@ -3271,6 +3288,7 @@ lex(ne, dl(0,dl(0,lit(np(A,B,C)),lit(s(Z))),dl(0,lit(np(A,B,C)),lit(s(Z)))), lam
 lex('n\'', dr(0,dl(0,lit(np(A,B,C)),lit(s(Z))),dl(0,lit(np(A,B,C)),lit(s(Z)))), lambda(X,X)).
 lex('n\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
 lex('N\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
+lex(pas, dr(0,dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z))))), lambda(VPY,lambda(Y,lambda(NP,lambda(E,drs([],[not(appl(appl(appl(VPY,Y),NP),E))])))))).
 lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lambda(VP,lambda(NP,lambda(E,drs([],[not(appl(appl(VP,NP),E))]))))).
 lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
 lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
@@ -3765,7 +3783,7 @@ lex(dont, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(1,box(1,lit(pp(de)))))), S
 lex(dont, dr(0,dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(N, lambda(X, merge(drs([event(E)],[]),appl(appl(VP,lambda(P,appl(NP,lambda(Y,merge(drs([],[appl(appl(de,Y),X)]),merge(appl(P,Y),appl(N,X))))))),E))))))).
 lex(dont, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP, lambda(VP, lambda(NP2, lambda(P, merge(appl(NP,lambda(Y,appl(NP2,lambda(X,drs([],[appl(appl(de,Y),X)]))))),merge(drs([event(E)],[]),merge(appl(appl(VP,NP),E),appl(P,Y))))))))).
 
-lex(quoi,  dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, n, n)), lit(s(_))), lambda(S, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[bool(X,=,'context?')]),merge(appl(S,E),merge(appl(N,X),drs([],[Term]))))))))) :-
+lex(quoi,  dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, n, n)), lit(s(_))), lambda(S, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[bool(X,=,'quoi?')]),merge(appl(S,E),merge(appl(N,X),drs([],[Term]))))))))) :-
      (
          var(Prp)
      ->
@@ -3774,7 +3792,7 @@ lex(quoi,  dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, n, n)), lit(s(
      ;
          Term = appl(appl(Prp,X),E)
      ).
-lex(quoi, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), lit(s(whq))), dr(0, lit(s(_)), dia(1, box(1, lit(pp(Prp)))))), lambda(VP, lambda(PP, appl(PP,lambda(X,merge(drs([event(E)],[bool(X,=,'context?')]),appl(appl(VP,lambda(P,appl(P,X))),E))))))).
+lex(quoi, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), lit(s(whq))), dr(0, lit(s(_)), dia(1, box(1, lit(pp(Prp)))))), lambda(VP, lambda(PP, appl(PP,lambda(X,merge(drs([event(E)],[bool(X,=,'quoi?')]),appl(appl(VP,lambda(P,appl(P,X))),E))))))).
 
 lex(où, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n))), lit(s(_))), lambda(S, lambda(_PP, lambda(N, lambda(X, merge(drs([event(E)],[]),merge(appl(S,E),merge(appl(N,X),drs([],[Term]))))))))) :-
      (
