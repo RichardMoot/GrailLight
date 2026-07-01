@@ -1347,6 +1347,11 @@ add_roles_predicate(L0, P, E) -->
 
 % = numbers
 
+% special case for adverbs like "deux fois"
+
+default_semantics(W, num, dr(0,dr(0,dl(1,s,s),dl(1,s,s)),n), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(S,G))]),appl(N,F)))))))).
+default_semantics(W, num, dr(0,dl(1,s,s),n), lambda(N,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(S,G))]),appl(N,F))))))).
+
 default_semantics(W, num, dr(0,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([],[bool(appl(rank,V),=,Num)]),appl(P,V))))) :-
 	convert_ordinal(W, Num).
 default_semantics(W, num, dr(0,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([],[bool(num(V),=,Num)]),appl(P,V))))) :-
@@ -3607,6 +3612,13 @@ lex(ayant, dr(0,dl(0,n,n),dl(0,np,s_ppart)), lambda(VP,lambda(N,lambda(X,merge(a
 
 lex(plus, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,=,appl(plus_de,Y))]))),appl(P,X))))).
 %lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,>,Y)]))),appl(P,X))))).
+lex(plus, dr(0,dr(0,lit(np(_,_,_)),lit(s(q))),lit(pp(de))), lambda(Q,lambda(SQ,lambda(P,merge(appl(Q,lambda(Y,drs([event(E)],[bool(appl(mésure,Y),>,mésure(E)),drs_label(E,SQ)]))),appl(P,Y)))))).
+lex(plus, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variable(X),event(E)],[bool(appl(mésure,X),>,appl(mésure,E)),drs_label(E,SQ)]),appl(P,X))))).
+
+lex(moins, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,=,appl(moins_de,Y))]))),appl(P,X))))).
+%lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,>,Y)]))),appl(P,X))))).
+lex(moins, dr(0,dr(0,lit(np(_,_,_)),lit(s(q))),lit(pp(de))), lambda(Q,lambda(SQ,lambda(P,merge(appl(Q,lambda(Y,drs([event(E)],[bool(appl(mésure,Y),<,mésure(E)),drs_label(E,SQ)]))),appl(P,Y)))))).
+lex(moins, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variable(X),event(E)],[bool(appl(mésure,X),<,appl(mésure,E)),drs_label(E,SQ)]),appl(P,X))))).
 
 % Discourse connectives
 
