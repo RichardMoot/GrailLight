@@ -168,29 +168,33 @@ get_item_semantics(_Word, _POS, Lemma, Formula, Semantics) :-
 get_item_semantics(Word, _POS, _Lemma, Formula, Semantics) :-
         default_semantics(Word, Formula, Semantics),
 	!.
-get_item_semantics(Word, POS, Lemma, Formula, Lemma) :-
+get_item_semantics(Word, POS, Lemma, Formula, Sem) :-
     (
         Formula = let
     ->
-        true
+        Sem = true
     ;
         Formula = lit(let)
     ->
-        true
-    ;	
+        Sem = true
+    ;
+        Sem = Lemma
+    ),
+    (   Sem = Lemma,
 	is_stream(log)
-   ->		    
+    ->
 	format(log, 'MIS_SEM_FORM: ~k~n', [Formula]),
 	format(log, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
 	format(log, 'MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula])
    ;
+	Sem = Lemma, 
         is_stream(sem_pl)
    ->
 	format(sem_pl, '% MIS_SEM_FORM: ~k~n', [Formula]),
 	format(sem_pl, '% MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
 	format(sem_pl, '% MIS_SEM_ALL: ~w-~w-~w ~p~n', [Word, POS, Lemma, Formula])
    ;
-        true
+        Sem = Lemma
    ),
 	format(user_error, 'MIS_SEM_FORM: ~k~n', [Formula]),
 	format(user_error, 'MIS_SEM_FORM_WORD: ~p ~w~n', [Formula, Word]),
