@@ -1349,7 +1349,7 @@ add_roles_predicate(L0, P, E) -->
 
 % special case for adverbs like "deux fois"
 
-default_semantics(W, num, dr(0,dr(0,dl(1,s,s),dl(1,s,s)),n), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(S,G))]),appl(N,F)))))))).
+default_semantics(W, num, dr(0,dr(0,dl(1,s,s),dl(1,s,s)),n), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
 default_semantics(W, num, dr(0,dl(1,s,s),n), lambda(N,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(S,G))]),appl(N,F))))))).
 
 default_semantics(W, num, dr(0,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([],[bool(appl(rank,V),=,Num)]),appl(P,V))))) :-
@@ -1819,7 +1819,12 @@ default_semantics(avoir, POS, dr(_,dl(_,lit(cl_y),dl(_,lit(np(_,_,_)),lit(s(_)))
 default_semantics(avoir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
 	auxiliary_verb_avoir(POS, [], Sem).
 default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
-	auxiliary_verb_avoir(POS, [], Sem).	
+	auxiliary_verb_avoir(POS, [], Sem).
+% Special case for "il y a NP" 
+% "Il y a une alpiniste ..."
+default_semantics(avoir, POS, dr(0,dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(E,appl(NP,lambda(X,drs(Vars,Conds)))))))) :-
+	add_roles([theme-X], exister, E, Conds, Conds0),
+	pos_time(POS, [], Vars, E-Conds0).
 
 % lemmatizer error
 default_semantics(à, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
@@ -3781,10 +3786,8 @@ lex(où, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_))), dl(0, lit(n), lit(n)))
          Term = appl(appl(Prp,X),E)
      ).
 
-% "Il y a une alpiniste ..."
-lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(E,appl(NP,lambda(X,drs([event(E)],[appl(appl(existe,X),E)])))))))).
-lex(eu, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(E,appl(NP,lambda(X,drs([event(E)],[appl(appl(existe,X),E)])))))))).
-% "Il y a deux ans"
+
+% "Il y a deux ans" temporal adverb
 lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dl(1,s,s))),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
 lex(a, dr(0,dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),s)),s),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(_,lambda(_,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
 lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dr(0,s,s))),lit(np(_,_,_))), lambda(NP,lambda(_,lambda(_,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(X,drs([],[appl(appl(il_y_a,X),E)])))))))))).
