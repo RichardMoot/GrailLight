@@ -325,6 +325,8 @@ dot_np_semantics(classic, Dis, Sem) :-
 dot_np_semantics(neo, Dis, Sem) :-
 	dot_np_semantics1(Dis, Sem).
 
+% this transforms an NP expresion into an S expression (DRS)
+
 dot_np_semantics1(drt, lambda(P,appl(P,lambda(Y,drs([variable(X),event(E)],[bool(X,is_at(E),Y)]))))).
 
 noun_semantics(drt, Word, lambda(V,drs([],[appl(Word,V)]))).
@@ -1813,6 +1815,10 @@ default_semantics(avoir, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,
 	auxiliary_verb_avoir(POS, [], Sem).
 default_semantics(avoir, POS, dr(_,dr(_,lit(s(_)),lit(np(_,_,_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
 	auxiliary_verb_avoir(POS, [], Sem).	
+
+% lemmatizer error
+default_semantics(à, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
+	auxiliary_verb_avoir(POS, [], Sem).
 
 
 % = verbs with a preposition argument
@@ -3626,7 +3632,12 @@ lex(ou, dr(0,dl(0,lit(pp(_)),lit(pp(_))),lit(pp(_))), lambda(NP1,lambda(NP2,lamb
 lex(ou, dr(0,dl(0,np,np),n), lambda(N,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(N,Y)),\/,appl(NP,P))]))))).
 lex(ou, dr(0,dl(0,np,np),dl(0,n,n)), lambda(NN,lambda(NP,lambda(P,drs([], [bool(merge(drs([variable(Y)],[]),appl(appl(NN,lambda(_,drs([],[]))),Y)),\/,appl(NP,P))]))))).
 lex(ou, dr(0,dl(0,dr(0,lit(np(_,_,_)),lit(n)),dr(0,lit(np(_,_,_)),lit(n))),dr(0,lit(np(_,_,_)),lit(n))),lambda(Det1,lambda(Det2,lambda(N,lambda(P,drs([],[bool(appl(appl(Det1,N),P),\/,appl(appl(Det2,N),P))])))))).
-
+%lex(ou, dr(0,dl(0,np,np),s_q), lambda(SQ,lambda(NP,lambda(P,drs([variable(X)],[bool(appl(NP,lambda(Q,appl(Q,X))),\/,merge(drs([event(E)],[bool(X,=,E)]),appl(SQ,E)))]))))).
+% corrects for supertag error of (s_q \ s_q) / s_q 
+lex(ou, dr(0,dl(0,np,np),s_q), lambda(SQ,lambda(NP,lambda(P,merge(drs([variable(X)],[bool(appl(NP,lambda(Z,drs([],[bool(Z,=,X)]))),\/,SQ)]),appl(P,X)))))).
+lex(ou, dr(0,dl(0,lit(s(X)),lit(s(X))),lit(s(q))), lambda(S2,lambda(S1,lambda(E,drs([],[bool(appl(S1,E),\/,S2)]))))).
+lex(ou, dr(0,dl(0,lit(s(X)),lit(s(X))),lit(s(SQ))), lambda(S2,lambda(S1,lambda(E,drs([],[bool(appl(S1,E),\/,appl(S2,E))]))))) :-
+    SQ \= q.
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,'event?')]),appl(S,E))))).
 lex(mais, dl(0,lit(s(Z)),dr(0,lit(s(Z)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(mais, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,appl(appl(P,appl(Q,R)),X)))))).
@@ -3706,11 +3717,10 @@ lex('qu\'', dr(0,dl(0,lit(np(_,ce,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambd
 
 lex(qui, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))), Sem) :-
     wh_rel_semantics(Sem).
-% qui with pied-piping
-	wh_rel_semantics(Sem).
 % tokenization error
 lex('-qui', dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))), Sem) :-
 	wh_rel_semantics(Sem).
+% qui with pied-piping
 lex(qui, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))), lambda(VP,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[]),appl(appl(VP,lambda(P1,appl(P1,X))),E))))))))).
 lex(qui, dr(0,dl(0,dr(0,lit(pp(PP)),lit(np(_,_,_))),dl(0,lit(n),lit(n))),dr(0,lit(s(_)),dia(1,box(1,lit(pp(PP)))))), lambda(SPP, lambda(_P, lambda(N, lambda(X,merge(appl(N,X),merge(drs([event(E)],[]),appl(appl(SPP,lambda(Q,appl(Q,X))),E)))))))).
 lex(que, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(0,box(0,lit(np(_,_,_)))))), Sem) :-
@@ -3986,6 +3996,7 @@ lex(y, dr(0,dl(0,cl_r,dl(0,lit(np(_,_,_)),s)),dr(0,dl(0,cl_r,dl(0,lit(np(_,_,_))
 lex(en, dr(0,dl(0,lit(np(_,_,_)),s),dl(0,lit(np(_,_,_)),s)), lambda(P,lambda(Q,lambda(E,merge(drs([variable(X)],[bool(X,=,'?'),appl(appl(de,X),E)]),appl(appl(P,Q),E)))))).
 lex(en, dr(0,dl(0,cl_r,dl(0,lit(np(_,_,_)),s)),dl(0,cl_r,dl(0,lit(np(_,_,_)),s))), lambda(P,lambda(Cl,lambda(Q,lambda(E,merge(drs([],[bool(X,=,'?'),appl(appl(de,X),E)]),appl(appl(appl(P,Cl),Q),E))))))).
 lex(en, dr(0,dl(0,np,s),dr(0,dl(0,np,s),dia(1,box(1,pp_de)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,appl(R,Y))),Q),E)))))).
+lex(en, dr(0,dl(0,np,s),dr(0,dl(0,np,s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,appl(R,Y))),Q),E)))))).
 lex(en, dr(0,dl(0,cl_r,dl(0,np,s)),dr(0,dl(0,cl_r,dl(0,np,s)),dia(1,box(1,pp_de)))), lambda(P,lambda(Cl,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(appl(P,lambda(R,appl(R,Y))),Cl),Q),E))))))).
 
 lex(me, dr(0,dl(0,lit(np(_,_,_)),lit(s(Sent))),dr(0,dl(0,lit(np(_,_,_)),lit(s(Sent))),dia(1,box(1,lit(np(acc,_,_)))))), lambda(P,lambda(Q,lambda(E,merge(drs([variable(Y)],[appl(orateur,Y)]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
