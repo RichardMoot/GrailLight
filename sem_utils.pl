@@ -165,7 +165,7 @@ reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,->,R)|L]))) :-
 % DRS condition
 reduce_drs1(drs(V,L0), presup(P, R)) :-
 	select(presup(P, Q), L0, L),
-	drs_merge(drs(V,L), Q, R).
+	merge_drs(drs(V,L), Q, R).
 reduce_drs1(drs(V,L0), presup(P, drs(V,[drs_label(X,Q)|L]))) :-
 	select(drs_label(X,presup(P, Q)), L0, L).
 
@@ -204,7 +204,15 @@ reduce_condition(appl(F0,A0), appl(F,A)) :-
 	!,
 	reduce_condition(F0, F),
 	reduce_condition(A0, A).
+reduce_condition(DRS0, DRS) :-
+	is_drs(DRS0),
+	!,
+	reduce_drs1(DRS0, DRS).
 reduce_condition(C, C).
+
+is_drs(drs(_,_)).
+is_drs(merge(_,_)).
+is_drs(presup(_,_)).
 
 % = drs_bool(?Connective)
 %

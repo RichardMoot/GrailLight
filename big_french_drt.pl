@@ -1438,6 +1438,55 @@ default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s
 	INF = inf(_),
 	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,drs([event(F)],[appl(appl(appl(INFObj,lambda(Prp,appl(Prp,Y))),lambda(PX,appl(PX,X))),F)]))]),
 	pos_time(ver:TIME, [], Es, E-Tnse).														
+% = se montrer + ADJ
+
+default_semantics(montrer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse)),appl(appl(ADJ,lambda(_,drs([],[]))),Y))))))))) :-
+	add_roles([agent-Y,theme-L], se_montrer, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(avérer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse)),appl(appl(ADJ,lambda(_,drs([],[]))),Y))))))))) :-
+	add_roles([agent-Y,theme-L], s_avérer, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+% = se considérer/trouver + ADJ
+%
+% similar to "se montrer" except that it is not entailed that the subject
+% has the property described by the adjective.
+
+default_semantics(considérer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_considérer, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(trouver, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_trouver, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(tenir, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_tenir, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(rendre, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_rendre, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(dire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_dire, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(dire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_dire, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+default_semantics(présenter, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_présenter, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
+% frequent lemmatiser error
+
+default_semantics(présente, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+	add_roles([agent-Y,theme-L], se_présenter, E, Conds, []),
+	pos_time(ver:TIME, [], Es, E-Tnse).
+
 
 % passive (tagged as past participle, should correct some POS-tag errors)
 
@@ -2113,6 +2162,12 @@ default_semantics(interdire, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,
 	add_roles([agent-X,patient-Y,theme-L], interdire, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(POS, [event(L)], EVs, E-Pred).
 
+default_semantics(ordonner, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], ordonner, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
+
 
 % RAISING + INF
 
@@ -2584,8 +2639,8 @@ default_semantics(lequel, pro:rel, dr(0, dl(0, dr(0, lit(pp(Prp)), lit(np(_,_,_)
 % = Default semantics without POS tag =
 % =====================================
 
-
 default_semantics(_, let, drs([],[])).
+default_semantics(_, lit(let), drs([],[])).
 
 default_semantics(alors, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(alors, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
@@ -2995,6 +3050,8 @@ lex(tellement, dr(0,dr(0,dl(0,lit(n),lit(n)),lit(s(q))),dl(0,lit(n),lit(n))), la
 
 lex(que, dr(0,lit(s(q)),lit(np(_,_,_))), Sem) :-
 	semantics(dot_np, Sem).
+lex(que, dr(0,lit(s(q)),lit(pp(_))), Sem) :-
+	semantics(dot_np, Sem).
 % this is for constructions like aussi/plus/moins ADJ que ADJ
 % the variable X used here for the adjective should be the same as the
 % one for the first adjective, but this requires a proper treatment
@@ -3279,6 +3336,11 @@ lex(tels, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(
 lex(telle, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
 lex(telles, dr(0,lit(n),lit(n)), lambda(P,lambda(X, merge(appl(P,X),drs([variable(Y)],[bool(Y,=,'?'),bool(X,approx,Y)]))))).
 
+
+% = "tel que" gives examples
+lex(tel, dr(0,dl(0,lit(n),lit(n)),lit(s(q))), lambda(S,lambda(P,lambda(X, merge(appl(P,X),drs([event(E)],[bool(E,subseteq,X),drs_label(E,S)])))))).
+
+
 % Indefinites
 % currently, no difference in meaning is made between "des", "certains", "plusieurs" and "quelques"
 
@@ -3384,6 +3446,8 @@ lex('l\'', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_the_semantics(Sem).
 lex('L\'', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_the_semantics(Sem).
+lex(le, dr(0,dl(0,n,n)), lambda(ADJ,lambda(P,presup(merge(drs([variable(X)],[]),appl(appl(ADJ,lambda(_,drs([],[]))),X)),appl(P,X))))).
+
 
 % Existential
 
@@ -3520,6 +3584,14 @@ lex(au, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(
 lex('En', dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
 lex(en, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
 
+% un peu
+
+lex('Un', dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
+lex(un, dr(0,dr(0,np,np),n), lambda(N,lambda(NP,lambda(P,appl(NP,lambda(X,merge(merge(drs([],[appl(en,X)]),appl(N,X)),appl(P,X)))))))).
+
+
+lex(ayant, dr(0,dl(0,n,n),dl(0,np,s_ppart)), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),merge(merge(drs([event(E)],[]),drs(EVs,Rest)),appl(appl(VP,lambda(P,appl(P,X))),E))))))) :-
+	past_participle_semantics(ver:pres, [], EVs, E, Rest).
 
 % plus_de
 % NOTE: several different constructions are possible here
@@ -3635,6 +3707,10 @@ lex('qu\'', dr(0,dl(0,lit(np(_,ce,_)),lit(np(_,_,_))),lit(s(_))), lambda(S,lambd
 lex(qui, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))), Sem) :-
     wh_rel_semantics(Sem).
 % qui with pied-piping
+	wh_rel_semantics(Sem).
+% tokenization error
+lex('-qui', dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(_)))), Sem) :-
+	wh_rel_semantics(Sem).
 lex(qui, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_)),lit(s(_)))), lambda(VP,lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),merge(drs([event(E)],[]),appl(appl(VP,lambda(P1,appl(P1,X))),E))))))))).
 lex(qui, dr(0,dl(0,dr(0,lit(pp(PP)),lit(np(_,_,_))),dl(0,lit(n),lit(n))),dr(0,lit(s(_)),dia(1,box(1,lit(pp(PP)))))), lambda(SPP, lambda(_P, lambda(N, lambda(X,merge(appl(N,X),merge(drs([event(E)],[]),appl(appl(SPP,lambda(Q,appl(Q,X))),E)))))))).
 lex(que, dr(0,dl(0,lit(n),lit(n)),dr(0,lit(s(_)),dia(0,box(0,lit(np(_,_,_)))))), Sem) :-
@@ -3695,10 +3771,10 @@ lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dr(0,s,s))),lit(np(_,_,_))), lambda(NP
 
 lex('Si', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
 lex(si,   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex(si,   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex(si,   dr(0,dl(_,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
 lex('S\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
 lex('s\'',   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex('s\'',   dr(0,dl(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex('s\'',   dr(0,dl(_,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
 
 % "tant que" as subordinating connective if analysed as "if...then..." (Lexconn also allows "temploc", which implies a different truth-conditional meaning)
 lex(tant, dr(0,dr(0,s,s),s_q),  lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
@@ -3866,6 +3942,8 @@ lex(sans, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([e
 lex('.', dl(0,dr(0,s,s),txt), lambda(SMOD,appl(appl(SMOD,lambda(_,drs([event(E)],[bool(E,=,'event?')]))),E))).
 lex('.', dl(0,lit(s(_)),lit(txt)), Sem) :-
 	semantics(dot, Sem).
+lex('\"', dl(0,lit(s(_)),lit(txt)), Sem) :-
+	semantics(dot, Sem).
 lex('?', dl(0,lit(s(_)),lit(txt)), Sem) :-
 	semantics(dot, Sem).
 lex('...', dl(0,lit(s(_)),lit(txt)), Sem) :-
@@ -3921,6 +3999,7 @@ lex(vous, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np
 lex(le, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'masculin?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 lex(la, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'féminin?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
 lex('l\'', dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
+lex(le, dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex('l\'', dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex('L\'', dr(0,s,dr(0,s,dia(1,box(1,np)))), lambda(P,lambda(E,merge(drs([],[bool(Y,=,'?')]),appl(appl(P,lambda(Q,appl(Q,Y))),E))))).
 lex(les, dr(0,dl(0,lit(np(_,_,_)),s),dr(0,dl(0,lit(np(_,_,_)),s),dia(1,box(1,np)))), lambda(P,lambda(Q,lambda(E,merge(drs([],[bool(Y,=,'?'),bool(num(Y),>,1)]),appl(appl(appl(P,lambda(R,merge(drs([],[]),appl(R,Y)))),Q),E)))))).
@@ -4050,8 +4129,6 @@ lex('Que', dr(0,s_whq,dr(0,s,dia(1,box(1,np)))), lambda(P, lambda(E, merge(drs([
 % R (e->t)									%lambda(NPS,lambda(E,appl(NPS,lambda(X,drs([variable(X)],[appl(sleep,X)])))))	
 %wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
 
-									  
-% ladite ledit
 
 lex(été, dr(0,dl(0,np,s_ppart),dl(0,np,s_pass)), lambda(VP,lambda(NP,lambda(E,presup(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
 	pos_time(ver:pper, [], Es, E-Cs).
@@ -4062,6 +4139,12 @@ lex(été, dr(0,dl(0,np,lit(s(_))),dl(0,np,lit(s(ppart)))), Sem) :-
 
 lex(à, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(P,lambda(S,lambda(E,merge(merge(drs([event(F)],[appl(appl(à,E),F)]),appl(S,E)),appl(appl(P,merge(drs([variable(X)],[]),lambda(Q,appl(Q,X)))),F)))))).
 
+% "deux à trois"
+% because the two determiner arguments will each generate a variable, an
+% embedded DRS is used to hide these variables anaphoric binding, much like
+% the event variables introduced by the Verkuyl-style interval semantics
+lex(à, dr(0,dl(0,dr(0,np,n),dr(0,np,n)),dr(0,np,n)), lambda(Y,lambda(X,lambda(N,lambda(P,merge(merge(merge(drs([variable(Z)],[]),appl(N,Z)),appl(P,Z)),drs([],[
+									   merge(appl(appl(Y,lambda(_,drs([],[]))),lambda(V,drs([],[bool(num(Z),leq,num(V))]))),									 appl(appl(X,lambda(_,drs([],[]))),lambda(W,drs([],[bool(num(W),leq,num(Z))]))))]))))))).
 
 lex(',', dl(0,n,n), lambda(X,X)).
 lex(',', dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(X,X)).
