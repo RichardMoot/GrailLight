@@ -160,6 +160,16 @@ reduce_drs1(drs(V,L0), drs(V,[bool(presup(P,Q),->,R)|L])) :-
 	ord_intersect(FV, BV, []).
 reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,->,R)|L]))) :-
 	select(bool(presup(P,Q),->,R), L0, L).
+reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,\/,R)|L]))) :-
+	select(bool(Q,\/,presup(P,R)), L0, L),
+	free_vars(P, FV),
+	bound_variables(R, BV),
+	ord_intersect(FV, BV, []).
+reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,\/,R)|L]))) :-
+	select(bool(presup(P,Q),\/,R), L0, L),
+	free_vars(P, FV),
+	bound_variables(Q, BV),
+	ord_intersect(FV, BV, []).
 
 % this case is a bit weird: it is for when a presupposition occurs as a
 % DRS condition
@@ -2031,18 +2041,21 @@ normalize_conditions([C|Cs], [D|Ds]) :-
 	normalize_condition(C,  D),
 	normalize_conditions(Cs, Ds).
 
-normalize_condition(bool(drs(V,X0),C,drs(W,Y0)), bool(drs(V,X),C,drs(W,Y))) :-
+normalize_condition(bool(DRS1,C,DRS2), bool(NDRS1,C,NDRS2)) :-
+        is_drs(DRS1),
+        is_drs(DRS2),
 	!,
-	normalize_conditions(X0, X),
-	normalize_conditions(Y0, Y).
+	normalize_drs(DRS1, NDRS1),
+	normalize_drs(DRS2, NDRS2).
 normalize_condition(not(D0), not(D)) :-
 	normalize_drs(D0, D).
 normalize_condition(drs_label(L,X0), drs_label(L,X)) :-
 	!,
 	normalize_drs(X0, X).
-normalize_condition(drs(Vs,X0), drs(Vs,X)) :-
+normalize_condition(DRS0, DRS) :-
+        is_drs(DRS0),
 	!,
-	normalize_conditions(X0, X).
+	normalize_drs(DRS0, DRS).
 normalize_condition(P, P).
 
 merge_drs(drs(X,C),drs(Y,D), drs(Z,F)) :-
