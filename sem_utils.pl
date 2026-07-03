@@ -1488,6 +1488,10 @@ get_drs_types('$VAR'(_), T, T) :-
 	!.
 get_drs_types(A, T, T) :-
 	atomic(A).
+get_drs_types(presup(DRS1,DRS2), T0, T) :-
+	!,
+	get_drs_types(DRS1, T0, T1),
+	get_drs_types(DRS2, T1, T).
 get_drs_types(drs(Vs,Cs), T0, T) :-
 	!,
 	add_drs_variables(Vs, T0, T1),
@@ -1518,6 +1522,7 @@ add_drs_variables([V|Vs], T0, T) :-
 add_drs_variable(event('$VAR'(N)), T0, T) :-
 	btree_insert(T0, N, s, T),
 	!.
+add_drs_variable(event(_), T, T).
 add_drs_variable(variable('$VAR'(N)), T0, T) :-
    (	
 	btree_remove(T0, N, s, T)
