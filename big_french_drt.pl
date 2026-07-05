@@ -3273,13 +3273,13 @@ lex('Elle', lit(np(_,n,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'femini
 lex(il, lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex('-il', lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex('-t-il', lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
-lex(ils, lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
-lex('-ils', lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
-lex('Ils', lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
-lex(elles, lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
-lex('-elles', lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
+lex(ils, lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
+lex('-ils', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
+lex('Ils', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
+lex(elles, lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
+lex('-elles', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-t-elles', lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
-lex('Elles', lit(np(nom,il,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
+lex('Elles', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
 lex(elle, lit(np(_,_,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-elle', lit(np(_,_,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-t-elle', lit(np(_,_,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'feminin?')]),appl(P,X)))).
@@ -3743,6 +3743,8 @@ lex(',', dr(0, dl(0, s, s), np), lambda(NP,lambda(S,lambda(E,merge(appl(S,E),app
 % gapping
 
 lex(et, dr(0,dl(0,dr(0,s,dia(1,box(1,dl(0,np,s)))),dr(0,s,box(1,dia(1,dl(0,np,s))))),dr(0,s,dia(1,box(1,dl(0,np,s))))), lambda(VPS2,lambda(VPS1,lambda(VP,lambda(E,merge(drs([event(F)],[appl(appl(parallel,F),E)]),merge(appl(appl(VPS1,VP),E),appl(appl(VPS2,VP),F)))))))).
+
+lex(et, dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dr(0,dl(0,np,s),s_q),pp)))),dr(0,s,box(1,dia(1,dr(0,dr(0,dl(0,np,s),s_q),pp))))),dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),pp))))), lambda(SVPP,lambda(SVQ,lambda(VQ,lambda(E,merge(appl(appl(SVQ,VQ),E),merge(drs([event(F)],[]),appl(appl(SVPP,lambda(PP,appl(appl(VQ,PP),lambda(H,drs([],[bool(H,=,'?')]))))),F)))))))).
 
 lex(alors, dr(0,dl(0,dr(0,s,dia(1,box(1,dl(0,np,s)))),dr(0,s,box(1,dia(1,dl(0,np,s))))),dr(0,s,dia(1,box(1,dl(0,np,s))))), lambda(VPS2,lambda(VPS1,lambda(VP,lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(appl(VPS1,VP),E)),->,merge(drs([event(F)],[]),appl(appl(VPS2,VP),F)))])))))).
 
