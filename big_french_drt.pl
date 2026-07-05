@@ -1348,9 +1348,12 @@ add_roles_predicate(L0, P, E) -->
 
 % = numbers
 
+default_semantics(au, prp:det, dr(0,dr(0,dl(1,lit(s(_)),lit(s(_))),dl(1,lit(s(_)),lit(s(_)))),lit(n)), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(au,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
+
+
 % special case for adverbs like "deux fois"
 
-default_semantics(W, num, dr(0,dr(0,dl(1,s,s),dl(1,s,s)),n), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
+default_semantics(W, num, dr(0,dr(0,dl(1,lit(s(_)),lit(s(_))),dl(1,lit(s(_)),lit(s(_)))),lit(n)), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
 default_semantics(W, num, dr(0,dl(1,s,s),n), lambda(N,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(S,G))]),appl(N,F))))))).
 
 default_semantics(W, num, dr(0,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([],[bool(appl(rank,V),=,Num)]),appl(P,V))))) :-
@@ -2718,6 +2721,7 @@ default_semantics(tandis, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,la
 
 default_semantics(et, dr(0,dl(0,dr(0,lit(s(_)),dia(1,box(1,X))),dr(0,lit(s(_)),box(1,dia(1,X)))),dr(0,lit(s(_)),dia(1,box(1,X)))), lambda(P2,lambda(P1,lambda(V,lambda(E,merge(appl(appl(P1,V),E),merge(drs([event(E2)],[appl(appl(parallel,E2),E)]),appl(appl(P2,V),E2)))))))).
 
+
 default_semantics(W, dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))), lambda(Adj, lambda(P,lambda(V,merge(appl(appl(Adj,P),V),drs([event(E)],[appl(W,E),bool(E,=,'event?')])))))).
 default_semantics(W, dr(0,dl(1,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),lit(pp(Prp))), lambda(PP,lambda(Adj, lambda(P,lambda(V,merge(appl(appl(Adj,P),V),appl(PP,lambda(X,drs([event(E)],[appl(appl(PW,X),E),bool(E,=,'event?')]))))))))) :-
 	combine_prep_word(Prp, W, PW).
@@ -2987,9 +2991,9 @@ default_semantics(à, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),dl(0,lit(np(_,_,_
 default_semantics(W, dr(0,dl(_,lit(s(ST)),lit(s(ST))),lit(n)), lambda(N,lambda(S,lambda(E,merge(merge(drs([variable(X)],[appl(appl(W,X),E)]),appl(N,X)),appl(S,E)))))).
 default_semantics(W, dr(0,dr(_,lit(s(ST)),lit(s(ST))),lit(n)), lambda(N,lambda(S,lambda(E,merge(merge(drs([variable(X)],[appl(appl(W,X),E)]),appl(N,X)),appl(S,E)))))).
 
-default_semantics(W, dr(0,dl(_,lit(s(ST)),lit(s(ST))),lit(np(acc,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
+default_semantics(W, dr(0,dl(_,lit(s(ST)),lit(s(ST))),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
 
-default_semantics(W, dr(0,dr(_,lit(s(ST)),lit(s(ST))),lit(np(acc,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
+default_semantics(W, dr(0,dr(_,lit(s(ST)),lit(s(ST))),lit(np(_,_,_))), lambda(NP,lambda(S,lambda(E,merge(appl(NP,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(S,E)))))).
 
 default_semantics(W, dr(0,dl(_,dl(0,lit(np(A,B,C)),lit(s(ST))),dl(0,lit(np(A,B,C)),lit(s(ST)))),lit(np(acc,_,_))), lambda(NPO,lambda(VP,lambda(NP,lambda(E,merge(appl(NPO,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(appl(VP,NP),E))))))).
 default_semantics(W, dr(0,dr(_,dl(0,lit(np(A,B,C)),lit(s(ST))),dl(0,lit(np(A,B,C)),lit(s(ST)))),lit(np(acc,_,_))), lambda(NPO,lambda(VP,lambda(NP,lambda(E,merge(appl(NPO,lambda(X,drs([],[appl(appl(W,X),E)]))),appl(appl(VP,NP),E))))))).
@@ -3704,6 +3708,9 @@ lex(moins, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variabl
 % Discourse connectives
 
 % conjunctions
+
+lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s)))),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s))))),lambda(AUX2,lambda(AUX1,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(appl(AUX1,VP),lambda(Q,appl(Q,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(appl(AUX2,VP),lambda(R,appl(R,X))),F))))))))))).
+ 
 
 lex(et, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(et, dr(0,dl(0,lit(cs),lit(cs)),lit(cs)), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
