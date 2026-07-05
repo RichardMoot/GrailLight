@@ -3580,7 +3580,10 @@ lex('Tous', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 lex(toutes, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_every_semantics(Sem).
 lex('Toutes', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
-	gq_every_semantics(Sem).
+        gq_every_semantics(Sem).
+% tout les
+lex('Tous', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,drs([],[bool(drs([variable(Y)],[bool(Y,in,X)]),->,appl(P,X))])))))).
+lex('Toutes', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,drs([],[bool(drs([variable(Y)],[bool(Y,in,X)]),->,appl(P,X))])))))).
 
 % Possessives
 			
