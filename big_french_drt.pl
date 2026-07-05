@@ -2170,6 +2170,12 @@ default_semantics(permettre, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,
 	pos_time(POS, [event(L)], EVs, E-Pred).
 
 
+default_semantics(suggérer, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], suggérer, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
+
 default_semantics(conseiller, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
 	SType = inf(_),
 	PType = à,
@@ -2370,9 +2376,9 @@ default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(
 	combine_prep_word(à, Word, PW),
 	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
-default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,drs(EVs,Conds)))))))) :-
+default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(Y,appl(PPA,lambda(X,drs(EVs,Conds)))))))))) :-
 	combine_prep_word(à, Word, PW),
-	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
+	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
 	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
 default_semantics(falloir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,Conds))))) :-
 	add_roles([theme-L], il_faut, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),	
@@ -3273,8 +3279,8 @@ lex('Elle', lit(np(_,n,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'femini
 lex(il, lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex('-il', lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex('-t-il', lit(np(nom,il,3-s)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
-lex(ils, lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
-lex('-ils', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
+lex(ils, lit(np(nom,_,_)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin'),bool(X,=,'?plural')]),appl(P,X)))).
+lex('-ils', lit(np(nom,_,_)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
 lex('Ils', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X),variable(Y)],[bool(num(X),>,1),bool(Y,atomic_sub,X),bool(Y,=,'masculin?')]),appl(P,X)))).
 lex(elles, lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-elles', lit(np(nom,_,3-p)), lambda(P,merge(drs([variable(X)],[bool(num(X),>,1),bool(X,=,'feminin?')]),appl(P,X)))).
@@ -3744,7 +3750,7 @@ lex(',', dr(0, dl(0, s, s), np), lambda(NP,lambda(S,lambda(E,merge(appl(S,E),app
 
 lex(et, dr(0,dl(0,dr(0,s,dia(1,box(1,dl(0,np,s)))),dr(0,s,box(1,dia(1,dl(0,np,s))))),dr(0,s,dia(1,box(1,dl(0,np,s))))), lambda(VPS2,lambda(VPS1,lambda(VP,lambda(E,merge(drs([event(F)],[appl(appl(parallel,F),E)]),merge(appl(appl(VPS1,VP),E),appl(appl(VPS2,VP),F)))))))).
 
-lex(et, dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dr(0,dl(0,np,s),s_q),pp)))),dr(0,s,box(1,dia(1,dr(0,dr(0,dl(0,np,s),s_q),pp))))),dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),pp))))), lambda(SVPP,lambda(SVQ,lambda(VQ,lambda(E,merge(appl(appl(SVQ,VQ),E),merge(drs([event(F)],[]),appl(appl(SVPP,lambda(PP,appl(appl(VQ,PP),lambda(H,drs([],[bool(H,=,'?')]))))),F)))))))).
+lex(et, dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dr(0,dl(0,np,s),s_q),pp)))),dr(0,s,box(1,dia(1,dr(0,dr(0,dl(0,np,s),s_q),pp))))),dr(0,s,dia(1,box(1,dr(0,dl(0,np,s),pp))))), lambda(SVPP,lambda(SVQ,lambda(VQ,lambda(E,merge(appl(appl(SVQ,VQ),E),merge(drs([event(F)],[appl(appl(parallel,E),F)]),appl(appl(SVPP,lambda(PP,appl(appl(VQ,PP),lambda(_,drs([],[]))))),F)))))))).
 
 lex(alors, dr(0,dl(0,dr(0,s,dia(1,box(1,dl(0,np,s)))),dr(0,s,box(1,dia(1,dl(0,np,s))))),dr(0,s,dia(1,box(1,dl(0,np,s))))), lambda(VPS2,lambda(VPS1,lambda(VP,lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(appl(VPS1,VP),E)),->,merge(drs([event(F)],[]),appl(appl(VPS2,VP),F)))])))))).
 
