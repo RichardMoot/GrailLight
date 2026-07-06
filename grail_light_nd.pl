@@ -1916,13 +1916,13 @@ inference(prod_wl, [item(p(0,dl(1,Y,Z),dia(0,box(0,X))), I, J, data(Pros0,Sem,Pr
 		  [Pros=Pros0]).
 inference(prod_c, [item(dr(0,X,Y),              I, J, data(Pros1,Sem1,Prob0,H1,SetA0,SetB0,SetC0,SetD0)),
 		   item(p(0,Y,dia(0,box(0,Z))), J, K, data(Pros2,Sem2,Prob1,_H2,SetA1,SetB1,SetC1,SetD1))],
-	           item(p(0,X,dia(0,box(0,Z))), I, K, data(Pros,pair(appl(Sem1,pi1(Sem2))),Prob,H1,SetA,SetB,SetC,SetD)),
+	           item(p(0,X,dia(0,box(0,Z))), I, K, data(Pros,pair(appl(Sem1,pi1(Sem2)),pi2(Sem2)),Prob,H1,SetA,SetB,SetC,SetD)),
 	          [Pros=p(0,Pros1,Pros2),
 		   combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		   combine_probability(Prob0, Prob1, I, K, prod_c, Prob)]).
 inference(prod_cl, [item(X, I, J, data(Pros1,Sem1,Prob0,_H0,SetA0,SetB0,SetC0,SetD0)),
 		    item(p(0,dl(0,X,Y),dia(0,box(0,Z))), J, K, data(Pros2,Sem2,Prob1,H1,SetA1,SetB1,SetC1,SetD1))],
-	            item(p(0,Y,dia(0,box(0,Z))), I, K, data(Pros,pair(appl(Sem1,pi1(Sem2))),Prob,H1,SetA,SetB,SetC,SetD)),
+	            item(p(0,Y,dia(0,box(0,Z))), I, K, data(Pros,pair(appl(pi1(Sem2),Sem1),pi2(Sem2)),Prob,H1,SetA,SetB,SetC,SetD)),
 	           [Pros=p(0,Pros1,Pros2),
 		    combine_sets(SetA0, SetB0, SetC0, SetD0, SetA1, SetB1, SetC1, SetD1, SetA, SetB, SetC, SetD),
 		    combine_probability(Prob0, Prob1, I, K, prod_cl, Prob)]).
