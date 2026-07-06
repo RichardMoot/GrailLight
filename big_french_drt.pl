@@ -549,7 +549,8 @@ past_participle_semantics_verkuyl(_, EVs, EVs, _, []).
 % =         Cardinal Numbers          =
 % =====================================
 
-convert_cardinal(Sem, Num) :-
+convert_cardinal(Sem0, Num) :-
+        downcase_atom(Sem0, Sem),
 	convert_cardinal1(Sem, Num),
 	!.
 convert_cardinal(Num0, Num) :-
@@ -1351,6 +1352,9 @@ add_roles_predicate(L0, P, E) -->
 default_semantics(au, prp:det, dr(0,dr(0,dl(1,lit(s(_)),lit(s(_))),dl(1,lit(s(_)),lit(s(_)))),lit(n)), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(au,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
 
 
+default_semantics(W, num, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(num(X),=,Num)]),appl(P,X)))) :-
+        convert_cardinal(W, Num).
+
 % special case for adverbs like "deux fois"
 
 default_semantics(W, num, dr(0,dr(0,dl(1,lit(s(_)),lit(s(_))),dl(1,lit(s(_)),lit(s(_)))),lit(n)), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(W,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
@@ -1402,10 +1406,14 @@ default_semantics(W, nom:INFO, lit(n), lambda(X,drs([],[appl(W,X)|Rest0]))) :-
 
 % = NAM
 
-default_semantics(Word, nam, lit(n), lambda(X,presup(drs([],[appl(appl(nommé,Word),X)]),drs([],[])))).
-default_semantics(Word, nam:INFO, lit(n), lambda(X,presup(drs([],[appl(appl(nommé,Word),X)|Rest0]),drs([],[])))) :-
+default_semantics(Word, nam, lit(n), lambda(X,drs([],[appl(appl(nommé,Word),X)]))).
+default_semantics(Word, nam:INFO, lit(n), lambda(X,drs([],[appl(appl(nommé,Word),X)|Rest0]))) :-
 	add_lefff_info(INFO, X, Rest),
 	add_info(Word, X, Rest0, Rest).
+%default_semantics(Word, nam, lit(n), lambda(X,presup(drs([],[appl(appl(nommé,Word),X)]),drs([],[])))).
+%default_semantics(Word, nam:INFO, lit(n), lambda(X,presup(drs([],[appl(appl(nommé,Word),X)|Rest0]),drs([],[])))) :-
+%	add_lefff_info(INFO, X, Rest),
+%	add_info(Word, X, Rest0, Rest).
 
 % = noun phrase - NAM (proper name)
 
@@ -3376,6 +3384,11 @@ lex('Aucun', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_no_semantics(Sem).
 lex('Aucune', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 	gq_no_semantics(Sem).
+lex(aucun, np, lambda(P,merge(drs([variable(X)],[bool(num(X),=,0)]),appl(P,X)))).
+lex(aucune, np, lambda(P,merge(drs([variable(X)],[bool(num(X),=,0)]),appl(P,X)))).
+lex('Aucun', np, lambda(P,merge(drs([variable(X)],[bool(num(X),=,0)]),appl(P,X)))).
+lex('Aucune', np, lambda(P,merge(drs([variable(X)],[bool(num(X),=,0)]),appl(P,X)))).
+
 
 lex('Quelqu\'un', lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[]),appl(P,X)))).
 lex('quelqu\'un', lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[]),appl(P,X)))).
