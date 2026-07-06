@@ -2047,11 +2047,9 @@ normalize_conditions([C|Cs], [D|Ds]) :-
 	normalize_conditions(Cs, Ds).
 
 normalize_condition(bool(DRS1,C,DRS2), bool(NDRS1,C,NDRS2)) :-
-        is_drs(DRS1),
-        is_drs(DRS2),
-	!,
-	normalize_drs(DRS1, NDRS1),
-	normalize_drs(DRS2, NDRS2).
+        !,
+        normalize_bool(DRS1, NDRS1),
+        normalize_bool(DRS2, NDRS2).
 normalize_condition(not(D0), not(D)) :-
 	normalize_drs(D0, D).
 normalize_condition(drs_label(L,X0), drs_label(L,X)) :-
@@ -2066,7 +2064,18 @@ normalize_condition(P, P).
 merge_drs(drs(X,C),drs(Y,D), drs(Z,F)) :-
 	merge_lists(X, Y, Z),
 	merge_lists(C, D, F).
-	
+
+
+normalize_bool(bool(DRS1,C,DRS2), bool(NDRS1,C,NDRS2)) :-
+        !,
+        normalize_bool(DRS1, NDRS1),
+        normalize_bool(DRS2, NDRS2).
+normalize_bool(DRS, NDRS) :-
+        is_drs(DRS),
+        !,
+        normalize_drs(DRS, NDRS).
+normalize_bool(X, X).
+
 % = drs_to_fol(+DRS, -Formula)
 %
 % converts a Discourse Representation Structure DRS into an equivalent
