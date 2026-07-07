@@ -2219,6 +2219,49 @@ add_arguments_to_term([V|Vs], T0, T) :-
 	add_arguments_to_term(Vs, appl(T0, V), T).
 
 
+%%%%
+
+% standard implementation of pairing and projection using abstraction and application
+% NB: a pair (A,B) is implement as lambda P.((P A) B) of (type(A) -> type(B) ->  Alpha) -> Alpha where Alpha can be *any* type
+
+pairs_to_implications(Term0, Term) :-
+	get_fresh_variable_number(Term0, Max),	
+	pairs_to_implications1(Term0, Term, Max, _).
+
+pairs_to_implications1(pair(X,Y), lambda('$VAR'(Max0),appl(appl('$VAR'(Max0),Term1),Term2)), Max0, Max) :-
+	!,
+	Max1 is Max0 + 1,
+	pairs_to_implications1(X, Term1, Max1, Max2),
+	pairs_to_implications1(Y, Term2, Max2,  Max).
+pairs_to_implications1(pi1(X), appl(lambda('$VAR'(Max0),appl('$VAR'(Max0),lambda('$VAR'(Max1),lambda('$VAR'(Max2),'$VAR'(Max1))))),Term), Max0, Max) :-
+	!,
+	Max1 is Max0 + 1,
+	Max2 is Max1 + 1,
+	Max3 is Max2 + 1,
+	pairs_to_implications1(X, Term, Max3, Max).
+pairs_to_implications1(pi2(X), appl(lambda('$VAR'(Max0),appl('$VAR'(Max0),lambda('$VAR'(Max1),lambda('$VAR'(Max2),'$VAR'(Max2))))),Term), Max0, Max) :-
+	!,
+	Max1 is Max0 + 1,
+	Max2 is Max1 + 1,
+	Max3 is Max2 + 1,
+	pairs_to_implications1(X, Term, Max3, Max).
+
+% = recursive case
+
+pairs_to_implications1(T, U, Max0, Max) :-
+	compound(T),
+	!,
+	T =.. [F|Ts],
+	pairs_to_implications_list(Ts, Us, Max0, Max),
+	U =.. [F|Us].
+
+pairs_to_implications1(T, T, Max, Max).
+
+pairs_to_implications_list([], [], Max, Max).
+pairs_to_implications_list([T|Ts], [U|Us], Max0, Max) :-
+	pairs_to_implications1(T, U, Max0, Max1),
+	pairs_to_implications_list(Ts, Us, Max1, Max).
+
 
 test_conversion(F) :-
 	DRS = drs([X],[appl(orange,X),bool(drs([Y],[appl(farmer,Y)]),->,drs([Z],[appl(donkey,Z),appl(appl(beat,Z),Y)]))]),
