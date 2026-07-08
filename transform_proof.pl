@@ -9,6 +9,11 @@
 
 :- dynamic user:proof/2.
 
+% This file transform a set of chart proofs into a set of natural deduction
+% proofs. By default, all file names in chart_dir(ChartDir) such that
+% infile(FileName) is true are loaded from ChartDir/FileName_proofs.pl and
+% saved in NDDir/FileName_nd.pl for nd_dir(NDDir).
+
 start :-
 	current_prolog_flag(os_argv, Argv),
         append(_, [A|Av], Argv),
