@@ -309,7 +309,7 @@ wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)]
 % Adj  (e->t)->(e->t))
 % P    (e->t)
 % V    e
-intensifier_semantics(Word, lambda(Adj, lambda(P, lambda(V, merge(drs([event(L)],[appl(Word,L),drs_label(L,appl(appl(Adj,lambda(_,drs([],[]))),V))]),appl(P,V)))))).
+intensifier_semantics(Word, lambda(Adj, lambda(P, lambda(V, merge(drs([event(L)],[appl(Word,L),drs_label(L,appl(appl(Adj,P),V))]),appl(P,V)))))).
 
 dot_semantics(none, _, lambda(X,X)).
 dot_semantics(classic, Dis, Sem) :-
@@ -1366,9 +1366,9 @@ default_semantics(W, num, dr(0,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([],[
 	convert_cardinal(W, Num).
 default_semantics(W, num, dr(0,lit(np(_,_,_)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),=,Num)]),appl(P,X)),appl(Q,X))))) :-
 	convert_cardinal(W, Num).
-default_semantics(W, num, lit(n), lambda(X,drs([],[bool(X,=,Num)]))) :-
+default_semantics(W, num, lit(n), lambda(X,drs([],[bool(num(X),=,Num)]))) :-
 	convert_cardinal(W, Num).
-default_semantics(W, num, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(X,=,Num)]),appl(P,X)))) :-
+default_semantics(W, num, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(num(X),=,Num)]),appl(P,X)))) :-
 	convert_cardinal(W, Num).
 default_semantics(W, num, dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(NP,lambda(P,appl(NP,lambda(X,merge(appl(P,X),drs([],[appl(appl(Word,Num),X)]))))))) :- 
 	convert_cardinal(W, Num),
@@ -1472,11 +1472,11 @@ default_semantics(avérer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit
 % similar to "se montrer" except that it is not entailed that the subject
 % has the property described by the adjective.
 
-default_semantics(considérer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+default_semantics(considérer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(Z,drs([],[bool(Z,=,Y)]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
 	add_roles([agent-Y,theme-L], se_considérer, E, Conds, []),
 	pos_time(ver:TIME, [], Es, E-Tnse).
 
-default_semantics(trouver, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
+default_semantics(trouver, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(Z,drs([],[bool(Z,=,Y)]))),Y))|Conds]),drs(Es,Tnse))))))))) :-
 	add_roles([agent-Y,theme-L], se_trouver, E, Conds, []),
 	pos_time(ver:TIME, [], Es, E-Tnse).
 
@@ -1511,8 +1511,6 @@ default_semantics(présente, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),l
 default_semantics(demander, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),lit(s(whq))), lambda(SWHQ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs([event(L),event(F)],[drs_label(L,appl(SWHQ,F))|Conds]),drs(Es,Tnse))))))))) :-
 	add_roles([agent-Y,theme-L], se_demander, E, Conds, []),
 	pos_time(ver:TIME, [], Es, E-Tnse).
-
-
 
 
 % passive (tagged as past participle, should correct some POS-tag errors)
@@ -1817,8 +1815,8 @@ default_semantics(être, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,
 default_semantics(être, POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(_)))),dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(ppart))))), Sem) :-
 	auxiliary_verb_se(POS, [], Sem).
 
-% correct error in lemmatiser: "suis" as form of "suivre", but with a syntactic category which can
-% only correspond to "etre"
+% correct error in lemmatiser: "suis" as form of "suivre", but with a
+% syntactic category which can only correspond to "etre"
 default_semantics(suivre, POS, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(ppart)))), Sem) :-
 	auxiliary_verb_etre(POS, [], Sem).
 default_semantics(suivre, POS, dr(0,dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(_)))),dl(0,lit(cl_r),dl(0,lit(np(A,B,C)),lit(s(ppart))))), Sem) :-
@@ -2545,9 +2543,9 @@ default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(p
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), lambda(A,lambda(P,lambda(V,merge(drs([event(E),variable(X)],[appl(generic,X)|Conds]),appl(P,V)))))) :-
 	get_roles(W, [np, np, adj], [ArgRole1, ArgRole2, ArgRole3]),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-L], W, E, Conds, [drs_label(L,appl(appl(A,lambda(_,drs([],[]))),V))]).
-default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E),variable(X)],[appl(generic,X)|Conds]))),appl(P,V)))))) :-
-	get_roles(W, [np, np, np], [SubjectRole, ObjectRole, Arg]),
-	add_roles([SubjectRole-X,ObjectRole-V,Arg-Z], W, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E)],Conds))),appl(P,V)))))) :-
+	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
+	add_roles([SubjectRole-V,ObjectRole-Z], W, E, Conds, []).
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(s(_))), lambda(SQ,lambda(N,lambda(V, merge(appl(N,V),drs([event(E),event(F)],[drs_label(F,appl(SQ,E))|Conds])))))) :-
 	add_roles([agent-V,theme-F], W, E, Conds, []).
 
@@ -3596,8 +3594,8 @@ lex(toutes, dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
 lex('Toutes', dr(0,lit(np(_,_,_)),lit(n)), Sem) :-
         gq_every_semantics(Sem).
 % tout les
-lex('Tous', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,drs([],[bool(drs([variable(Y)],[bool(Y,in,X)]),->,appl(P,X))])))))).
-lex('Toutes', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,drs([],[bool(drs([variable(Y)],[bool(Y,in,X)]),->,appl(P,X))])))))).
+lex('Tous', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,drs([],[bool(drs([variable(Y)],[bool(Y,in,X)]),->,appl(P,Y))])))))).
+lex('Toutes', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,drs([],[bool(drs([variable(Y)],[bool(Y,in,X)]),->,appl(P,Y))])))))).
 
 % Possessives
 			
@@ -3726,6 +3724,11 @@ lex(moins, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variabl
 
 % conjunctions
 
+% this is approximative but the best we can do with the given type
+% assignment until a proof transformation translating product rules
+% to the proper treatment of argument cluster coordination is implemented.
+
+lex(soit, dr(0,np,np), lambda(X,X)).
 lex(soit, dr(0,dl(0,p(0,np,dl(0,np,s)),p(0,np,dia(0,box(0,dl(0,np,s))))),p(0,np,dl(0,np,s))), lambda(Pair2,lambda(Pair1,pair(
 	lambda(P,drs([variable(X)],[bool(appl(pi1(Pair1),lambda(Y,merge(drs([],[bool(Y,=,X)]),appl(P,Y)))),\/,appl(pi1(Pair2),lambda(Z,merge(drs([],[bool(Z,=,X)]),appl(P,Z)))))])),
 	lambda(NP,lambda(E,appl(NP,lambda(X1,drs([],[bool(merge(drs([variable(Y1),event(E1)],[bool(Y1,=,X1),bool(E1,=,E)]),appl(appl(pi2(Pair1),lambda(Q,appl(Q,Y1))),E1)),\/,
