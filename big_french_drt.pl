@@ -3028,6 +3028,7 @@ default_semantics(Word, dr(0,lit(cs),lit(s(_))), Sem) :-
 % constructions of the form "n'importe WHQ" 
 
 lex('où', dl(0,dl(0,np,s),dl(1,s,s)), lambda(_,lambda(S,lambda(E,merge(drs([variable(X)],[appl(appl(lieu,X),E),appl(free_choice,X)]),appl(S,E)))))).
+lex(quand, dl(0,dl(0,np,s),dl(1,s,s)), lambda(_,lambda(S,lambda(E,merge(drs([variable(X)],[bool(X,=,appl(temps,E)),appl(free_choice,X)]),appl(S,E)))))).
 
 % de X a Y
 
@@ -3724,6 +3725,11 @@ lex(moins, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variabl
 % Discourse connectives
 
 % conjunctions
+
+lex(soit, dr(0,dl(0,p(0,np,dl(0,np,s)),p(0,np,dia(0,box(0,dl(0,np,s))))),p(0,np,dl(0,np,s))), lambda(Pair2,lambda(Pair1,pair(
+	lambda(P,drs([variable(X)],[bool(appl(pi1(Pair1),lambda(Y,merge(drs([],[bool(Y,=,X)]),appl(P,Y)))),\/,appl(pi1(Pair2),lambda(Z,merge(drs([],[bool(Z,=,X)]),appl(P,Z)))))])),
+	lambda(NP,lambda(E,appl(NP,lambda(X1,drs([],[bool(merge(drs([variable(Y1),event(E1)],[bool(Y1,=,X1),bool(E1,=,E)]),appl(appl(pi2(Pair1),lambda(Q,appl(Q,Y1))),E1)),\/,
+        merge(drs([variable(Y2),event(E2)],[bool(Y2,=,X1),bool(E2,=,E)]),appl(appl(pi2(Pair2),lambda(R,appl(R,Y2))),E2)))]))))))))).				
 
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s)))),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s))))),lambda(AUX2,lambda(AUX1,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(appl(AUX1,VP),lambda(Q,appl(Q,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(appl(AUX2,VP),lambda(R,appl(R,X))),F))))))))))).
  
