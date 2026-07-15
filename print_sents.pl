@@ -7,6 +7,8 @@ print_word(yes).
 
 %%%%
 
+% output all sentences in a supertag Prolog file back to textual supertagger input
+
 print_sents :-
 	clause(sent(_,_), prob_parse(List, _)),
 	print_list(List),
@@ -43,6 +45,9 @@ print_all_forms([Form-Prob|Rest]) :-
 
 %%%%
 
+% prints a list of word|form|pos triples, producing the raw text input for a word_form_pos.txt file
+% simply use "sort | uniq -c"  on the raw output data
+
 print_wfp :-
 	clause(sent(_,_), prob_parse(List, _)),
 	print_wfp_list(List),
@@ -74,6 +79,8 @@ print_item_word_pos(si(Word, Pos,  _, _)) :-
 	format('~w|~w ', [Word, Pos]).
 
 %%%%%
+
+% this version oly prints the words (without POS-tag or supertag information) for use with the bootstrap parser.
 
 print_words :-
 	clause(sent(_,_), prob_parse(List, _)),
