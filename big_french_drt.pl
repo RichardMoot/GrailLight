@@ -2532,12 +2532,16 @@ default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
-default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(par))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(np(_, _, _))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(par))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, pp(par), pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(pp(par))), lambda(Q,lambda(R,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
-	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	get_roles(W, [np, pp(PRP), pp(par)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), lambda(A,lambda(P,lambda(V,merge(drs([event(E),variable(X)],[appl(generic,X)|Conds]),appl(P,V)))))) :-
@@ -3018,6 +3022,9 @@ default_semantics(Word, dr(0,lit(cs),lit(s(_))), Sem) :-
 	Word \== que,
 	Word \== 'qu\'',
 	Sem = lambda(S,lambda(E,merge(drs([],[appl(Word,E)]),appl(S,E)))).
+
+default_semantics(Word, dr(0,lit(pp(_)),lit(pp(PRP))), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([],[appl(PW,X)]),appl(P,X))))))) :-
+	combine_prep_word(PRP, Word, PW).		  
 
 % ============================================================
 % Lexicon
@@ -3735,7 +3742,9 @@ lex(soit, dr(0,dl(0,p(0,np,dl(0,np,s)),p(0,np,dia(0,box(0,dl(0,np,s))))),p(0,np,
         merge(drs([variable(Y2),event(E2)],[bool(Y2,=,X1),bool(E2,=,E)]),appl(appl(pi2(Pair2),lambda(R,appl(R,Y2))),E2)))]))))))))).				
 
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s)))),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s))))),lambda(AUX2,lambda(AUX1,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(appl(AUX1,VP),lambda(Q,appl(Q,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(appl(AUX2,VP),lambda(R,appl(R,X))),F))))))))))).
- 
+
+lex(et, dr(0,dl(0,dl(0,np,np),dl(0,np,np)),dl(0,n,n)), lambda(M, lambda(N, lambda(NP, lambda(P, appl(NP, lambda(X,  merge(appl(appl(N,lambda(Q,appl(Q,X))),lambda(Y,drs([],[bool(Y,=,X)]))),merge(appl(appl(M,lambda(Z,drs([],[bool(Z,=,X)]))),X), appl(P,X)))))))))).
+
 
 lex(et, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(et, dr(0,dl(0,lit(cs),lit(cs)),lit(cs)), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
