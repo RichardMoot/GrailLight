@@ -2547,9 +2547,9 @@ default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(p
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), lambda(A,lambda(P,lambda(V,merge(drs([event(E),variable(X)],[appl(generic,X)|Conds]),appl(P,V)))))) :-
 	get_roles(W, [np, np, adj], [ArgRole1, ArgRole2, ArgRole3]),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-L], W, E, Conds, [drs_label(L,appl(appl(A,lambda(_,drs([],[]))),V))]).
-default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E)],Conds))),appl(P,V)))))) :-
-	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
-	add_roles([SubjectRole-V,ObjectRole-Z], W, E, Conds, []).
+default_semantics(W, ver:ppre, dl(0, lit(cl_r),  dl(_,lit(n),lit(n))), lambda(_,lambda(P,lambda(V, merge(drs([event(E)],Conds),appl(P,V)))))) :-
+	get_roles(W, [cl_r, np], [SubjectRole, ObjectRole]),
+	add_roles([SubjectRole-V,ObjectRole-V], W, E, Conds, []).
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(s(_))), lambda(SQ,lambda(N,lambda(V, merge(appl(N,V),drs([event(E),event(F)],[drs_label(F,appl(SQ,E))|Conds])))))) :-
 	add_roles([agent-V,theme-F], W, E, Conds, []).
 
@@ -2840,6 +2840,9 @@ default_semantics('A', dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit
 default_semantics('À', dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
 default_semantics(à, dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
 default_semantics(à, dr(0,dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
+default_semantics(à, dr(0, dr(0, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), lit(np(_,_,_))), lit(n)), lambda(_, lambda(NP, lambda(Adj, lambda(N,lambda(X,appl(NP,lambda(Y,merge([],[appl(appl(à_travers,X),Y)]),merge(appl(appl(Adj,N),X),appl(N,X)))))))))).
+%lex(à, dr(0, dr(0, dl(1, s, s), np), n), lambda(_,  lambda(NP, lambda(S, lambda(E, appl(NP, lambda(X,merge([],[appl(appl(à_travers,X),E)]),appl(S,E)))))))).
+
 
 % NP modifiers
 
@@ -3029,6 +3032,7 @@ default_semantics(Word, dr(0,lit(pp(_)),lit(pp(PRP))), lambda(PP,lambda(P,appl(P
 % ============================================================
 % Lexicon
 % ============================================================
+
 
 % constructions of the form "n'importe WHQ" 
 
@@ -4306,6 +4310,8 @@ lex('Que', dr(0,s_whq,dr(0,s,dia(1,box(1,np)))), lambda(P, lambda(E, merge(drs([
 % R (e->t)									%lambda(NPS,lambda(E,appl(NPS,lambda(X,drs([variable(X)],[appl(sleep,X)])))))	
 %wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
 
+
+lex(étant,  dr(0,dl(0,n,n),dl(0,np,s_pass)), lambda(VP,lambda(N,lambda(X,merge(merge(drs([event(E)],[bool(appl(temps,E),overlaps,ref_time)]),appl(appl(VP,lambda(Q,appl(Q,X))),E)),appl(N,X)))))).
 
 lex(été, dr(0,dl(0,np,s_ppart),dl(0,np,s_pass)), lambda(VP,lambda(NP,lambda(E,merge(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
 	pos_time(ver:pper, [], Es, E-Cs).
