@@ -3039,15 +3039,23 @@ default_semantics(Word, dr(0,lit(pp(_)),lit(pp(PRP))), lambda(PP,lambda(P,appl(P
 lex('où', dl(0,dl(0,np,s),dl(1,s,s)), lambda(_,lambda(S,lambda(E,merge(drs([variable(X)],[appl(appl(lieu,X),E),appl(free_choice,X)]),appl(S,E)))))).
 lex(quand, dl(0,dl(0,np,s),dl(1,s,s)), lambda(_,lambda(S,lambda(E,merge(drs([variable(X)],[bool(X,=,appl(temps,E)),appl(free_choice,X)]),appl(S,E)))))).
 
-% de X a Y
-
 lex('Est', n, lambda(X,drs([],[appl('Est',X)]))).  % explicitly added to correct stemmer errors ("est" as form of "etre)
 lex('Nord', n, lambda(X,drs([],[appl('Nord',X)]))).
 lex('Sud', n, lambda(X,drs([],[appl('Sud',X)]))).
 lex('Ouest', n, lambda(X,drs([],[appl('Ouest',X)]))).
 
 
+% de X a Y
+
 lex(à, dr(0,dl(0,pp_de,dl(0,n,n)),np), lambda(NP, lambda(PP, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(appl(N,X),drs([],[appl(appl(start,Y),X),appl(appl(end,Z),X)]))))))))))).
+lex(à, dr(0,dl(0,pp_de,pp_a),np), lambda(NP, lambda(PP, lambda(P, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(start,Y),X),appl(appl(end,Z),X)],appl(P,X))))))))))).
+lex(à, dr(0, dl(0, pp_de, dl(1, s, s)), np), lambda(NP, lambda(PP, lambda(S, lambda(E, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([],[appl(appl(start,Y),E),appl(appl(end,Z),E)]),appl(S,E))))))))))). 
+
+% "côte à côte" and similar  "X à X" constructions
+
+lex(à, dr(0, dl(0, n, dl(1, s, s)), n), lambda(N2, lambda(N1, lambda(S, lambda(E,merge(merge(drs([variable(X),variable(Y)],[appl(appl(appl(à,Y),X),E)]),merge(appl(N1,X),appl(N2,Y))),appl(S,E))))))).
+
+%%%
 
 lex(autour, dr(0,pp_a,pp_de), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([variable(Y)],[appl(appl(autour_de,Y),X)]),appl(P,Y))))))).
 lex('au-dessus', dr(0,pp_a,pp_de), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([variable(Y)],[appl(appl(au_dessus_de,Y),X)]),appl(P,Y))))))).
