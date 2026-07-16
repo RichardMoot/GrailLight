@@ -2536,6 +2536,10 @@ default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(np(_, _, _))),l
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(np(_, _, _))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, pp(PRP),np], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(par))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
 	get_roles(W, [np, pp(par), pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
@@ -2552,6 +2556,21 @@ default_semantics(W, ver:ppre, dl(0, lit(cl_r),  dl(_,lit(n),lit(n))), lambda(_,
 	add_roles([SubjectRole-V,ObjectRole-V], W, E, Conds, []).
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(s(_))), lambda(SQ,lambda(N,lambda(V, merge(appl(N,V),drs([event(E),event(F)],[drs_label(F,appl(SQ,E))|Conds])))))) :-
 	add_roles([agent-V,theme-F], W, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(np(_, _, _))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, pp(PRP),np], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-V,ArgRole2-Z,ArgRole3-X], PW, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_, _, _))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(X,drs([event(E)],Conds))),appl(P,V)))))) :-
+	get_roles(W, [np,np], [ArgRole1, ArgRole2]),
+	add_roles([ArgRole1-V,ArgRole2-X], W, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dr(_,dl(_,lit(n),lit(n)),lit(np(_, _, _))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-V,ArgRole2-Z,ArgRole3-X], PW, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(X,drs([event(E)],Conds))),appl(P,V)))))) :-
+	get_roles(W, [np, pp(PRP)], [ArgRole1, ArgRole2]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-V,ArgRole2-X], PW, E, Conds, []).
 
 default_semantics(venir, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(base))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L)],Conds)))))) :-
 	add_roles([agent-X,theme-L], venir, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
@@ -2842,7 +2861,6 @@ default_semantics(à, dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(
 default_semantics(à, dr(0,dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
 default_semantics(à, dr(0, dr(0, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), lit(np(_,_,_))), lit(n)), lambda(_, lambda(NP, lambda(Adj, lambda(N,lambda(X,appl(NP,lambda(Y,merge([],[appl(appl(à_travers,X),Y)]),merge(appl(appl(Adj,N),X),appl(N,X)))))))))).
 %lex(à, dr(0, dr(0, dl(1, s, s), np), n), lambda(_,  lambda(NP, lambda(S, lambda(E, appl(NP, lambda(X,merge([],[appl(appl(à_travers,X),E)]),appl(S,E)))))))).
-
 
 % NP modifiers
 
@@ -3269,6 +3287,17 @@ lex('également', dr(0,dl(0,np,s),dl(0,np,s)), lambda(VP,lambda(NP,lambda(E,merg
 lex(hors, dr(_,pp(_),pp(de)), lambda(X,X)).
 lex('près', dr(_,pp(_),pp(de)), lambda(X,X)).
 lex(loin, dr(_,pp(_),pp(de)), lambda(X,X)).
+
+% "les uns les autres"
+% TODO: another hack, needs multi-word expression treatment *and* proper treatmnt of reciprocals.
+
+lex(les, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_les_autres,E)]),appl(S,E))))))).
+lex(avec, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_avec_les_autres,E)]),appl(S,E))))))).
+lex(aux,  dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_aux_autres,E)]),appl(S,E))))))).
+lex(contre, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_contre_les_autres,E)]),appl(S,E))))))).
+% constructructions like "les uns à côté des autres" a repossible
+lex(à, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_à_côté_des_autres,E)]),appl(S,E))))))). 
+
 
 
 % = proper nouns - French
