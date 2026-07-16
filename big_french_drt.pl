@@ -1457,6 +1457,11 @@ default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s
 	INF = inf(_),
 	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,drs([event(F)],[appl(appl(appl(INFObj,lambda(Prp,appl(Prp,Y))),lambda(PX,appl(PX,X))),F)]))]),
 	pos_time(ver:TIME, [], Es, E-Tnse).														
+default_semantics(faire, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dr(0,dl(0,lit(np(_,_,_)),lit(s(INF))),dia(_,box(_,lit(pp(_)))))), lambda(INFObj,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(drs(Es,Tnse),drs([variable(X),event(L)],[bool(X,=,'context?')|Conds]))))))))) :-
+	nonvar(INF),
+	INF = inf(_),
+	add_roles([agent-X,patient-Y,theme-L], se_faire, E, Conds, [drs_label(L,drs([event(F)],[appl(appl(appl(INFObj,lambda(Prp,appl(Prp,Y))),lambda(PX,appl(PX,X))),F)]))]),
+	pos_time(ver:TIME, [], Es, E-Tnse).														
 % = se montrer + ADJ
 
 default_semantics(montrer, ver:TIME, dr(_,dl(0,lit(cl_r),dl(0,lit(np(_,_,_)),lit(s(_)))),dl(0,lit(n),lit(n))), lambda(ADJ,lambda(_SE,lambda(NP,lambda(E,appl(NP,lambda(Y,merge(merge(drs([],[drs_label(L,appl(appl(ADJ,lambda(_,drs([],[]))),Y))|Conds]),drs(Es,Tnse)),appl(appl(ADJ,lambda(_,drs([],[]))),Y))))))))) :-
@@ -2717,7 +2722,6 @@ default_semantics(_, lit(let), drs([],[])).
 
 default_semantics(Word, lit(s(_)), lambda(E,drs([],[appl(Word,E)]))).
 
-
 default_semantics(alors, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(alors, dr(0,dr(0,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
 default_semantics(tandis, dr(0,dl(_,lit(s(Z)),lit(s(Z))),lit(s(q))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E)],[bool(drs([],[appl(appl(contrast,F),E)]),\/,drs([],[appl(appl(background,F),E)]))]),merge(appl(P,E),appl(Q,F))))))).
@@ -2819,6 +2823,10 @@ default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),la
 % very rare: (np/np)/np
 default_semantics(W, dr(0,dr(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),lambda(P,lambda(Q,lambda(Z,appl(Q,lambda(Y,appl(P,lambda(X,merge(drs([],[appl(appl(W,X),Y)]),appl(Z,Y)))))))))).
 
+% rare, for constructions like torse nu, pieds nus 
+
+default_semantics(W, dl(0, lit(n), dl(0, lit(n), lit(n))), lambda(N1, lambda(N2, lambda(X, merge(merge([variable(Y)],[appl(appl(de,Y),X),appl(W,Y)]),appl(N1,Y)),appl(N2,X))))).
+default_semantics(W, dl(0, lit(n), dl(1, lit(s(_)), lit(s(_)))), lambda(N, lambda(S, lambda(E, merge(merge(drs([variable(Y)],[appl(W,Y),appl(appl(de,Y),E)]),appl(N,Y)),appl(S,E)))))).
 
 default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)),lambda(P,lambda(NP,lambda(Q,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(W,X),Y)]),merge(appl(Q,X),appl(P,X))))))))).
 
@@ -2926,6 +2934,8 @@ default_semantics(Word, dr(_,dr(_,lit(n),lit(n)),dr(_,lit(n),lit(n))), Sem) :-
 	intensifier_semantics(Word, Sem).
 default_semantics(Word, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), Sem) :-
 	intensifier_semantics(Word, Sem).
+default_semantics(Word, dl(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), Sem) :-
+	intensifier_semantics(Word, Sem).
 
 % = adverb intensifier
 
@@ -2934,7 +2944,9 @@ default_semantics(Word, dr(0,dr(0,lit(s(ST)),lit(s(ST))),dr(0,lit(s(ST)),lit(s(S
 
 % this is not entirely right, but hard to do differently given the choice to make an argument pp essentially vacuous semantically
 
-default_semantics(Word, dr(0,lit(pp(P)),lit(pp(P))), lambda(PP, lambda(Q, appl(PP,lambda(X,merge(appl(PP,Q),drs([],[appl(Word,X)]))))))).
+
+default_semantics(Word, dr(0,lit(pp(_)),lit(pp(Prp))), lambda(PP, lambda(Q, appl(PP,lambda(X,merge(appl(PP,Q),drs([],[appl(PW,X)]))))))) :-
+    combine_prep_word(Prp, Word, PW).
 default_semantics(Word, dr(0,dr(0,lit(pp(P)),lit(pp(P))),lit(n)), lambda(N, lambda(PP, lambda(Q, appl(PP,lambda(X,merge(appl(PP,Q),merge(drs([variable(Y)],[appl(appl(Word,X),Y)]),appl(N,Y))))))))).
 
 % = generic determiner type (used for example for adjectives in noun phrases without determiner)
