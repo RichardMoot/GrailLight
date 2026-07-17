@@ -2186,6 +2186,7 @@ default_semantics(permettre, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(n
 	add_roles([agent-X,patient-Y,theme-L], permettre, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(POS, [variable(Y),event(L)], EVs, E-Pred).
 
+
 % = permettre/interdire + deinf + pp_a
 
 default_semantics(permettre, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
@@ -3819,7 +3820,12 @@ lex(et, dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), lambda(Adv2,lambda(Adv1,lambd
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,np))),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),dia(0,box(0,np)))),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(et, dr(0,dl(0,dr(0,s,dia(0,box(0,np))),dr(0,s,np)),dr(0,s,dia(0,box(0,np)))), lambda(VP2,lambda(VP1,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP1,lambda(P,appl(P,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(VP2,lambda(Q,appl(Q,X))),F)))))))))).
-
+lex(et, dr(0,dl(0,dr(0,dl(1,s,s),np),dr(0,dl(1,s,s),np)),dr(0,dl(1,s,s),np)), lambda(Q, lambda(P, lambda(NP, lambda(S, lambda(E, appl(NP,lambda(X,merge(merge(
+	appl(appl(appl(P,lambda(V,appl(V,X))),lambda(_,drs([],[]))),E),
+        appl(appl(appl(Q,lambda(W,appl(W,X))),lambda(_,drs([],[]))),E)),appl(S,E)))))))))).
+lex(et, dr(0,dl(0,dr(0,dl(1,s,s),dia(0,box(0,np)))),dr(0,dl(1,s,s),np)),dr(0,dl(1,s,s),dia(0,box(0,np))), lambda(Q, lambda(P, lambda(NP, lambda(S, lambda(E, appl(NP,lambda(X,merge(merge(
+	appl(appl(appl(P,lambda(V,appl(V,X))),lambda(_,drs([],[]))),E),
+        appl(appl(appl(Q,lambda(W,appl(W,X))),lambda(_,drs([],[]))),E)),appl(S,E)))))))))).
 
 lex(et, dr(0,dr(0,s,s),dr(0,s,s)), lambda(SS,lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(parallel,F),E),bool(F,=,'?')]),merge(appl(S,E),appl(appl(SS,S),E))))))).
 lex('Et', dr(0,dr(0,s,s),dr(0,s,s)), lambda(SS,lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(parallel,F),E),bool(F,=,'?')]),merge(appl(S,E),appl(appl(SS,S),E))))))).
