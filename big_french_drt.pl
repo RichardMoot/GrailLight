@@ -2888,7 +2888,7 @@ default_semantics(W, dr(0,dr(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))),la
 
 % rare, for constructions like torse nu, pieds nus 
 
-default_semantics(W, dl(0, lit(n), dl(0, lit(n), lit(n))), lambda(N1, lambda(N2, lambda(X, merge(merge([variable(Y)],[appl(appl(de,Y),X),appl(W,Y)]),appl(N1,Y)),appl(N2,X))))).
+default_semantics(W, dl(0, lit(n), dl(0, lit(n), lit(n))), lambda(N1, lambda(N2, lambda(X, merge(merge(drs([variable(Y)],[appl(appl(de,Y),X),appl(W,Y)]),appl(N1,Y)),appl(N2,X)))))).
 default_semantics(W, dl(0, lit(n), dl(1, lit(s(_)), lit(s(_)))), lambda(N, lambda(S, lambda(E, merge(merge(drs([variable(Y)],[appl(W,Y),appl(appl(de,Y),E)]),appl(N,Y)),appl(S,E)))))).
 
 default_semantics(W, dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(n)),lambda(P,lambda(NP,lambda(Q,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(W,X),Y)]),merge(appl(Q,X),appl(P,X))))))))).
@@ -3131,6 +3131,7 @@ lex('Ouest', n, lambda(X,drs([],[appl('Ouest',X)]))).
 lex(à, dr(0,dl(0,pp_de,dl(0,n,n)),np), lambda(NP, lambda(PP, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(appl(N,X),drs([],[appl(appl(start,Y),X),appl(appl(end,Z),X)]))))))))))).
 lex(à, dr(0,dl(0,pp_de,pp_a),np), lambda(NP, lambda(PP, lambda(P, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(start,Y),X),appl(appl(end,Z),X)],appl(P,X))))))))))).
 lex(à, dr(0, dl(0, pp_de, dl(1, s, s)), np), lambda(NP, lambda(PP, lambda(S, lambda(E, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([],[appl(appl(start,Y),E),appl(appl(end,Z),E)]),appl(S,E))))))))))). 
+lex(à, dr(0, dl(0, pp_de, dl(1, dl(0, n, n), dl(0, n, n))), np), lambda(NP, lambda(PP, lambda(Adj, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([event(L)],[appl(appl(start,Y),L),appl(appl(end,Z),L),drs_label(L,appl(appl(Adj,N),X))]),appl(N,X)))))))))))). 
 
 % "côte à côte", "un par un" and similar  "X à X" constructions
 
@@ -3276,6 +3277,7 @@ lex(pour, dr(0,dr(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(
 lex(pour, dr(0,dr(0,dr(0,s,dl(0,np,s)),np),dl(0,np,s_inf)), lambda(VPInf,lambda(NP,lambda(VP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
 lex(pour, dr(0,dl(0,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
 lex(pour, dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(appl(appl(VP,lambda(P,appl(P,X))),F),merge(appl(S,E),drs([variable(X),event(F)],[appl(appl(goal,F),E),bool(X,=,appl(agent,E))]))))))).
+lex(pour, dr(0,dl(1,dl(0,np,s),dl(0,np,s)),dl(0,np,s_inf)), lambda(VPInf,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP,lambda(P,appl(P,X))),E),merge(merge(drs([event(F)],[]),appl(appl(VPInf,lambda(Q,appl(Q,X))),F)),drs([],[appl(appl(goal,F),E)])))))))))).
 
 lex('Sans', dr(0,dr(0,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(merge(appl(S,E),drs([variable(X),event(F)],[bool(X,=,'?'),bool(E,subseteq,F)])),drs([],[appl(appl(VP,lambda(P,not(appl(P,X)))),F)])))))).
 lex('Sans', dr(0,dl(1,s,s),dl(0,lit(np(_,_,_)),s_inf)), lambda(VP,lambda(S,lambda(E,merge(merge(appl(S,E),drs([variable(X),event(F)],[bool(X,=,'?'),bool(E,subseteq,F)])),drs([],[appl(appl(VP,lambda(P,not(appl(P,X)))),F)])))))).
