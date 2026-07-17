@@ -2991,6 +2991,16 @@ default_semantics(Word, dl(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), Sem) :-
 default_semantics(Word, dr(0,dl(1,lit(s(ST)),lit(s(ST))),dl(1,lit(s(ST)),lit(s(ST)))), lambda(Adv, lambda(S, lambda(E, merge(appl(S,E),drs([event(Lab)], [appl(appl(Word,Lab),E),drs_label(Lab,appl(appl(Adv,lambda(_,drs([],[]))),E))])))))).
 default_semantics(Word, dr(0,dr(0,lit(s(ST)),lit(s(ST))),dr(0,lit(s(ST)),lit(s(ST)))), lambda(Adv, lambda(S, lambda(E, merge(appl(S,E),drs([event(Lab)], [appl(appl(Word,Lab),E),drs_label(Lab,appl(appl(Adv,lambda(_,drs([],[]))),E))])))))).
 
+% adjectival intensifier
+
+default_semantics(Word, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), Sem) :-
+    intensifier_semantics(Word, Sem).
+default_semantics(Word, dr(0, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), lit(np(_,_,_))), lambda(NP, lambda(Adj, lambda(P, lambda(V, appl(NP,lambda(X,merge(drs([event(L)],[appl(appl(Word,L),X), drs_label(L,appl(appl(Adj,P),V))]),appl(P,V))))))))).
+default_semantics(Word, dr(0, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), lit(pp(Prp))), lambda(NP, lambda(Adj, lambda(P, lambda(V, appl(NP,lambda(X,merge(drs([event(L)],[appl(appl(PW,L),X), drs_label(L,appl(appl(Adj,P),V))]),appl(P,V))))))))) :-
+    combine_prep_word(Prp, Word, PW).
+default_semantics(Word, dr(0, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), lit(n)), lambda(N, lambda(Adj, lambda(P, lambda(V, merge(drs([event(L),variable(X)],[appl(appl(Word,L),X), drs_label(L,appl(appl(Adj,P),V))]),merge(appl(N,X),appl(P,V)))))))).
+
+
 % this is not entirely right, but hard to do differently given the choice to make an argument pp essentially vacuous semantically
 
 
