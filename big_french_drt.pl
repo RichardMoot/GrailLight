@@ -3865,6 +3865,7 @@ lex(et, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z))))
 lex(et, dr(0,dl(0,dr(0,lit(np(_,_,_)),lit(n)),dr(0,lit(np(_,_,_)),lit(n))),dr(0,lit(np(_,_,_)),lit(n))),lambda(Det1,lambda(Det2,lambda(N,lambda(P,merge(appl(appl(Det1,N),P),appl(appl(Det2,N),P))))))).
 lex(et, dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
 lex(et, dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
+lex(et, dr(0,dl(0,dr(0,dl(0,np,s),pp),dr(0,dl(0,np,s),pp)),dr(0,dl(0,np,s),pp)),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,np))),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),dia(0,box(0,np)))),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(et, dr(0,dl(0,dr(0,s,dia(0,box(0,np))),dr(0,s,np)),dr(0,s,dia(0,box(0,np)))), lambda(VP2,lambda(VP1,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP1,lambda(P,appl(P,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(VP2,lambda(Q,appl(Q,X))),F)))))))))).
@@ -3894,7 +3895,7 @@ lex(ou, dr(0,dl(0,dr(0,lit(np(_,_,_)),lit(n)),dr(0,lit(np(_,_,_)),lit(n))),dr(0,
 lex(ou, dr(0,dl(0,np,np),s_q), lambda(SQ,lambda(NP,lambda(P,merge(drs([variable(X),event(E)],[bool(appl(NP,lambda(Z,drs([],[bool(Z,=,X)]))),\/,appl(SQ,E))]),appl(P,X)))))).
 lex(ou, dr(0,dl(0,lit(s(X)),lit(s(X))),lit(s(q))), lambda(S2,lambda(S1,lambda(E,drs([],[bool(appl(S1,E),\/,S2)]))))).
 lex(ou, dr(0,dl(0,lit(s(X)),lit(s(X))),lit(s(SQ))), lambda(S2,lambda(S1,lambda(E,drs([],[bool(appl(S1,E),\/,appl(S2,E))]))))) :-
-    SQ \= q.
+    SQ \== q.
 lex('Mais', dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(contrast,F),E),bool(F,=,'event?')]),appl(S,E))))).
 lex(mais, dl(0,lit(s(Z)),dr(0,lit(s(Z)),lit(s(_)))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(contrast,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(mais, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,appl(appl(P,appl(Q,R)),X)))))).
@@ -4437,13 +4438,14 @@ lex(été, dr(0,dl(0,np,lit(s(_))),dl(0,np,lit(s(ppart)))), Sem) :-
 
 % à + INF adverbial constructions 
 lex(à, dr(0,dl(1,lit(s(SS)),lit(s(SS))),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(P,lambda(S,lambda(E,merge(merge(drs([event(F),variable(X)],[appl(appl(à,E),F)]),appl(S,E)),appl(appl(P,lambda(Q,appl(Q,X))),F)))))).
+lex(à, dr(0,dl(1,dl(0,n,n),dl(0,n,n)),dl(0,np,s_inf)), lambda(INF,lambda(ADJ,lambda(N,lambda(X,merge(drs([event(L),event(K),event(E)],[drs_label(K,appl(appl(ADJ,N),X)),drs_label(L,appl(appl(INF,lambda(Q,appl(Q,K))),E))]),merge(appl(appl(ADJ,N),X),appl(N,X)))))))).
 
 % "deux à trois"
 % because the two determiner arguments will each generate a variable, an
-% embedded DRS is used to hide these variables anaphoric binding, much like
+% embedded DRS is used to hide these variables from  anaphoric binding, much like
 % the event variables introduced by the Verkuyl-style interval semantics
 lex(à, dr(0,dl(0,dr(0,np,n),dr(0,np,n)),dr(0,np,n)), lambda(Y,lambda(X,lambda(N,lambda(P,merge(merge(merge(drs([variable(Z)],[]),appl(N,Z)),appl(P,Z)),drs([],[
-									   merge(appl(appl(Y,lambda(_,drs([],[]))),lambda(V,drs([],[bool(num(Z),leq,num(V))]))),									 appl(appl(X,lambda(_,drs([],[]))),lambda(W,drs([],[bool(num(W),leq,num(Z))]))))]))))))).
+	merge(appl(appl(Y,lambda(_,drs([],[]))),lambda(V,drs([],[bool(num(Z),leq,num(V))]))),								      appl(appl(X,lambda(_,drs([],[]))),lambda(W,drs([],[bool(num(W),leq,num(Z))]))))]))))))).
 
 lex(',', dl(0,n,n), lambda(X,X)).
 lex(',', dl(0,lit(np(_,_,_)),lit(np(_,_,_))), lambda(X,X)).
