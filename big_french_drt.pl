@@ -3363,6 +3363,7 @@ lex(aux,  dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,
 lex(contre, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_contre_les_autres,E)]),appl(S,E))))))).
 % constructructions like "les uns à côté des autres" a repossible
 lex(à, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_à_côté_des_autres,E)]),appl(S,E))))))). 
+lex(à, dr(0, dl(0, np, dl(1, dl(0, n, n), dl(0, n, n))), n), lambda(_,lambda(_,lambda(Adj,lambda(N,lambda(X,merge(drs([event(L)],[drs_label(L,appl(appl(Adj,N),X)),appl(les_uns_à_côté_des_autres,L)]),merge(appl(appl(Adj,N),X),appl(N,X))))))))). 
 
 
 
