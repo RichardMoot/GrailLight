@@ -2184,6 +2184,8 @@ hybrid_fol_to_fol1(bool(F0,C,G0), X, bool(F,C,G)) :-
 hybrid_fol_to_fol1(appl(T0,U), X, T) :-
 	!,
  	add_arguments_to_term_start(appl(T0,U), [X], T).
+hybrid_fol_to_fol1(not(F0), X, not(F)) :-
+	hybrid_fol_to_fol1(F0, X, F).
 hybrid_fol_to_fol1(F, _, F).
 
 % Alternative version for passing a stack of worlds to each predicate
