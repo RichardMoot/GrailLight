@@ -2011,7 +2011,8 @@ get_arguments_result(A->B, R, [A|As]) :-
 % logic.
 
 drs_to_hybrid(DRS, Formula) :-
-	normalize_drs(DRS, NDRS),
+	normalize_drs(DRS, NDRS0),
+	remove_drs_duplicates(NDRS0, NDRS),
 	drs_to_fol(NDRS, Formula).
 
 % = drs_to_first_order(+DRS, -Formula)
@@ -2025,6 +2026,34 @@ drs_to_first_order(DRS, Formula) :-
 	drs_to_hybrid(DRS, HybridF),
 	hybrid_fol_to_fol(HybridF, Formula0),
 	reduce_quine(Formula0, Formula).
+
+
+%
+
+remove_drs_duplicates(drs(V,Xs), drs(V,Zs)) :-
+	list_to_set(Xs, Ys),
+	remove_conditions_duplicates(Ys, Zs).
+
+remove_conditions_duplicates([], []).
+remove_conditions_duplicates([C|Cs], [D|Ds]) :-
+	remove_cnd_duplicates(C, D),
+	remove_conditions_duplicates(Cs, Ds).
+
+remove_cnd_duplicates(not(DRS0), not(DRS)) :-
+	!,
+	remove_drs_duplicates(DRS0, DRS).
+remove_cnd_duplicates(drs_label(L,DRS0), drs_label(L,DRS)) :-
+	!,
+	remove_drs_duplicates(DRS0, DRS).
+remove_cnd_duplicates(bool(D0,->,D1), bool(E0,->,E1)) :-
+	!,
+	remove_drs_duplicates(D0, E0),
+	remove_drs_duplicates(D1, E1).
+remove_cnd_duplicates(bool(D0,\/,D1), bool(E0,\/,E1)) :-
+	!,
+	remove_drs_duplicates(D0, E0),
+	remove_drs_duplicates(D1, E1).
+remove_cnd_duplicates(C, C).
 
 % = normalize_drs
 
