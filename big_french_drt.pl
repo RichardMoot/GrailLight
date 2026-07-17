@@ -2190,6 +2190,11 @@ default_semantics(permettre, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,
 	add_roles([agent-X,patient-Y,theme-L], permettre, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
 	pos_time(POS, [event(L)], EVs, E-Pred).
 
+default_semantics(apprendre, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
+	SType = inf(_),
+	PType = à,
+	add_roles([agent-X,patient-Y,theme-L], apprendre, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,Y))),F)))|Pred]),
+	pos_time(POS, [event(L)], EVs, E-Pred).
 
 default_semantics(suggérer, POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(SType)))),lit(pp(PType))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(Y,appl(NPS,lambda(X,drs(EVs,Conds)))))))))) :-
 	SType = inf(_),
@@ -2537,22 +2542,45 @@ default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
-default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(par))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(np(_, _, _))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
 	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(np(_, _, _))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, pp(PRP),np], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
+default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(par))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, pp(par), pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dr(0,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(pp(par))), lambda(Q,lambda(R,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
-	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	get_roles(W, [np, pp(PRP), pp(par)], [ArgRole1, ArgRole2, ArgRole3]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-Z], PW, E, Conds, []).
 default_semantics(W, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(_,lit(n),lit(n))), lambda(A,lambda(P,lambda(V,merge(drs([event(E),variable(X)],[appl(generic,X)|Conds]),appl(P,V)))))) :-
 	get_roles(W, [np, np, adj], [ArgRole1, ArgRole2, ArgRole3]),
 	add_roles([ArgRole1-X,ArgRole2-V,ArgRole3-L], W, E, Conds, [drs_label(L,appl(appl(A,lambda(_,drs([],[]))),V))]).
-default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_,_,_))), lambda(Q,lambda(P,lambda(V, merge(appl(Q,lambda(Z,drs([event(E)],Conds))),appl(P,V)))))) :-
-	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
-	add_roles([SubjectRole-V,ObjectRole-Z], W, E, Conds, []).
+default_semantics(W, ver:ppre, dl(0, lit(cl_r),  dl(_,lit(n),lit(n))), lambda(_,lambda(P,lambda(V, merge(drs([event(E)],Conds),appl(P,V)))))) :-
+	get_roles(W, [cl_r, np], [SubjectRole, ObjectRole]),
+	add_roles([SubjectRole-V,ObjectRole-V], W, E, Conds, []).
 default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(s(_))), lambda(SQ,lambda(N,lambda(V, merge(appl(N,V),drs([event(E),event(F)],[drs_label(F,appl(SQ,E))|Conds])))))) :-
 	add_roles([agent-V,theme-F], W, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))),lit(np(_, _, _))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, pp(PRP),np], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-V,ArgRole2-Z,ArgRole3-X], PW, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(np(_, _, _))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(X,drs([event(E)],Conds))),appl(P,V)))))) :-
+	get_roles(W, [np,np], [ArgRole1, ArgRole2]),
+	add_roles([ArgRole1-V,ArgRole2-X], W, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dr(_,dl(_,lit(n),lit(n)),lit(np(_, _, _))),lit(pp(PRP))), lambda(R,lambda(Q,lambda(P,lambda(V,merge(appl(R,lambda(Z,appl(Q,lambda(X,drs([event(E)],Conds))))),appl(P,V))))))) :-
+	get_roles(W, [np, np, pp(PRP)], [ArgRole1, ArgRole2, ArgRole3]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-V,ArgRole2-Z,ArgRole3-X], PW, E, Conds, []).
+default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(X,drs([event(E)],Conds))),appl(P,V)))))) :-
+	get_roles(W, [np, pp(PRP)], [ArgRole1, ArgRole2]),
+	combine_prep_word(PRP, W, PW),
+	add_roles([ArgRole1-V,ArgRole2-X], PW, E, Conds, []).
 
 default_semantics(venir, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(base))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L)],Conds)))))) :-
 	add_roles([agent-X,theme-L], venir, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
@@ -2844,6 +2872,8 @@ default_semantics('A', dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit
 default_semantics('À', dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
 default_semantics(à, dr(0,dr(0,dr(0,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
 default_semantics(à, dr(0,dr(0,dl(1,lit(s(SS)),lit(s(SS))),lit(np(_,_,_))),lit(n)), lambda(_N,lambda(NP,lambda(S,lambda(E,merge(appl(S,E),appl(NP,lambda(Y,drs([],[appl(appl(à_travers,Y),E)]))))))))).
+default_semantics(à, dr(0, dr(0, dl(1, dl(0, lit(n), lit(n)), dl(0, lit(n), lit(n))), lit(np(_,_,_))), lit(n)), lambda(_, lambda(NP, lambda(Adj, lambda(N,lambda(X,appl(NP,lambda(Y,merge([],[appl(appl(à_travers,X),Y)]),merge(appl(appl(Adj,N),X),appl(N,X)))))))))).
+%lex(à, dr(0, dr(0, dl(1, s, s), np), n), lambda(_,  lambda(NP, lambda(S, lambda(E, appl(NP, lambda(X,merge([],[appl(appl(à_travers,X),E)]),appl(S,E)))))))).
 
 % NP modifiers
 
@@ -3031,16 +3061,18 @@ default_semantics(Word, dr(0,lit(cs),lit(s(_))), Sem) :-
 	Word \== 'qu\'',
 	Sem = lambda(S,lambda(E,merge(drs([],[appl(Word,E)]),appl(S,E)))).
 
+default_semantics(Word, dr(0,lit(pp(_)),lit(pp(PRP))), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([],[appl(PW,X)]),appl(P,X))))))) :-
+	combine_prep_word(PRP, Word, PW).		  
+
 % ============================================================
 % Lexicon
 % ============================================================
+
 
 % constructions of the form "n'importe WHQ" 
 
 lex('où', dl(0,dl(0,np,s),dl(1,s,s)), lambda(_,lambda(S,lambda(E,merge(drs([variable(X)],[appl(appl(lieu,X),E),appl(free_choice,X)]),appl(S,E)))))).
 lex(quand, dl(0,dl(0,np,s),dl(1,s,s)), lambda(_,lambda(S,lambda(E,merge(drs([variable(X)],[bool(X,=,appl(temps,E)),appl(free_choice,X)]),appl(S,E)))))).
-
-% de X a Y
 
 lex('Est', n, lambda(X,drs([],[appl('Est',X)]))).  % explicitly added to correct stemmer errors ("est" as form of "etre)
 lex('Nord', n, lambda(X,drs([],[appl('Nord',X)]))).
@@ -3048,7 +3080,17 @@ lex('Sud', n, lambda(X,drs([],[appl('Sud',X)]))).
 lex('Ouest', n, lambda(X,drs([],[appl('Ouest',X)]))).
 
 
+% de X a Y
+
 lex(à, dr(0,dl(0,pp_de,dl(0,n,n)),np), lambda(NP, lambda(PP, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(appl(N,X),drs([],[appl(appl(start,Y),X),appl(appl(end,Z),X)]))))))))))).
+lex(à, dr(0,dl(0,pp_de,pp_a),np), lambda(NP, lambda(PP, lambda(P, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(start,Y),X),appl(appl(end,Z),X)],appl(P,X))))))))))).
+lex(à, dr(0, dl(0, pp_de, dl(1, s, s)), np), lambda(NP, lambda(PP, lambda(S, lambda(E, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([],[appl(appl(start,Y),E),appl(appl(end,Z),E)]),appl(S,E))))))))))). 
+
+% "côte à côte" and similar  "X à X" constructions
+
+lex(à, dr(0, dl(0, n, dl(1, s, s)), n), lambda(N2, lambda(N1, lambda(S, lambda(E,merge(merge(drs([variable(X),variable(Y)],[appl(appl(appl(à,Y),X),E)]),merge(appl(N1,X),appl(N2,Y))),appl(S,E))))))).
+
+%%%
 
 lex(autour, dr(0,pp_a,pp_de), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([variable(Y)],[appl(appl(autour_de,Y),X)]),appl(P,Y))))))).
 lex('au-dessus', dr(0,pp_a,pp_de), lambda(PP,lambda(P,appl(PP,lambda(X,merge(drs([variable(Y)],[appl(appl(au_dessus_de,Y),X)]),appl(P,Y))))))).
@@ -3262,6 +3304,17 @@ lex('également', dr(0,dl(0,np,s),dl(0,np,s)), lambda(VP,lambda(NP,lambda(E,merg
 lex(hors, dr(_,pp(_),pp(de)), lambda(X,X)).
 lex('près', dr(_,pp(_),pp(de)), lambda(X,X)).
 lex(loin, dr(_,pp(_),pp(de)), lambda(X,X)).
+
+% "les uns les autres"
+% TODO: another hack, needs multi-word expression treatment *and* proper treatmnt of reciprocals.
+
+lex(les, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_les_autres,E)]),appl(S,E))))))).
+lex(avec, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_avec_les_autres,E)]),appl(S,E))))))).
+lex(aux,  dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_aux_autres,E)]),appl(S,E))))))).
+lex(contre, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_contre_les_autres,E)]),appl(S,E))))))).
+% constructructions like "les uns à côté des autres" a repossible
+lex(à, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_à_côté_des_autres,E)]),appl(S,E))))))). 
+
 
 
 % = proper nouns - French
@@ -3747,7 +3800,9 @@ lex(soit, dr(0,dl(0,p(0,np,dl(0,np,s)),p(0,np,dia(0,box(0,dl(0,np,s))))),p(0,np,
         merge(drs([variable(Y2),event(E2)],[bool(Y2,=,X1),bool(E2,=,E)]),appl(appl(pi2(Pair2),lambda(R,appl(R,Y2))),E2)))]))))))))).				
 
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s)))),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s))))),lambda(AUX2,lambda(AUX1,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(appl(AUX1,VP),lambda(Q,appl(Q,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(appl(AUX2,VP),lambda(R,appl(R,X))),F))))))))))).
- 
+
+lex(et, dr(0,dl(0,dl(0,np,np),dl(0,np,np)),dl(0,n,n)), lambda(M, lambda(N, lambda(NP, lambda(P, appl(NP, lambda(X,  merge(appl(appl(N,lambda(Q,appl(Q,X))),lambda(Y,drs([],[bool(Y,=,X)]))),merge(appl(appl(M,lambda(Z,drs([],[bool(Z,=,X)]))),X), appl(P,X)))))))))).
+
 
 lex(et, dr(0,dl(0,lit(s(Z)),lit(s(Z))),lit(s(_))), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
 lex(et, dr(0,dl(0,lit(cs),lit(cs)),lit(cs)), lambda(P,lambda(Q,lambda(F,merge(drs([event(E),event(F)],[appl(appl(narration,F),E)]),merge(appl(P,E),appl(Q,F))))))).
@@ -4309,6 +4364,8 @@ lex('Que', dr(0,s_whq,dr(0,s,dia(1,box(1,np)))), lambda(P, lambda(E, merge(drs([
 % R (e->t)									%lambda(NPS,lambda(E,appl(NPS,lambda(X,drs([variable(X)],[appl(sleep,X)])))))	
 %wh_rel_semantics(lambda(P,lambda(Q,lambda(X,merge(appl(Q,X),merge(drs([event(E)],[]),appl(appl(P,lambda(R,appl(R,X))),E))))))).
 
+
+lex(étant,  dr(0,dl(0,n,n),dl(0,np,s_pass)), lambda(VP,lambda(N,lambda(X,merge(merge(drs([event(E)],[bool(appl(temps,E),overlaps,ref_time)]),appl(appl(VP,lambda(Q,appl(Q,X))),E)),appl(N,X)))))).
 
 lex(été, dr(0,dl(0,np,s_ppart),dl(0,np,s_pass)), lambda(VP,lambda(NP,lambda(E,merge(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
 	pos_time(ver:pper, [], Es, E-Cs).
