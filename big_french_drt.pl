@@ -598,89 +598,89 @@ convert_cardinal1(treize, 13).
 convert_cardinal1(quatorze, 14).
 convert_cardinal1(quize, 15).
 convert_cardinal1(seize, 16).
-convert_cardinal1(dix-sept, 17).
-convert_cardinal1(dix-huit, 18).
-convert_cardinal1(dix-neuf, 19).
+convert_cardinal1('dix-sept', 17).
+convert_cardinal1('dix-huit', 18).
+convert_cardinal1('dix-neuf', 19).
 convert_cardinal1(vingt, 20).
-convert_cardinal1(vingt-et-un, 21).
-convert_cardinal1(vingt-deux, 22).
-convert_cardinal1(vingt-trois, 23).
-convert_cardinal1(vingt-quatre, 24).
-convert_cardinal1(vingt-cinq, 25).
-convert_cardinal1(vingt-six, 26).
-convert_cardinal1(vingt-sept, 27).
-convert_cardinal1(vingt-huit, 28).
-convert_cardinal1(vingt-neuf, 29).
+convert_cardinal1('vingt-et-un', 21).
+convert_cardinal1('vingt-deux', 22).
+convert_cardinal1('vingt-trois', 23).
+convert_cardinal1('vingt-quatre', 24).
+convert_cardinal1('vingt-cinq', 25).
+convert_cardinal1('vingt-six', 26).
+convert_cardinal1('vingt-sept', 27).
+convert_cardinal1('vingt-huit', 28).
+convert_cardinal1('vingt-neuf', 29).
 convert_cardinal1(trente, 30).
-convert_cardinal1(trente-et-un, 31).
-convert_cardinal1(trente-deux, 32).
-convert_cardinal1(trente-trois, 33).
-convert_cardinal1(trente-quatre, 34).
-convert_cardinal1(trente-cinq, 35).
-convert_cardinal1(trente-six, 36).
-convert_cardinal1(trente-sept, 37).
-convert_cardinal1(trente-huit, 38).
-convert_cardinal1(trente-neuf, 39).
+convert_cardinal1('trente-et-un', 31).
+convert_cardinal1('trente-deux', 32).
+convert_cardinal1('trente-trois', 33).
+convert_cardinal1('trente-quatre', 34).
+convert_cardinal1('trente-cinq', 35).
+convert_cardinal1('trente-six', 36).
+convert_cardinal1('trente-sept', 37).
+convert_cardinal1('trente-huit', 38).
+convert_cardinal1('trente-neuf', 39).
 convert_cardinal1(quarante, 40).
-convert_cardinal1(quarante-et-un, 41).
-convert_cardinal1(quarante-deux, 42).
-convert_cardinal1(quarante-trois, 43).
-convert_cardinal1(quarante-quatre, 44).
-convert_cardinal1(quarante-cinq, 45).
-convert_cardinal1(quarante-six, 46).
-convert_cardinal1(quarante-sept, 47).
-convert_cardinal1(quarante-huit, 48).
-convert_cardinal1(quarante-neuf, 49).
+convert_cardinal1('quarante-et-un', 41).
+convert_cardinal1('quarante-deux', 42).
+convert_cardinal1('quarante-trois', 43).
+convert_cardinal1('quarante-quatre', 44).
+convert_cardinal1('quarante-cinq', 45).
+convert_cardinal1('quarante-six', 46).
+convert_cardinal1('quarante-sept', 47).
+convert_cardinal1('quarante-huit', 48).
+convert_cardinal1('quarante-neuf', 49).
 convert_cardinal1(cinquante, 50).
-convert_cardinal1(cinquante-et-un, 51).
-convert_cardinal1(cinquante-deux, 52).
-convert_cardinal1(cinquante-trois, 53).
-convert_cardinal1(cinquante-quatre, 54).
-convert_cardinal1(cinquante-cinq, 55).
-convert_cardinal1(cinquante-six, 56).
-convert_cardinal1(cinquante-sept, 57).
-convert_cardinal1(cinquante-huit, 58).
-convert_cardinal1(cinquante-neuf, 59).
+convert_cardinal1('cinquante-et-un', 51).
+convert_cardinal1('cinquante-deux', 52).
+convert_cardinal1('cinquante-trois', 53).
+convert_cardinal1('cinquante-quatre', 54).
+convert_cardinal1('cinquante-cinq', 55).
+convert_cardinal1('cinquante-six', 56).
+convert_cardinal1('cinquante-sept', 57).
+convert_cardinal1('cinquante-huit', 58).
+convert_cardinal1('cinquante-neuf', 59).
 convert_cardinal1(soixante, 60).
-convert_cardinal1(soixante-et-un, 61).
-convert_cardinal1(soixante-deux, 62).
-convert_cardinal1(soixante-trois, 63).
-convert_cardinal1(soixante-quatre, 64).
-convert_cardinal1(soixante-cinq, 65).
-convert_cardinal1(soixante-six, 66).
-convert_cardinal1(soixante-sept, 67).
-convert_cardinal1(soixante-huit, 68).
-convert_cardinal1(soixante-neuf, 69).
-convert_cardinal1(soixante-dix, 70).
-convert_cardinal1(soixante-et-onze, 71).
-convert_cardinal1(soixante-douze, 72).
-convert_cardinal1(soixante-treize, 73).
-convert_cardinal1(soixante-quatorze, 74).
-convert_cardinal1(soixante-quinze, 75).
-convert_cardinal1(soixante-seize, 76).
-convert_cardinal1(soixante-dix-sept, 77).
-convert_cardinal1(soixante-dix-huit, 78).
-convert_cardinal1(soixante-dix-neuf, 79).
-convert_cardinal1(quatre-vingts, 80).
-convert_cardinal1(quatre-vingts-et-un, 81).
-convert_cardinal1(quatre-vingts-deux, 82).
-convert_cardinal1(quatre-vingts-trois, 83).
-convert_cardinal1(quatre-vingts-quatre, 84).
-convert_cardinal1(quatre-vingts-cinq, 85).
-convert_cardinal1(quatre-vingts-six, 86).
-convert_cardinal1(quatre-vingts-sept, 87).
-convert_cardinal1(quatre-vingts-huit, 88).
-convert_cardinal1(quatre-vingts-neuf, 89).
-convert_cardinal1(quatre-vingts-dix, 90).
-convert_cardinal1(quatre-vingts-et-onze, 91).
-convert_cardinal1(quatre-vingts-douze, 92).
-convert_cardinal1(quatre-vingts-treize, 93).
-convert_cardinal1(quatre-vingts-quatorze, 94).
-convert_cardinal1(quatre-vingts-quinze, 95).
-convert_cardinal1(quatre-vingts-seize, 96).
-convert_cardinal1(quatre-vingts-dix-sept, 97).
-convert_cardinal1(quatre-vingts-dix-huit, 98).
-convert_cardinal1(quatre-vingts-dix-neuf, 99).
+convert_cardinal1('soixante-et-un', 61).
+convert_cardinal1('soixante-deux', 62).
+convert_cardinal1('soixante-trois', 63).
+convert_cardinal1('soixante-quatre', 64).
+convert_cardinal1('soixante-cinq', 65).
+convert_cardinal1('soixante-six', 66).
+convert_cardinal1('soixante-sept', 67).
+convert_cardinal1('soixante-huit', 68).
+convert_cardinal1('soixante-neuf', 69).
+convert_cardinal1('soixante-dix', 70).
+convert_cardinal1('soixante-et-onze', 71).
+convert_cardinal1('soixante-douze', 72).
+convert_cardinal1('soixante-treize', 73).
+convert_cardinal1('soixante-quatorze', 74).
+convert_cardinal1('soixante-quinze', 75).
+convert_cardinal1('soixante-seize', 76).
+convert_cardinal1('soixante-dix-sept', 77).
+convert_cardinal1('soixante-dix-huit', 78).
+convert_cardinal1('soixante-dix-neuf', 79).
+convert_cardinal1('quatre-vingts', 80).
+convert_cardinal1('quatre-vingts-et-un', 81).
+convert_cardinal1('quatre-vingts-deux', 82).
+convert_cardinal1('quatre-vingts-trois', 83).
+convert_cardinal1('quatre-vingts-quatre', 84).
+convert_cardinal1('quatre-vingts-cinq', 85).
+convert_cardinal1('quatre-vingts-six', 86).
+convert_cardinal1('quatre-vingts-sept', 87).
+convert_cardinal1('quatre-vingts-huit', 88).
+convert_cardinal1('quatre-vingts-neuf', 89).
+convert_cardinal1('quatre-vingts-dix', 90).
+convert_cardinal1('quatre-vingts-et-onze', 91).
+convert_cardinal1('quatre-vingts-douze', 92).
+convert_cardinal1('quatre-vingts-treize', 93).
+convert_cardinal1('quatre-vingts-quatorze', 94).
+convert_cardinal1('quatre-vingts-quinze', 95).
+convert_cardinal1('quatre-vingts-seize', 96).
+convert_cardinal1('quatre-vingts-dix-sept', 97).
+convert_cardinal1('quatre-vingts-dix-huit', 98).
+convert_cardinal1('quatre-vingts-dix-neuf', 99).
 convert_cardinal1(cent, 100).
 convert_cardinal1(cents, 100).
 convert_cardinal1(mille, '1.000').
@@ -1352,6 +1352,8 @@ add_roles_predicate(L0, P, E) -->
 default_semantics(au, prp:det, dr(0,dr(0,dl(1,lit(s(_)),lit(s(_))),dl(1,lit(s(_)),lit(s(_)))),lit(n)), lambda(N,lambda(SS1,lambda(S,lambda(E,merge(appl(S,E),merge(drs([event(F),event(G)],[appl(au,F),drs_label(F,appl(appl(SS1,S),G))]),appl(N,F)))))))).
 
 
+default_semantics(W, num, dr(0,lit(np(_,_,_)),lit(n)), lambda(N,lambda(P,merge(merge(drs([variable(X)],[bool(num(X),=,Num)]),appl(N,X)),appl(P,X))))) :-
+        convert_cardinal(W, Num).
 default_semantics(W, num, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(num(X),=,Num)]),appl(P,X)))) :-
         convert_cardinal(W, Num).
 
@@ -1676,6 +1678,8 @@ default_semantics(Word, ver:TIME, dr(0,lit(s(_)),lit(np(_,_,_))), lambda(NPS,lam
 default_semantics(être, POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))), lambda(P,lambda(Q,lambda(E,appl(Q,lambda(Y,appl(P,lambda(X,merge(drs(EVs,Time),drs([],[bool(X,is_at(E),Y)])))))))))) :-
 	pos_time(POS, [], EVs, E-Time).
 
+% = transitive - default case
+
 default_semantics(Word, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(np(_,_,_))), lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,drs(EVs,Conds))))))))) :-
 	get_roles(Word, [np,np], [SRole,ORole]),
 	add_roles([SRole-X,ORole-Y], Word, E, Conds, Time),
@@ -1962,7 +1966,7 @@ default_semantics(venir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(
 
 
 default_semantics(aller, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(SINF)))), lambda(P,lambda(X,lambda(E,merge(DRS,appl(appl(P,X),E)))))) :-
-	SINF == inf,
+	(SINF == inf ; SINF = inf(_)),
 	(
         TIME = pres
      ->
@@ -3816,7 +3820,11 @@ lex(et, dr(0,dl(0,dr(0,dl(0,np,s),np),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),np)),
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,np))),dr(0,dl(0,np,s),np)),dr(0,dl(0,np,s),dia(0,box(0,np)))),lambda(P,lambda(Q,lambda(NPO,lambda(NPS,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,merge(appl(appl(appl(Q,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),E),merge(drs([event(F)],[]),appl(appl(appl(P,lambda(Y1,appl(Y1,Y))),lambda(X1,appl(X1,X))),F))))))))))))).
 lex(et, dr(0,dl(0,dr(0,s,dia(0,box(0,np))),dr(0,s,np)),dr(0,s,dia(0,box(0,np)))), lambda(VP2,lambda(VP1,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(VP1,lambda(P,appl(P,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(VP2,lambda(Q,appl(Q,X))),F)))))))))).
 
+
 lex(et, dr(0,dr(0,s,s),dr(0,s,s)), lambda(SS,lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(parallel,F),E),bool(F,=,'?')]),merge(appl(S,E),appl(appl(SS,S),E))))))).
+lex('Et', dr(0,dr(0,s,s),dr(0,s,s)), lambda(SS,lambda(S,lambda(E,merge(drs([event(F)],[appl(appl(parallel,F),E),bool(F,=,'?')]),merge(appl(S,E),appl(appl(SS,S),E))))))).
+lex(et, dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,merge(drs([variable(Y)],[bool(Y,=,'context?'),bool(X,in,Y)]),appl(P,X))))))).
+lex('Et', dr(0,np,np), lambda(NP,lambda(P,appl(NP,lambda(X,merge(drs([variable(Y)],[bool(Y,=,'context?'),bool(X,in,Y)]),appl(P,X))))))).
 
 lex(ou, dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
 lex(ou, dr(0,dl(0,dr(0,lit(n),lit(n)),dr(0,lit(n),lit(n))),dr(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
