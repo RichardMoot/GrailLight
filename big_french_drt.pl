@@ -2551,6 +2551,13 @@ default_semantics(Word, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(0,
 
 % = past and present participles used as adjectives
 
+default_semantics(asseoir, ver:pper, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([event(E)],Conds),appl(P,V))))) :-
+	add_roles([patient-V], asseoir, E, Conds, []).
+default_semantics(asseoir, ver:pper, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,lambda(P,lambda(V,merge(appl(Q,lambda(Z,drs([event(E)],Conds))),appl(P,V)))))) :-
+	combine_prep_word(PRP, asseoir, PW),
+	add_roles([patient-V,destination-Z], PW, E, Conds, []).
+
+
 default_semantics(W, ver:pper, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([event(E),variable(X)],Conds),appl(P,V))))) :-
 	get_roles(W, [np, np], [SubjectRole, ObjectRole]),
 	add_roles([SubjectRole-X,ObjectRole-V], W, E, Conds, []).
@@ -2600,6 +2607,9 @@ default_semantics(W, ver:ppre, dr(_,dl(_,lit(n),lit(n)),lit(pp(PRP))), lambda(Q,
 	get_roles(W, [np, pp(PRP)], [ArgRole1, ArgRole2]),
 	combine_prep_word(PRP, W, PW),
 	add_roles([ArgRole1-V,ArgRole2-X], PW, E, Conds, []).
+default_semantics(W, ver:ppre, dl(_,lit(n),lit(n)), lambda(P,lambda(V, merge(drs([event(E)],Conds),appl(P,V))))) :-
+	get_roles(W, [np], [SubjectRole]),
+	add_roles([SubjectRole-V], W, E, Conds,  []).												
 
 default_semantics(venir, ver:pper, dr(_,dl(_,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(base))))), lambda(INF, lambda(N, lambda(X, merge(appl(N,X),drs([event(E),event(F),event(L)],Conds)))))) :-
 	add_roles([agent-X,theme-L], venir, E, Conds, [drs_label(L,appl(appl(INF,lambda(P1,appl(P1,X))),F))]).
@@ -2794,8 +2804,14 @@ default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(PRP)
 
 % "tough" constructions, eg. "facile à lire"
 
-default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(PRP)))),dia(1,box(1,lit(np(_,_,_)))))), lambda(TV, lambda(N, lambda(X, merge(appl(N,X)),drs([event(L),variable(Y)],[generic(Y),appl(appl(PW,L),X),drs_label(L,merge(drs([event(E)],[]),appl(appl(appl(TV,lambda(P1,appl(P1,X))),lambda(P2,appl(P2,Y))),E)))]))))) :-
-	combine_prep_word(PRP, W, PW).
+default_semantics(W, dr(0,dl(0,lit(n),lit(n)),dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(PRP)))),dia(1,box(1,lit(np(_,_,_)))))), lambda(TV, lambda(N, lambda(X, merge(appl(N,X),drs([event(L),variable(Y)],[generic(Y),appl(appl(PW,L),X),drs_label(L,merge(drs([event(E)],[]),appl(appl(appl(TV,lambda(P1,appl(P1,X))),lambda(P2,appl(P2,Y))),E)))])))))) :-
+   (	
+	   W = à
+   ->
+           PW = à
+   ;
+           combine_prep_word(PRP, W, PW)
+   ).
 
 % = intransitive
 
@@ -3040,6 +3056,7 @@ default_semantics(par, dr(_,dl(_,lit(np(N1,N2,N3)),lit(s(SS))),dl(_,lit(np(N1,N2
 default_semantics(de, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(de,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
 default_semantics('d\'', dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(de,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
 default_semantics(à, dr(0,dl(0,lit(n),lit(n)),dl(0,lit(np(_,_,_)),lit(s(inf(_))))), lambda(VP,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(à,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(VP,lambda(P,appl(P,Y))),E)))])))))).
+default_semantics(à, dr(0,dl(0,lit(n),lit(n)),dr(0,dl(0,lit(np(_,_,_)),lit(s(inf(_)))),dia(_,box(_,lit(np(_,_,_)))))), lambda(TV,lambda(N,lambda(X,merge(appl(N,X),drs([event(Lab)],[appl(appl(à,Lab),X),drs_label(Lab,merge(drs([event(E),variable(Y)],[appl(generic,Y)]),appl(appl(appl(TV,lambda(P,appl(P,X))),lambda(Q,appl(Q,Y))),E)))])))))).
 
 % = copula  - verb initial
 
@@ -3115,9 +3132,10 @@ lex(à, dr(0,dl(0,pp_de,dl(0,n,n)),np), lambda(NP, lambda(PP, lambda(N, lambda(X
 lex(à, dr(0,dl(0,pp_de,pp_a),np), lambda(NP, lambda(PP, lambda(P, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(start,Y),X),appl(appl(end,Z),X)],appl(P,X))))))))))).
 lex(à, dr(0, dl(0, pp_de, dl(1, s, s)), np), lambda(NP, lambda(PP, lambda(S, lambda(E, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([],[appl(appl(start,Y),E),appl(appl(end,Z),E)]),appl(S,E))))))))))). 
 
-% "côte à côte" and similar  "X à X" constructions
+% "côte à côte", "un par un" and similar  "X à X" constructions
 
 lex(à, dr(0, dl(0, n, dl(1, s, s)), n), lambda(N2, lambda(N1, lambda(S, lambda(E,merge(merge(drs([variable(X),variable(Y)],[appl(appl(appl(à,Y),X),E)]),merge(appl(N1,X),appl(N2,Y))),appl(S,E))))))).
+lex(par, dr(0, dl(0, n, dl(1, s, s)), n), lambda(N2, lambda(N1, lambda(S, lambda(E,merge(merge(drs([variable(X),variable(Y)],[appl(appl(appl(à,Y),X),E)]),merge(appl(N1,X),appl(N2,Y))),appl(S,E))))))).
 
 %%%
 
