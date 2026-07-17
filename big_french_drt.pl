@@ -1685,6 +1685,20 @@ default_semantics(Word, ver:TIME, dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(np(_,_
 	add_roles([SRole-X,ORole-Y], Word, E, Conds, Time),
 	pos_time(ver:TIME, [], EVs, E-Time).
 
+
+
+% = transitive - infinitive subject
+
+default_semantics(Word, ver:TIME, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))),lit(np(_,_,_))), lambda(NPO,lambda(NPSinf,lambda(E,appl(NPO,lambda(Y,drs([event(F),event(G)|EVs],[drs_label(F,merge(drs([variable(X)],[appl(generic,X)]),appl(appl(NPSinf,lambda(Q,appl(Q,X))),G)))|Conds]))))))) :-
+	get_roles(Word, [np,np], [SRole,ORole]),
+	add_roles([SRole-F,ORole-Y], Word, E, Conds, Time),
+	pos_time(ver:TIME, [], EVs, E-Time).
+default_semantics(Word, ver:TIME, dr(0,dl(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))),lit(pp(_))), lambda(NPO,lambda(NPSinf,lambda(E,appl(NPO,lambda(Y,drs([event(F),event(G)|EVs],[drs_label(F,merge(drs([variable(X)],[appl(generic,X)]),appl(appl(NPSinf,lambda(Q,appl(Q,X))),G)))|Conds]))))))) :-
+	get_roles(Word, [np,np], [SRole,ORole]),
+	add_roles([SRole-F,ORole-Y], Word, E, Conds, Time),
+	pos_time(ver:TIME, [], EVs, E-Time).
+
+
 % = transitive - verb initial
 
 default_semantics(Word, ver:TIME, dr(0,dr(0,lit(s(_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NPS,lambda(NPO,lambda(E,appl(NPS,lambda(X,appl(NPO,lambda(Y,drs(EVs,Conds))))))))) :-
@@ -3399,14 +3413,15 @@ lex(le, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]
 lex('-le', lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(X,=,'masculin?')]),appl(P,X)))).
 lex(la, lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(X,=,'feminin?')]),appl(P,X)))).
 lex('-la', lit(np(_,_,_)), lambda(P,merge(drs([variable(X)],[bool(X,=,'feminin?')]),appl(P,X)))).
-lex(se, lit(np(acc,refl,_)), lambda(P,appl(P,_))).
-lex(se, lit(cl_r), lambda(P,appl(P,_))).
-lex('s\'', lit(np(acc,refl,3-_)), lambda(P,appl(P,_))).
-lex('s\'', lit(cl_r), lambda(P,appl(P,_))).
-lex('Se', lit(np(acc,refl,_)), lambda(P,appl(P,_))).
-lex('Se', lit(cl_r), lambda(P,appl(P,_))).
+lex(se, lit(np(acc,refl,_)), lambda(P,appl(P,drs([],[])))).
+lex(se, lit(cl_r), lambda(P,appl(P,drs([],[])))).
+lex('s\'', lit(np(acc,refl,3-_)), lambda(P,appl(P,drs([],[])))).
+lex('s\'', lit(cl_r), lambda(P,appl(P,drs([],[])))).
+lex('Se', lit(np(acc,refl,_)), lambda(P,appl(P,drs([],[])))).
+lex('Se', lit(cl_r), lambda(P,appl(P,drs([],[])))).
 lex('S\'', lit(np(acc,refl,3-_)), lambda(P,appl(P,_))).
-lex('S\'', lit(cl_r), lambda(P,appl(P,_))).
+lex('S\'', lit(cl_r), lambda(P,appl(P,drs([],[])))).
+lex(vous, lit(cl_r), lambda(P,appl(P,drs([],[])))).
 
 % TODO: ne+ cesser/oser/pouvoir is negative by itself (without pas)
 %  ne + savoir + whq
@@ -3804,6 +3819,9 @@ lex(soit, dr(0,dl(0,p(0,np,dl(0,np,s)),p(0,np,dia(0,box(0,dl(0,np,s))))),p(0,np,
 	lambda(NP,lambda(E,appl(NP,lambda(X1,drs([],[bool(merge(drs([variable(Y1),event(E1)],[bool(Y1,=,X1),bool(E1,=,E)]),appl(appl(pi2(Pair1),lambda(Q,appl(Q,Y1))),E1)),\/,
         merge(drs([variable(Y2),event(E2)],[bool(Y2,=,X1),bool(E2,=,E)]),appl(appl(pi2(Pair2),lambda(R,appl(R,Y2))),E2)))]))))))))).				
 
+lex(et, dr(0,dl(0,dr(0,dl(0,n,n),np),dr(0,dl(0,n,n),np)),dr(0,dl(0,n,n),np)), lambda(N, lambda(M, lambda(NP, lambda(N, lambda(X,appl(NP,lambda(Y,merge(merge(
+	appl(appl(appl(M,lambda(P,appl(P,Y))),lambda(_,drs([],[]))),X),
+	appl(appl(appl(N,lambda(Q,appl(Q,Y))),lambda(_,drs([],[]))),X)),appl(N,X)))))))))).																	     
 lex(et, dr(0,dl(0,dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s)))),dr(0,dl(0,np,s),dl(0,np,s))),dr(0,dl(0,np,s),dia(0,box(0,dl(0,np,s))))),lambda(AUX2,lambda(AUX1,lambda(VP,lambda(NP,lambda(E,appl(NP,lambda(X,merge(appl(appl(appl(AUX1,VP),lambda(Q,appl(Q,X))),E),merge(drs([event(F)],[appl(appl(parallel,F),E)]),appl(appl(appl(AUX2,VP),lambda(R,appl(R,X))),F))))))))))).
 
 lex(et, dr(0,dl(0,dl(0,np,np),dl(0,np,np)),dl(0,n,n)), lambda(M, lambda(N, lambda(NP, lambda(P, appl(NP, lambda(X,  merge(appl(appl(N,lambda(Q,appl(Q,X))),lambda(Y,drs([],[bool(Y,=,X)]))),merge(appl(appl(M,lambda(Z,drs([],[bool(Z,=,X)]))),X), appl(P,X)))))))))).
@@ -3823,7 +3841,7 @@ lex(et, dr(0,dl(0,dr(0,s,dia(0,box(0,np))),dr(0,s,np)),dr(0,s,dia(0,box(0,np))))
 lex(et, dr(0,dl(0,dr(0,dl(1,s,s),np),dr(0,dl(1,s,s),np)),dr(0,dl(1,s,s),np)), lambda(Q, lambda(P, lambda(NP, lambda(S, lambda(E, appl(NP,lambda(X,merge(merge(
 	appl(appl(appl(P,lambda(V,appl(V,X))),lambda(_,drs([],[]))),E),
         appl(appl(appl(Q,lambda(W,appl(W,X))),lambda(_,drs([],[]))),E)),appl(S,E)))))))))).
-lex(et, dr(0,dl(0,dr(0,dl(1,s,s),dia(0,box(0,np)))),dr(0,dl(1,s,s),np)),dr(0,dl(1,s,s),dia(0,box(0,np))), lambda(Q, lambda(P, lambda(NP, lambda(S, lambda(E, appl(NP,lambda(X,merge(merge(
+lex(et, dr(0,dl(0,dr(0,dl(1,s,s),dia(0,box(0,np))),dr(0,dl(1,s,s),np)),dr(0,dl(1,s,s),dia(0,box(0,np)))), lambda(Q, lambda(P, lambda(NP, lambda(S, lambda(E, appl(NP,lambda(X,merge(merge(
 	appl(appl(appl(P,lambda(V,appl(V,X))),lambda(_,drs([],[]))),E),
         appl(appl(appl(Q,lambda(W,appl(W,X))),lambda(_,drs([],[]))),E)),appl(S,E)))))))))).
 
