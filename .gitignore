@@ -113,4 +113,7 @@ graph_*_*.pl
 graph_*_*.txt
 allgraphs.txt
 *.tgz
+fracas*.txt
+log_*.txt
+*_log.txt
 
