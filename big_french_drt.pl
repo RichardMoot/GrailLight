@@ -1552,7 +1552,10 @@ default_semantics(paraître, ver:TIME, dr(_,dr(_,dl(_,lit(np(_,il,_)),lit(s(_)))
 default_semantics(être, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),dl(_,lit(np(_,_,_)),lit(s(pass)))), lambda(VP,lambda(NP,lambda(E,merge(drs(Es,Cs),appl(appl(VP,NP),E)))))) :-
 	pos_time(ver:TIME, [], Es, E-Cs).
 
-
+% "est assis" should generally not be treated as a passive form
+default_semantics(asseoir, _POS, dl(0,lit(np(_,_,_)),lit(s(pass))), lambda(SUBJ,lambda(E,appl(SUBJ,lambda(Y, drs([],Conds)))))) :-
+	get_roles(asseoir, [np], [SubjRole]),
+	add_roles([SubjRole-Y], asseoir, E, Conds, []).
 default_semantics(V, _POS, dl(0,lit(np(_,_,_)),lit(s(pass))), lambda(OBJ,lambda(E,appl(OBJ,lambda(Y, drs([variable(X)],[bool(X,=,'context?')|Conds])))))) :-
 	get_roles(V, [np, np], [SubjRole, ObjRole]),
 	add_roles([SubjRole-X,ObjRole-Y], V, E, Conds, []).
@@ -3358,13 +3361,19 @@ lex(loin, dr(_,pp(_),pp(de)), lambda(X,X)).
 % TODO: another hack, needs multi-word expression treatment *and* proper treatmnt of reciprocals.
 
 lex(les, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_les_autres,E)]),appl(S,E))))))).
+lex('l\'', dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(l_un_l_autre,E)]),appl(S,E))))))).
 lex(avec, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_avec_les_autres,E)]),appl(S,E))))))).
 lex(aux,  dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_aux_autres,E)]),appl(S,E))))))).
+lex(des,  dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_des_autres,E)]),appl(S,E))))))).
 lex(contre, dr(0, dl(0, np, dl(1, s, s)), np), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_contre_les_autres,E)]),appl(S,E))))))).
 % constructructions like "les uns à côté des autres" a repossible
 lex(à, dr(0, dl(0, np, dl(1, s, s)), n), lambda(_,lambda(_,lambda(S,lambda(E,merge(drs([],[appl(les_uns_à_côté_des_autres,E)]),appl(S,E))))))). 
 lex(à, dr(0, dl(0, np, dl(1, dl(0, n, n), dl(0, n, n))), n), lambda(_,lambda(_,lambda(Adj,lambda(N,lambda(X,merge(drs([event(L)],[drs_label(L,appl(appl(Adj,N),X)),appl(les_uns_à_côté_des_autres,L)]),merge(appl(appl(Adj,N),X),appl(N,X))))))))). 
 
+lex(des,  dr(0, dl(0, np, pp_de), n), lambda(_,lambda(_,lambda(P,merge(drs([variable(X)],[appl(les_uns_les_autres,X)]),appl(P,X)))))).
+lex(aux,  dr(0, dl(0, np, pp_a), n), lambda(_,lambda(_,lambda(P,merge(drs([variable(X)],[appl(les_uns_les_autres,X)]),appl(P,X)))))).
+lex(contre,  dr(0, dl(0, np, pp_contre), n), lambda(_,lambda(_,lambda(P,merge(drs([variable(X)],[appl(les_uns_les_autres,X)]),appl(P,X)))))).
+lex(avec,  dr(0, dl(0, np, pp_avec), n), lambda(_,lambda(_,lambda(P,merge(drs([variable(X)],[appl(les_uns_les_autres,X)]),appl(P,X)))))).
 
 
 % = proper nouns - French
@@ -3566,11 +3575,13 @@ lex(tel, dr(0,dl(0,lit(n),lit(n)),lit(s(q))), lambda(S,lambda(P,lambda(X, merge(
 lex('Quelques', dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex('Plusieurs', dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex('Certains', dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+lex('Certaines', dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex('Des', dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex(des, dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex(quelques, dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex(plusieurs, dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex(certains, dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
+lex(certaines, dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex(des, dr(0,lit(np(_,_,3-p)),lit(n)), lambda(P,lambda(Q,merge(merge(drs([variable(X)],[bool(num(X),>,1)]),appl(P,X)),appl(Q,X))))).
 lex('D\'', dr(0,lit(np(_,_,3-_)),lit(n)), Sem) :-
 	gq_a_semantics(Sem).
