@@ -2,6 +2,7 @@
 % = roles
 
 get_roles1(aller, [np], [patient]).  % unaccusative
+get_roles1(asseoir, [np], [patient]).  % unaccusative
 get_roles1(arriver, [np], [patient]).  % unaccusative
 get_roles1(cailler, [np], [patient]).  % unaccusative
 get_roles1(cicatriser, [np], [patient]). % unaccusative
