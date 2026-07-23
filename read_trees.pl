@@ -49,7 +49,7 @@ read_all_trees(N, N) :-
 read_all_trees(N0, Last) :-
 	read_tree(Tree),
 	N is N0 + 1,
-	format('~D. ~@', [N, portray_clause(Tree)]),
+%	format('~D. ~@', [N, portray_clause(Tree)]),
 	/* compute constituents */
 	user:abolish(constituent/4),
 	user:retractall(constituent(_,_,_,_)),
