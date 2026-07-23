@@ -490,7 +490,7 @@ print_grail_semantics(SentN0, Sem) :-
 	display_first_order_semantics(yes),
 	drs_to_first_order(RSem, Form)
   ->
-	format(sem_pl, '% = Firt-order Semantics~2nsemantics(~d, first_order, ~W).~2n', [SentN0,Form,[numbervars(true),quoted(true)]]),
+	format(sem_pl, '% = First-order Semantics~2nsemantics(~d, first_order, ~W).~2n', [SentN0,Form,[numbervars(true),quoted(true)]]),
         format(sem, '% ~w~n', [Form]),
         format(sem, '\\begin{align*}~n', []),
         format(sem, '\\begin{autobreak}~n', []),
