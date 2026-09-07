@@ -1593,7 +1593,7 @@ default_semantics(V, _POS, dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(PP))), 
 	combine_prep_word(PP, V, PW),
 	get_roles(V, [np, np, pp(PP)], [Arg1, Arg2, Arg3]),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], PW, E, Conds, []).
-default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))),lit(pp(PP))), lambda(PP,lambda(SUBJ,lambda(OBJ,lambda(E,appl(PP,lambda(Z,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))))) :-
+default_semantics(V, _POS, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(pass))),lit(pp(par))),lit(pp(PP))), lambda(PPA,lambda(SUBJ,lambda(OBJ,lambda(E,appl(PPA,lambda(Z,appl(OBJ,lambda(Y,appl(SUBJ,lambda(X,drs([],Conds)))))))))))) :-
 	combine_prep_word(PP, V, PW),
 	get_roles(V, [np, np, pp(PP)], [Arg1, Arg2, Arg3]),
 	add_roles([Arg1-X,Arg2-Y,Arg3-Z], PW, E, Conds, []).
