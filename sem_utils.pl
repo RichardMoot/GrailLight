@@ -177,7 +177,10 @@ reduce_drs1(drs(V,L0), presup(P, R)) :-
 	select(presup(P, Q), L0, L),
 	merge_drs(drs(V,L), Q, R).
 reduce_drs1(drs(V,L0), presup(P, drs(V,[drs_label(X,Q)|L]))) :-
-	select(drs_label(X,presup(P, Q)), L0, L).
+	select(drs_label(X,presup(P, Q)), L0, L),
+	free_vars(P, FV),
+	bound_variables(Q, BV),
+	ord_intersect(FV, BV, []).
 
 % recursive cases
 
