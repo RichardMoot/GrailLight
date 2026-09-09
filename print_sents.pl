@@ -1,3 +1,4 @@
+% -*- Mode: Prolog -*-
 
 % script for translating superpos files back to the different input formats
 
@@ -96,4 +97,48 @@ print_word_list([I|Is]) :-
 print_item_word(si(Word, _,  _, _)) :-
 	format('~w ', [Word]).
 
+
+%%%%
+
+sent_nums :-
+    findall(N, clause(sent(N,_), prob_parse(_, _)), SentNos),
+    missing_nums(SentNos).
+
+double_nums :-
+findall(N, clause(sent(N,_), prob_parse(_, _)), SentNos),
+    doubles(SentNos).
+    
+doubles([X,X|Xs]) :-
+    !,
+    format('~w~n', [X]),
+    doubles(Xs).
+doubles([_|Xs]) :-
+    doubles(Xs).
+doubles([]).
+
+missing_nums([X|Xs]) :-
+    missing_nums(Xs, X).
+
+missing_nums([], _).
+missing_nums([X|Xs], Y) :-
+    Y0 is X + 1,
+    (
+	Y = Y0
+    ->
+    true
+    ;
+    print_missing(Y0, Y)
+    ),
+    missing_nums(Xs, X).
+
+print_missing(Y0, Y) :-
+    (
+	Y0 < Y
+    ->
+    format('~w ', [Y0]),
+    Y1 is Y0 + 1,
+    print_missing(Y1, Y)
+    ;
+    true
+    ).
 
