@@ -126,26 +126,12 @@ reduce_drs1(presup(P1,presup(P2,X)), presup(merge(P1,P2),X)).
 reduce_drs1(merge(presup(P1,X),presup(P2,Y)), presup(merge(P1,P2),merge(X,Y))).
 
 reduce_drs1(not(presup(P,Q)),presup(P,not(Q))).
-reduce_drs1(bool(presup(P,Q),->,R), Red) :-
-	free_vars(P, FV),
-	bound_variables(Q, BV),
-	ord_intersect(FV, BV, Int),
+reduce_drs1(bool(presup(P,Q),->,R), presup(P,bool(Q,->,R))) :-
 	/* fails if bound variables were to become free */
-   (
-        Int = []
-   ->
-        Red = presup(P,bool(Q,->,R))
-   ).
-reduce_drs1(bool(P,->,presup(Q,R)), Red) :-
-	free_vars(Q, FV),
-	bound_variables(R, BV),
-	ord_intersect(FV, BV, Int),
+        check_trapping(P, Q).
+reduce_drs1(bool(P,->,presup(Q,R)), bool(presup(Q,P),->,R)) :-
 	/* fails if bound variables were to become free */
-    (
-        Int = []
-    ->
-        Red = bool(presup(Q,P),->,R)
-    ).
+        check_trapping(Q, R).
 reduce_drs1(drs(V,L0), drs(V, [drs_label(X,merge(Q1,Q2))|L])) :-
 	select(drs_label(X,Q1), L0, L1),
 	select(drs_label(X,Q2), L1, L).
@@ -810,7 +796,8 @@ melt_bound_variables(drs(Vars0,Conds0), drs(Vars,Conds), Tree) :-
         /* "John and Peter love Sue" will not have two different variables both named */
         /* "Sue"; this is a pragmatic choice and care must be taken! */
 	/* uncomment line below (while commenting the line "Vars0 = Vars" to */
-	/* obtain correct solution */
+        /* obtain correct solution */
+        % melt_drs_variables(Vars0, Vars, Tree)
 	Vars0 = Vars
      ;		    
         melt_drs_variables(Vars0, Vars, Tree)
