@@ -21,7 +21,8 @@ if {$argc == 0} {
 
 set sentno 0
 set batchno 1
-set size 1
+set size 1000
+set sentnumber 1
 
 set outfile [format "proof%05d.pl" $batchno]
 set out [open $outfile w]
@@ -40,11 +41,11 @@ foreach f $flist {
 		close $out
 		set sentno 1
 		incr batchno
-		set outfile [format "proof%05d.pl" $batchno]
+		set outfile [format "proof%05d.pl" $sentnumber]
 		set out [open $outfile w]
 		header $out
 	    }
-	    incr sentno
+	    incr sentnumber	    
 	}
 	puts $out $line 
 
