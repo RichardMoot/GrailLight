@@ -66,7 +66,7 @@ reduce_eta(active).
 
 semantic_set_type(E, _T, E).
 
-% WARNING: though "sloppy" produces simpler structures (less duplication of DRSs), it may be subject to accidental capture
+% WARNING: although "sloppy" produces simpler structures (less duplication of DRSs), it may be subject to accidental capture
 % "sloppy" bindings treats all DRS variable names as having global scope (which is likely to be incorrect, but has the
 % advantage of not producing many doubled structures for sentences like "Jean et Marie aiment Pierre et Anne"
 
