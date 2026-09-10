@@ -70,7 +70,8 @@ semantic_set_type(E, _T, E).
 % "sloppy" bindings treats all DRS variable names as having global scope (which is likely to be incorrect, but has the
 % advantage of not producing many doubled structures for sentences like "Jean et Marie aiment Pierre et Anne"
 
-drs_binding(sloppy).
+%drs_binding(sloppy).
+drs_binding(strict).
 
 % semantic_set_type(E, T, E->T).
 
@@ -126,26 +127,12 @@ reduce_drs1(presup(P1,presup(P2,X)), presup(merge(P1,P2),X)).
 reduce_drs1(merge(presup(P1,X),presup(P2,Y)), presup(merge(P1,P2),merge(X,Y))).
 
 reduce_drs1(not(presup(P,Q)),presup(P,not(Q))).
-reduce_drs1(bool(presup(P,Q),->,R), Red) :-
-	free_vars(P, FV),
-	bound_variables(Q, BV),
-	ord_intersect(FV, BV, Int),
+reduce_drs1(bool(presup(P,Q),->,R), presup(P,bool(Q,->,R))) :-
 	/* fails if bound variables were to become free */
-   (
-        Int = []
-   ->
-        Red = presup(P,bool(Q,->,R))
-   ).
-reduce_drs1(bool(P,->,presup(Q,R)), Red) :-
-	free_vars(Q, FV),
-	bound_variables(R, BV),
-	ord_intersect(FV, BV, Int),
+        check_trapping(P, Q).
+reduce_drs1(bool(P,->,presup(Q,R)), bool(presup(Q,P),->,R)) :-
 	/* fails if bound variables were to become free */
-    (
-        Int = []
-    ->
-        Red = bool(presup(Q,P),->,R)
-    ).
+        check_trapping(Q, R).
 reduce_drs1(drs(V,L0), drs(V, [drs_label(X,merge(Q1,Q2))|L])) :-
 	select(drs_label(X,Q1), L0, L1),
 	select(drs_label(X,Q2), L1, L).
@@ -611,6 +598,8 @@ bound_variables(drs(V, L), BVs) :-
    ;	  
         /* WARNING: this may lead to accidental capture of DRS variables */
         drs_variable_numbers(V, BVs0),
+        /* normally the above predicate call should be enough, but the */
+	/* predicate below adds extra security */
 	bound_variables_conditions(L, BVs1),
 	ord_union(BVs0, BVs1, BVs)
    ).
@@ -648,7 +637,7 @@ bound_variables_conditions([C|Cs], BVs) :-
 	ord_union(BVs0, BVs1, BVs).
 
 
-bound_variables_cond(bool(A,->,B), BVs) :-
+bound_variables_cond(bool(A,_,B), BVs) :-
 	!,
 	bound_variables(A, BVs0),
 	bound_variables(B, BVs1),
@@ -656,6 +645,10 @@ bound_variables_cond(bool(A,->,B), BVs) :-
 bound_variables_cond(not(A), BVs) :-
 	!,
 	bound_variables(A, BVs).
+bound_variables_cond(drs(U,C), BVs) :-
+        bound_variables(drs(U, C), BVs).
+bound_variables_cond(drs_label(_,DRS), BVs) :-
+        bound_variables(DRS, BVs).
 bound_variables_cond(_, []).
 
 drs_variable_numbers(L, N) :-
@@ -810,7 +803,8 @@ melt_bound_variables(drs(Vars0,Conds0), drs(Vars,Conds), Tree) :-
         /* "John and Peter love Sue" will not have two different variables both named */
         /* "Sue"; this is a pragmatic choice and care must be taken! */
 	/* uncomment line below (while commenting the line "Vars0 = Vars" to */
-	/* obtain correct solution */
+        /* obtain correct solution */
+        % melt_drs_variables(Vars0, Vars, Tree)
 	Vars0 = Vars
      ;		    
         melt_drs_variables(Vars0, Vars, Tree)
