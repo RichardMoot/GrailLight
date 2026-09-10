@@ -471,7 +471,7 @@ semantics_aspect_impf(lambda(Phi, lambda(I, drs([K],[appl(Phi,K),bool(I,subseteq
 semantics_aspect_anch(lambda(Phi, lambda(J, drs([K],[appl(Phi,K),bool(K,=,'event?'),bool(K,<,J)])))).
 
 
-pos_time_drs(pres, E-[bool(appl(temps,E),overlaps,maintenant),bool(bool(appl(temps,E),overlaps,ref_time)]) :-
+pos_time_drs(pres, E-[bool(appl(temps,E),overlaps,maintenant),bool(appl(temps,E),overlaps,ref_time)]) :-
 	!.
 pos_time_drs(impf, EVs, [event(S1)|EVs], E-[bool(S1,=,'time?'),bool(ref_time,overlaps,S1),bool(ref_time,overlaps,appl(temps,E))]) :-
 	!.
@@ -4063,12 +4063,12 @@ lex(a, dr(0,dl(0,cl_y,dl(0,lit(np(_,_,_)),dr(0,s,s))),lit(np(_,_,_))), lambda(NP
 
 % = coordination and discourse connectives
 
-lex('Si', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex(si,   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex(si,   dr(0,dl(_,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex('S\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex('s\'',   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
-lex('s\'',   dr(0,dl(_,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
+lex('Si', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(E0,drs([],[bool(merge(drs([event(E)],[bool(E,subseteq,E0)]),appl(P,E)),->,merge(drs([event(F)],[bool(F,subseteq,E0)]),appl(Q,F)))]))))).
+lex(si,   dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(E0,drs([],[bool(merge(drs([event(E)],[bool(E,subseteq,E0)]),appl(P,E)),->,merge(drs([event(F)],[bool(F,subseteq,E0)]),appl(Q,F)))]))))).
+lex(si,   dr(0,dl(_,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(E0,drs([],[bool(merge(drs([event(E)],[bool(E,subseteq,E0)]),appl(P,E)),->,merge(drs([event(F)],[bool(F,subseteq,E0)]),appl(Q,F)))]))))).
+lex('S\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(E0,drs([],[bool(merge(drs([event(E)],[bool(E,subseteq,E0)]),appl(P,E)),->,merge(drs([event(F)],[bool(F,subseteq,E0)]),appl(Q,F)))]))))).
+lex('s\'', dr(0,dr(0,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(E0,drs([],[bool(merge(drs([event(E)],[bool(E,subseteq,E0)]),appl(P,E)),->,merge(drs([event(F)],[bool(F,subseteq,E0)]),appl(Q,F)))]))))).
+lex('s\'',   dr(0,dl(_,lit(s(_)),lit(s(_))),lit(s(_))), lambda(P, lambda(Q, lambda(E0,drs([],[bool(merge(drs([event(E)],[bool(E,subseteq,E0)]),appl(P,E)),->,merge(drs([event(F)],[bool(F,subseteq,E0)]),appl(Q,F)))]))))).
 
 % "tant que" as subordinating connective if analysed as "if...then..." (Lexconn also allows "temploc", which implies a different truth-conditional meaning)
 lex(tant, dr(0,dr(0,s,s),s_q),  lambda(P, lambda(Q, lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(P,E)),->,merge(drs([event(F)],[]),appl(Q,F)))]))))).
