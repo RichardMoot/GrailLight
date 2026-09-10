@@ -64,7 +64,9 @@ reduce_quine(active).
 
 reduce_eta(active).
 
-semantic_set_type(E, _T, E).
+% set to true to enforce that presupposed material is unique.
+
+presupposition_unicity(true).
 
 % WARNING: although "sloppy" produces simpler structures (less duplication of DRSs), it may be subject to accidental capture
 % "sloppy" bindings treats all DRS variable names as having global scope (which is likely to be incorrect, but has the
@@ -73,7 +75,10 @@ semantic_set_type(E, _T, E).
 %drs_binding(sloppy).
 drs_binding(strict).
 
+
 % semantic_set_type(E, T, E->T).
+
+semantic_set_type(E, _T, E).
 
 % reduce_solution_semantics(+InputSemantics, -OutputSemantics)
 %
@@ -83,8 +88,6 @@ drs_binding(strict).
 % parse.
 % example uses of this functionality would include anaphora
 % resolution and preposition projection.
-% in case no such predicate is specified, basic beta-reduction
-% is applied.
 
 reduce_sem(SemIn, SemOut) :-
 	/* lambda calculus normalization */
@@ -571,6 +574,64 @@ free_vars_list([A|As], F0, F) :-
 	ord_union(F0, V, F1),
 	free_vars_list(As, F1, F).
 
+
+presupposed_variables(Var, []) :-
+	var(Var),
+	!.
+presupposed_variables(presup(A,B), Vars) :-
+	bound_variables(A, VarsA),
+	presupposed_variables(B, VarsB),
+	ord_union(VarsA, VarsB, Vars).
+presupposed_variables(presupp(A,B), Vars) :-
+	bound_variables(A, VarsA),
+	presupposed_variables(B, VarsB),
+	ords_union(VarsA, VarsB, Vars).
+presupposed_variables(merge(A,B), Vars) :-
+	presupposed_variables(A, VarsA),
+	presupposed_variables(B, VarsB),
+	ord_union(VarsA, VarsB, Vars).
+presupposed_variables(drs(_, L), BVs) :-
+	presupposed_variables_conditions(L, BVs).
+presupposed_variables(lambda(_, Y), BVs) :-
+	!,
+        presupposed_variables(Y, BVs).
+presupposed_variables('$VAR'(_), []) :-
+	!.
+presupposed_variables(X, []) :-
+	atomic(X),
+	!.
+presupposed_variables(Term, BVs) :-
+	Term =.. List,
+	presupposed_variables_list(List, BVs).
+
+presupposed_variables_list([], []).
+presupposed_variables_list([V|Vs], Bs) :-
+	presupposed_variables(V, Bs0),
+	presupposed_variables_list(Vs, Bs1),
+	ord_union(Bs0, Bs1, Bs).
+
+presupposed_variables_conditions([], []).
+presupposed_variables_conditions([C|Cs], BVs) :-
+	presupposed_variables_cond(C, BVs0),
+	presupposed_variables_conditions(Cs, BVs1),
+	ord_union(BVs0, BVs1, BVs).
+
+presupposed_variables_cond(bool(A,_,B), BVs) :-
+	!,
+	presupposed_variables(A, BVs0),
+	presupposed_variables(B, BVs1),
+	ord_union(BVs0, BVs1, BVs).
+presupposed_variables_cond(not(A), BVs) :-
+	!,
+	presupposed_variables(A, BVs).
+presupposed_variables_cond(drs(U,C), BVs) :-
+        presupposed_variables(drs(U, C), BVs).
+presupposed_variables_cond(drs_label(_,DRS), BVs) :-
+        presupposed_variables(DRS, BVs).
+presupposed_variables_cond(_, []).
+
+% ==
+
 bound_variables(Var, []) :-
 	var(Var),
 	!.
@@ -714,6 +775,12 @@ create_tree([I|Vs], Tree0, Tree) :-
 	btree_put(Tree0, I, _, Tree1),
 	create_tree(Vs, Tree1, Tree).
 
+id_tree([], Tree, Tree).
+id_tree([I|Vs], Tree0, Tree) :-
+	btree_put(Tree0, I, I, Tree1),
+	create_tree(Vs, Tree1, Tree).
+
+
 % = equivalent_semantics(+Term1, +Term2)
 %
 % true if Term1 and Term2 are alpha equivalent
@@ -778,9 +845,23 @@ try_unify_semantics(A0, A, Term0, Term) :-
 % '$VAR'(N)') replaced by Prolog variables.
 
 melt_bound_variables(Term0, Term) :-
-	bound_variables(Term0, List),
-	create_tree(List, empty, Tree),
+	create_variable_tree(Term0, Tree),
 	melt_bound_variables(Term0, Term, Tree).
+
+
+create_variable_tree(Term, Tree) :-
+	bound_variables(Term, Bound0),
+   (	
+	presupposition_unicity(true)
+   ->
+        presupposed_variables(Term, Presup),
+        ord_subtract(Bound0, Presup, Bound),
+        id_tree(Bound, empty, Tree0)
+   ;
+        Tree0 = empty,
+        Bound = Bound0
+   ),
+        create_tree(Bound, Tree0, Tree).
 
 melt_bound_variables(X, X, _Tree) :-
 	var(X),
@@ -857,7 +938,7 @@ melt_drs_variable(event('$VAR'(I)), Var, Tree) :-
     ->
          true
     ;
-         Var = '$VAR'(I)
+         Var = event('$VAR'(I))
     ).
 
 % = get_variable_numbers(+LambdaTerm, -SetOfIntegers)
