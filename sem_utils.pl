@@ -70,7 +70,8 @@ semantic_set_type(E, _T, E).
 % "sloppy" bindings treats all DRS variable names as having global scope (which is likely to be incorrect, but has the
 % advantage of not producing many doubled structures for sentences like "Jean et Marie aiment Pierre et Anne"
 
-drs_binding(sloppy).
+%drs_binding(sloppy).
+drs_binding(strict).
 
 % semantic_set_type(E, T, E->T).
 
@@ -597,6 +598,8 @@ bound_variables(drs(V, L), BVs) :-
    ;	  
         /* WARNING: this may lead to accidental capture of DRS variables */
         drs_variable_numbers(V, BVs0),
+        /* normally the above predicate call should be enough, but the */
+	/* predicate below adds extra security */
 	bound_variables_conditions(L, BVs1),
 	ord_union(BVs0, BVs1, BVs)
    ).
@@ -634,7 +637,7 @@ bound_variables_conditions([C|Cs], BVs) :-
 	ord_union(BVs0, BVs1, BVs).
 
 
-bound_variables_cond(bool(A,->,B), BVs) :-
+bound_variables_cond(bool(A,_,B), BVs) :-
 	!,
 	bound_variables(A, BVs0),
 	bound_variables(B, BVs1),
@@ -642,6 +645,10 @@ bound_variables_cond(bool(A,->,B), BVs) :-
 bound_variables_cond(not(A), BVs) :-
 	!,
 	bound_variables(A, BVs).
+bound_variables_cond(drs(U,C), BVs) :-
+        bound_variables(drs(U, C), BVs).
+bound_variables_cond(drs_label(_,DRS), BVs) :-
+        bound_variables(DRS, BVs).
 bound_variables_cond(_, []).
 
 drs_variable_numbers(L, N) :-
