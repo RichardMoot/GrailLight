@@ -3479,7 +3479,7 @@ lex('n\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
 lex('N\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
 lex(pas, dr(0,dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z))))), lambda(VPY,lambda(Y,lambda(NP,lambda(E,drs([],[not(appl(appl(appl(VPY,Y),NP),E))])))))).
 lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lambda(VP,lambda(NP,lambda(E,drs([],[not(appl(appl(VP,NP),E))]))))).
-lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
+lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([],[bool(F,subseteq,E)]),appl(S,F)))])))).
 lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(appl(S,E))])))).
 lex(pas, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,drs([],[not(appl(NP,lambda(X,appl(P,X))))])))).
 lex(pas, dr(0,np,pp_de), lambda(PPde,lambda(P,drs([],[not(appl(PPde,lambda(X,appl(P,X))))])))).
