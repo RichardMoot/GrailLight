@@ -3477,15 +3477,12 @@ lex(ne, dl(0,dl(0,lit(np(A,B,C)),lit(s(Z))),dl(0,lit(np(A,B,C)),lit(s(Z)))), lam
 lex('n\'', dr(0,dl(0,lit(np(A,B,C)),lit(s(Z))),dl(0,lit(np(A,B,C)),lit(s(Z)))), lambda(X,X)).
 lex('n\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
 lex('N\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
-lex(pas, dr(0,dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z))))), lambda(VPY,lambda(Y,lambda(NP,lambda(E,drs([],[not(appl(appl(appl(VPY,Y),NP),E))])))))).
-lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lambda(VP,lambda(NP,lambda(E,drs([],[not(appl(appl(VP,NP),E))]))))).
+lex(pas, dr(0,dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z))))), lambda(VPY,lambda(Y,lambda(NP,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(appl(appl(VPY,Y),NP),F)))])))))).
+lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lambda(VP,lambda(NP,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(appl(VP,NP),E)))]))))).
 % Kamp  & Reyle style treatment of negation: there is a state E which ha
 % no sub-events F when the sentence is true.
-lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(F,subseteq,E)]),appl(S,F)))])))).
-lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(F,subseteq,E)]),appl(S,F)))])))).
-% np-level negation
-% TODO: need some way to add the appropriate second event to obtain the
-% desired \exists e \not \exists e' ... formula instead of just \exists \not
+lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(S,F)))])))).
+lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(S,F)))])))).
 lex(pas, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,drs([],[not(appl(NP,lambda(X,appl(P,X))))])))).
 lex(pas, dr(0,np,pp_de), lambda(PPde,lambda(P,drs([],[not(appl(PPde,lambda(X,appl(P,X))))])))).
 
@@ -4238,9 +4235,9 @@ lex('Autrement', dr(0,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'ev
 lex(autrement, dr(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),bool(drs([],[appl(appl(alternation,E),F)]),\/,bool(drs([],[appl(appl(continuation,E),F)]),\/,drs([],[appl(appl(violation,E),F)])))]),appl(S,E))))).
 lex(autrement, dl(1,s,s), lambda(S,lambda(E,merge(drs([event(F)],[bool(F,=,'event?'),bool(drs([],[appl(appl(alternation,E),F)]),\/,bool(drs([],[appl(appl(continuation,E),F)]),\/,drs([],[appl(appl(violation,E),F)])))]),appl(S,E))))).
 
-lex('Sans', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([event(F)],[not(appl(P,F))])))))).
-lex(sans, dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([event(F)],[not(appl(P,F))])))))).
-lex(sans, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([event(F)],[not(appl(P,F))])))))).
+lex('Sans', dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(P,F)))])))))).
+lex(sans, dr(0,dr(0,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(P,F)))])))))).
+lex(sans, dr(0,dl(1,s,s),s_q), lambda(P,lambda(Q,lambda(E,merge(appl(Q,E),drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(P,F)))])))))).
 
 % = interpunction
 
