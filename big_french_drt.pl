@@ -3478,7 +3478,7 @@ lex('n\'', dr(0,dl(0,lit(np(A,B,C)),lit(s(Z))),dl(0,lit(np(A,B,C)),lit(s(Z)))), 
 lex('n\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
 lex('N\'', dr(0,lit(s(Z)),lit(s(Z))), lambda(X,X)).
 lex(pas, dr(0,dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z)))),dl(0,lit(cl_y),dl(0,lit(np(_,_,_)),lit(s(Z))))), lambda(VPY,lambda(Y,lambda(NP,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(appl(appl(VPY,Y),NP),F)))])))))).
-lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lambda(VP,lambda(NP,lambda(E,drs([],[not(merge(drs([event(F)][bool(appl(temps,F),subseteq,appl(temps,E))]),appl(appl(VP,NP),E)))]))))).
+lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), lambda(VP,lambda(NP,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(appl(VP,NP),E)))]))))).
 % Kamp  & Reyle style treatment of negation: there is a state E which ha
 % no sub-events F when the sentence is true.
 lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(appl(temps,F),subseteq,appl(temps,E))]),appl(S,F)))])))).
