@@ -2279,7 +2279,8 @@ hybrid_fol_to_fol1(Hybrid, quant(exists,X,Form)) :-
 % the standard translation would simply moves from current world X to the
 % world Y specified by the @_y binder. I've added xRy as extra formula to
 % be able to trace the path taken.
-hybrid_fol_to_fol1(hybrid_at(Y,Form0), X, quant(exists,Y,bool(appl(appl('R',Y),X),&,Form))) :-
+% NB: Y is already bound somewhere outside
+hybrid_fol_to_fol1(hybrid_at(Y,Form0), X, bool(appl(appl('R',Y),X),&,Form)) :-
 	!,
 	hybrid_fol_to_fol1(Form0, Y, Form).
 hybrid_fol_to_fol1(quant(Q,V,F0), X, quant(Q,V,F)) :-
