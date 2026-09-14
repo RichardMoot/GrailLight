@@ -3483,6 +3483,9 @@ lex(pas, dr(0,dl(0,lit(np(_,_,_)),lit(s(Z))),dl(0,lit(np(_,_,_)),lit(s(Z)))), la
 % no sub-events F when the sentence is true.
 lex(pas, dl(1,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(F,subseteq,E)]),appl(S,F)))])))).
 lex(pas, dr(0,lit(s(Z)),lit(s(Z))), lambda(S,lambda(E,drs([],[not(merge(drs([event(F)],[bool(F,subseteq,E)]),appl(S,F)))])))).
+% np-level negation
+% TODO: need some way to add the appropriate second event to obtain the
+% desired \exists e \not \exists e' ... formula instead of just \exists \not
 lex(pas, dr(0,lit(np(A,B,C)),lit(np(A,B,C))), lambda(NP,lambda(P,drs([],[not(appl(NP,lambda(X,appl(P,X))))])))).
 lex(pas, dr(0,np,pp_de), lambda(PPde,lambda(P,drs([],[not(appl(PPde,lambda(X,appl(P,X))))])))).
 
