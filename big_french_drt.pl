@@ -3842,7 +3842,7 @@ lex(ayant, dr(0,dl(0,n,n),dl(0,np,s_ppart)), lambda(VP,lambda(N,lambda(X,merge(a
 lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(NP,lambda(P,appl(NP,lambda(Y,merge(drs([variable(X)],[bool(X,=,appl(plus_de,Y))]),appl(P,X))))))).
 lex(plus, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(NP,lambda(P,appl(NP,lambda(Y,merge(drs([variable(X)],[bool(X,=,appl(plus_de,Y))]),appl(P,X))))))).
 %lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,>,Y)]))),appl(P,X))))).
-lex(plus, dr(0,dr(0,lit(np(_,_,_)),lit(s(q))),lit(pp(de))), lambda(PP,lambda(SQ,lambda(P,merge(appl(PP,lambda(Y,drs([event(E),event(F),variable(Y)],[bool(appl(mésure,Y),>,appl(mésure,E)),drs_label(E,appl(SQ,F))]))),appl(P,Y)))))).
+lex(plus, dr(0,dr(0,lit(np(_,_,_)),lit(s(q))),lit(pp(de))), lambda(PP,lambda(SQ,lambda(P,appl(PP,lambda(Y,merge(drs([event(E),event(F)],[bool(appl(mésure,Y),>,appl(mésure,E)),drs_label(E,appl(SQ,F))]),appl(P,Y)))))))).
 lex(plus, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variable(X),event(E)],[bool(appl(mésure,X),>,appl(mésure,E)),drs_label(E,SQ)]),appl(P,X))))).
 
 lex(moins, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,=,appl(moins_de,Y))]))),appl(P,X))))).
