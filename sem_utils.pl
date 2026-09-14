@@ -856,7 +856,7 @@ create_variable_tree(Term, Tree) :-
    ->
         presupposed_variables(Term, Presup),
         ord_subtract(Bound0, Presup, Bound),
-        id_tree(Bound, empty, Tree0)
+        id_tree(Presup, empty, Tree0)
    ;
         Tree0 = empty,
         Bound = Bound0
@@ -868,7 +868,8 @@ melt_bound_variables(X, X, _Tree) :-
 	!.
 melt_bound_variables('$VAR'(I), Var, Tree) :-
     (
-         btree_get(Tree, I, Var)
+        btree_get(Tree, I, Var),
+	var(Var)
     ->
          true
     ;
@@ -917,7 +918,8 @@ melt_drs_variables([V0|Vs0], [V|Vs], Tree) :-
 melt_drs_variable('$VAR'(I), Var, Tree) :-
 	!,
     (
-         btree_get(Tree, I, Var)
+        btree_get(Tree, I, Var),
+	var(Var)
     ->
          true
     ;
@@ -926,17 +928,19 @@ melt_drs_variable('$VAR'(I), Var, Tree) :-
 melt_drs_variable(variable('$VAR'(I)), Var, Tree) :-
 	!,
     (
-         btree_get(Tree, I, Var)
+        btree_get(Tree, I, V0),
+	var(V0)
     ->
-         true
+         Var = variable(V0)
     ;
          Var = variable('$VAR'(I))
     ).
 melt_drs_variable(event('$VAR'(I)), Var, Tree) :-
     (
-         btree_get(Tree, I, Var)
+        btree_get(Tree, I, V0),
+	var(V0)
     ->
-         true
+         Var = event(V0)
     ;
          Var = event('$VAR'(I))
     ).
