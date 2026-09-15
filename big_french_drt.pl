@@ -2412,22 +2412,24 @@ default_semantics(Word, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q)))
 	!,
 	add_roles([theme-L], Word, E, Conds, [drs_label(L,appl(SQ,F))|List]),
 	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
-default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,drs(EVs,Conds)))))))) :-
+default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(Y,appl(PPA,lambda(X,presup(merge(drs([event(F)],[]),appl(SQ,F)),drs(EVs,Conds))))))))))) :-
 	factive(Word),
 	!,
 	combine_prep_word(à, Word, PW),
-	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
+	add_roles([agent-Y,patient-X,theme-F], PW, E, Conds, List),
 	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
-default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,presup(merge(drs([event(F)],[]),appl(SQ,F)),drs(EVs,Conds))))))))) :-
+default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(_NP,lambda(E,appl(PPA,lambda(X,merge(drs([event(F)],[]),drs(EVs,Conds))))))))) :-
 	raising_verb(Word),
 	!,
 	combine_prep_word(à, Word, PW),
 	add_roles([patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
 	pos_time(ver:TIME, [event(L)], EVs, E-List).
+% Word is not a factive or raising verb, otherwise one of the previous clauses
+% would have triggered
 default_semantics(Word, ver:TIME, dr(0, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lit(pp(à))), lambda(PPA,lambda(SQ,lambda(NP,lambda(E,appl(NP,lambda(Y,appl(PPA,lambda(X,drs(EVs,Conds)))))))))) :-
 	combine_prep_word(à, Word, PW),
-	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,appl(SQ,F))|List]),
-	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
+	add_roles([agent-Y,patient-X,theme-L], PW, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),
+	pos_time(ver:TIME, [event(L)], EVs, E-List).
 default_semantics(falloir, ver:TIME, dr(_,dl(_,lit(np(_,_,_)),lit(s(_))),lit(s(q))), lambda(SQ,lambda(_NP,lambda(E,drs(EVs,Conds))))) :-
 	add_roles([theme-L], il_faut, E, Conds, [drs_label(L,merge(drs([event(F)],[]),appl(SQ,F)))|List]),	
 	pos_time(ver:TIME, [event(F),event(L)], EVs, E-List).
