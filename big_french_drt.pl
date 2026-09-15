@@ -2310,6 +2310,12 @@ default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),d
 	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
 	add_roles([agent-Y,patient-X,theme-Lab], demander_à_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
 
+% = suggérer + deinf + pp_a
+
+default_semantics(suggérer, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(pp(à))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
+	pos_time(ver:TIME, [event(Lab)], EVs, E-Tm),
+	add_roles([agent-Y,patient-X,theme-Lab], suggérer_à_de, E, List, [drs_label(Lab,merge(drs([event(F)],[]),appl(appl(DEINF,lambda(Prp,appl(Prp,X))),F)))|Tm]).
+
 % = demander + deinf + np
 
 default_semantics(demander, ver:TIME, dr(0,dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),dl(0,lit(np(_,_,_)),lit(s(inf(de))))),lit(np(_,_,_))), lambda(NPO, lambda(DEINF, lambda(NPS, lambda(E, appl(NPO,lambda(X,appl(NPS,lambda(Y,drs(EVs,List)))))))))) :-
