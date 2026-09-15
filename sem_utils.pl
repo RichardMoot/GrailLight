@@ -121,15 +121,13 @@ reduce_drs1(merge(drs(X,C),drs(Y,D)), drs(Z,F)) :-
 %% 	bound_variables(Y, BV),
 %% 	ord_intersect(BV, FV, [_|_]),
 %% 	!.	     % "freeze" a presuppositions at the current level
-% Quick'n'dirty solution to get complex proper names into a single DRS
 reduce_drs1(merge(presup(X,Y),drs(Z,V)), presup(X,merge(Y,drs(Z,V)))).
 reduce_drs1(merge(drs(Z,V),presup(X,Y)), presup(X,merge(drs(Z,V),Y))).
 
-reduce_drs1(presup(presup(X,Y),Z), presup(merge(X,Y),Z)).
-reduce_drs1(presup(P1,presup(P2,X)), presup(merge(P1,P2),X)).
-reduce_drs1(merge(presup(P1,X),presup(P2,Y)), presup(merge(P1,P2),merge(X,Y))).
-
-reduce_drs1(not(presup(P,Q)),presup(P,not(Q))).
+% special case for not occurring as a DRS not a condition
+reduce_drs1(not(Q0),presup(P,not(Q))) :-
+        select_presup(Q0, P, Q),
+        check_trapping(P, Q).
 reduce_drs1(bool(presup(P,Q),->,R), presup(P,bool(Q,->,R))) :-
 	/* fails if bound variables were to become free */
         check_trapping(P, Q).
@@ -140,19 +138,24 @@ reduce_drs1(drs(V,L0), drs(V, [drs_label(X,merge(Q1,Q2))|L])) :-
 	select(drs_label(X,Q1), L0, L1),
 	select(drs_label(X,Q2), L1, L).
 reduce_drs1(drs(V,L0), presup(P,drs(V,[not(Q)|L]))) :-
-	select(not(presup(P,Q)), L0, L),
+        select(not(Q0), L0, L),
+        select_presup(Q0, P, Q),
 	check_trapping(P, Q).
 reduce_drs1(drs(V,L0), drs(V,[bool(presup(P,Q),->,R)|L])) :-
-	select(bool(Q,->,presup(P,R)), L0, L),
+        select(bool(Q,->,R0), L0, L),
+        select_presup(R0, P, R),
 	check_trapping(P, R).
 reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,->,R)|L]))) :-
-	select(bool(presup(P,Q),->,R), L0, L),
+        select(bool(Q0,->,R), L0, L),
+        select_presup(Q0, P, Q),
 	check_trapping(P, Q).
 reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,\/,R)|L]))) :-
-	select(bool(Q,\/,presup(P,R)), L0, L),
+        select(bool(Q,\/,R0), L0, L),
+        select_presup(R0, P, R),
 	check_trapping(P, Q).
 reduce_drs1(drs(V,L0), presup(P,drs(V,[bool(Q,\/,R)|L]))) :-
-	select(bool(presup(P,Q),\/,R), L0, L),
+        select(bool(Q0,\/,R), L0, L),
+        select_presup(Q0, P, Q),
 	check_trapping(P, Q).
 
 % this case is a bit weird: it is for when a presupposition occurs as a
@@ -163,6 +166,15 @@ reduce_drs1(drs(V,L0), presup(P, R)) :-
 reduce_drs1(drs(V,L0), presup(P, drs(V,[drs_label(X,Q)|L]))) :-
 	select(drs_label(X,presup(P, Q)), L0, L),
 	check_trapping(P, Q).
+
+
+% these cases should be at the end, so they only apply when
+% there is no further possiblity of projection
+
+reduce_drs1(presup(presup(X,Y),Z), presup(X,presup(Y,Z))).
+%reduce_drs1(presup(P1,presup(P2,X)), presup(merge(P1,P2),X)).
+%reduce_drs1(merge(presup(P1,X),presup(P2,Y)), presup(merge(P1,P2),merge(X,Y))).
+reduce_drs1(merge(presup(P1,X),presup(P2,Y)), presup(P1,presup(P2,merge(X,Y)))).
 
 % recursive cases
 
@@ -222,6 +234,11 @@ check_trapping(P, Q) :-
 	free_vars(P, FV),
 	bound_variables(Q, BV),
 	ord_intersect(FV, BV, []).
+
+
+select_presup(presup(P,Q), P, Q).
+select_presup(presup(P,R), S, presup(P,Q)) :-
+    select_presup(R, S, Q).
 
 % = merge_list(+List1, +List2, -Merged)
 %
