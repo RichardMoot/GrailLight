@@ -3854,7 +3854,7 @@ lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(NP,lambda(P,appl(NP,lambda(
 lex(plus, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(NP,lambda(P,appl(NP,lambda(Y,merge(drs([variable(X)],[bool(X,=,appl(plus_de,Y))]),appl(P,X))))))).
 %lex('Plus', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(Q,lambda(P,merge(appl(Q,lambda(Y,drs([variable(X)],[bool(X,>,Y)]))),appl(P,X))))).
 lex(plus, dr(0,dr(0,lit(np(_,_,_)),lit(s(q))),lit(pp(de))), lambda(PP,lambda(SQ,lambda(P,appl(PP,lambda(Y,merge(drs([event(E),event(F)],[bool(appl(mésure,Y),>,appl(mésure,E)),drs_label(E,appl(SQ,F))]),appl(P,Y)))))))).
-lex(plus, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variable(X),event(E)],[bool(appl(mésure,X),>,appl(mésure,E)),drs_label(E,SQ)]),appl(P,X))))).
+lex(plus, dr(0,lit(np(_,_,_)),lit(s(q))), lambda(SQ,lambda(P,merge(drs([variable(X),event(E),event(L)],[bool(appl(mésure,X),>,appl(mésure,E)),drs_label(L,appl(SQ,E))]),appl(P,X))))).
 
 lex('Moins', dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(NP,lambda(P,appl(NP,lambda(Y,merge(drs([variable(X)],[bool(X,=,appl(moins_de,Y))]),appl(P,X))))))).
 lex(moins, dr(0,lit(np(_,_,_)),lit(pp(de))), lambda(NP,lambda(P,appl(NP,lambda(Y,merge(drs([variable(X)],[bool(X,=,appl(moins_de,Y))]),appl(P,X))))))).
@@ -3968,7 +3968,7 @@ lex(et, dr(0,dl(0,dr(0,s,dia(1,box(1,dr(0,dr(0,dl(0,np,s),s_q),pp)))),dr(0,s,box
 
 lex(alors, dr(0,dl(0,dr(0,s,dia(1,box(1,dl(0,np,s)))),dr(0,s,box(1,dia(1,dl(0,np,s))))),dr(0,s,dia(1,box(1,dl(0,np,s))))), lambda(VPS2,lambda(VPS1,lambda(VP,lambda(_,drs([],[bool(merge(drs([event(E)],[]),appl(appl(VPS1,VP),E)),->,merge(drs([event(F)],[]),appl(appl(VPS2,VP),F)))])))))).
 
-
+% interpunction
 
 lex(',', dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(S, lambda(NP, lambda(E, merge(appl(NP,lambda(X,(drs([],[appl(appl(topic,X),E)])))),appl(S,E)))))). 
 lex(':', dr(0,dl(0,lit(np(_,_,_)),lit(s(_))),lit(s(_))), lambda(S, lambda(NP, lambda(E, merge(appl(NP,lambda(X,(drs([],[appl(appl(topic,X),E)])))),appl(S,E)))))). 
@@ -3976,6 +3976,9 @@ lex(',', dr(0,dl(0,lit(n),lit(s(_))),lit(s(_))), lambda(S, lambda(N, lambda(E, p
 lex(',', dr(0,dl(0,dl(1,s,s),dl(1,s,s)),dl(1,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
 lex(',', dr(0,dl(0,dr(0,s,s),dr(0,s,s)),dr(0,s,s)), lambda(Adv2,lambda(Adv1,lambda(S,lambda(E,merge(appl(appl(Adv1,S),E),appl(appl(Adv2,S),E))))))).
 
+% default intepretation  of X/Y is as disjunction
+lex('/', dr(0,dl(0,dl(0,lit(n),lit(n)),dl(0,lit(n),lit(n))),dl(0,lit(n),lit(n))), lambda(P,lambda(Q,lambda(R,lambda(X,merge(appl(R,X),drs([],[bool(appl(appl(Q,R),X),\/,appl(appl(P,R),X))]))))))).
+lex('/', dr(0,dl(0,lit(n),lit(n)),lit(n)), lambda(P,lambda(Q,lambda(X,drs([],[bool(appl(Q,X),\/,appl(P,X))]))))).
 
 lex(':', dr(0,dl(0,lit(n),lit(s(_))),lit(s(_))), lambda(S, lambda(N, lambda(E, presup(merge(drs([variable(X)],[appl(appl(topic,X),E)]),appl(N,X)),appl(S,E)))))). 
 lex(':', dr(0,dl(0,lit(np(_,_,_)),lit(np(_,_,_))),lit(np(_,_,_))), lambda(NP1,lambda(NP2,lambda(P,merge(appl(NP2,P),appl(NP1,P)))))).
