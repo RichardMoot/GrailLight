@@ -68,6 +68,10 @@ reduce_eta(active).
 
 presupposition_unicity(true).
 
+% set to true to merge stacks of presuppositions into a single preuspposed DRS
+
+merge_presuppositions(true).
+
 % WARNING: although "sloppy" produces simpler structures (less duplication of DRSs), it may be subject to accidental capture
 % "sloppy" bindings treats all DRS variable names as having global scope (which is likely to be incorrect, but has the
 % advantage of not producing many doubled structures for sentences like "Jean et Marie aiment Pierre et Anne"
@@ -104,8 +108,15 @@ reduce_drs(D0, D) :-
 	D0 \=@= D1,
 	!,
 	reduce_drs(D1, D).
-reduce_drs(D, D).
-
+reduce_drs(D0, D) :-
+   (
+        merge_presuppositions(true)
+   ->
+        merge_presuppositions(D0, D)
+   ;
+        D = D0
+   ).
+	   
 % DRS merge; simply appends contexts and conditions, but removes any
 % duplicate variables or conditions (only strictly identical duplicates
 % are removed)
@@ -258,6 +269,55 @@ strict_removeall(E1, [E2|Ls0], Ls) :-
 strict_removeall(E, [L|Ls0], [L|Ls]) :-
 	strict_removeall(E, Ls0, Ls).
 
+
+% merge_presuppositions
+
+merge_presuppositions(presup(P,presup(Q,M)), N) :-
+	is_drs(P),
+	is_drs(Q),
+	!,
+	merge_drs(P, Q, R),
+	merge_presuppositions1(M, R, N).
+merge_presuppositions(lambda(X,M), lambda(X,N)) :-
+	!,
+	merge_presuppositions(M, N).
+merge_presuppositions(merge(M0,N0),merge(M,N)) :-
+	!,
+	merge_presuppositions(M0, M),
+	merge_presuppositions(N0, N).
+merge_presuppositions(drs(V,C0), drs(V,C)) :-
+	!,
+	merge_cond_list_presups(C0, C).
+merge_presuppositions(M, M).
+
+merge_cond_list_presups([], []).
+merge_cond_list_presups([C|Cs],[D|Ds]) :-
+	merge_cond_presups(C, D),
+	merge_cond_list_presups(Cs, Ds).
+
+merge_cond_presups(bool(M0,B,N0), bool(M,B,N)) :-
+	drs_bool(B),
+	!,
+	merge_presuppositions(M0, M),
+	merge_presuppositions(N0, N).
+merge_cond_presups(not(M0), not(M)) :-
+	!,
+	merge_presuppositions(M0, M).
+merge_cond_presups(drs_label(L,M0), drs_label(L,M)) :-
+	!,
+	merge_presuppositions(M0, M).
+merge_cond_presups(M0, M) :-
+	is_drs(M0),
+	!,
+	merge_presuppositions(M0, M).
+merge_cond_presups(M, M).
+
+merge_presuppositions1(presup(P,M), Q, N) :-
+	is_drs(P),
+	!,
+	merge_drs(P, Q, R),
+	merge_presuppositions1(M, R, N).
+merge_presuppositions1(M, P, presup(P, M)).
 
 % = Quine's reductions
 %
@@ -2185,6 +2245,8 @@ normalize_condition(DRS0, DRS) :-
 	!,
 	normalize_drs(DRS0, DRS).
 normalize_condition(P, P).
+
+% 
 
 merge_drs(drs(X,C),drs(Y,D), drs(Z,F)) :-
 	merge_lists(X, Y, Z),
