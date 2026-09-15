@@ -3141,7 +3141,7 @@ lex('Ouest', n, lambda(X,drs([],[appl('Ouest',X)]))).
 % de X a Y
 
 lex(à, dr(0,dl(0,pp_de,dl(0,n,n)),np), lambda(NP, lambda(PP, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(appl(N,X),drs([],[appl(appl(start,Y),X),appl(appl(end,Z),X)]))))))))))).
-lex(à, dr(0,dl(0,pp_de,pp_a),np), lambda(NP, lambda(PP, lambda(P, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(start,Y),X),appl(appl(end,Z),X)],appl(P,X))))))))))).
+lex(à, dr(0,dl(0,pp_de,pp_a),np), lambda(NP, lambda(PP, lambda(P, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([variable(X)],[appl(appl(start,Y),X),appl(appl(end,Z),X)]),appl(P,X)))))))))).
 lex(à, dr(0, dl(0, pp_de, dl(1, s, s)), np), lambda(NP, lambda(PP, lambda(S, lambda(E, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([],[appl(appl(start,Y),E),appl(appl(end,Z),E)]),appl(S,E))))))))))). 
 lex(à, dr(0, dl(0, pp_de, dl(1, dl(0, n, n), dl(0, n, n))), np), lambda(NP, lambda(PP, lambda(Adj, lambda(N, lambda(X, appl(PP,lambda(Z,appl(NP,lambda(Y,merge(drs([event(L)],[appl(appl(start,Y),L),appl(appl(end,Z),L),drs_label(L,appl(appl(Adj,N),X))]),appl(N,X)))))))))))). 
 
