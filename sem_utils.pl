@@ -737,9 +737,10 @@ remove_duplicate_drs_variables(lambda(X,M0), lambda(X,M), Bound0) :-
 remove_duplicate_drs_variables(bool(C0,B,D0), bool(C,B,D), Bound) :-
         !,
         remove_duplicate_condition_variables(bool(C0,B,D0), bool(C,B,D), Bound).
-remove_duplicate_drs_variables(merge(C0,D0), merge(C,D), Bound) :-
+remove_duplicate_drs_variables(merge(C0,D0), merge(C,D), Bound0) :-
+        normalize_drs(C0, C1),
+        C1 = drs(Bound1,_),
         !,
-        bound_variables(C0, Bound1),
         ord_union(Bound0, Bound1, Bound),
         remove_duplicate_drs_variables(C0, C, Bound0),
 	remove_duplicate_drs_variables(D0, D, Bound).
@@ -752,13 +753,13 @@ remove_duplicate_conds_variables([C|Cs], [D|Ds], Bound) :-
 
 
 remove_duplicate_condition_variables(bool(C0,->,D0), bool(C,->,D), Bound0) :-
+        normalize_drs(C0, C1),
+        C1 = drs(Bound1,_),
         !,
-        bound_variables(C0, Bound1),
         ord_union(Bound0, Bound1, Bound),
         remove_duplicate_drs_variables(C0, C, Bound0),
 	remove_duplicate_drs_variables(D0, D, Bound).
 remove_duplicate_condition_variables(bool(C0,B,D0), bool(C,B,D), Bound) :-
-        drs_bool(B),
         !,
         remove_duplicate_drs_variables(C0, C, Bound),
 	remove_duplicate_drs_variables(D0, D, Bound).
