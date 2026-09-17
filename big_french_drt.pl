@@ -334,7 +334,7 @@ noun_semantics(drt, Word, lambda(V,drs([],[appl(Word,V)]))).
 
 sem_tv_subject_control(Word, POS, lambda(INF,lambda(NP,lambda(E,appl(NP,lambda(Z,drs(Es,Conds))))))) :-
 	add_roles([agent-Z,theme-L], Word, E, Conds, [drs_label(L,appl(appl(INF,lambda(P,appl(P,Z))),F))|Tnse]),	
-	pos_time(POS, [event(F)], Es, E-Tnse).														
+	pos_time(POS, [event(F),event(L)], Es, E-Tnse).														
 
 
 auxiliary_verb_etre(POS, _Rest0, lambda(P,lambda(X,lambda(E,merge(appl(appl(P,X),E),drs(EVs,Rest)))))) :-
