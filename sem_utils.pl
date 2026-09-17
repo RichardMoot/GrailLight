@@ -108,14 +108,25 @@ reduce_drs(D0, D) :-
 	D0 \=@= D1,
 	!,
 	reduce_drs(D1, D).
+% cleanup to be done only *after* presupposition projection has completed
+% - merging a sequence of presuppositions into a single one (if the
+%   parameter has been set to true), this gives a cleaner representation
+%   but doing this earlier can cause presuppositions to be blocked
+% - removing duplicate binders. Lambda terms can copy DRSs at different
+%   substructures. If alpha conversion has *not* changed these variables
+%   then keep only the outermost binders.
+%   The main application of this removal is when a DRS appears both inside
+%   and outside a drs_label construct (e.g. subsective adjectives or
+%   modification of adverbially used past/present perfect verbs).
 reduce_drs(D0, D) :-
    (
         merge_presuppositions(true)
    ->
-        merge_presuppositions(D0, D)
+        merge_presuppositions(D0, D1)
    ;
-        D = D0
-   ).
+        D1 = D0
+   ),
+        remove_duplicate_drs_variables(D1, D).
 	   
 % DRS merge; simply appends contexts and conditions, but removes any
 % duplicate variables or conditions (only strictly identical duplicates
@@ -706,6 +717,62 @@ presupposed_variables_cond(drs(U,C), BVs) :-
 presupposed_variables_cond(drs_label(_,DRS), BVs) :-
         presupposed_variables(DRS, BVs).
 presupposed_variables_cond(_, []).
+
+
+% ==
+
+remove_duplicate_drs_variables(DRS0, DRS) :-
+        remove_duplicate_drs_variables(DRS0, DRS, []).
+
+remove_duplicate_drs_variables(drs(Vars0, Cs0), drs(Vars, Cs), Bound0) :-
+        !,
+        sort(Vars0, Vars1),
+        ord_subtract(Vars1, Bound0, Vars),
+	ord_union(Vars, Bound0, Bound),
+	remove_duplicate_conds_variables(Cs0, Cs, Bound).
+remove_duplicate_drs_variables(lambda(X,M0), lambda(X,M), Bound0) :-
+        !,
+        ord_insert(Bound0, X, Bound),
+        remove_duplicate_drs_variables(M0, M, Bound).
+remove_duplicate_drs_variables(bool(C0,B,D0), bool(C,B,D), Bound) :-
+        !,
+        remove_duplicate_condition_variables(bool(C0,B,D0), bool(C,B,D), Bound).
+remove_duplicate_drs_variables(merge(C0,D0), merge(C,D), Bound) :-
+        !,
+        bound_variables(C0, Bound1),
+        ord_union(Bound0, Bound1, Bound),
+        remove_duplicate_drs_variables(C0, C, Bound0),
+	remove_duplicate_drs_variables(D0, D, Bound).
+remove_duplicate_drs_variables(D, D, _).
+
+remove_duplicate_conds_variables([], [], _).
+remove_duplicate_conds_variables([C|Cs], [D|Ds], Bound) :-
+        remove_duplicate_condition_variables(C, D, Bound),
+        remove_duplicate_conds_variables(Cs, Ds, Bound).
+
+
+remove_duplicate_condition_variables(bool(C0,->,D0), bool(C,->,D), Bound0) :-
+        !,
+        bound_variables(C0, Bound1),
+        ord_union(Bound0, Bound1, Bound),
+        remove_duplicate_drs_variables(C0, C, Bound0),
+	remove_duplicate_drs_variables(D0, D, Bound).
+remove_duplicate_condition_variables(bool(C0,B,D0), bool(C,B,D), Bound) :-
+        drs_bool(B),
+        !,
+        remove_duplicate_drs_variables(C0, C, Bound),
+	remove_duplicate_drs_variables(D0, D, Bound).
+remove_duplicate_condition_variables(not(D0), not(D), Bound) :-
+        !,
+        remove_duplicate_drs_variables(D0, D, Bound).
+remove_duplicate_condition_variables(drs_label(L,D0), drs_label(L,D), Bound) :-
+        !,
+        remove_duplicate_drs_variables(D0, D, Bound).
+remove_duplicate_condition_variables(D0, D, Bound) :-
+        is_drs(D0),
+        !,
+        remove_duplicate_drs_variables(D0, D, Bound).
+remove_duplicate_condition_variables(C, C, _).
 
 % ==
 
